@@ -1,0 +1,78 @@
+{
+    "name": "laravel/laravel",
+    "description": "The Laravel Framework.",
+    "keywords": ["framework", "laravel"],
+    "license": "MIT",
+    "type": "project",
+    "require": {
+        "php": ">=5.5.9",
+        "laravel/framework": "5.1.*",
+        "point/tenant-database": "0.*",
+        "predis/predis": "^1.0",
+        "guzzlehttp/guzzle": "~5.3|~6.0",
+        "maatwebsite/excel": "~2.0.0",
+        "intervention/image": "^2.3",
+        "barryvdh/laravel-dompdf": "0.8.*",
+        "bican/roles": "2.1.*",
+        "jenssegers/agent": "^2.3",
+        "milon/barcode": "~1.0",
+        "league/flysystem-aws-s3-v3": "~1.0",
+        "league/flysystem-dropbox": "^1.0",
+        "league/flysystem-sftp": "^1.0",
+        "graham-campbell/flysystem": "^3.0",
+        "websight/l5-google-cloud-storage": "^1.0"
+    },
+    "require-dev": {
+        "fzaninotto/faker": "~1.4",
+        "mockery/mockery": "0.9.*",
+        "phpunit/phpunit": "~4.0",
+        "phpspec/phpspec": "~2.1"
+    },
+    "repositories": [
+        { "type" : "git", "url" : "git@gitlab.com:bgd-point/tenant-database.git" }
+    ],
+    "autoload": {
+        "classmap": [
+            "database"
+        ],
+        "psr-4": {
+            "App\\": "app/",
+            "Point\\Core\\": "packages/point/point-core/src",
+            "Point\\Framework\\": "packages/point/point-framework/src",
+            "Point\\PointInventory\\": "packages/point/point-inventory/src",
+            "Point\\PointPurchasing\\": "packages/point/point-purchasing/src",
+            "Point\\PointSales\\": "packages/point/point-sales/src",
+            "Point\\PointExpedition\\": "packages/point/point-expedition/src",
+            "Point\\PointManufacture\\": "packages/point/point-manufacture/src",
+            "Point\\PointFinance\\": "packages/point/point-finance/src",
+            "Point\\PointAccounting\\": "packages/point/point-accounting/src",
+            "Point\\BumiDeposit\\": "packages/point/bumi-deposit/src",
+            "Point\\BumiShares\\": "packages/point/bumi-shares/src",
+            "Point\\Ksp\\": "packages/point/addon-ksp/src"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/TestCase.php"
+        ]
+    },
+    "scripts": {
+        "post-root-package-install": [
+            "php -r \"copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "php artisan key:generate"
+        ],
+        "post-install-cmd": [
+            "Illuminate\\Foundation\\ComposerScripts::postInstall",
+            "php artisan optimize"
+        ],
+        "post-update-cmd": [
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "php artisan optimize"
+        ]
+    },
+    "config": {
+        "preferred-install": "dist"
+    }
+}
