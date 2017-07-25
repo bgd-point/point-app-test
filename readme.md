@@ -1,3 +1,3 @@
 ## Point App
 
-Temporary Repository for fixing structural code
+Temporary Repository for fixing structural code.
