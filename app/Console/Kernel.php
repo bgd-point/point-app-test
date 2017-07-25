@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\SettingResetDatabase::class,
         Commands\EmailApproval::class,
         Commands\ClearTransaction::class,
+        Commands\ResetDatabase::class,
     ];
 
     /**
