@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         Commands\EmailApproval::class,
         Commands\ClearTransaction::class,
         Commands\ResetDatabase::class,
+        Commands\SeedDummy::class,
     ];
 
     /**
