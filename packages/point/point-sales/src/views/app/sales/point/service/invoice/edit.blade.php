@@ -18,7 +18,7 @@
                       class="form-horizontal form-bordered">
                     {!! csrf_field() !!}
                     <input type="hidden" name="_method" value="PUT">
-                    <input type="hidden" name="person_id" value="{{$person->id}}">
+                    <input type="hidden" name="person_id" value="{{$invoice->person_id}}">
 
                     <fieldset>
                         <div class="form-group">
@@ -64,8 +64,8 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Customer</label>
                         <div class="col-md-6 content-show">
-                            <input type="hidden" name="person_id" value="{{$person->id}}">
-                            {!! get_url_person($person->person->id) !!}
+                            <input type="hidden" name="person_id" value="{{$invoice->person_id}}">
+                            {!! get_url_person($invoice->person_id) !!}
                         </div>
                     </div>
                     <div class="form-group">
