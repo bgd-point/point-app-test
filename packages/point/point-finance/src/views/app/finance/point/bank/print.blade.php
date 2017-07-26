@@ -60,7 +60,7 @@
         <table id="noneborder">
             <tr>
                 <td>
-                    <img src="{{url('uploads/' .app('request')->project->url . '/logo/logo.png')}}" style="background-color:transparent;width:auto;height:50px;">
+                    <img src="{{url_logo()}}" style="background-color:transparent;width:auto;height:50px;">
                 </td>
                 <td valign="top">
                     <strong style="font-size:14px; text-transform: uppercase;">{{$warehouse_profiles->store_name}}</strong> <br/><font style="font-size:12px;text-transform: capitalize;">

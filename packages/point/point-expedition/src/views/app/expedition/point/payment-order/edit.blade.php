@@ -128,6 +128,8 @@
                                                         ?>
                                                         <tr>
                                                             <td class="text-center">
+                                                                <input type="hidden" name="invoice_reference_id[]" value="{{$invoice->id}}">
+                                                                <input type="hidden" name="invoice_reference_type[]" value="{{get_class($invoice)}}">
                                                                 <input type="hidden" name="invoice_rid[]"
                                                                        value="{{$invoice->formulir_id}}">
                                                                 <input type="checkbox" @if($refer_to) checked
@@ -249,6 +251,8 @@
                                                         ?>
                                                         <tr>
                                                             <td class="text-center">
+                                                                <input type="hidden" name="cutoff_reference_id[]" value="{{$cut_off_payable->id}}">
+                                                                <input type="hidden" name="cutoff_reference_type[]" value="{{get_class($cut_off_payable)}}">
                                                                 <input type="hidden" name="cut_off_rid[]"
                                                                        value="{{$cut_off_payable->id}}">
                                                                 <input type="checkbox" @if($refer_to) checked @endif
@@ -311,8 +315,9 @@
                                                         ?>
                                                         <tr>
                                                             <td class="text-center">
-                                                                <input type="hidden" name="downpayment_rid[]"
-                                                                       value="{{$downpayment->formulir_id}}">
+                                                                <input type="hidden" name="downpayment_reference_id[]" value="{{$downpayment->id}}">
+                                                                <input type="hidden" name="downpayment_reference_type[]" value="{{get_class($downpayment)}}">
+                                                                <input type="hidden" name="downpayment_rid[]" value="{{$downpayment->formulir_id}}">
                                                                 <input type="checkbox" @if($refer_to) checked
                                                                        @endif id="id-downpayment-{{$downpayment->formulir_id}}"
                                                                        class="row-id" name="downpayment_id[]"
@@ -369,7 +374,7 @@
                                                                 <a href="javascript:void(0)" class="remove-row btn btn-danger"><i class="fa fa-trash"></i></a>
                                                             </td>
                                                             <td>
-                                                                <select id="item-id-'+counter+'" name="coa_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                                                                <select id="item-id-{{$counter}}" name="coa_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
                                                                     @foreach($list_coa as $coa)
                                                                     <option value="{{$coa->id}}" @if($coa->id == $payment_order_other->coa_id) selected @endif>{{$coa->account}}</option>
                                                                     @endforeach
@@ -379,10 +384,10 @@
                                                                 <input type="text" name="other_notes[]" class="form-control" value="{{$payment_order_other->other_notes}}"/>
                                                             </td>
                                                             <td>
-                                                                <input type="text" id="total-'+counter+'" name="total[]" class="form-control format-accounting row-total calculate" value="{{$payment_order_other->amount}}"/>
+                                                                <input type="text" id="total-{{$counter}}" name="total[]" class="form-control format-accounting row-total calculate" value="{{$payment_order_other->amount}}"/>
                                                             </td>
                                                             <td>
-                                                                <select id="allocation-id-'+counter+'" name="allocation_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                                                                <select id="allocation-id-{{$counter}}" name="allocation_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
                                                                     @foreach($list_allocation as $allocation)
                                                                     <option value="{{$allocation->id}}" @if($allocation->id == $payment_order_other->allocation_id) selected @endif>{{$allocation->name}}</option>
                                                                     @endforeach

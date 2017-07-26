@@ -133,8 +133,8 @@ class PosPricingController extends Controller
 
         $item_id = app('request')->input('item_id');
         $person_group_id = app('request')->input('person_group_id');
-        $price = number_format_db(app('request')->input('price'));
-        $discount = number_format_db(app('request')->input('discount'));
+        $price = number_format_db(app('request')->input('price') ? : 0);
+        $discount = number_format_db(app('request')->input('discount') ? : 0);
         $nett = $price - ($price * $discount/100);
 
         $row = TempDataHelper::searchKeyValue('pos.pricing.create', auth()->user()->id, ['item_id', 'person_group_id'], [$item_id, $person_group_id]);

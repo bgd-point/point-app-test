@@ -51,6 +51,15 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-md-3 control-label">Payment Reference</label>
+                    <div class="col-md-6 content-show">
+                        <?php $class = $payment_reference->reference->formulirable_type; ?>
+                        <a href="{{ $class::showUrl($payment_reference->reference->formulirable_id) }}">
+                            {{$payment_reference->reference->form_number}}
+                        </a>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-md-3 control-label">Payment To</label>
                     <div class="col-md-6 content-show">
                         <input type="hidden" name="person_id" value="{{$person->id}}">

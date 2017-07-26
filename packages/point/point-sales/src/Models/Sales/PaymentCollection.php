@@ -52,12 +52,13 @@ class PaymentCollection extends Model
         return $this->hasMany('\Point\PointSales\Models\Sales\PaymentCollectionOther', 'point_sales_payment_collection_id');
     }
 
-    public static function showUrl()
+    public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
-            return '/sales/point/indirect/payment-collection/'.$this->id;
+        $payment_collection = PaymentCollection::find($id);
+        if ($payment_collection->formulir->form_number) {
+            return '/sales/point/indirect/payment-collection/'.$id;
         } else {
-            return '/sales/point/indirect/payment-collection/'.$this->id.'/archived';
+            return '/sales/point/indirect/payment-collection/'.$id.'/archived';
         }
     }
 

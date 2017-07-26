@@ -99,10 +99,10 @@
                                                     <tbody>
                                                     <?php $i = 0;?>
                                                     @foreach($list_invoice as $invoice)
-                                                        <?php
-                                                        $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice),
-                                                                $invoice->id, $invoice->total);
-                                                        ?>
+                                                    <?php
+                                                    $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice),
+                                                            $invoice->id, $invoice->total);
+                                                    ?>
                                                         <tr>
                                                             <td class="text-center" rowspan="2">
                                                                 <input type="hidden" name="invoice_reference_id[]" value="{{$invoice->id}}">
@@ -376,7 +376,7 @@
         var counter = 0;
         var other_datatable = initDatatable('#other-datatable');
         initDatatable('#downpayment-datatable');
-        initDatatable('#invoice-datatable');
+        // initDatatable('#invoice-datatable');
         initDatatable('#cutoff-datatable');
 
         $('#addItemRow').on('click', function () {

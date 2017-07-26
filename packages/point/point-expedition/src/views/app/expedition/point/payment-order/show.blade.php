@@ -151,7 +151,7 @@
                                 @endif
                                 @if(formulir_view_cancel($payment_order->formulir, 'delete.point.expedition.payment.order'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCancelForm('{{url('formulir/cancel')}}',
+                                       onclick="secureCancelForm('{{url('expedition/point/payment-order/cancel')}}',
                                                '{{ $payment_order->formulir_id }}',
                                                'delete.point.expedition.payment.order')"><i class="fa fa-times"></i>
                                         Cancel Form</a>
