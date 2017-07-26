@@ -76,12 +76,13 @@ class Downpayment extends Model
             ->whereNotNull('formulir.form_number');
     }
 
-    public static function showUrl()
+    public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
-            return '/sales/point/indirect/downpayment/'.$this->id;
+        $downpayment = Downpayment::find($id);
+        if ($downpayment->formulir->form_number) {
+            return '/sales/point/indirect/downpayment/'.$id;
         } else {
-            return '/sales/point/indirect/downpayment/'.$this->id.'/archived';
+            return '/sales/point/indirect/downpayment/'.$id.'/archived';
         }
     }
 

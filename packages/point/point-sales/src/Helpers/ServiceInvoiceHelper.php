@@ -57,6 +57,7 @@ class ServiceInvoiceHelper
         $invoice->save();
 
         $subtotal = 0;
+        $subtotal_item = 0;
         $subtotal_service = 0;
         $amount_service = 0;
         $amount_item = 0;
@@ -94,12 +95,12 @@ class ServiceInvoiceHelper
             $invoice_item->save();
 
             $amount_item = ($invoice_item->quantity * $invoice_item->price) - ($invoice_item->quantity * $invoice_item->price/100 * $invoice_item->discount);
-            $subtotal += $amount_item;
+            $subtotal_item += $amount_item;
             // Insert to Allocation Report
             AllocationHelper::save($invoice->formulir->id, $invoice_item->allocation_id, $amount_item);
         }
 
-        $subtotal = $subtotal + $subtotal_service;
+        $subtotal = $subtotal_item + $subtotal_service;
         $discount = $subtotal * $request->input('discount') / 100;
         $tax_base = $subtotal - $subtotal * $request->input('discount') / 100;
         $tax = 0;
@@ -107,10 +108,14 @@ class ServiceInvoiceHelper
         if ($request->input('type_of_tax') == 'include') {
             $tax_base = $tax_base * 100 / 110;
             $tax = $tax_base * 10 / 100;
+
+            $subtotal_item = $subtotal_item * 100 / 110;
+            $subtotal_service = $subtotal_service * 100 / 110;
         }
 
         if ($request->input('type_of_tax') == 'exclude') {
             $tax = $tax_base * 10 / 100;
+
         }
 
         $total = $tax_base + $tax;
@@ -128,10 +133,10 @@ class ServiceInvoiceHelper
             $data = array(
                 'value_of_account_receivable' => $total,
                 'value_of_income_tax_payable' => $tax,
-                'value_of_sale_of_goods' => $subtotal,
+                'value_of_sale_of_goods' => $subtotal_item,
                 'value_of_discount' => $discount * (-1),
-                'value_of_expedition_income' => $invoice->expedition_fee,
-                'value_cost_of_sales' => $subtotal_service,
+                'value_cost_of_sales' => $subtotal_item,
+                'value_of_service_income' => $subtotal_service,
                 'request' => $request,
                 'formulir' => $formulir,
                 'invoice' => $invoice
@@ -144,10 +149,10 @@ class ServiceInvoiceHelper
             $data = array(
                 'value_of_account_receivable' => $total,
                 'value_of_income_tax_payable' => $tax,
-                'value_of_sale_of_goods' => $tax_base,
+                'value_of_sale_of_goods' => $subtotal_item,
                 'value_of_discount' => $discount,
-                'value_of_expedition_income' => $invoice->expedition_fee,
-                'value_cost_of_sales' => $subtotal_service,
+                'value_cost_of_sales' => $subtotal_item,
+                'value_of_service_income' => $subtotal_service,
                 'request' => $request,
                 'formulir' => $formulir,
                 'invoice' => $invoice
@@ -189,20 +194,22 @@ class ServiceInvoiceHelper
             $journal->subledger_type;
             $journal->save();
         }
-        
+
         // 3. Journal Sales of Goods
-        $sales_of_goods = JournalHelper::getAccount('point sales service', 'sale of goods');
-        $position = JournalHelper::position($sales_of_goods);
-        $journal = new Journal;
-        $journal->form_date = $data['formulir']->form_date;
-        $journal->coa_id = $sales_of_goods;
-        $journal->description = 'invoice service sales [' . $data['formulir']->form_number.']';
-        $journal->$position = $data['value_of_sale_of_goods'];
-        $journal->form_journal_id = $data['formulir']->id;
-        $journal->form_reference_id;
-        $journal->subledger_id;
-        $journal->subledger_type;
-        $journal->save();
+        if($data['value_of_sale_of_goods'] > 0) {
+            $sales_of_goods = JournalHelper::getAccount('point sales service', 'sale of goods');
+            $position = JournalHelper::position($sales_of_goods);
+            $journal = new Journal;
+            $journal->form_date = $data['formulir']->form_date;
+            $journal->coa_id = $sales_of_goods;
+            $journal->description = 'invoice service sales [' . $data['formulir']->form_number.']';
+            $journal->$position = $data['value_of_sale_of_goods'];
+            $journal->form_journal_id = $data['formulir']->id;
+            $journal->form_reference_id;
+            $journal->subledger_id;
+            $journal->subledger_type;
+            $journal->save();
+        }
 
         // 4. Journal Sales Discount
         if ($data['invoice']->discount > 0) {
@@ -220,7 +227,22 @@ class ServiceInvoiceHelper
             $journal->save();
         }
 
-        self::journalInventory($data);
+        $service_income = JournalHelper::getAccount('point sales service', 'service income');
+        $position = JournalHelper::position($service_income);
+        $journal = new Journal;
+        $journal->form_date = $data['formulir']->form_date;
+        $journal->coa_id = $service_income;
+        $journal->description = 'invoice service sales [' . $data['formulir']->form_number.']';
+        $journal->$position = $data['value_of_service_income'];
+        $journal->form_journal_id = $data['formulir']->id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
+
+        if($data['value_of_sale_of_goods'] > 0) {
+            self::journalInventory($data);
+        }
     }
 
     public static function journalInventory($data)

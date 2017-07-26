@@ -80,7 +80,6 @@ class InvoiceController extends Controller
     {
         $view = view('point-sales::app.sales.point.service.invoice.edit');
         $view->invoice = Invoice::find($id);
-        $view->person = Person::find($view->invoice->person_id);
         $view->list_allocation = Allocation::active()->get();
         $view->list_user_approval = UserHelper::getAllUser();
         return $view;
