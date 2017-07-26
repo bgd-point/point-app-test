@@ -29,7 +29,7 @@ class Journal extends Model
         }
     }
 
-    private function insertSubledgerAccountPayable($options)
+    private function insertSubledgerAccountPayable($options = [])
     {
         if ($this->credit > 0) {
             $account_payable_and_receivable = new AccountPayableAndReceivable;
@@ -46,14 +46,25 @@ class Journal extends Model
             }
             $account_payable_and_receivable->save();
         } elseif ($this->debit > 0) {
-            if ($options['reference_type'] && $options['reference_id']) {
-                $account_payable_and_receivable_id = AccountPayableAndReceivable::where('reference_type', $options['reference_type'])
+            if($options['reference_type'] && $options['reference_id']) {
+                $account_payable_and_receivable = AccountPayableAndReceivable::where('reference_type', $options['reference_type'])
                     ->where('reference_id', $options['reference_id'])
-                    ->first()->id;
+                    ->first();
+
+                if($account_payable_and_receivable) {
+                    $account_payable_and_receivable_id = $account_payable_and_receivable->id;
+                } else {
+                    $account_payable_and_receivable_id = AccountPayableAndReceivable::where('formulir_reference_id', $this->form_reference_id)
+                        ->where('person_id', $this->subledger_id)
+                        ->first()
+                        ->id;
+                }
+
             } else {
                 $account_payable_and_receivable_id = AccountPayableAndReceivable::where('formulir_reference_id', $this->form_reference_id)
                     ->where('person_id', $this->subledger_id)
-                    ->first()->id;
+                    ->first()
+                    ->id;
             }
 
             if (AccountPayableAndReceivableHelper::isDone($account_payable_and_receivable_id)) {
@@ -74,7 +85,7 @@ class Journal extends Model
         }
     }
 
-    private function insertSubledgerAccountReceivable($options)
+    private function insertSubledgerAccountReceivable($options = [])
     {
         if ($this->debit > 0) {
             $account_payable_and_receivable = new AccountPayableAndReceivable;
@@ -91,11 +102,21 @@ class Journal extends Model
             }
             $account_payable_and_receivable->save();
         } elseif ($this->credit > 0) {
-            if ($options['reference_type'] && $options['reference_id']) {
-                $account_payable_and_receivable_id = AccountPayableAndReceivable::where('reference_type', $options['reference_type'])
+
+            if($options['reference_type'] && $options['reference_id']) {
+                $account_payable_and_receivable = AccountPayableAndReceivable::where('reference_type', $options['reference_type'])
                     ->where('reference_id', $options['reference_id'])
-                    ->first()
-                    ->id;
+                    ->first();
+
+                if($account_payable_and_receivable) {
+                    $account_payable_and_receivable_id = $account_payable_and_receivable->id;
+                } else {
+                    $account_payable_and_receivable_id = AccountPayableAndReceivable::where('formulir_reference_id', $this->form_reference_id)
+                        ->where('person_id', $this->subledger_id)
+                        ->first()
+                        ->id;
+                }
+
             } else {
                 $account_payable_and_receivable_id = AccountPayableAndReceivable::where('formulir_reference_id', $this->form_reference_id)
                     ->where('person_id', $this->subledger_id)

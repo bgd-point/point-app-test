@@ -74,6 +74,7 @@ Route::group(['prefix' => 'expedition/point', 'namespace' => 'Point\PointExpedit
         Route::get('/payment-order/vesa-create-payment-order', 'PaymentOrderVesaController@createPaymentOrder');
         Route::get('/payment-order/request-approval', 'PaymentOrderApprovalController@requestApproval');
         Route::post('/payment-order/send-request-approval', 'PaymentOrderApprovalController@sendRequestApproval');
+        Route::post('/payment-order/cancel', 'PaymentOrderController@cancel');
         Route::get('/payment-order/{id}/archived', 'PaymentOrderController@archived');
         Route::get('/payment-order/create-step-1', 'PaymentOrderController@createStep1');
         Route::get('/payment-order/create-step-2/{person_supplier_id}', 'PaymentOrderController@createStep2');

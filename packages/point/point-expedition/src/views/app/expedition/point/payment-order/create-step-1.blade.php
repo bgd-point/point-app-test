@@ -27,6 +27,12 @@
                         </tr>
                         
                         @foreach($list_invoice as $invoice)
+                            <?php
+                            $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice), $invoice->id, $invoice->total);
+                            if (! $invoice_remaining > 0) {
+                                continue;
+                            }
+                            ?>
                             <tr id="list-{{$invoice->formulir_id}}">
                                 <td class="text-center">
                                     <a href="{{ url('expedition/point/payment-order/create-step-2/'.$invoice->expedition_id) }}"
