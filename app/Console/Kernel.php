@@ -15,6 +15,10 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\Inspire::class,
         Commands\SettingResetDatabase::class,
+        Commands\EmailApproval::class,
+        Commands\ClearTransaction::class,
+        Commands\ResetDatabase::class,
+        Commands\SeedDummy::class,
     ];
 
     /**
