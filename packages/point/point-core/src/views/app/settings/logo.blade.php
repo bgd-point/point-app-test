@@ -16,7 +16,7 @@
                         <form class="form-group" action="{{url('settings/logo/insert')}}" method="post" enctype="multipart/form-data">
                             {!! csrf_field() !!}
                             <?php
-                            $path = public_path('uploads/'.app('request')->project->url . '/logo/logo.png');
+                            $path = storage_path().'/app/'.app('request')->project->url.'/logo/logo.png';
                             ?>
                             <input type="file" name="logo"  id="logo" style="display:none"/>
                             <div class="wrap-logo text-center" onclick="$('#logo').click();load()" @if(file_exists($path)) style="width: 250px;" @else style="width: 250px; height: 250px;" @endif >

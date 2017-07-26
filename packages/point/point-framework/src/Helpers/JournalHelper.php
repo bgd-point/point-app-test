@@ -12,6 +12,7 @@ class JournalHelper
     public static function position($coa_id)
     {
         $coa = Coa::find($coa_id);
+
         if (!$coa) {
             throw new PointException('You receive this error because your account not connected to this feature');
         }

@@ -60,6 +60,12 @@
                             <td colspan="3">From Cutoff</td>
                         </tr>
                         @foreach($list_cut_off_receivable as $cut_off_receivable)
+                        <?php
+                        $cut_off_receivable_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($cut_off_receivable), $cut_off_receivable->id, $cut_off_receivable->amount);
+                        if (! $cut_off_receivable_remaining > 0) {
+                            continue;
+                        }
+                        ?>
                         <tr id="list-{{$cut_off_receivable->formulir_id}}">
                             <td class="text-center">
                                 <a href="{{ url('sales/point/indirect/payment-collection/create-step-2/'.$cut_off_receivable->subledger_id) }}"

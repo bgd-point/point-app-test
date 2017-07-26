@@ -77,6 +77,16 @@ Route::group(['namespace' => 'Point\Core\Http\Controllers'], function () {
         Route::get('/reset-database', 'Setting\ResetDatabaseController@index');
         Route::post('/reset-database/to-default', 'Setting\ResetDatabaseController@toDefault');
     });
+    
+    Route::group(['middleware' => 'auth'], function () { 
+        Route::get('logo/{url}/{name}', function($url, $name) {
+            $path = storage_path().'/app/'.$url.'/logo/' . $name;
+            if (file_exists($path)) { 
+                return \Response::download($path);
+            }
+        });
+    });
+    
 
     Route::group(['middleware' => 'auth'], function () {
         // bugs report routes

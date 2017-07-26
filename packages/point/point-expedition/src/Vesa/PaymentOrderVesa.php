@@ -33,7 +33,7 @@ trait PaymentOrderVesa
 
     private static function vesaApproval($array = [], $merge_into_group = true)
     {
-        $list_payment_order = self::joinFormulir()->open()->approvalPending()->selectOriginal()->orderByStandard();
+        $list_payment_order = self::joinFormulir()->open()->approvalPending()->notArchived()->selectOriginal()->orderByStandard();
 
         // Grouping vesa
         if ($merge_into_group && $list_payment_order->get()->count() > 5) {

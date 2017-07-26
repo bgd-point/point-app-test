@@ -94,6 +94,8 @@
                                                            value="{{$invoice_amount_edit[$i]}}"/>
                                                     <input type="hidden" name="invoice_available[]"
                                                            value="{{$available_invoice[$i]}}"/>
+                                                    <input type="hidden" name="invoice_reference_id[]" value="{{$invoice->id}}">
+                                                    <input type="hidden" name="invoice_reference_type[]" value="{{get_class($invoice)}}">
                                                 </td>
                                                 <td>
                                                     <a href="{{ url('expedition/point/invoice/'.$invoice->id) }}">{{ $invoice->formulir->form_number}}</a>
@@ -119,6 +121,8 @@
                                                            value="{{$cut_off->amount}}"/>
                                                     <input type="hidden" name="cutoff_available[]"
                                                            value="{{$available_cutoff[$i]}}"/>
+                                                    <input type="hidden" name="cutoff_reference_id[]" value="{{$cut_off->id}}">
+                                                    <input type="hidden" name="cutoff_reference_type[]" value="{{get_class($cut_off)}}">
                                                 </td>
                                                 <td>
                                                     <a href="{{ url('accounting/point/cut-off/payable/'.$cut_off->id)  }}">{{ $cut_off->cutoffPayable->formulir->form_number}}</a>
@@ -148,6 +152,8 @@
                                                            value="{{$downpayment_amount_edit[$i] * -1}}"/>
                                                     <input type="hidden" name="downpayment_available[]"
                                                            value="{{$available_downpayment[$i]}}"/>
+                                                    <input type="hidden" name="downpayment_reference_id[]" value="{{$downpayment->id}}">
+                                                    <input type="hidden" name="downpayment_reference_type[]" value="{{get_class($downpayment)}}">
                                                 </td>
                                                 <td>
                                                     <a href="{{ url('expedition/point/downpayment/'.$downpayment->id) }}">{{ $downpayment->formulir->form_number}}</a>

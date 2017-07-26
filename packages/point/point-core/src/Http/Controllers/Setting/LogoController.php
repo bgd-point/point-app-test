@@ -16,13 +16,17 @@ class LogoController extends Controller
     {
     	if(\Input::file())
         {
-            $image = \Input::file('logo');
-            $filename  = 'logo.png';
-            $path = 'uploads/' .$request->project->url . '/logo/' . $filename;
-        
-            \Image::make($image->getRealPath())->resize(200, null, function($constraint){
-            	$constraint->aspectRatio();
-            })->save($path);
+            $image = $request->file('logo');
+            $filename = 'logo.png';
+            $path = $request->project->url.'/logo/'.$filename;
+
+            $img = \Image::make($image->getRealPath());
+            $img->resize(200, null, function ($constraint) {
+                $constraint->aspectRatio();                 
+            });
+            $img->stream();
+
+            \Storage::disk('local')->put($path, $img, 'public');
 
         	gritter_success('Success upload company logo');
             return redirect()->back();
