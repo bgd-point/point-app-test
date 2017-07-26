@@ -8,7 +8,7 @@
             <li>Edit</li>
         </ul>
         <h2 class="sub-header">Invoice</h2>
-        @include('point-purchasing::app.purchasing.point.inventory.invoice._menu')
+        @include('point-purchasing::app.purchasing.point.inventory.invoice.basic._menu')
 
         @include('core::app.error._alert')
 
@@ -70,14 +70,14 @@
 
                         <div class="col-md-6 content-show">
                             <input type="hidden" name="supplier_id" value="{{$supplier->id}}">
-                            {{$supplier->codeName}}
+                            {!! get_url_person($supplier->id) !!}
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label">Notes</label>
 
                         <div class="col-md-6">
-                            <input type="text" name="notes" class="form-control" value="">
+                            <input type="text" name="notes" class="form-control" value="{{$invoice->formulir->notes}}">
                         </div>
                     </div>
                     <fieldset>

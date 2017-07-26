@@ -4,11 +4,11 @@
     <div id="page-content">
         <ul class="breadcrumb breadcrumb-top">
             @include('point-purchasing::app.purchasing.point.inventory._breadcrumb')
-            <li><a href="{{ url('purchasing/point/invoice') }}">Invoice</a></li>
+            <li><a href="{{ url('purchasing/point/invoice/basic') }}">Invoice</a></li>
             <li>Create</li>
         </ul>
         <h2 class="sub-header">Invoice</h2>
-        @include('point-purchasing::app.purchasing.point.inventory.invoice._menu')
+        @include('point-purchasing::app.purchasing.point.inventory.invoice.basic._menu')
 
         @include('core::app.error._alert')
 
@@ -17,7 +17,6 @@
                 <form action="{{url('purchasing/point/invoice/basic/store')}}" method="post"
                       class="form-horizontal form-bordered">
                     {!! csrf_field() !!}
-                    <input type="hidden" name="reference_type">
                     <input type="hidden" name="supplier_checking" value="required">
                     <fieldset>
                         <div class="form-group">
@@ -239,6 +238,10 @@
 
 @section('scripts')
     <script>
+        $(function() {
+            populateJsonItem();
+        });
+
         var item_table = initDatatable('#item-datatable');
         var counter = {{$counter}} ? {{$counter}} : 0;
 
@@ -251,7 +254,6 @@
                 '<input type="text" id="item-price-' + counter + '" name="item_price[]" class="form-control format-quantity calculate text-right" value="0" />',
                 '<div class="input-group"><input type="text" id="item-discount-' + counter + '" name="item_discount[]"  class="form-control calculate text-right" value="0" /><span id="span-ordinary" class="input-group-addon">%</span></div>',
                 '<select id="allocation-id-' + counter + '" name="allocation_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
-                + '<option value="1">Without Allocation</option>'
                 @foreach($list_allocation as $allocation)
                 + '<option value="{{$allocation->id}}">{{$allocation->name}}</option>'
                 @endforeach

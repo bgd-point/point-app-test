@@ -79,20 +79,21 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
     Route::any('/invoice/{id}/reject', 'InvoiceApprovalController@reject');
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/invoice/vesa-create', 'InvoiceVesaController@create');
-        // AJAX GETTING ITEM UNIT
+        // BASIC INVOICE
         Route::get('/invoice/basic/unit', 'Basic\InvoiceController@_unit');
-
         Route::get('/invoice/basic/create', 'Basic\InvoiceController@create');
-        Route::post('/invoice/basic/store', 'Basic\InvoiceController@store');
+        Route::get('/invoice/basic/{id}/archived', 'Basic\InvoiceController@archived');
         Route::get('/invoice/basic/{id}/edit', 'Basic\InvoiceController@edit');
         Route::put('/invoice/basic/{id}', 'Basic\InvoiceController@update');
+        Route::get('/invoice/basic/{id}/show', 'Basic\InvoiceController@show');
+        Route::post('/invoice/basic/store', 'Basic\InvoiceController@store');
+        Route::get('/invoice/basic', 'Basic\InvoiceController@index');
 
         Route::get('/invoice/{id}/archived', 'InvoiceController@archived');
         Route::get('/invoice/create-step-1', 'InvoiceController@createStep1');
         Route::get('/invoice/create-step-2/{person_supplier_id}', 'InvoiceController@createStep2');
         Route::get('/invoice/create-step-3', 'InvoiceController@createStep3');
         Route::post('/invoice/send-email', 'InvoiceController@sendEmail');
-        Route::post('/invoice/{id}/store', 'InvoiceController@storeFb');
         Route::resource('/invoice', 'InvoiceController');
     });
 
@@ -116,17 +117,39 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
     });
 
     // PAYMENT ORDER
+    Route::get('/payment-order/basic/reject-all', 'Basic\PaymentOrderApprovalController@rejectAll');
+    Route::get('/payment-order/basic/approve-all', 'Basic\PaymentOrderApprovalController@approveAll');
+    Route::any('/payment-order/basic/{id}/approve', 'Basic\PaymentOrderApprovalController@approve');
+    Route::any('/payment-order/basic/{id}/reject', 'Basic\PaymentOrderApprovalController@reject');
+    
     Route::get('/payment-order/reject-all', 'PaymentOrderApprovalController@rejectAll');
     Route::get('/payment-order/approve-all', 'PaymentOrderApprovalController@approveAll');
     Route::any('/payment-order/{id}/approve', 'PaymentOrderApprovalController@approve');
     Route::any('/payment-order/{id}/reject', 'PaymentOrderApprovalController@reject');
     Route::group(['middleware' => 'auth'], function () {
-        Route::get('/payment-order/vesa-approval', 'PaymentOrderVesaController@approval');
+        Route::get('/payment-order/basic/vesa-approval', 'Basic\PaymentOrderVesaController@approval');
+        Route::get('/payment-order/basic/vesa-rejected', 'Basic\PaymentOrderVesaController@rejected');
+        Route::get('/payment-order/basic/vesa-create', 'Basic\PaymentOrderVesaController@create');
+        Route::get('/payment-order/basic/request-approval', 'Basic\PaymentOrderApprovalController@requestApproval');
+        Route::post('/payment-order/basic/send-request-approval', 'Basic\PaymentOrderApprovalController@sendRequestApproval');
+
+        Route::get('/payment-order/vesa-approval', 'Basic\PaymentOrderVesaController@approval');
         Route::get('/payment-order/vesa-rejected', 'PaymentOrderVesaController@rejected');
         Route::get('/payment-order/vesa-create', 'PaymentOrderVesaController@create');
         Route::get('/payment-order/request-approval', 'PaymentOrderApprovalController@requestApproval');
         Route::post('/payment-order/send-request-approval', 'PaymentOrderApprovalController@sendRequestApproval');
         
+        // BASIC PAYMENT ORDER
+        Route::post('/payment-order/basic/cancel', 'Basic\PaymentOrderController@cancel');
+        Route::get('/payment-order/basic/{id}/archived', 'Basic\PaymentOrderController@archived');
+        Route::get('/payment-order/basic/create-step-1', 'Basic\PaymentOrderController@createStep1');
+        Route::get('/payment-order/basic/create-step-2/{person_supplier_id}', 'Basic\PaymentOrderController@createStep2');
+        Route::post('/payment-order/basic/create-step-3', 'Basic\PaymentOrderController@createStep3');
+        Route::post('/payment-order/basic/send-email-payment', 'Basic\PaymentOrderController@sendEmailPayment');
+        Route::post('/payment-order/basic/{id}/edit-review', 'Basic\PaymentOrderController@editReview');
+        Route::get('/payment-order/basic/{id}/show', 'Basic\PaymentOrderController@show');
+        Route::resource('/payment-order/basic', 'Basic\PaymentOrderController');
+
         Route::post('/payment-order/cancel', 'PaymentOrderController@cancel');
         Route::get('/payment-order/{id}/archived', 'PaymentOrderController@archived');
         Route::get('/payment-order/create-step-1', 'PaymentOrderController@createStep1');

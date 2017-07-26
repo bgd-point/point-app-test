@@ -92,5 +92,34 @@
                 </div>
             @endif
         </div>
+
+        <h2 class="sub-header">
+            Basic Purchasing
+        </h2>
+        <div class="row">
+            @if(auth()->user()->may('read.point.purchasing.basic.invoice'))
+                <div class="col-md-4 col-lg-3">
+                    <a href="{{url('purchasing/point/invoice/basic')}}" class="widget widget-button">
+                        <div class="widget-content text-right clearfix">
+                            <i class="fa fa-4x fa-fax push-bit pull-left"></i>
+                            <h4 class="widget-heading"><strong>invoice</strong></h4>
+                            <span class="text-muted"></span>
+                        </div>
+                    </a>
+                </div>
+            @endif
+
+            @if(auth()->user()->may('read.point.purchasing.basic.payment.order'))
+                <div class="col-md-4 col-lg-3">
+                    <a href="{{url('purchasing/point/payment-order/basic')}}" class="widget widget-button">
+                        <div class="widget-content text-right clearfix">
+                            <i class="fa fa-4x fa-file-text push-bit pull-left"></i>
+                            <h4 class="widget-heading"><strong>payment order</strong></h4>
+                            <span class="text-muted"></span>
+                        </div>
+                    </a>
+                </div>
+            @endif
+        </div>
     </div>
 @stop
