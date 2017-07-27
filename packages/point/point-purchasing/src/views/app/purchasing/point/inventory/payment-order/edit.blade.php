@@ -110,6 +110,8 @@
                                                     ?>
                                                     <tr>
                                                         <td class="text-center">
+                                                            <input type="hidden" name="invoice_reference_id[]" value="{{$invoice->id}}">
+                                                            <input type="hidden" name="invoice_reference_type[]" value="{{get_class($invoice)}}">
                                                             <input type="hidden" name="invoice_rid[]"
                                                                    value="{{$invoice->formulir_id}}">
                                                             <input type="checkbox" @if($refer_to) checked
@@ -183,8 +185,9 @@
                                                     ?>
                                                     <tr>
                                                         <td class="text-center">
-                                                            <input type="hidden" name="cut_off_rid[]"
-                                                                   value="{{$cut_off_payable->id}}">
+                                                            <input type="hidden" name="cutoff_reference_id[]" value="{{$cut_off_payable->id}}">
+                                                            <input type="hidden" name="cutoff_reference_type[]" value="{{get_class($cut_off_payable)}}">
+                                                            <input type="hidden" name="cut_off_rid[]" value="{{$cut_off_payable->id}}">
                                                             <input type="checkbox" @if($refer_to) checked @endif
                                                                    id="id-cutoff-{{$cut_off_payable->id}}"
                                                                    class="row-id" name="cut_off_id[]"
@@ -247,8 +250,9 @@
                                                     ?>
                                                     <tr>
                                                         <td class="text-center">
-                                                            <input type="hidden" name="downpayment_rid[]"
-                                                                   value="{{$downpayment->formulir_id}}">
+                                                            <input type="hidden" name="downpayment_reference_id[]" value="{{$downpayment->id}}">
+                                                            <input type="hidden" name="downpayment_reference_type[]" value="{{get_class($downpayment)}}">
+                                                            <input type="hidden" name="downpayment_rid[]" value="{{$downpayment->formulir_id}}">
                                                             <input type="checkbox" @if($refer_to) checked
                                                                    @endif id="id-downpayment-{{$downpayment->formulir_id}}"
                                                                    class="row-id" name="downpayment_id[]"
@@ -312,8 +316,9 @@
                                                     ?>
                                                     <tr>
                                                         <td class="text-center">
-                                                            <input type="hidden" name="retur_rid[]"
-                                                                   value="{{$retur->formulir_id}}">
+                                                            <input type="hidden" name="retur_reference_id[]" value="{{$retur->id}}">
+                                                            <input type="hidden" name="retur_reference_type[]" value="{{get_class($retur)}}">
+                                                            <input type="hidden" name="retur_rid[]" value="{{$retur->formulir_id}}">
                                                             <input type="checkbox" @if($refer_to) checked
                                                                    @endif id="id-retur-{{$retur->formulir_id}}"
                                                                    class="row-id" name="retur_id[]"

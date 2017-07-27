@@ -89,6 +89,8 @@
                                                            value="{{$invoice_amount_edit[$i]}}"/>
                                                     <input type="hidden" name="invoice_available[]"
                                                            value="{{$available_invoice[$i]}}"/>
+                                                    <input type="hidden" name="invoice_reference_id[]" value="{{$invoice->id}}">
+                                                    <input type="hidden" name="invoice_reference_type[]" value="{{get_class($invoice)}}">
                                                 </td>
                                                 <td>
                                                     <a href="{{ url('purchasing/point/invoice/'.$invoice->id) }}">{{ $invoice->formulir->form_number}}</a>
@@ -116,6 +118,8 @@
                                                            value="{{$cut_off->amount}}"/>
                                                     <input type="hidden" name="cutoff_available[]"
                                                            value="{{$available_cutoff[$i]}}"/>
+                                                    <input type="hidden" name="cutoff_reference_id[]" value="{{$cut_off->id}}">
+                                                    <input type="hidden" name="cutoff_reference_type[]" value="{{get_class($cut_off)}}">
                                                 </td>
                                                 <td>
                                                     <a href="{{ url('accounting/point/cut-off/payable/'.$cut_off->id)  }}">{{ $cut_off->cutoffPayable->formulir->form_number}}</a>
@@ -146,6 +150,8 @@
                                                            value="{{$downpayment_amount_edit[$i] * -1}}"/>
                                                     <input type="hidden" name="downpayment_available[]"
                                                            value="{{$available_downpayment[$i]}}"/>
+                                                    <input type="hidden" name="downpayment_reference_id[]" value="{{$downpayment->id}}">
+                                                    <input type="hidden" name="downpayment_reference_type[]" value="{{get_class($downpayment)}}">
                                                 </td>
                                                 <td>
                                                     <a href="{{ url('purchasing/point/downpayment/'.$downpayment->id) }}">{{ $downpayment->formulir->form_number}}</a>
@@ -176,6 +182,8 @@
                                                            value="{{$retur_amount_edit[$i]}}"/>
                                                     <input type="hidden" name="retur_available[]"
                                                            value="{{$available_retur[$i]}}"/>
+                                                   <input type="hidden" name="retur_reference_id[]" value="{{$retur->id}}">
+                                                    <input type="hidden" name="retur_reference_type[]" value="{{get_class($retur)}}">
                                                 </td>
                                                 <td>
                                                     <a href="{{ url('purchasing/point/retur/'.$retur->id) }}">{{ $retur->formulir->form_number}}</a>
@@ -236,7 +244,6 @@
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label">Ask approval to</label>
-
                             <div class="col-md-6 content-show">
                                 <input type="hidden" name="approval_to" value="{{$approval_to->id}}">
                                 {{$approval_to->name}}
