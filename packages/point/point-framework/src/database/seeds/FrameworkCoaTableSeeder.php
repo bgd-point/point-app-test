@@ -37,16 +37,16 @@ class FrameworkCoaTableSeeder extends Seeder
 
         // Coa Group
         if (! CoaGroupCategory::exist('Current Assets')) {
-            DB::table('coa_group_category')->insert([ 'coa_position_id' => 1, 'name' => 'Current Assets & Liabilities' ]);
+            DB::table('coa_group_category')->insert([ 'coa_position_id' => 1, 'name' => 'Current Assets' ]);
         }
         if (! CoaGroupCategory::exist('Long Term Assets')) {
             DB::table('coa_group_category')->insert([ 'coa_position_id' => 1, 'name' => 'Long Term Assets' ]);
         }
 
         // Assets account
-        $coa_group_category = CoaGroupCategory::where('name', '=', 'Current Assets & Liabilities')->first();
+        $coa_group_category = CoaGroupCategory::where('name', '=', 'Current Assets')->first();
         if (! $coa_group_category) {
-            $coa_group_category = DB::table('coa_group_category')->where('name', 'Current Assets & Liabilities')->first();
+            $coa_group_category = DB::table('coa_group_category')->where('name', 'Current Assets')->first();
         }
 
         $coa_category = CoaCategory::insert(1, $coa_group_category->id, 'Petty Cash');
