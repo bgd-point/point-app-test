@@ -15,6 +15,11 @@ Route::group(['prefix' => 'sales/point/indirect', 'namespace' => 'Point\PointSal
 
         Route::get('/downpayment/request-approval', 'DownpaymentApprovalController@requestApproval');
         Route::post('/downpayment/send-request-approval', 'DownpaymentApprovalController@sendRequestApproval');
+        Route::get('/downpayment/create-from-cutoff', 'DownpaymentController@createFromCutoff');
+        Route::get('/downpayment/select-cutoff', 'DownpaymentController@_selectCutoff');
+        Route::get('/downpayment/select-account', 'DownpaymentController@_selectAccount');
+        Route::get('/downpayment/select-customer', 'DownpaymentController@_selectCustomer');
+
         Route::get('/downpayment/{id}/archived', 'DownpaymentController@archived');
         Route::get('/downpayment/insert/{id}', 'DownpaymentController@insert');
         Route::resource('/downpayment', 'DownpaymentController');

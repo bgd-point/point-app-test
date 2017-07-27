@@ -44,7 +44,7 @@ class CutOffReceivableController extends Controller
 		access_is_allowed('create.point.accounting.cut.off.receivable');
 		
 		$view = view('point-accounting::app.accounting.point.cut-off.receivable.create');
-        $view->list_coa = Coa::active()->where('coa_category_id', 3)->get(); // get all coa where category receivable "Account Receivable"
+        $view->list_coa = Coa::getSubledgerPerson();
         $view->list_user_approval = UserHelper::getAllUser();
 
         return $view;
@@ -72,7 +72,7 @@ class CutOffReceivableController extends Controller
 	{
 		access_is_allowed('read.point.accounting.cut.off.receivable');
 		$view = view('point-accounting::app.accounting.point.cut-off.receivable.show');
-        $view->list_coa = Coa::active()->where('coa_category_id', 3)->get();
+        $view->list_coa = Coa::getSubledgerPerson();
         $view->cut_off_receivable = CutOffReceivable::find($id);
         $view->list_cut_off_receivable_archived = CutOffReceivable::joinFormulir()->archived($view->cut_off_receivable->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_cut_off_receivable_archived->count();
@@ -96,7 +96,7 @@ class CutOffReceivableController extends Controller
 		$view = view('point-accounting::app.accounting.point.cut-off.receivable.edit');
 		$view->cut_off_receivable = CutOffReceivable::find($id);
         self::restoreToTemp($view->cut_off_receivable);
-        $view->list_coa = Coa::active()->where('coa_category_id', 3)->get();
+        $view->list_coa = Coa::getSubledgerPerson();
         $view->list_user_approval = UserHelper::getAllUser();
 
         return $view;

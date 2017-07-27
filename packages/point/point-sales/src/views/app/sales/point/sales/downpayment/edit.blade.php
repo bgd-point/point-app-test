@@ -18,7 +18,8 @@
                       class="form-horizontal form-bordered">
                     {!! csrf_field() !!}
                     <input name="_method" type="hidden" value="PUT">
-
+                    <input name="cutoff_account_id" type="hidden" value="{{$downpayment->cutoff_account_id}}">
+                    <input name="close" type="hidden" value="{{ $downpayment->cutoff_account_id ? 1 : ''}}">
                     <div class="form-group">
                         <label class="col-md-3 control-label">Reason edit *</label>
 
@@ -150,6 +151,7 @@
                             </div>
                         </div>
 
+                        @if(!$downpayment->cutoff_account_id)
                         <div class="form-group">
                             <label class="col-md-3 control-label">Request Approval To</label>
 
@@ -165,6 +167,7 @@
                                 </select>
                             </div>
                         </div>
+                        @endif
                     </fieldset>
 
                     <div class="form-group">

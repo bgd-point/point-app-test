@@ -43,7 +43,7 @@ class CutOffPayableController extends Controller
 		access_is_allowed('create.point.accounting.cut.off.payable');
 		
 		$view = view('point-accounting::app.accounting.point.cut-off.payable.create');
-        $view->list_coa = Coa::active()->where('coa_category_id', 8)->get(); // get all coa where category payable "current liabilty"
+        $view->list_coa = Coa::getSubledgerPerson();
         $view->list_user_approval = UserHelper::getAllUser();
 
         return $view;
@@ -95,7 +95,7 @@ class CutOffPayableController extends Controller
 		$view = view('point-accounting::app.accounting.point.cut-off.payable.edit');
 		$view->cut_off_payable = CutOffPayable::find($id);
         self::restoreToTemp($view->cut_off_payable);
-        $view->list_coa = Coa::active()->where('coa_category_id', 8)->get();
+        $view->list_coa = Coa::getSubledgerPerson();
         $view->list_user_approval = UserHelper::getAllUser();
 
         return $view;

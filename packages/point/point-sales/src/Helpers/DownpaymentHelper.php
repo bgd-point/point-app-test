@@ -45,6 +45,7 @@ class DownpaymentHelper
         $downpayment->person_id = $request->input('person_id');
         $downpayment->amount = number_format_db($request->input('amount'));
         $downpayment->sales_order_id = $request->input('order_reference');
+        $downpayment->cutoff_account_id = $request->input('cutoff_account_id') ? : null;
         $downpayment->remaining_amount = number_format_db($request->input('amount'));
         $downpayment->payment_type = $request->input('payment_type');
         $downpayment->save();
@@ -53,6 +54,10 @@ class DownpaymentHelper
             // TODO: reject downpayment if value more than sales
         }
 
+        if ($request->input('close')) {
+            $formulir->form_status = 1;
+            $formulir->save();
+        }
         
         return $downpayment;
     }

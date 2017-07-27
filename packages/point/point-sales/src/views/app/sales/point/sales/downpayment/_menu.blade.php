@@ -6,6 +6,10 @@
    class="btn {{\Request::segment(4)=='create'?'btn-primary':'btn-info'}}">
     Create
 </a>
+<a href="{{ url('sales/point/indirect/downpayment/create-from-cutoff') }}"
+   class="btn {{\Request::segment(4)=='create-from-cutoff'?'btn-primary':'btn-info'}}">
+    Create from cutoff
+</a>
 <a href="{{ url('temporary-access/sales downpayment/point sales downpayment') }}" class="btn btn-info">
     Temporary Access
 </a>
