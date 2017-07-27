@@ -29,6 +29,7 @@ class GeneralLedgerController extends Controller
             $view->journals = Journal::where('coa_id', '=', $view->coa_id)
                 ->where('form_date', '>=', $view->date_from)
                 ->where('form_date', '<=', $view->date_to)
+                ->orderBy('form_date')
                 ->get();
         }
         return $view;
@@ -45,6 +46,7 @@ class GeneralLedgerController extends Controller
             $journals = Journal::where('coa_id', '=', $coa_id)
                 ->where('form_date', '>=', $date_from)
                 ->where('form_date', '<=', $date_to)
+                ->orderBy('form_date')
                 ->get();
         }
 

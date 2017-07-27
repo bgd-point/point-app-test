@@ -14,6 +14,7 @@
     </tr>
     <?php $current_group_category = 0;?>
     @foreach($coa_asset->category as $category)
+        <?php $value_open = \JournalHelper::categoryValue($category->id, $date_from, $date_to); ?>
         <?php $value = \JournalHelper::categoryValue($category->id, $date_from, $date_to); ?>
 
         @if($category->groupCategory && $current_group_category != $category->coa_group_category_id)
@@ -34,7 +35,7 @@
             @else
             <?php $total_credit += $value ?>
             <td></td>
-            <td class="text-right">{{number_format_accounting(\JournalHelper::categoryValue($category->id, $date_from, $date_to))}}</td>
+            <td class="text-right">{{number_format_accounting($value)}}</td>
             @endif
         </tr>
     @endforeach
