@@ -6,7 +6,7 @@ class ClientHelper
 {
     public static function hasAddon($code)
     {
-        if (env('SERVER_DOMAIN') == 'dev.point.app') {
+        if (env('SERVER_DOMAIN') == 'app.point.app') {
             return true;
         }
 

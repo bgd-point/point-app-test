@@ -135,17 +135,22 @@ class JournalHelper
     {
         $coa_from_category = Coa::where('coa_category_id', '=', $coa_category_id)->lists('coa.id');
 
+        $journal_open = Journal::whereIn('coa_id', $coa_from_category)
+            ->where('form_date', '<', $date_from)
+            ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+            ->first();
+
         $journal = Journal::whereIn('coa_id', $coa_from_category)
             ->where('form_date', '>=', $date_from)
             ->where('form_date', '<=', $date_to)
             ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
             ->first();
 
-        if (!$journal || $journal->coa_id == null) {
+        if (!$journal || $journal->coa_id == null || !$journal_open || $journal_open->coa_id == null) {
             return 0;
         }
 
-        return static::journalValue($journal);
+        return static::journalValue($journal_open) + static::journalValue($journal);
     }
 
     public static function positionValue($coa_position_id, $date_from, $date_to)

@@ -50,4 +50,14 @@ class Cash extends Model
     {
         return $this->belongsTo('\Point\Framework\Models\Master\Coa', 'coa_id');
     }
+
+    public static function showUrl($id)
+    {
+        $cash = Cash::find($id);
+        if ($cash->formulir->form_number) {
+            return '/finance/point/cash/' . $cash->payment_flow . '/' . $cash->id;
+        } else {
+            return '/finance/point/cash/' . $cash->payment_flow . '/' . $cash->id . '/archived';
+        }
+    }
 }
