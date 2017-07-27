@@ -1,0 +1,59 @@
+/*
+=================================================================
+Modified Theme Default CSS
+=================================================================
+*/
+.content-show {
+	padding-top:7px;
+}
+
+.widget-button {
+    height:150px;;
+} 
+
+.table-responsive {
+	cursor:move;
+	overflow-x:auto;
+}
+
+.timeline-content p {
+	margin:0;
+}
+
+#gritter-notice-wrapper {
+	top:60px !important;
+}
+
+.report-table tr,.report-table td,.report-table th {
+    border: 1px solid black !important;
+}
+
+@media screen and (min-width: 756px) {
+    .timeline-time { 
+		line-height: 1.5 !important;
+	}
+} 
+
+/*
+=================================================================
+SIDEBAR PILLS
+=================================================================
+*/
+
+.sidebar-themes li a {
+	width: 180px;
+	height: 80px;
+}
+
+.sidebar-themes .section-content {
+	top: 20px;
+	left: 40px;
+}
+
+.sidebar-themes .section-side {
+	top: 20px;
+}
+
+.sidebar-themes .section-header {
+	left: 40px;
+}
