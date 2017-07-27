@@ -14,11 +14,16 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\Inspire::class,
+        Commands\CleanFile::class,
+        Commands\SeedDummy::class,
+        Commands\ResetDatabase::class,
         Commands\SettingResetDatabase::class,
+        Commands\Republish::class,
+        Commands\ResetMenu::class,
+        Commands\UpdateRoleAdmin::class,
+        Commands\UpdatePackage::class,
         Commands\EmailApproval::class,
         Commands\ClearTransaction::class,
-        Commands\ResetDatabase::class,
-        Commands\SeedDummy::class,
     ];
 
     /**
