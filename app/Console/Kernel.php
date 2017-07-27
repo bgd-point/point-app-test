@@ -21,7 +21,6 @@ class Kernel extends ConsoleKernel
         Commands\Republish::class,
         Commands\ResetMenu::class,
         Commands\UpdateRoleAdmin::class,
-        Commands\UpdatePackage::class,
         Commands\EmailApproval::class,
         Commands\ClearTransaction::class,
     ];
