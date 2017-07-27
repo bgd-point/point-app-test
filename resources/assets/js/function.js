@@ -49,6 +49,10 @@ function initSelectize(id) {
                 direction: 'asc'
             },
             {
+                field: 'text',
+                direction: 'asc'
+            },
+            {
                 field: '$score'
             }
         ],
