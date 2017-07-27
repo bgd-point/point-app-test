@@ -38,12 +38,14 @@ class SubLedgerController extends Controller
                 ->where('form_date', '>=', $view->date_from)
                 ->where('form_date', '<=', $view->date_to)
                 ->where('subledger_id', $view->subledger_id)
+                ->orderBy('form_date')
                 ->get();
             } else {
                 $view->journals = Journal::where('coa_id', '=', $view->coa_id)
                 ->where('form_date', '>=', $view->date_from)
                 ->where('form_date', '<=', $view->date_to)
                 ->groupBy('subledger_id')
+                ->orderBy('form_date')
                 ->get();
             }
         }
@@ -65,12 +67,14 @@ class SubLedgerController extends Controller
                 ->where('form_date', '>=', $date_from)
                 ->where('form_date', '<=', $date_to)
                 ->where('subledger_id', $subledger_id)
+                ->orderBy('form_date')
                 ->get();
             } else {
                 $journals = Journal::where('coa_id', '=', $coa_id)
                 ->where('form_date', '>=', $date_from)
                 ->where('form_date', '<=', $date_to)
                 ->groupBy('subledger_id')
+                ->orderBy('form_date')
                 ->get();
             }
         }
