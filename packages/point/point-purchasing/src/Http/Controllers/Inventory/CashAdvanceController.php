@@ -36,6 +36,15 @@ class CashAdvanceController extends Controller
         return $view;
     }
 
+    public function createStep1()
+    {
+        access_is_allowed('create.point.purchasing.cash.advance');
+        
+        $view = view('point-purchasing::app.purchasing.point.inventory.cash-advance.create-step-1');
+        $view->list_purchase_requisition = PurchaseRequisition::joinFormulir()->open()->notArchived()->approvalApproved()->where('include_cash_advance', 1)->selectOriginal()->paginate(100);
+        return $view;
+    }
+
     /**
      * Show the form for creating a new resource.
      *

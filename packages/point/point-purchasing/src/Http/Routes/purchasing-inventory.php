@@ -32,6 +32,7 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::post('/cash-advance/send-request-approval', 'CashAdvanceApprovalController@sendRequestApproval');
         Route::get('/cash-advance/{id}/archived', 'CashAdvanceController@archived');
         Route::get('/cash-advance/create/{id}', 'CashAdvanceController@create');
+        Route::get('/cash-advance/create-step-1', 'CashAdvanceController@createStep1');
         Route::resource('/cash-advance', 'CashAdvanceController');
     });
 

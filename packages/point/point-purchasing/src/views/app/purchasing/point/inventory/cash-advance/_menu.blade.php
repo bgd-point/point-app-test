@@ -1,7 +1,7 @@
 <a href="{{ url('purchasing/point/cash-advance') }}" class="btn {{\Request::segment(4)==''?'btn-primary':'btn-info'}}">
     List Data
 </a>
-<a href="{{ url('purchasing/point/cash-advance/create') }}"
+<a href="{{ url('purchasing/point/cash-advance/create-step-1') }}"
    class="btn {{\Request::segment(4)=='create'?'btn-primary':'btn-info'}}">
     Create
 </a>

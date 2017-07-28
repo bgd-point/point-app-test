@@ -38,18 +38,13 @@ trait CashAdvanceVesa
 
     private static function vesaCreate($array = [], $merge_into_group = true)
     {
-        $list_cash_advance = CashAdvance::joinFormulir()->notArchived()->approvalApproved()->selectOriginal()->get();
-        $array_purchase_requisition_in_cash_advance = [];
-        foreach ($list_cash_advance as $cash_advance) {
-            array_push($array_purchase_requisition_in_cash_advance, $cash_advance->purchase_requisition_id);
-        }
-
+        $list_cash_advance = CashAdvance::joinFormulir()->notArchived()->approvalApproved()->select('purchase_requisition_id')->get()->toArray();
         $list_purchasing_requisition = PurchaseRequisition::joinFormulir()
             ->approvalApproved()
             ->open()
             ->notArchived()
             ->where('include_cash_advance', true)
-            ->whereNotIn('point_purchasing_requisition.id', $array_purchase_requisition_in_cash_advance)
+            ->whereNotIn('point_purchasing_requisition.id', $list_cash_advance)
             ->selectOriginal()
             ->orderByStandard()
             ->get();

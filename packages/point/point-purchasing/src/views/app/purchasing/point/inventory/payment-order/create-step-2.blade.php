@@ -279,6 +279,8 @@
                                                     ?>
                                                     <tr>
                                                         <td class="text-center">
+                                                            <input type="hidden" name="cash_advance_reference_id[]" value="{{$cash_advance->id}}">
+                                                            <input type="hidden" name="cash_advance_reference_type[]" value="{{get_class($cash_advance)}}">
                                                             <input type="hidden" name="cash_advance_rid[]"
                                                                    value="{{$cash_advance->formulir_id}}">
                                                             <input type="checkbox"

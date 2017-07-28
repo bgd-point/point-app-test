@@ -177,6 +177,8 @@
                                                            value="{{$cash_advance->amount}}"/>
                                                     <input type="hidden" name="cash_advance_available[]"
                                                            value="{{$available_cash_advance[$i]}}"/>
+                                                    <input type="hidden" name="cash_advance_reference_id[]" value="{{$cash_advance->id}}">
+                                                    <input type="hidden" name="cash_advance_reference_type[]" value="{{get_class($cash_advance)}}">
                                                 </td>
                                                 <td>
                                                     <a href="{{ url('purchasing/point/cash-advance/'.$cash_advance->id) }}">{{ $cash_advance->formulir->form_number}}</a>

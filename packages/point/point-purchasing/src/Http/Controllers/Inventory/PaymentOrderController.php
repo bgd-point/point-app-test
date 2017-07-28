@@ -155,6 +155,8 @@ class PaymentOrderController extends Controller
         $view->list_cash_advance = CashAdvance::whereIn('formulir_id', \Input::get('cash_advance_id'))->get();
         $view->cash_advance_rid = \Input::get('cash_advance_rid');
         $view->cash_advance_id = \Input::get('cash_advance_id');
+        $view->cash_advance_reference_id = \Input::get('cash_advance_reference_id');
+        $view->cash_advance_reference_type = \Input::get('cash_advance_reference_type');
         $view->amount_cash_advance = number_format_db(\Input::get('amount_cash_advance'));
         $view->available_cash_advance = number_format_db(\Input::get('available_cash_advance'));
         $view->original_amount_cash_advance = number_format_db(\Input::get('original_amount_cash_advance'));
@@ -250,6 +252,8 @@ class PaymentOrderController extends Controller
             array_push($formulir_id, CashAdvance::find($cash_advance_id[$i])->formulir_id);
             array_push($references_id, $cash_advance_id[$i]);
             array_push($references_type, $reference_type);
+            array_push($references_detail_id, $request->input('cash_advance_reference_id')[$i]);
+            array_push($references_detail_type, $request->input('cash_advance_reference_type')[$i]);
             array_push($references_account, SettingJournal::where('group', 'point purchasing')->where('name', 'advance to employees')->first()->coa_id);
             array_push($references_amount, $request->input('cash_advance_amount')[$i]);
             array_push($references_amount_original, $request->input('cash_advance_amount_original')[$i]);
@@ -276,7 +280,7 @@ class PaymentOrderController extends Controller
         access_is_allowed('create.point.purchasing.payment.order', date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
         $formulir = FormulirHelper::create($request->input(), 'point-purchasing-payment-order');
         $payment_order = PaymentOrderHelper::create($request, $formulir, $references, $references_account, $references_type, $references_id, 
-            $references_amount, $references_amount_original, $references_notes, $references_detail_id, $references_detail_type);
+        $references_amount, $references_amount_original, $references_notes, $references_detail_id, $references_detail_type);
         timeline_publish('create.payment.order', 'added new payment order '  . $payment_order->formulir->form_number);
 
         DB::commit();
@@ -406,6 +410,8 @@ class PaymentOrderController extends Controller
         $view->list_cash_advance = CashAdvance::whereIn('formulir_id', \Input::get('cash_advance_id'))->get();
         $view->cash_advance_rid = \Input::get('cash_advance_rid');
         $view->cash_advance_id = \Input::get('cash_advance_id');
+        $view->cash_advance_reference_id = \Input::get('cash_advance_reference_id');
+        $view->cash_advance_reference_type = \Input::get('cash_advance_reference_type');
         $view->amount_cash_advance = number_format_db(\Input::get('amount_cash_advance'));
         $view->available_cash_advance = number_format_db(\Input::get('available_cash_advance'));
         $view->original_amount_cash_advance = number_format_db(\Input::get('original_amount_cash_advance'));
@@ -507,6 +513,8 @@ class PaymentOrderController extends Controller
             array_push($formulir_id, CashAdvance::find($cash_advance_id[$i])->formulir_id);
             array_push($references_id, $cash_advance_id[$i]);
             array_push($references_type, $reference_type);
+            array_push($references_detail_id, $request->input('cash_advance_reference_id')[$i]);
+            array_push($references_detail_type, $request->input('cash_advance_reference_type')[$i]);
             array_push($references_account, SettingJournal::where('group', 'point purchasing')->where('name', 'advance to employees')->first()->coa_id);
             array_push($references_amount, $request->input('cash_advance_amount')[$i]);
             array_push($references_amount_original, $request->input('cash_advance_amount_original')[$i]);
