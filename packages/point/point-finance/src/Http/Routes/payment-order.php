@@ -3,7 +3,8 @@
 Route::group(['prefix' => 'finance/point', 'namespace' => 'Point\PointFinance\Http\Controllers\PaymentOrder'], function () {
     Route::any('/payment-order/{id}/approve', 'PaymentOrderApprovalController@approve');
     Route::any('/payment-order/{id}/reject', 'PaymentOrderApprovalController@reject');
-
+    Route::get('/payment-order/reject-all', 'PaymentOrderApprovalController@rejectAll');
+    Route::get('/payment-order/approve-all', 'PaymentOrderApprovalController@approveAll');
     Route::group(['middleware' => 'auth'], function () {
         Route::get('payment-order/vesa-approval', 'PaymentOrderVesaController@approval');
         Route::get('payment-order/vesa-rejected', 'PaymentOrderVesaController@rejected');

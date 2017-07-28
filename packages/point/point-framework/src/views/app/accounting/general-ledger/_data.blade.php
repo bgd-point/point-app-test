@@ -10,7 +10,7 @@
         </tr>
     </thead>
     <tbody>
-        <?php $balance = 0; ?>
+        <?php $balance = \JournalHelper::coaOpeningBalance($coa_id, $date_from); ?>
         <tr>
             <td>{{ date_format_view($date_from) }}</td>
             <td></td>
@@ -30,10 +30,12 @@
                     $balance -= $journal->debit;
                     $balance += $journal->credit;
                 }
+
+                $class = $journal->formulir->formulirable_type;
             ?>
             <tr>
                 <td>{{ date_format_view($journal->form_date) }}</td>
-                <td>{{ $journal->formulir->form_number }}</td>
+                <td><a href="{{ $class::showUrl($journal->formulir->formulirable_id) }}">{{ $journal->formulir->form_number }}</a></td>
                 <td>{{ $journal->description }}</td>
                 <td>{{ number_format_accounting($journal->debit) }}</td>
                 <td>{{ number_format_accounting($journal->credit) }}</td>

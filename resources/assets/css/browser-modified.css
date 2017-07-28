@@ -1,0 +1,25 @@
+.fixed-table {
+	table-layout: fixed;
+	width: 100%;
+}
+
+.fixed-column {
+	word-wrap: break-word;
+}
+
+tbody.manipulate-row:after {
+	content: '';
+	display: block;
+	height: 100px;
+}
+
+@media print {
+	table {
+		width:100% !important;
+		word-wrap: break-word !important;
+		white-space: normal !important;
+	}
+	.no-print {
+		display:none !important;
+	}
+}

@@ -36,12 +36,11 @@ class CashFlowController extends Controller
         $date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : date('Y-m-01 00:00:00');
         $date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : date('Y-m-d 23:59:59');
         \Excel::create($file_name, function($excel) use ($date_from, $date_to) {
-
             $excel->sheet('Cashflow', function($sheet) use ($date_from, $date_to) {
                 $data = array(
-                    'list_coa_operations' => Coa::where('coa_cash_flow_id', '=', 1)->get();
-                    'list_coa_investment' => Coa::where('coa_cash_flow_id', '=', 2)->get();
-                    'list_coa_financing' => Coa::where('coa_cash_flow_id', '=', 3)->get();
+                    'list_coa_operations' => Coa::where('coa_cash_flow_id', '=', 1)->get(),
+                    'list_coa_investment' => Coa::where('coa_cash_flow_id', '=', 2)->get(),
+                    'list_coa_financing' => Coa::where('coa_cash_flow_id', '=', 3)->get(),
                     'cashflow_operations' => 0,
                     'cashflow_investment' => 0,
                     'cashflow_financing' => 0,

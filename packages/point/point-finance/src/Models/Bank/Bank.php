@@ -49,4 +49,14 @@ class Bank extends Model
     {
         return $this->belongsTo('\Point\Framework\Models\Master\Coa', 'coa_id');
     }
+
+    public static function showUrl($id)
+    {
+        $bank = Bank::find($id);
+        if ($bank->formulir->form_number) {
+            return '/finance/point/bank/' . $bank->payment_flow . '/' . $bank->id;
+        } else {
+            return '/finance/point/bank/' . $bank->payment_flow . '/' . $bank->id . '/archived';
+        }
+    }
 }
