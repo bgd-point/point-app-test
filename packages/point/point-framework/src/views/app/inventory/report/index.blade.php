@@ -122,14 +122,11 @@
                 warehouse_id: warehouse_id,
                 search: search
             },
-            success: function (res) {
-                console.log(res);
-                if (res.status == 'success') {
-                    $("#preloader").fadeOut();
-                    $(".button-export").removeClass('disabled');
-                    notification('export item data success, please check your email in a few moments');
-                }
-            }, error:  function (res) {
+            success: function(result) {
+                $("#preloader").fadeOut();
+                $(".button-export").removeClass('disabled');
+                notification('export item data success, please check your email in a few moments');
+            }, error:  function (result) {
                 $("#preloader").fadeOut();
                 $(".button-export").removeClass('disabled');
                 notification('export item data failed, please try again');

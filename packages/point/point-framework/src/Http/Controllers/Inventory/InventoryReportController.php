@@ -219,6 +219,7 @@ class InventoryReportController extends Controller
                     $sheet->setBorder('A2:F'.$total_data, 'thin');
                 });
             })->store('xls', $storage);
+
             $job->delete();
         });
         
