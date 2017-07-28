@@ -105,11 +105,11 @@
 </div>
 @stop
 
-@section('secripts')
+@section('scripts')
 <script type="text/javascript">
     function exportExcel() {
-        var data_from = $("#data-from").val();
-        var data_to = $("#data-to").val();
+        var date_from = $("#date-from").val();
+        var date_to = $("#date-to").val();
         var warehouse_id = $("#warehouse-id").val();
         var search = $("#search").val();
         $("#preloader").fadeIn();
@@ -122,14 +122,14 @@
                 warehouse_id: warehouse_id,
                 search: search
             },
-            success: function (data) {
-                console.log(data);
-                if (data.status == 'success') {
+            success: function (res) {
+                console.log(res);
+                if (res.status == 'success') {
                     $("#preloader").fadeOut();
                     $(".button-export").removeClass('disabled');
                     notification('export item data success, please check your email in a few moments');
                 }
-            }, error:  function (data) {
+            }, error:  function (res) {
                 $("#preloader").fadeOut();
                 $(".button-export").removeClass('disabled');
                 notification('export item data failed, please try again');

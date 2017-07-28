@@ -3,6 +3,7 @@
 namespace Point\Framework\Http\Controllers\Inventory;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Point\Core\Helpers\QueueHelper;
 use Point\Framework\Helpers\WarehouseHelper;
 use Point\Framework\Models\Inventory;
@@ -76,7 +77,6 @@ class InventoryReportController extends Controller
     public function export(Request $request)
     {
         $item_search = \Input::get('search');
-        $view = view('framework::app.inventory.report.index');
         $search_warehouse = \Input::get('warehouse_id') ? Warehouse::find(\Input::get('warehouse_id')) : 0;
         $date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : date('Y-m-01 00:00:00');
         $date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : date('Y-m-d 23:59:59');
@@ -84,24 +84,23 @@ class InventoryReportController extends Controller
             ->where('item.name', 'like', '%' . $item_search . '%')
             ->groupBy('inventory.item_id')
             ->where('inventory.total_quantity', '>', 0)
-            ->where(function ($query) use ($view){
+            ->where(function ($query) use ($search_warehouse){
                 if ($search_warehouse) {
                     $query->where('inventory.warehouse_id', $search_warehouse->id);
                 }
             })
-            ->where(function ($query) use ($view){
+            ->where(function ($query) use ($date_from, $date_to){
                 $query->whereBetween('inventory.form_date', [$date_from, $date_to])
                     ->orWhere('inventory.form_date','<' , $date_from);
             })->get()->toArray();
 
         $data = array(
             'warehouse' => \Input::get('warehouse_id') ? Warehouse::find(\Input::get('warehouse_id'))->id : 0,
-            'date_from' => $date_from,
-            'date_to' => $date_to,
+            'date_from' => date_format_view($date_from),
+            'date_to' => date_format_view($date_to),
             'item_search' => $item_search,
             'list_inventory' => $inventory,
-            'request' => $request->input()
-
+            'request' => $request->input(),
         );
         self::generateExcel($data);
     }
@@ -109,8 +108,8 @@ class InventoryReportController extends Controller
     public function generateExcel($data)
     {
         $storage = public_path('inventory-report/');
-        $fileName = 'Inventory report '.date('YmdHis');
-        \Queue::push(function ($job) use ($data, $fileName) {
+        $fileName = 'inventory report '.date('YmdHis');
+        \Queue::push(function ($job) use ($data, $fileName, $storage) {
             QueueHelper::reconnectAppDatabase($data['request']['database_name']);
             \Excel::create($fileName, function ($excel) use ($data, $storage) {
                 # Sheet Data
@@ -124,9 +123,10 @@ class InventoryReportController extends Controller
                         'F' => 25
                     ));
 
+                    $warehouse = $data['warehouse'] ? Warehouse::find($data['warehouse'])->name : 'ALL'; 
                     // MERGER COLUMN
                     $sheet->mergeCells('A1:F1', 'center');
-                    $sheet->cell('A1', function ($cell) {
+                    $sheet->cell('A1', function ($cell) use ($warehouse) {
                         // Set font
                         $cell->setFont(array(
                             'family'     => 'Times New Roman',
@@ -134,7 +134,8 @@ class InventoryReportController extends Controller
                             'bold'       =>  true
                         ));
 
-                        $cell->setValue(strtoupper('INVENTORY REPORT'));
+
+                        $cell->setValue(strtoupper('INVENTORY REPORT "'. $warehouse.'"'));
                     });
 
                     $sheet->cell('A2:F3', function ($cell) {
@@ -147,10 +148,6 @@ class InventoryReportController extends Controller
                     });
 
                     // Generad header
-                    $header = array(
-                        array('NO', 'ITEM', 'OPENING STOCK', 'STOCK IN', 'STOCK OUT', 'CLOSING STOCK')
-                    );
-                    
                     $sheet->mergeCells('A2:A3', 'center');
                     $sheet->mergeCells('B2:B3', 'center');
                     $sheet->cell('A2', function ($cell) {
@@ -162,35 +159,36 @@ class InventoryReportController extends Controller
                     $sheet->cell('C2', function ($cell) {
                         $cell->setValue('OPENING STOCK');
                     });
-                    $sheet->cell('C3', function ($cell) {
-                        $cell->setValue(date_format_view($data['date_from']));
+
+                    $sheet->cell('C3', function ($cell) use ($data) {
+                        $cell->setValue($data['date_from']);
                     });
 
                     $sheet->cell('D2', function ($cell) {
                         $cell->setValue('STOCK IN');
                     });
-                    $sheet->cell('D3', function ($cell) {
-                        $cell->setValue('(' .date_format_view($data['date_from']). ') - (' . date_format_view($data['date_to']) .')');
+                    $sheet->cell('D3', function ($cell) use ($data) {
+                        $cell->setValue('(' .$data['date_from']. ') - (' . $data['date_to'] .')');
                     });
 
                     $sheet->cell('E2', function ($cell) {
                         $cell->setValue('STOCK OUT');
                     });
-                    $sheet->cell('E3', function ($cell) {
-                        $cell->setValue('(' .date_format_view($data['date_from']). ') - (' . date_format_view($data['date_to']) .')');
+                    $sheet->cell('E3', function ($cell) use ($data) {
+                        $cell->setValue('(' .$data['date_from']. ') - (' . $data['date_to'] .')');
                     });
 
                     $sheet->cell('F2', function ($cell) {
                         $cell->setValue('CLOSING STOCK');
                     });
-                    $sheet->cell('F3', function ($cell) {
-                        $cell->setValue(date_format_view($data['date_to']));
+                    $sheet->cell('F3', function ($cell) use ($data) {
+                        $cell->setValue($data['date_to']);
                     });
 
                     $content = [];
                     $total_data = count($data['list_inventory']);
                     for ($i=0; $i < $total_data; $i++) {
-                        $item = Item::find($data['list_inventory']['item_id'][$i]);
+                        $item = Item::find($data['list_inventory'][$i]['item_id']);
                         if ($data['warehouse']) {
                             $opening_stock = inventory_get_opening_stock($data['date_from'], $item->id, $data['warehouse']);
                             $stock_in = inventory_get_stock_in($data['date_from'], $data['date_to'], $item->id, $data['warehouse']);
@@ -216,7 +214,7 @@ class InventoryReportController extends Controller
                         ]);                    
                     }
 
-                    $total_data = $total_data+2;
+                    $total_data = $total_data+3;
                     $sheet->fromArray($content, null, 'A4', false, false);
                     $sheet->setBorder('A2:F'.$total_data, 'thin');
                 });
