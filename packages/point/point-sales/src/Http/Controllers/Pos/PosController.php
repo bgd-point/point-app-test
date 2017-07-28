@@ -68,11 +68,12 @@ class PosController extends Controller
         $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
         $view->code_contact = PersonHelper::getCode($person_type);
         $results = TempDataHelper::get('pos', auth()->user()->id, ['is_pagination' => true]);
+        $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
+        $view->warehouse_profiles = Warehouse::find($warehouse_id);
+        $view->carts = TempDataHelper::get('pos', auth()->user()->id, ['is_pagination' => true]);
         if ($results) {
             $view->results = $results;
         }
-
-        $view->carts = TempDataHelper::get('pos', auth()->user()->id, ['is_pagination' => true]);
         return $view;
     }
 

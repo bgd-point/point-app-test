@@ -11,51 +11,61 @@
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <form action="{{ url('sales/point/pos/create') }}" name="addToCart" id="addToCart" method="get" class="form-horizontal">
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Customer *</label>
-                    <div class="col-md-6" id="content-customer">
-                        @if(!$carts)
-                            <div class="@if(access_is_allowed_to_view('create.customer')) input-group @endif">
-                                <select id="contact_id" name="customer_id" class="selectize" onchange="selectCustomer(this.value)" data-placeholder="Choose customer...">
-                                    <option value="">-Choose Customer-</option>
-                                    @foreach($list_customer as $customer)
-                                        <option value="{{$customer->id}}" class="opt-{{$customer->id}}" @if(\Input::get('customer_id')==$customer->id || Point\PointSales\Helpers\PosHelper::getCustomer() == $customer->id) selected @endif>{{$customer->name}}</option>
-                                    @endforeach
-                                </select>
-                                @if(access_is_allowed_to_view('create.customer'))
-                                <span class="input-group-btn">
-                                    <a href="#modal-contact" class="btn btn-effect-ripple btn-primary" data-toggle="modal">
-                                        <i class="fa fa-plus"></i>
-                                    </a>
-                                </span>
-                                @endif
-                            </div>
-                        @else
-                            <?php $customer_id = Point\PointSales\Helpers\PosHelper::getCustomer();?>
-                            <div class="content-show">{{Point\Framework\Models\Master\Person::find($customer_id)->name}}</div>
-                        @endif
+            <form action="{{ url('sales/point/pos/create') }}" name="addToCart" id="addToCart" method="get" class="form-horizontal row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Customer *</label>
+                        <div class="col-md-6" id="content-customer">
+                            @if(!$carts)
+                                <div class="@if(access_is_allowed_to_view('create.customer')) input-group @endif">
+                                    <select id="contact_id" name="customer_id" class="selectize" onchange="selectCustomer(this.value)" data-placeholder="Choose customer...">
+                                        <option value="">-Choose Customer-</option>
+                                        @foreach($list_customer as $customer)
+                                            <option value="{{$customer->id}}" class="opt-{{$customer->id}}" @if(\Input::get('customer_id')==$customer->id || Point\PointSales\Helpers\PosHelper::getCustomer() == $customer->id) selected @endif>{{$customer->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    @if(access_is_allowed_to_view('create.customer'))
+                                    <span class="input-group-btn">
+                                        <a href="#modal-contact" class="btn btn-effect-ripple btn-primary" data-toggle="modal">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                    </span>
+                                    @endif
+                                </div>
+                            @else
+                                <?php $customer_id = Point\PointSales\Helpers\PosHelper::getCustomer();?>
+                                <div class="content-show">{{Point\Framework\Models\Master\Person::find($customer_id)->name}}</div>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Warehouse</label>
+                        <div class="col-md-9 content-show">
+                            {{ $warehouse->name }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3 control-label">
+                            <strong>Date</strong>
+                        </div>
+                        <div class="col-md-9 content-show">
+                            {{ date_format_view(date('Y-m-d'))}}
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Warehouse</label>
-                    <div class="col-md-9 content-show">
-                        {{ $warehouse->name }}
+                <div class="col-md-6">
+                    <img src="{{url_logo()}}" height="150px" width="auto" class="img pull-right" style="border:3px dotted #7c62ad; margin-left: 10px">
+                    <div class="pull-right text-right v-center">
+                        <div class="h3 text-primary"><strong>{{$warehouse_profiles->store_name}}</strong></div>
+                        <p><b>{{$warehouse_profiles->address}}<br> {{$warehouse_profiles->phone}}</b></p>
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-3 control-label">
-                        <strong>Date</strong>
-                    </div>
-                    <div class="col-md-9 content-show">
-                        {{ date_format_view(date('Y-m-d'))}}
-                    </div>
+
                 </div>
             </form>
 
             <br/><br/>
 
-            <form action="{{ url('sales/point/pos') }}" method="post" class="form-horizontal">
+            <form action="{{ url('sales/point/pos') }}" method="post" class="form-horizontal row">
                 {!! csrf_field() !!}
                 <input type="hidden" name="form_date" value="{{ date('d-m-y', time()) }}" />
                 <input type="hidden" readonly name="input_customer" id="input_customer" value="{{ Point\PointSales\Helpers\PosHelper::getCustomer() }}">
