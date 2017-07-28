@@ -7,6 +7,7 @@ use Point\Core\Traits\ByTrait;
 use Point\Core\Traits\HistoryTrait;
 use Point\Core\Traits\MasterTrait;
 use Point\Framework\Models\Journal;
+use Point\Framework\Models\Master\Person;
 use Point\Framework\Traits\CoaFixedAsset;
 use Point\Framework\Traits\CoaRelation;
 use Point\Framework\Traits\CoaScopeQuery;
@@ -57,12 +58,17 @@ class Coa extends Model
 
     public static function getNonSubledger()
     {
-        return Coa::where('has_subledger', 0)->get();
+        return Coa::active()->where('has_subledger', 0)->get();
     }
 
     public static function getSubledger()
     {
-        return Coa::where('has_subledger', 1)->get();
+        return Coa::active()->where('has_subledger', 1)->get();
+    }
+
+    public static function getSubledgerPerson()
+    {
+        return Coa::active()->where('has_subledger', 1)->where('subledger_type', get_class(New Person()))->get();
     }
 
     public function isUse()
