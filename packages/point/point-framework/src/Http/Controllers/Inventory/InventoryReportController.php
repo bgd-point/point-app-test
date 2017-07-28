@@ -95,7 +95,7 @@ class InventoryReportController extends Controller
             })->get()->toArray();
 
         $data = array(
-            'warehouse_id' => \Input::get('warehouse_id') ? ? Warehouse::find(\Input::get('warehouse_id'))->id : 0,
+            'warehouse' => \Input::get('warehouse_id') ? Warehouse::find(\Input::get('warehouse_id'))->id : 0,
             'date_from' => $date_from,
             'date_to' => $date_to,
             'item_search' => $item_search,
@@ -103,10 +103,10 @@ class InventoryReportController extends Controller
             'request' => $request->input()
 
         );
-        self::export($data);
+        self::generateExcel($data);
     }
 
-    public function export($data)
+    public function generateExcel($data)
     {
         $storage = public_path('inventory-report/');
         $fileName = 'Inventory report '.date('YmdHis');
@@ -137,7 +137,7 @@ class InventoryReportController extends Controller
                         $cell->setValue(strtoupper('INVENTORY REPORT'));
                     });
 
-                    $sheet->cell('A2:F2', function ($cell) {
+                    $sheet->cell('A2:F3', function ($cell) {
                         // Set font
                         $cell->setFont(array(
                             'family'     => 'Times New Roman',
@@ -146,65 +146,94 @@ class InventoryReportController extends Controller
                         ));
                     });
 
-                    // Generad table of content
+                    // Generad header
                     $header = array(
-                        array('NO', 'OPENING STOCK', 'STOCK IN', 'STOCK OUT', 'CLOSING STOCK')
+                        array('NO', 'ITEM', 'OPENING STOCK', 'STOCK IN', 'STOCK OUT', 'CLOSING STOCK')
                     );
+                    
+                    $sheet->mergeCells('A2:A3', 'center');
+                    $sheet->mergeCells('B2:B3', 'center');
+                    $sheet->cell('A2', function ($cell) {
+                        $cell->setValue('NO');
+                    });
+                    $sheet->cell('B2', function ($cell) {
+                        $cell->setValue('ITEM');
+                    });
+                    $sheet->cell('C2', function ($cell) {
+                        $cell->setValue('OPENING STOCK');
+                    });
+                    $sheet->cell('C3', function ($cell) {
+                        $cell->setValue(date_format_view($data['date_from']));
+                    });
 
-                    $total_data = count($list_item);
+                    $sheet->cell('D2', function ($cell) {
+                        $cell->setValue('STOCK IN');
+                    });
+                    $sheet->cell('D3', function ($cell) {
+                        $cell->setValue('(' .date_format_view($data['date_from']). ') - (' . date_format_view($data['date_to']) .')');
+                    });
+
+                    $sheet->cell('E2', function ($cell) {
+                        $cell->setValue('STOCK OUT');
+                    });
+                    $sheet->cell('E3', function ($cell) {
+                        $cell->setValue('(' .date_format_view($data['date_from']). ') - (' . date_format_view($data['date_to']) .')');
+                    });
+
+                    $sheet->cell('F2', function ($cell) {
+                        $cell->setValue('CLOSING STOCK');
+                    });
+                    $sheet->cell('F3', function ($cell) {
+                        $cell->setValue(date_format_view($data['date_to']));
+                    });
+
+                    $content = [];
+                    $total_data = count($data['list_inventory']);
                     for ($i=0; $i < $total_data; $i++) {
-                        array_push($header, [$i + 1,
-                            strtoupper(ItemCategory::find($list_item[$i]['item_category_id'])->name),
-                            strtoupper(Coa::find($list_item[$i]['account_asset_id'])->name),
-                            strtoupper('['.$list_item[$i]['code'].'] ' . $list_item[$i]['name']),
-                            strtoupper(Item::defaultUnit($list_item[$i]['id'])->name),
-                            strtoupper($list_item[$i]['notes'])
+                        $item = Item::find($data['list_inventory']['item_id'][$i]);
+                        if ($data['warehouse']) {
+                            $opening_stock = inventory_get_opening_stock($data['date_from'], $item->id, $data['warehouse']);
+                            $stock_in = inventory_get_stock_in($data['date_from'], $data['date_to'], $item->id, $data['warehouse']);
+                            $stock_out = inventory_get_stock_out($data['date_from'], $data['date_to'], $item->id, $data['warehouse']);
+                            $closing_stock = inventory_get_closing_stock($data['date_from'], $data['date_to'], $item->id, $data['warehouse']);
+                            $warehouse = $data['warehouse'];
+
+                        } else {
+                            $opening_stock = inventory_get_opening_stock_all($data['date_from'], $item->id);
+                            $stock_in = inventory_get_stock_in_all($data['date_from'], $data['date_to'], $item->id);
+                            $stock_out = inventory_get_stock_out_all($data['date_from'], $data['date_to'], $item->id);
+                            $closing_stock = inventory_get_closing_stock_all($data['date_from'], $data['date_to'], $item->id);
+                            $warehouse = 0;
+                        }
+
+                        $recalculate_stock = Inventory::where('item_id', '=', $item->id)->where('recalculate', '=', 1)->orderBy('form_date', 'asc')->count() > 0;
+                        array_push($content, [$i + 1,
+                            strtoupper($item->codeName),
+                            strtoupper(number_format_quantity($opening_stock)),
+                            strtoupper(number_format_quantity($stock_in)),
+                            strtoupper(number_format_quantity($stock_out)),
+                            strtoupper(number_format_quantity($closing_stock))
                         ]);                    
                     }
 
                     $total_data = $total_data+2;
-                    $sheet->fromArray($header, null, 'A2', false, false);
+                    $sheet->fromArray($content, null, 'A4', false, false);
                     $sheet->setBorder('A2:F'.$total_data, 'thin');
-
-                    $next_row = $total_data + 1;
-                    $sheet->cell('A'.$next_row, function ($cell) {
-                        $cell->setValue('TOTAL');
-                        $cell->setFont(array(
-                            'family'     => 'Times New Roman',
-                            'size'       => '12',
-                            'bold'       =>  true
-                        ));
-                    });
-                    $sheet->cell('B'.$next_row, function ($cell) use ($list_item) {
-                        $cell->setValue(count($list_item));
-                        $cell->setFont(array(
-                            'family'     => 'Times New Roman',
-                            'size'       => '12'
-                        ));
-                    });
-                    $next_row = $next_row + 2;
-                    $sheet->cell('A'.$next_row, function ($cell) {
-                        $cell->setValue('DOWNLOAD AT '. date('Y-m-d H:i:s'));
-                        $cell->setFont(array(
-                            'family'     => 'Times New Roman',
-                            'size'       => '12'
-                        ));
-                    });
                 });
             })->store('xls', $storage);
             $job->delete();
         });
         
-        $data = [
+        $data_email = [
             'username' => auth()->user()->name,
-            'link' => url('item-report/'.$fileName.'.xls'),
+            'link' => url('inventory-report/'.$fileName.'.xls'),
             'email' => auth()->user()->email
         ];
 
-        \Queue::push(function ($job) use ($data, $request) {
-            QueueHelper::reconnectAppDatabase($request['database_name']);
-            \Mail::send('framework::email.item-report', $data, function ($message) use ($data) {
-                $message->to($data['email'])->subject('ITEM REPORT ' . date('ymdHi'));
+        \Queue::push(function ($job) use ($data_email, $data) {
+            QueueHelper::reconnectAppDatabase($data['request']['database_name']);
+            \Mail::send('framework::email.inventory-report', $data_email, function ($message) use ($data_email) {
+                $message->to($data_email['email'])->subject('INVENTORY REPORT ' . date('ymdHi'));
             });
             $job->delete();
         });
