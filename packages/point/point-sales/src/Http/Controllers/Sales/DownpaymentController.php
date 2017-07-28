@@ -115,6 +115,7 @@ class DownpaymentController extends Controller
 
         $response = array(
             'lists' => $list_order,
+            'person_id' => $cutoff_account_detail->person->id,
             'cutoff_account_detail' => $cutoff_account_detail
         );
 

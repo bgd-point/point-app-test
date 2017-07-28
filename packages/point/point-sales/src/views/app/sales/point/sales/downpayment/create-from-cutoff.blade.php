@@ -17,6 +17,7 @@
                 <form action="{{url('sales/point/indirect/downpayment')}}" method="post" class="form-horizontal form-bordered">
                     {!! csrf_field() !!}
                     <input type="hidden" name="close" value="1">
+                    <input type="hidden" name="person_id" id="person-id" value="">
                     <fieldset>
                         <div class="form-group">
                             <div class="col-md-12">
@@ -46,7 +47,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Select Customer</label>
                         <div class="col-md-6">
-                            <select class="selectize" name="person_id" id="person-id" data-placeholder="Please choose" onchange="selectCustomer(this.value)">
+                            <select class="selectize" name="cutoff_receivable_id" id="cutoff-receivable-id" data-placeholder="Please choose" onchange="selectCustomer(this.value)">
                                 
                             </select>
                         </div>
@@ -145,8 +146,8 @@
                 url: "{{url('sales/point/indirect/downpayment/select-account')}}",
                 data: { coa_id : coa_id, cutoff_id : cutoff_id},
                 success: function(res) {
-                    var customer = $('#person-id')[0].selectize;
-                    customer.load(function (callback) {
+                    var receivable = $('#cutoff-receivable-id')[0].selectize;
+                    receivable.load(function (callback) {
                         callback(eval(JSON.stringify(res.lists)));
                     });
                 },
@@ -158,6 +159,7 @@
                 url: "{{url('sales/point/indirect/downpayment/select-customer')}}",
                 data: { id : id},
                 success: function(res) {
+                    $('#person-id').val(res.person_id);
                     var sales_order = $('#sales-order-id')[0].selectize;
                     sales_order.load(function (callback) {
                         callback(eval(JSON.stringify(res.lists)));
