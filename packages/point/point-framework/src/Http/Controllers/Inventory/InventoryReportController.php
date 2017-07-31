@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Point\Core\Helpers\QueueHelper;
 use Point\Framework\Helpers\WarehouseHelper;
+use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\Warehouse;
@@ -103,6 +104,35 @@ class InventoryReportController extends Controller
             'request' => $request->input(),
         );
         self::generateExcel($data);
+    }
+
+    public function exportDetail(Request $request)
+    {
+        $warehouse_id = \Input::get('warehouse_id') ? \Input::get('warehouse_id') : 0;
+        $date_from = \Input::get('date_from');
+        $date_to = \Input::get('date_to');
+        $item_id = \Input::get('item_id');
+        $list_inventory = Inventory::where('item_id', '=', $item_id)
+            ->where('item_id', '=', $item_id)
+            ->where(function($query) use ($warehouse_id){
+                if ($warehouse_id) {
+                    $query->where('warehouse_id', '=', $warehouse_id);
+                }
+            })
+            ->where('form_date', '>=', $date_from)
+            ->where('form_date', '<=', $date_to)
+            ->orderBy('form_date')
+            ->get()->toArray();
+
+        $data = array(
+            'warehouse' => $warehouse_id,
+            'date_from' => $date_from,
+            'date_to' => $date_to,
+            'item_id' => $item_id,
+            'list_inventory' => $list_inventory,
+            'request' => $request->input(),
+        );
+        self::generateExcelDetail($data);
     }
 
     public function generateExcel($data)
@@ -232,6 +262,138 @@ class InventoryReportController extends Controller
         \Queue::push(function ($job) use ($data_email, $data) {
             QueueHelper::reconnectAppDatabase($data['request']['database_name']);
             \Mail::send('framework::email.inventory-report', $data_email, function ($message) use ($data_email) {
+                $message->to($data_email['email'])->subject('INVENTORY REPORT ' . date('ymdHi'));
+            });
+            $job->delete();
+        });
+
+        $response = array(
+            'status' => 'success'
+        );
+
+        return response()->json($response);
+    }
+
+    public function generateExcelDetail($data)
+    {
+        $item = Item::find($data['item_id']);
+        $storage = public_path('inventory-report-detail/');
+        $fileName = 'inventory report detail '.$item->name. ' '.date('YmdHis');
+        \Queue::push(function ($job) use ($data, $fileName, $storage) {
+            QueueHelper::reconnectAppDatabase($data['request']['database_name']);
+            \Excel::create($fileName, function ($excel) use ($data, $storage) {
+                # Sheet Data
+                $excel->sheet('Data', function ($sheet) use ($data) {
+                    $sheet->setWidth(array(
+                        'A' => 10,
+                        'B' => 25,
+                        'C' => 25,
+                        'D' => 25,
+                        'E' => 25,
+                        'F' => 25
+                    ));
+
+                    $warehouse = $data['warehouse'] ? Warehouse::find($data['warehouse'])->name : 'ALL'; 
+                    $item = Item::find($data['item_id']);
+                    // MERGER COLUMN
+                    $sheet->mergeCells('A1:F1', 'center');
+                    $sheet->cell('A1', function ($cell) use ($warehouse, $item) {
+                        // Set font
+                        $cell->setFont(array(
+                            'family'     => 'Times New Roman',
+                            'size'       => '14',
+                            'bold'       =>  true
+                        ));
+
+
+                        $cell->setValue(strtoupper('INVENTORY REPORT ' .$item->codeName));
+                    });
+
+                    $sheet->cell('A2:F3', function ($cell) {
+                        // Set font
+                        $cell->setFont(array(
+                            'family'     => 'Times New Roman',
+                            'size'       => '12',
+                            'bold'       =>  true
+                        ));
+                    });
+
+                    // Generad header
+                    $sheet->mergeCells('A2:A3', 'center');
+                    $sheet->mergeCells('B2:B3', 'center');
+                    $sheet->mergeCells('C2:C3', 'center');
+                    $sheet->mergeCells('D2:D3', 'center');
+                    $sheet->mergeCells('F2:F3', 'center');
+                    $sheet->cell('A2', function ($cell) {
+                        $cell->setValue('NO');
+                    });
+                    $sheet->cell('B2', function ($cell) {
+                        $cell->setValue('WAREHOUSE');
+                    });
+                    $sheet->cell('C2', function ($cell) {
+                        $cell->setValue('REFERENCE');
+                    });
+                    $sheet->cell('D2', function ($cell) {
+                        $cell->setValue('DATE');
+                    });
+
+                    $sheet->cell('E2', function ($cell) {
+                        $cell->setValue('STOCK');
+                    });
+
+                    $sheet->cell('E3', function ($cell) use ($data) {
+                        $cell->setValue('(' .date_format_view($data['date_from']) .') - (' .date_format_view($data['date_to']). ')');
+                    });
+
+                    $sheet->cell('F2', function ($cell) {
+                        $cell->setValue('ACCUMULATION STOCK');
+                    });
+
+                    $opening_inventory = Inventory::where('item_id', '=', $item->id)
+                            ->where('form_date', '<', $data['date_from'])
+                            ->where(function($query) use ($data) {
+                                if ($data['warehouse']) {
+                                    $query->where('warehouse_id', '=', $data['warehouse']);
+                                }
+                            })
+                            ->orderBy('form_date', '=', 'desc')
+                            ->first();
+                    $total_quantity = $opening_inventory ? $opening_inventory->total_quantity : 0;
+
+                    $content = [];
+                    $total_data = count($data['list_inventory']);
+                    array_push($content, [1, $warehouse, 'OPENING STOCK', date_format_view($data['date_from']), '-', number_format_quantity($total_quantity, 0)]);
+                    for ($i=0; $i < $total_data; $i++) {
+                        $total_quantity += $data['list_inventory'][$i]['quantity'];
+                        $formulir = Formulir::find($data['list_inventory'][$i]['formulir_id']);
+                        array_push($content, [$i + 2,
+                            strtoupper($warehouse),
+                            strtoupper($formulir->form_number),
+                            strtoupper(date_format_view($data['list_inventory'][$i]['form_date'])),
+                            strtoupper(number_format_quantity($data['list_inventory'][$i]['quantity'], 0)),
+                            strtoupper(number_format_quantity($data['list_inventory'][$i]['total_quantity'], 0))
+                        ]);                    
+                    }
+                    array_push($content, [$total_data + 2, $warehouse, 'END STOCK', date_format_view($data['date_to']), '-', number_format_quantity($total_quantity, 0)]);
+                    $total_data = $total_data+5;
+                    $sheet->fromArray($content, null, 'A4', false, false);
+                    $sheet->setBorder('A2:F'.$total_data, 'thin');
+
+                });
+            })->store('xls', $storage);
+
+            $job->delete();
+        });
+        
+        $data_email = [
+            'username' => auth()->user()->name,
+            'link' => url('inventory-report-detail/'.$fileName.'.xls'),
+            'email' => auth()->user()->email
+        ];
+
+        \Queue::push(function ($job) use ($data_email, $data) {
+            QueueHelper::reconnectAppDatabase($data['request']['database_name']);
+            \Mail::send('framework::email.inventory-report-detail', $data_email, function ($message) use ($data_email) {
                 $message->to($data_email['email'])->subject('INVENTORY REPORT ' . date('ymdHi'));
             });
             $job->delete();

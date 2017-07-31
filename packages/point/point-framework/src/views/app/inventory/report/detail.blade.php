@@ -12,7 +12,16 @@
     <div class="panel panel-default">
         <div class="panel-body">
             <h1>{{$item->codeName}}</h1>
+            <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export pull-left" onclick="exportExcel()"> Export to excel</a>
+            <div id="preloader" style="display:none; margin-top:5px;float: left;position: relative; margin-left:10px">
+                <i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>
+            </div>
+            <input type="hidden" id="date-from" value="{{$date_from}}">
+            <input type="hidden" id="date-to" value="{{$date_to}}">
+            <input type="hidden" id="item-id" value="{{$item->id}}">
+            <input type="hidden" id="warehouse-id" value="{{$warehouse ? $warehouse->id : 0}}">
 
+            <br><br>
             <div class="table-responsive">
                 {!! $list_inventory->render() !!}
                 <table class="table table-striped table-bordered">
@@ -72,3 +81,36 @@
     </div>  
 </div>
 @stop
+
+@section('scripts')
+<script type="text/javascript">
+    function exportExcel() {
+        var date_from = $("#date-from").val();
+        var date_to = $("#date-to").val();
+        var warehouse_id = $("#warehouse-id").val();
+        var item_id = $("#item-id").val();
+        $("#preloader").fadeIn();
+        $(".button-export").addClass('disabled');
+        $.ajax({
+            url: '{{url("inventory/report/export/detail")}}',
+            data: {
+                date_from: date_from,
+                date_to: date_to,
+                warehouse_id: warehouse_id,
+                item_id: item_id
+            },
+            success: function(result) {
+                $("#preloader").fadeOut();
+                $(".button-export").removeClass('disabled');
+                notification('export item data success, please check your email in a few moments');
+            }, error:  function (result) {
+                $("#preloader").fadeOut();
+                $(".button-export").removeClass('disabled');
+                notification('export item data failed, please try again');
+            }
+
+        });
+    }
+</script>
+@stop
+
