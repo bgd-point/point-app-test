@@ -124,6 +124,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'master', 'namespace' => 'Poin
     Route::get('/service/list', 'ServiceController@_list');
     Route::post('/service/delete', 'ServiceController@delete');
     Route::resource('/service', 'ServiceController');
+
+    Route::post('/bank/delete', 'MasterBankController@delete');
+    Route::resource('/bank', 'MasterBankController');
     
     // Item Fixed Assets
     Route::get('/fixed-assets-item/get-attribute', 'FixedAssetsItemController@_getAttribute');
@@ -178,4 +181,5 @@ Route::group(['middleware' => 'auth', 'prefix' => 'master', 'namespace' => 'Poin
     Route::get('/warehouse/{warehouse_id}/edit', 'WarehouseController@edit');
     Route::put('/warehouse/{warehouse_id}', 'WarehouseController@update');
     Route::post('/warehouse/state', 'WarehouseController@_state');
+
 });

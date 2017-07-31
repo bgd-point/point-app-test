@@ -34,16 +34,16 @@
 </div>
 @endif
 
-@if(client_has_addon('pro') && auth()->user()->may('read.point.finance.cashier.bank'))
-{{--<div class="col-md-4 col-lg-3">--}}
-    {{--<a href="{{url('finance/point/wesel')}}" class="widget widget-button">--}}
-        {{--<div class="widget-content text-right clearfix">--}}
-            {{--<i class="fa fa-4x fa-pencil-square-o push-bit pull-left"></i>--}}
-            {{--<h4 class="widget-heading"><strong>Cheque</strong></h4>--}}
-            {{--<span class="text-muted"></span>--}}
-        {{--</div>--}}
-    {{--</a>--}}
-{{--</div>--}}
+@if(client_has_addon('pro') && auth()->user()->may('read.point.finance.cashier.cheque'))
+<div class="col-md-4 col-lg-3">
+    <a href="{{url('finance/point/cheque')}}" class="widget widget-button">
+        <div class="widget-content text-right clearfix">
+            <i class="fa fa-4x fa-pencil-square-o push-bit pull-left"></i>
+            <h4 class="widget-heading"><strong>Cheque</strong></h4>
+            <span class="text-muted"></span>
+        </div>
+    </a>
+</div>
 @endif
 
 @if(client_has_addon('basic') && auth()->user()->may('read.point.finance.debts.aging.report'))

@@ -70,6 +70,7 @@ class FrameworkPermissionTableSeeder extends Seeder
         PermissionHelper::create('ALLOCATION REPORT', ['read', 'export'], $group);
         PermissionHelper::create('SERVICE', ['create', 'read', 'update', 'delete', 'export'], $group);
         PermissionHelper::create('FIXED ASSETS ITEM', ['create', 'read', 'update', 'delete', 'export'], $group);
+        PermissionHelper::create('BANK', ['create', 'read', 'update', 'delete'], $group);
     }
 
     private function accounting()

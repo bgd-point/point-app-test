@@ -32,10 +32,12 @@ class PointFinancePermissionSeeder extends Seeder
         PermissionHelper::create('POINT FINANCE CASHIER', ['menu'], $group);
         PermissionHelper::create('POINT FINANCE CASHIER CASH', ['create', 'read', 'update', 'delete'], $group);
         PermissionHelper::create('POINT FINANCE CASHIER BANK', ['create', 'read', 'update', 'delete'], $group);
+        PermissionHelper::create('POINT FINANCE CASHIER CHEQUE', ['create', 'read', 'update', 'delete'], $group);
         PermissionHelper::create('POINT FINANCE PAYMENT ORDER', ['menu','create', 'read', 'update', 'delete', 'approval'], $group);
         PermissionHelper::create('POINT FINANCE DEBTS AGING REPORT', ['read'], $group);
         PermissionHelper::create('POINT FINANCE CASH REPORT', ['read'], $group);
         PermissionHelper::create('POINT FINANCE BANK REPORT', ['read'], $group);
+        PermissionHelper::create('POINT FINANCE CHEQUE REPORT', ['read'], $group);
 
         $this->output->writeln('<info>--- Permission Seeder Finished ---</info>');
     }

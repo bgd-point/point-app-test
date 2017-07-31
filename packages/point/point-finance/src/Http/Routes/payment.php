@@ -39,7 +39,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'finance/point', 'namespace' =
         Route::post('cash/out/{id}', 'CashOutController@update');
     });
 
-    // Cash
+    // Bank
     Route::group(['namespace' => 'Bank'], function () {
         Route::get('/bank', 'BankController@index');
         Route::get('bank/print/{id}', 'BankController@printBank');
@@ -64,5 +64,32 @@ Route::group(['middleware' => 'auth', 'prefix' => 'finance/point', 'namespace' =
         Route::get('bank/{id}/archived', 'BankOutController@archived');
         Route::get('bank/out/{id}/edit', 'BankOutController@edit');
         Route::post('bank/out/{id}', 'BankOutController@update');
+    });
+
+    // Cheque
+    Route::group(['namespace' => 'Cheque'], function () {
+        Route::get('/cheque', 'ChequeController@index');
+        Route::get('cheque/print/{id}', 'ChequeController@printCheque');
+
+        // Cheque In
+        Route::get('cheque/in/create/{payment_reference}', 'ChequeInController@createFromReference');
+        Route::post('cheque/in/store', 'ChequeInController@storeFromReference');
+
+        Route::get('cheque/in/create', 'ChequeInController@create');
+        Route::post('cheque/in', 'ChequeInController@store');
+        Route::get('cheque/in/choose-receivable', 'ChequeInController@chooseReceivable');
+        Route::get('cheque/in/{id}', 'ChequeInController@show');
+        Route::get('cheque/{id}/archived', 'ChequeInController@archived');
+        Route::get('cheque/in/{id}/edit', 'ChequeInController@edit');
+        Route::post('cheque/in/{id}', 'ChequeInController@update');
+
+        // Cheque Out
+        Route::get('cheque/out/create/{payment_reference}', 'ChequeOutController@create');
+        Route::post('cheque/out', 'ChequeOutController@store');
+        Route::get('cheque/out/choose-payable', 'ChequeOutController@choosePayable');
+        Route::get('cheque/out/{id}', 'ChequeOutController@show');
+        Route::get('cheque/{id}/archived', 'ChequeOutController@archived');
+        Route::get('cheque/out/{id}/edit', 'ChequeOutController@edit');
+        Route::post('cheque/out/{id}', 'ChequeOutController@update');
     });
 });

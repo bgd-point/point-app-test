@@ -18,6 +18,7 @@ class FrameworkDevDatabaseSeeder extends Seeder
         $output = new Output;
 
         $this->call(FrameworkWarehouseTableSeeder::class);
+        $this->call(FrameworkBankTableSeeder::class);
         $this->call(FrameworkItemTableSeeder::class);
         $this->call(FrameworkItemUnitTableSeeder::class);
 

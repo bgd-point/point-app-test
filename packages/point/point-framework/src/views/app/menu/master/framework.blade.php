@@ -75,3 +75,14 @@
         </a>
     </div>
 @endif
+@if(auth()->user()->may('read.bank'))
+    <div class="col-md-4 col-lg-3">
+        <a href="{{url('master/bank')}}" class="widget widget-button">
+            <div class="widget-content text-right clearfix">
+                <i class="fa fa-4x fa-briefcase push-bit pull-left"></i>
+                <h4 class="widget-heading"><strong>Bank</strong></h4>
+                <span class="text-muted"></span>
+            </div>
+        </a>
+    </div>
+@endif
