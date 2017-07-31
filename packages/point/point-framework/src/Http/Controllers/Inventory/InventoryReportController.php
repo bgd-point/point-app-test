@@ -97,13 +97,13 @@ class InventoryReportController extends Controller
 
         $data = array(
             'warehouse' => \Input::get('warehouse_id') ? Warehouse::find(\Input::get('warehouse_id'))->id : 0,
-            'date_from' => date_format_view($date_from),
-            'date_to' => date_format_view($date_to),
+            'date_from' => $date_from,
+            'date_to' => $date_to,
             'item_search' => $item_search,
             'list_inventory' => $inventory,
             'request' => $request->input(),
         );
-        self::generateExcel($data);
+        self::generateExcel($request, $data);
     }
 
     public function exportDetail(Request $request)
@@ -132,12 +132,12 @@ class InventoryReportController extends Controller
             'list_inventory' => $list_inventory,
             'request' => $request->input(),
         );
-        self::generateExcelDetail($data);
+        self::generateExcelDetail($request, $data);
     }
 
-    public function generateExcel($data)
+    public function generateExcel($request, $data)
     {
-        $storage = public_path('inventory-report/');
+        $storage = storage_path('app/'.$request->project->url.'/inventory-report/');
         $fileName = 'inventory report '.date('YmdHis');
         \Queue::push(function ($job) use ($data, $fileName, $storage) {
             QueueHelper::reconnectAppDatabase($data['request']['database_name']);
@@ -191,28 +191,28 @@ class InventoryReportController extends Controller
                     });
 
                     $sheet->cell('C3', function ($cell) use ($data) {
-                        $cell->setValue($data['date_from']);
+                        $cell->setValue(date_format_view($data['date_from']));
                     });
 
                     $sheet->cell('D2', function ($cell) {
                         $cell->setValue('STOCK IN');
                     });
                     $sheet->cell('D3', function ($cell) use ($data) {
-                        $cell->setValue('(' .$data['date_from']. ') - (' . $data['date_to'] .')');
+                        $cell->setValue('(' .date_format_view($data['date_from']). ') - (' . date_format_view($data['date_to']) .')');
                     });
 
                     $sheet->cell('E2', function ($cell) {
                         $cell->setValue('STOCK OUT');
                     });
                     $sheet->cell('E3', function ($cell) use ($data) {
-                        $cell->setValue('(' .$data['date_from']. ') - (' . $data['date_to'] .')');
+                        $cell->setValue('(' .date_format_view($data['date_from']). ') - (' . date_format_view($data['date_to']) .')');
                     });
 
                     $sheet->cell('F2', function ($cell) {
                         $cell->setValue('CLOSING STOCK');
                     });
                     $sheet->cell('F3', function ($cell) use ($data) {
-                        $cell->setValue($data['date_to']);
+                        $cell->setValue(date_format_view($data['date_to']));
                     });
 
                     $content = [];
@@ -255,7 +255,7 @@ class InventoryReportController extends Controller
         
         $data_email = [
             'username' => auth()->user()->name,
-            'link' => url('inventory-report/'.$fileName.'.xls'),
+            'link' => url('download/'.$request->project->url.'/inventory-report/'.$fileName.'.xls'),
             'email' => auth()->user()->email
         ];
 
@@ -274,10 +274,10 @@ class InventoryReportController extends Controller
         return response()->json($response);
     }
 
-    public function generateExcelDetail($data)
+    public function generateExcelDetail($request, $data)
     {
         $item = Item::find($data['item_id']);
-        $storage = public_path('inventory-report-detail/');
+        $storage = storage_path('app/'.$request->project->url.'/inventory-report-detail/');
         $fileName = 'inventory report detail '.$item->name. ' '.date('YmdHis');
         \Queue::push(function ($job) use ($data, $fileName, $storage) {
             QueueHelper::reconnectAppDatabase($data['request']['database_name']);
@@ -362,19 +362,20 @@ class InventoryReportController extends Controller
 
                     $content = [];
                     $total_data = count($data['list_inventory']);
-                    array_push($content, [1, $warehouse, 'OPENING STOCK', date_format_view($data['date_from']), '-', number_format_quantity($total_quantity, 0)]);
+                    array_push($content, [1, '-', 'OPENING STOCK', date_format_view($data['date_from']), '-', number_format_quantity($total_quantity, 0)]);
                     for ($i=0; $i < $total_data; $i++) {
                         $total_quantity += $data['list_inventory'][$i]['quantity'];
                         $formulir = Formulir::find($data['list_inventory'][$i]['formulir_id']);
+                        $warehouse = Warehouse::find($data['list_inventory'][$i]['warehouse_id']);
                         array_push($content, [$i + 2,
-                            strtoupper($warehouse),
+                            strtoupper($warehouse->name),
                             strtoupper($formulir->form_number),
                             strtoupper(date_format_view($data['list_inventory'][$i]['form_date'])),
                             strtoupper(number_format_quantity($data['list_inventory'][$i]['quantity'], 0)),
                             strtoupper(number_format_quantity($data['list_inventory'][$i]['total_quantity'], 0))
                         ]);                    
                     }
-                    array_push($content, [$total_data + 2, $warehouse, 'END STOCK', date_format_view($data['date_to']), '-', number_format_quantity($total_quantity, 0)]);
+                    array_push($content, [$total_data + 2, '-', 'END STOCK', date_format_view($data['date_to']), '-', number_format_quantity($total_quantity, 0)]);
                     $total_data = $total_data+5;
                     $sheet->fromArray($content, null, 'A4', false, false);
                     $sheet->setBorder('A2:F'.$total_data, 'thin');
@@ -387,7 +388,7 @@ class InventoryReportController extends Controller
         
         $data_email = [
             'username' => auth()->user()->name,
-            'link' => url('inventory-report-detail/'.$fileName.'.xls'),
+            'link' => url('download/'.$request->project->url.'/inventory-report-detail/'.$fileName.'.xls'),
             'email' => auth()->user()->email
         ];
 
