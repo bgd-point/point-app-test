@@ -362,12 +362,12 @@
                 autosize($('.autosize'));
 
                 $(function() {
-                    $( document ).idleTimer( 7200000 );
+                    $( document ).idleTimer( 86400000 );
                 });
 
                 $(function() {
                     $( document ).on( "idle.idleTimer", function(event, elem, obj){
-                        {{--window.location.href="{{url('/auth/logout')}}";--}}
+                        window.location.href="{{url('/auth/logout')}}";
                     });
                 });
 
