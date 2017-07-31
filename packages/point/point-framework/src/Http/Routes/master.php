@@ -125,7 +125,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'master', 'namespace' => 'Poin
     Route::post('/service/delete', 'ServiceController@delete');
     Route::resource('/service', 'ServiceController');
 
-    Route::post('/bank/delete', 'MasterBankController@delete');
+    Route::post('/bank/delete/{id}', 'MasterBankController@_delete');
+    Route::post('/bank/update', 'MasterBankController@_update');
+    Route::post('/bank/store', 'MasterBankController@_store');
     Route::resource('/bank', 'MasterBankController');
     
     // Item Fixed Assets

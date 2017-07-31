@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
@@ -26,6 +26,7 @@ class FrameworkDatabaseSeeder extends Seeder
         $this->call(FrameworkPersonTypeTableSeeder::class);
         $this->call(FrameworkPersonGroupTableSeeder::class);
         $this->call(FrameworkFormulirNumberTableSeeder::class);
+        $this->call(FrameworkBankTableSeeder::class);
 
         Model::reguard();
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
