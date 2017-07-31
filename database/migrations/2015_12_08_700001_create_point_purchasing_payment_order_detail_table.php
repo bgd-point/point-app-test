@@ -23,6 +23,8 @@ class CreatePointPurchasingPaymentOrderDetailTable extends Migration
 
             $table->text('detail_notes');
             $table->decimal('amount', 16, 4);
+            $table->integer('reference_id')->index()->nullable();
+            $table->string('reference_type')->index()->nullable();
         });
     }
 

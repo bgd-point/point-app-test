@@ -35,6 +35,9 @@ class CreatePointFinancePaymentReferenceDetailTable extends Migration
 
             $table->text('notes_detail');
             $table->decimal('amount', 16, 4);
+
+            $table->integer('reference_id')->index()->nullable();
+            $table->string('reference_type')->index()->nullable();
         });
     }
 
