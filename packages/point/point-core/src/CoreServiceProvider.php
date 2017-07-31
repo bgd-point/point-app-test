@@ -54,8 +54,6 @@ class CoreServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/database/migrations' => database_path('migrations'),
             __DIR__ . '/database/seeds' => database_path('seeds'),
-            __DIR__ . '/assets' => public_path('core'),
-            __DIR__ . '/build' => public_path('build'),
             __DIR__ . '/config/point.php' => config_path('point.php'),
         ], 'setup');
     }

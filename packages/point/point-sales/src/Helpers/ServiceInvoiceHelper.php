@@ -54,6 +54,7 @@ class ServiceInvoiceHelper
         $invoice = new Invoice;
         $invoice->formulir_id = $formulir->id;
         $invoice->person_id = $request->input('person_id');
+        $invoice->due_date = date_format_db($request->input('due_date'));
         $invoice->save();
 
         $subtotal = 0;

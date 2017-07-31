@@ -13,6 +13,7 @@ class CoreEndNotesTableSeeder extends Seeder
     public function run()
     {
         $features = array(
+            'sales pos',
             'sales quotation',
             'sales order',
             'sales invoice',
