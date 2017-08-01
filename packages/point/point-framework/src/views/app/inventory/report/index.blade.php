@@ -14,16 +14,16 @@
                 <div class="form-group">
                     <div class="col-sm-6">
                         <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
-                            <input type="text" name="date_from" class="form-control date input-datepicker" placeholder="From"  value="{{\Input::get('date_from') ? \Input::get('date_from') : date(date_format_get(), strtotime($date_from))}}">
+                            <input type="text" name="date_from" id="date-from" class="form-control date input-datepicker" placeholder="From"  value="{{\Input::get('date_from') ? \Input::get('date_from') : date(date_format_get(), strtotime($date_from))}}">
                             <span class="input-group-addon"><i class="fa fa-chevron-right"></i></span>
-                            <input type="text" name="date_to" class="form-control date input-datepicker" placeholder="To" value="{{\Input::get('date_to') ? \Input::get('date_to') : date(date_format_get(), strtotime($date_to))}}">
+                            <input type="text" name="date_to" id="date-to" class="form-control date input-datepicker" placeholder="To" value="{{\Input::get('date_to') ? \Input::get('date_to') : date(date_format_get(), strtotime($date_to))}}">
                         </div>
                     </div>
                     <div class="col-sm-3">
-                        <input type="text" name="search" class="form-control" placeholder="Search Item..." value="{{\Input::get('search')}}" value="{{\Input::get('search') ? \Input::get('search') : ''}}">
+                        <input type="text" name="search" id="search" class="form-control" placeholder="Search Item..." value="{{\Input::get('search')}}" value="{{\Input::get('search') ? \Input::get('search') : ''}}">
                     </div>
                     <div class="col-sm-3">
-                        <select name="warehouse_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                        <select name="warehouse_id" id="warehouse-id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
                             <option value="0" @if($search_warehouse) selected @endif>All</option>
                             @foreach($list_warehouse as $warehouse)
                                 <option value="{{$warehouse->id}}" @if( $search_warehouse && $search_warehouse->id == $warehouse->id) selected @endif>{{$warehouse->codeName}}</option>
@@ -32,6 +32,10 @@
                     </div>
                     <div class="col-sm-3">
                         <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button> 
+                        <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" onclick="exportExcel()"> Export to excel</a>
+                        <div id="preloader" style="display:none; margin-top:5px; float: left;position: relative;margin-top: -29px;margin-left: 250px;">
+                            <i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -99,4 +103,36 @@
         </div>
     </div>  
 </div>
+@stop
+
+@section('scripts')
+<script type="text/javascript">
+    function exportExcel() {
+        var date_from = $("#date-from").val();
+        var date_to = $("#date-to").val();
+        var warehouse_id = $("#warehouse-id").val();
+        var search = $("#search").val();
+        $("#preloader").fadeIn();
+        $(".button-export").addClass('disabled');
+        $.ajax({
+            url: '{{url("inventory/report/export/")}}',
+            data: {
+                date_from: date_from,
+                date_to: date_to,
+                warehouse_id: warehouse_id,
+                search: search
+            },
+            success: function(result) {
+                $("#preloader").fadeOut();
+                $(".button-export").removeClass('disabled');
+                notification('export item data success, please check your email in a few moments');
+            }, error:  function (result) {
+                $("#preloader").fadeOut();
+                $(".button-export").removeClass('disabled');
+                notification('export item data failed, please try again');
+            }
+
+        });
+    }
+</script>
 @stop
