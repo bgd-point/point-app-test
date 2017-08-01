@@ -37,6 +37,11 @@ class Cheque extends Model
 
     public function detail()
     {
+        return $this->hasMany('Point\PointFinance\Models\Cheque\ChequeDetailPayment', 'point_finance_cheque_id');
+    }
+
+    public function detailCheque()
+    {
         return $this->hasMany('Point\PointFinance\Models\Cheque\ChequeDetail', 'point_finance_cheque_id');
     }
 

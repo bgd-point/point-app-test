@@ -5,14 +5,15 @@ namespace Point\PointFinance\Http\Controllers\Cheque;
 use Illuminate\Auth\id;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Point\PointAccounting\Models\AssetsRefer;
-use Point\PointFinance\Helpers\PaymentHelper;
-use Point\PointFinance\Models\Cheque\Cheque;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Http\Controllers\Controller;
 use Point\Framework\Models\Master\Coa;
+use Point\Framework\Models\Master\MasterBank;
 use Point\Framework\Models\Master\Person;
+use Point\PointAccounting\Models\AssetsRefer;
+use Point\PointFinance\Helpers\PaymentHelper;
+use Point\PointFinance\Models\Cheque\Cheque;
 use Point\PointFinance\Models\PaymentReference;
 
 class ChequeOutController extends Controller
@@ -29,7 +30,9 @@ class ChequeOutController extends Controller
         $view->person = Person::find($payment_reference->person_id);
         $view->payment_reference = $payment_reference;
         $view->pay_to = $payment_reference->person_id;
-        $view->list_coa = Coa::where('coa_category_id', 2)->active()->get();
+        $view->list_coa = Coa::where('coa_category_id', 9)->active()->get();
+        $view->list_bank = MasterBank::all();
+
 
         return $view;
     }
@@ -51,6 +54,13 @@ class ChequeOutController extends Controller
      */
     public function store(Request $request)
     {
+        $total_cheque = number_format_db(app('request')->input('total_cheque'));
+        $total_payment = number_format_db(app('request')->input('total'));
+        if ($total_cheque != $total_payment) {
+            gritter_error('Failed, total not match', 'false');
+            return redirect()->back();
+        }
+
         $request['form_date'] = app('request')->input('payment_date');
 
         $payment_reference = PaymentReference::find($request->input('payment_reference_id'));

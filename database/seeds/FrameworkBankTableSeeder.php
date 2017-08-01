@@ -20,7 +20,7 @@ class FrameworkBankTableSeeder extends Seeder
             $bank = new MasterBank();
             $bank->name = $data[$i];
             $bank->created_by = 1;
-            $bank->update_by = 1;
+            $bank->updated_by = 1;
             $bank->save();
         }
     }

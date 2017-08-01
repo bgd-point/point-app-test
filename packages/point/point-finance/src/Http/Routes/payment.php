@@ -70,6 +70,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'finance/point', 'namespace' =
     Route::group(['namespace' => 'Cheque'], function () {
         Route::get('/cheque', 'ChequeController@index');
         Route::get('cheque/print/{id}', 'ChequeController@printCheque');
+        Route::get('cheque/pending', 'ChequeController@pendingCheque');
+        Route::get('cheque/liquid', 'ChequeController@liquid');
+        Route::post('cheque/liquid', 'ChequeController@liquidProcess');
 
         // Cheque In
         Route::get('cheque/in/create/{payment_reference}', 'ChequeInController@createFromReference');

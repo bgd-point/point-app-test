@@ -50,8 +50,14 @@
             data: data,
             type: 'POST',
             success: function(res) {
+                console.log(res);
+                if (res.status == 'failed') {
+                    swal('Failed', 'Please use another name');
+                    return true;    
+                }
                 $('#bank-data').html(res);
-                clearForm();
+                clearForm();    
+                
             }
         });
     }

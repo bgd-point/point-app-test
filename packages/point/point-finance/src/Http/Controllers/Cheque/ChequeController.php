@@ -5,12 +5,16 @@ namespace Point\PointFinance\Http\Controllers\Cheque;
 use Illuminate\Auth\id;
 use Illuminate\Http\Request;
 use Point\Core\Exceptions\PointException;
-use Point\PointAccounting\Models\AssetsRefer;
-use Point\PointFinance\Models\Cheque\Cheque;
 use Point\Core\Traits\ValidationTrait;
+use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Http\Controllers\Controller;
+use Point\Framework\Models\Journal;
+use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
+use Point\PointAccounting\Models\AssetsRefer;
+use Point\PointFinance\Models\Cheque\Cheque;
+use Point\PointFinance\Models\Cheque\ChequeDetail;
 
 class ChequeController extends Controller
 {
@@ -73,5 +77,66 @@ class ChequeController extends Controller
         }
         $view->project_name = $request->get('project')->name;
         return $view;
+    }
+
+    public function pendingCheque()
+    {
+        $view = view('point-finance::app.finance.point.cheque.pending-cheque');
+        $view->list_cheque_detail = ChequeDetail::joinCheque()->joinFormulir()->where('formulir.form_status', 1)->whereNull('formulir.archived')->where('point_finance_cheque_detail.status', 0)->select('point_finance_cheque_detail.*')->paginate(100);
+
+        return $view;
+    }
+
+    public function liquid()
+    {
+        $view = view('point-finance::app.finance.point.cheque.liquid');
+        $id = explode(',', \Input::get('id'));
+        $view->list_cheque_detail = ChequeDetail::whereIn('id', $id)->get();
+        $view->list_coa = Coa::where('coa_category_id', 2)->active()->get();
+
+        return $view;
+    }
+
+    public function liquidProcess(Request $request)
+    {
+        $id_cheque = explode(',', \Input::get('id'));
+        foreach ($id_cheque as $id) {
+            $cheque_detail = ChequeDetail::find($id);
+            $cheque_detail->liquid_date = date_format_db(\Input::get('liquid_date'), \Input::get('time'));
+            $cheque_detail->status = 1;
+            $cheque_detail->save();
+
+            self::journal($cheque_detail, $request);
+        }
+    }
+
+    public static function journal($cheque_detail, $request)
+    {
+        // CHEQUE
+        $cheque = $cheque_detail->cheque;
+        $position = JournalHelper::position($cheque->coa_id);
+        $journal = new Journal();
+        $journal->form_date = $cheque->form_date;
+        $journal->coa_id = $cheque->coa_id;
+        $journal->description = $cheque_detail->notes ?: '';
+        $journal->$position = $cheque_detail->amount;
+        $journal->form_journal_id = $cheque->formulir_id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
+
+        // BANK
+        $position = JournalHelper::position($request->input('coa_id'));
+        $journal = new Journal();
+        $journal->form_date = $cheque->form_date;
+        $journal->coa_id = $request->input('coa_id');
+        $journal->description = $cheque_detail->notes ?: '';
+        $journal->$position = $cheque_detail->amount;
+        $journal->form_journal_id = $cheque->formulir_id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
     }
 }

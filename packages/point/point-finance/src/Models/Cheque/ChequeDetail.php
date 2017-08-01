@@ -2,35 +2,25 @@
 
 namespace Point\PointFinance\Models\Cheque;
 
-use Point\Framework\Models\Formulir;
 use Illuminate\Database\Eloquent\Model;
-use Point\Core\Traits\HistoryTrait;
-use Point\Core\Traits\ByTrait;
 
 class ChequeDetail extends Model
 {
     protected $table = 'point_finance_cheque_detail';
     public $timestamps = false;
 
-    use ByTrait;
-
     public function cheque()
     {
         return $this->belongsTo('Point\PointFinance\Models\Cheque\Cheque', 'point_finance_cheque_id');
     }
-
-    public function allocation()
+    
+    public function scopeJoinCheque($q)
     {
-        return $this->belongsTo('Point\Framework\Models\Master\Allocation', 'allocation_id');
+        $q->join('point_finance_cheque', 'point_finance_cheque.id', '=', $this->table.'.point_finance_cheque_id');
     }
 
-    public function coa()
+    public function scopeJoinFormulir($q)
     {
-        return $this->belongsTo('Point\Framework\Models\Master\Coa', 'coa_id');
-    }
-
-    public function reference()
-    {
-        return $this->belongsTo('Point\Framework\Models\Formulir', 'form_reference_id');
+        $q->join('formulir', 'formulir.id', '=', 'point_finance_cheque.formulir_id');
     }
 }

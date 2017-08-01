@@ -43,7 +43,7 @@ class MasterBankController extends Controller
         }
 
         $validator = \Validator::make($request->all(), [
-            'name' => 'required|string',
+            'name' => 'required|string|unique:bank',
         ]);
 
         $response = array('status' => 'failed');

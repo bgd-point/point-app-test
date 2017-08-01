@@ -55,6 +55,9 @@ class FrameworkCoaTableSeeder extends Seeder
         $coa_category = CoaCategory::insert(1, $coa_group_category->id, 'Bank Account');
         Coa::insert($coa_category->id, 'Bank Account');
 
+        $coa_category = CoaCategory::insert(1, $coa_group_category->id, 'Cheque Receivable');
+        Coa::insert($coa_category->id, 'Cheque Receivable');
+
         $coa_category = CoaCategory::insert(1, $coa_group_category->id, 'Account Receivable');
         Coa::insert($coa_category->id, 'Account Receivable - Sales', true, 'Point\Framework\Models\Master\Person');
         Coa::insert($coa_category->id, 'Income Tax Receivable');
@@ -113,6 +116,7 @@ class FrameworkCoaTableSeeder extends Seeder
         Coa::insert($coa_category->id, 'Account Payable - Wages', true, 'Point\Framework\Models\Master\Person', $coa_group->id);
         Coa::insert($coa_category->id, 'Account Payable - Interest');
         Coa::insert($coa_category->id, 'Income Tax Payable');
+        Coa::insert($coa_category->id, 'Cheque Payable');
 
         $coa_category = CoaCategory::insert(2, $coa_group_category->id, 'Downpayment of Income');
         Coa::insert($coa_category->id, 'Sales Downpayment', true, 'Point\Framework\Models\Master\Person');

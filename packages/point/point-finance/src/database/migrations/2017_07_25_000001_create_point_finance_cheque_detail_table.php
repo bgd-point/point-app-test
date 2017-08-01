@@ -15,31 +15,19 @@ class CreatePointFinanceChequeDetailTable extends Migration
         Schema::create('point_finance_cheque_detail', function ($table) {
             $table->increments('id');
             
-            $table->integer('point_finance_cheque_id')->unsigned()->index('point_finance_cheque_index');
-            $table->foreign('point_finance_cheque_id', 'point_finance_cheque_foreign')
+            $table->integer('point_finance_cheque_id')->unsigned()->index('point_finance_cheque_detail_index');
+            $table->foreign('point_finance_cheque_id', 'point_finance_cheque_detail_foreign')
                 ->references('id')->on('point_finance_cheque')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-
-            $table->integer('coa_id')->unsigned()->index();
-            $table->foreign('coa_id')
-                ->references('id')->on('coa')
-                ->onUpdate('restrict')
-                ->onDelete('restrict');
-
-            $table->integer('allocation_id')->unsigned()->index();
-            $table->foreign('allocation_id')
-                ->references('id')->on('allocation')
-                ->onUpdate('restrict')
-                ->onDelete('restrict');
-
-            $table->text('notes_detail');
+            $table->timestamp('due_date')->useCurrent();
+            $table->timestamp('liquid_date')->nullable();
+            $table->timestamp('decline_date')->nullable();
+            $table->string('number')->index()->nullable();
+            $table->string('bank')->index()->nullable();
             $table->decimal('amount', 16, 4);
-            $table->integer('reference_id')->index()->nullable();
-            $table->string('reference_type')->index()->nullable();
-            $table->integer('form_reference_id')->unsigned()->nullable();
-            $table->integer('subledger_id')->unsigned()->nullable();
-            $table->string('subledger_type')->nullable();
+            $table->text('notes');
+            $table->boolean('status')->default(false);
         });
     }
 

@@ -70,7 +70,48 @@
                             {{ $cheque->formulir->notes }}
                         </div>
                     </div>
-                    
+                    <fieldset>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <legend><i class="fa fa-angle-right"></i> Detail Cheque</legend>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="table-responsive"> 
+                                    <table id="item-datatable" class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Bank</th>
+                                                <th>Due Date</th>
+                                                <th>Number</th>
+                                                <th>Notes</th>
+                                                <th class="text-right">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="manipulate-row">
+                                        @foreach($cheque->detailCheque as $cheque_detail)
+                                        <tr>
+                                            <td>{{ $cheque_detail->bank }}</td>
+                                            <td>{{ date_format_view($cheque_detail->due_date) }}</td>
+                                            <td>{{ $cheque_detail->number }}</td>
+                                            <td>{{ $cheque_detail->notes }}</td>
+                                            <td class="text-right">{{ number_format_price($cheque_detail->amount) }}</td>
+                                        </tr>
+                                        @endforeach
+                                        </tbody> 
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="3" class="text-right"><h4><b>TOTAL</b></h4></td>
+                                                <td class="text-right">{{number_format_quantity($cheque->total * -1)}}</td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table> 
+                                </div>
+                            </div>                                           
+                        </div>
+                    </fieldset>
                     <fieldset>
                         <div class="form-group">
                             <div class="col-md-12">
