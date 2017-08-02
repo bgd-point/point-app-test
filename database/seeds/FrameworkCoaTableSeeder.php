@@ -114,9 +114,9 @@ class FrameworkCoaTableSeeder extends Seeder
         Coa::insert($coa_category->id, 'Account Payable - Purchasing', true, 'Point\Framework\Models\Master\Person', $coa_group->id);
         Coa::insert($coa_category->id, 'Account Payable - Expedition', true, 'Point\Framework\Models\Master\Person', $coa_group->id);
         Coa::insert($coa_category->id, 'Account Payable - Wages', true, 'Point\Framework\Models\Master\Person', $coa_group->id);
+        Coa::insert($coa_category->id, 'Cheque Payable', true, 'Point\Framework\Models\Master\Person', $coa_group->id);
         Coa::insert($coa_category->id, 'Account Payable - Interest');
         Coa::insert($coa_category->id, 'Income Tax Payable');
-        Coa::insert($coa_category->id, 'Cheque Payable');
 
         $coa_category = CoaCategory::insert(2, $coa_group_category->id, 'Downpayment of Income');
         Coa::insert($coa_category->id, 'Sales Downpayment', true, 'Point\Framework\Models\Master\Person');

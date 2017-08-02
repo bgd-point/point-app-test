@@ -21,7 +21,6 @@ class CreatePointFinanceChequeTable extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->timestamp('due_date')->useCurrent();
             $table->integer('coa_id')->unsigned()->index();
             $table->foreign('coa_id')
                 ->references('id')->on('coa')
