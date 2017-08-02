@@ -4,7 +4,9 @@ Route::group(['prefix' => 'accounting/point', 'namespace' => 'Point\PointAccount
 	// Approval Routes
 	Route::any('/memo-journal/{id}/approve', 'MemoJournalApprovalController@approve');
 	Route::any('/memo-journal/{id}/reject', 'MemoJournalApprovalController@reject');
-
+	Route::get('/memo-journal/reject-all', 'MemoJournalApprovalController@rejectAll');
+    Route::get('/memo-journal/approve-all', 'MemoJournalApprovalController@approveAll');
+    
 	Route::group(['middleware' => 'auth'], function() {
 		Route::get('/memo-journal/vesa-approval', 'MemoJournalVesaController@approval');
         Route::get('/memo-journal/vesa-rejected', 'MemoJournalVesaController@rejected');

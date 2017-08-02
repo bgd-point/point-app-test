@@ -37,7 +37,7 @@ class MemoJournal extends Model
         $q->joinFormulir()->notArchived()->notCanceled()->selectOriginal();
     }
 
-    public function memoJournalDetails()
+    public function detail()
     {
         return $this->hasMany('\Point\PointAccounting\Models\MemoJournalDetail', 'memo_journal_id');
     }

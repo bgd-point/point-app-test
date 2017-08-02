@@ -70,7 +70,7 @@
                             <th class="text-right">Debit</th>
                             <th class="text-right">Credit</th>
                         </tr>
-                        @foreach($memo_journal->memoJournalDetails as $detail)
+                        @foreach($memo_journal->detail as $detail)
                         <tr>
                             <td colspan="2" class="text-left">{{ $detail->description }}</td>
                             <td class="text-right">{{ number_format_accounting($detail->debit) }}</td>

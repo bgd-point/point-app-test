@@ -100,32 +100,11 @@
                                             </tr>
                                         </thead>
                                         <tbody class="manipulate-row">
-                                        @foreach($memo_journal->memoJournalDetails as $detail)
-                                        <?php
-                                            if($detail->subledger_id > 0) {
-                                                $table_type = new $detail->subledger_type;
-                                                $master = $table_type->find($detail->subledger_id);
-                                                if($detail->form_reference_id > 0) {
-                                                    $form = \Point\Framework\Models\Formulir::find($detail->form_journal_id);
-                                                }
-                                            }
-                                        ?>
+                                        @foreach($memo_journal->detail as $detail)
                                         <tr>
-                                            <td>{{ $detail->coaModel->name }}</td>
-                                            <td>
-                                            @if($detail->subledger_id > 0)
-                                                {{ $master->name }}
-                                            @else
-                                                -
-                                            @endif
-                                            </td>
-                                            <td>
-                                            @if($detail->form_reference_id > 0)
-                                                {{ $form->form_number }}
-                                            @else
-                                                -
-                                            @endif
-                                            </td>
+                                            <td>{{ $detail->coa->name }}</td>
+                                            <td>{{ $detail->subledger_type ? $detail->subledger_type::find($detail->subledger_id)->name : '-'}}</td>
+                                            <td>{{ $detail->form_reference_id ? $detail->reference->form_number : '-'}}</td>
                                             <td>{{ $detail->description }}</td>
                                             <td>{{ number_format_accounting($detail->debit) }}</td>
                                             <td>{{ number_format_accounting($detail->credit) }}</td>

@@ -44,18 +44,7 @@
                         <input name="notes" id="notes" class="form-control" value="{{ old('notes') }}" />
                     </div>
                 </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">Approval To *</label>
-                        <div class="col-md-6">
-                            <select name="approval_to" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
-                                @foreach($list_user_approval as $user_approval)
-                                    @if($user_approval->may('approval.point.accounting.memo.journal'))
-                                        <option value="{{$user_approval->id}}" @if(old('approval_to') == $user_approval->id) selected @endif>{{$user_approval->name}}</option>
-                                    @endif
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
+                
                 </fieldset>
 
                 <fieldset>
@@ -72,12 +61,12 @@
                                 <thead>
                                 <tr>
                                     <th></th>
-                                    <th style="width:18%;"class="text-center">COA</th>
-                                    <th style="width:15%;"class="text-center">Master Reference</th>
-                                    <th style="width:15%;"class="text-center">Form Reference</th>
-                                    <th style="width:20%;"class="text-center">Description</th>
-                                    <th style="width:12%;">Debit</th>
-                                    <th style="width:12%;">Credit</th>
+                                    <th style="width:18%">COA</th>
+                                    <th style="width:15%">Master Reference</th>
+                                    <th style="width:15%">Form Reference</th>
+                                    <th style="width:20%">Description</th>
+                                    <th style="width:12%" class="text-right">Debit</th>
+                                    <th style="width:12%" class="text-right">Credit</th>
                                 </tr>
                                 </thead>
                                 <tbody class="manipulate-row">
@@ -165,7 +154,18 @@
                         </div>
                     </div>
                 </div>
-
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Approval To *</label>
+                    <div class="col-md-6">
+                        <select name="approval_to" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                            @foreach($list_user_approval as $user_approval)
+                                @if($user_approval->may('approval.point.accounting.memo.journal'))
+                                    <option value="{{$user_approval->id}}" @if(old('approval_to') == $user_approval->id) selected @endif>{{$user_approval->name}}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
                 <div class="form-group">
                     <div class="col-md-6 col-md-offset-3">
                         <button type="submit" class="btn btn-effect-ripple btn-primary">Submit</button>
