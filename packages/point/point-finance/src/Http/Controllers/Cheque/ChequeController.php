@@ -10,6 +10,7 @@ use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Http\Controllers\Controller;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Coa;
+use Point\Framework\Models\Master\Person;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
 use Point\PointAccounting\Models\AssetsRefer;
@@ -100,6 +101,8 @@ class ChequeController extends Controller
     public function liquidProcess(Request $request)
     {
         $id_cheque = explode(',', \Input::get('id'));
+
+        \DB::beginTransaction();
         foreach ($id_cheque as $id) {
             $cheque_detail = ChequeDetail::find($id);
             $cheque_detail->liquid_date = date_format_db(\Input::get('liquid_date'), \Input::get('time'));
@@ -108,6 +111,9 @@ class ChequeController extends Controller
 
             self::journal($cheque_detail, $request);
         }
+        \DB::commit();
+
+        return redirect('finance/point/cheque');
     }
 
     public static function journal($cheque_detail, $request)
@@ -116,23 +122,23 @@ class ChequeController extends Controller
         $cheque = $cheque_detail->cheque;
         $position = JournalHelper::position($cheque->coa_id);
         $journal = new Journal();
-        $journal->form_date = $cheque->form_date;
+        $journal->form_date = $cheque->formulir->form_date;
         $journal->coa_id = $cheque->coa_id;
         $journal->description = $cheque_detail->notes ?: '';
-        $journal->$position = $cheque_detail->amount;
+        $journal->$position = $cheque_detail->amount * -1;
         $journal->form_journal_id = $cheque->formulir_id;
-        $journal->form_reference_id;
-        $journal->subledger_id;
-        $journal->subledger_type;
+        $journal->form_reference_id = $cheque->formulir_id;
+        $journal->subledger_id = $cheque->person_id;
+        $journal->subledger_type = get_class(new Person());
         $journal->save();
 
         // BANK
         $position = JournalHelper::position($request->input('coa_id'));
         $journal = new Journal();
-        $journal->form_date = $cheque->form_date;
+        $journal->form_date = $cheque->formulir->form_date;
         $journal->coa_id = $request->input('coa_id');
         $journal->description = $cheque_detail->notes ?: '';
-        $journal->$position = $cheque_detail->amount;
+        $journal->$position = $cheque_detail->amount * -1;
         $journal->form_journal_id = $cheque->formulir_id;
         $journal->form_reference_id;
         $journal->subledger_id;

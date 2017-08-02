@@ -6,6 +6,7 @@ use Point\Core\Exceptions\PointException;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Models\Journal;
+use Point\Framework\Models\Master\Person;
 use Point\PointFinance\Models\Bank\Bank;
 use Point\PointFinance\Models\Bank\BankDetail;
 use Point\PointFinance\Models\Cheque\Cheque;
@@ -46,11 +47,10 @@ class PaymentHelper
         $cheque->person_id = app('request')->input('person_id');
         $cheque->coa_id = app('request')->input('account_cheque_id');
         $cheque->payment_flow = $payment_reference->payment_flow;
-        $cheque->total = number_format_db(app('request')->input('total')) * -1;
+        $cheque->total = number_format_db(app('request')->input('total'));
         $cheque->save();
 
         self::updatePaymentReference($payment_reference, $formulir->id);
-
         for ($i=0 ; $i<count(app('request')->input('notes_detail')) ; $i++) {
             $cheque_detail = new ChequeDetailPayment;
             $cheque_detail->point_finance_cheque_id = $cheque->id;
@@ -246,7 +246,7 @@ class PaymentHelper
 
     public static function journal($payment)
     {
-        // JOURNAL #1 of #2 - PAYMENT TYPE CASH / BANK
+        // JOURNAL #1 of #2 - PAYMENT TYPE CASH / BANK / CHEQUE
         $position = JournalHelper::position($payment->coa_id);
         $journal = new Journal();
         $journal->form_date = $payment->formulir->form_date;
@@ -255,8 +255,8 @@ class PaymentHelper
         $journal->$position = $payment->total;
         $journal->form_journal_id = $payment->formulir_id;
         $journal->form_reference_id;
-        $journal->subledger_id;
-        $journal->subledger_type;
+        $journal->subledger_id = $position == 'credit' ? $payment->person_id : '';
+        $journal->subledger_type = $position == 'credit' ? get_class(new Person()) : '';
         $journal->save();
 
         if ($journal->debit > 0) {

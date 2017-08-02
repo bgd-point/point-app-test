@@ -11,22 +11,27 @@
         @include('point-finance::app.finance.point.cheque._menu')
         <div class="panel panel-default">
             <div class="panel-body">
+                <?php $i = 0;?>
+                @if(!$list_cheque_detail->count())
+                <h3>Please, make cheque transaction first</h3>
+                @endif
+                @if($list_cheque_detail->count())
                 <div class="table-responsive">
                     {!! $list_cheque_detail->render() !!}
                     <table class="table table-striped table-bordered">
                         <thead>
                         <tr>
-                            <th width="100px" class="text-center"></th>
+                            <th width="100px" class="text-center"><input type="checkbox" id="check-all"></th>
                             <th>Reference</th>
                             <th>Bank</th>
                             <th>Due Date</th>
                             <th>Number</th>
                             <th>Notes</th>
                             <th>Amount</th>
+                            <th>Status</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <?php $i = 0;?>
                         @foreach($list_cheque_detail as $cheque_detail)
 
                             <tr id="list-{{$cheque_detail->id}}">
@@ -49,6 +54,9 @@
                                 <td>
                                     {{ number_format_price($cheque_detail->amount)}}
                                 </td>
+                                <td>
+                                    @if(!$cheque_detail->status) <i class="btn-xs btn-warning">pending</i> @endif
+                                </td>
                             </tr>
                         <?php $i++;?>
                         @endforeach
@@ -62,6 +70,7 @@
                         <button onclick="select('decline')" class="btn btn-effect-ripple btn-danger">Decline</button>
                     </div>
                 </div>
+                @endif
             </div>
         </div>
     </div>
@@ -85,5 +94,10 @@
 
         location.href = url;
     }
+
+    $("#check-all").change(function () {
+        $("input:checkbox").prop('checked', $(this).prop("checked"));
+    });
+
 </script>
 @stop

@@ -76,7 +76,7 @@
                                             <td>
                                                 {{ $cheque_detail->notes}}
                                             </td>
-                                            <td>
+                                            <td class="text-right">
                                                 {{ number_format_price($cheque_detail->amount)}}
                                             </td>
                                         </tr>

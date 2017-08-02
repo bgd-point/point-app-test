@@ -1,7 +1,7 @@
 <a href="{{ url('finance/point/cheque') }}" class="btn {{\Request::segment(4)==''?'btn-primary':'btn-info'}}">
     List
 </a>
-<a href="{{ url('finance/point/cheque/pending') }}" class="btn {{\Request::segment(4)==''?'btn-primary':'btn-info'}}">
+<a href="{{ url('finance/point/cheque/pending') }}" class="btn {{\Request::segment(4)=='pending'?'btn-primary':'btn-info'}}">
     List Pending Cheque
 </a>
 <a href="{{ url('finance/point/cheque/out/choose-payable') }}" class="btn {{\Request::segment(4)=='out' ?'btn-primary':'btn-info'}}">

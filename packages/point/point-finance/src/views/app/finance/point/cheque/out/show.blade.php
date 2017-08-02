@@ -84,9 +84,11 @@
                                             <tr>
                                                 <th>Bank</th>
                                                 <th>Due Date</th>
+                                                <th>Liquid Date</th>
                                                 <th>Number</th>
                                                 <th>Notes</th>
                                                 <th class="text-right">Amount</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody class="manipulate-row">
@@ -94,15 +96,17 @@
                                         <tr>
                                             <td>{{ $cheque_detail->bank }}</td>
                                             <td>{{ date_format_view($cheque_detail->due_date) }}</td>
+                                            <td>{{ $cheque_detail->liquid_date ? date_format_view($cheque_detail->due_date) : '-' }}</td>
                                             <td>{{ $cheque_detail->number }}</td>
                                             <td>{{ $cheque_detail->notes }}</td>
                                             <td class="text-right">{{ number_format_price($cheque_detail->amount) }}</td>
+                                            <td>@if($cheque_detail->status) <i class="btn-xs btn-info">done</i> @else <i class="btn-xs btn-warning">pending</i> @endif</td>
                                         </tr>
                                         @endforeach
                                         </tbody> 
                                         <tfoot>
                                             <tr>
-                                                <td colspan="3" class="text-right"><h4><b>TOTAL</b></h4></td>
+                                                <td colspan="5" class="text-right"><h4><b>TOTAL</b></h4></td>
                                                 <td class="text-right">{{number_format_quantity($cheque->total * -1)}}</td>
                                                 <td></td>
                                             </tr>

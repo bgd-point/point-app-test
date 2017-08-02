@@ -46,25 +46,26 @@ class Journal extends Model
             }
             $account_payable_and_receivable->save();
         } elseif ($this->debit > 0) {
-            if($options['reference_type'] && $options['reference_id']) {
-                $account_payable_and_receivable = AccountPayableAndReceivable::where('reference_type', $options['reference_type'])
-                    ->where('reference_id', $options['reference_id'])
+            $account_payable_and_receivable_id = '';
+            $account_payable_and_receivable = AccountPayableAndReceivable::where('formulir_reference_id', $this->form_reference_id)
+                    ->where('person_id', $this->subledger_id)
                     ->first();
 
-                if($account_payable_and_receivable) {
-                    $account_payable_and_receivable_id = $account_payable_and_receivable->id;
-                } else {
-                    $account_payable_and_receivable_id = AccountPayableAndReceivable::where('formulir_reference_id', $this->form_reference_id)
-                        ->where('person_id', $this->subledger_id)
-                        ->first()
-                        ->id;
-                }
+            if (array_key_exists('reference_type', $options) && array_key_exists('reference_id', $options)) {
+                if ($options['reference_type'] && $options['reference_id']) {
+                    $account_payable_and_receivable_reference = AccountPayableAndReceivable::where('reference_type', $options['reference_type'])
+                        ->where('reference_id', $options['reference_id'])
+                        ->first();
+                    
+                    if ($account_payable_and_receivable_reference) {
+                        $account_payable_and_receivable_id = $account_payable_and_receivable_reference->id;
+                    }
+                }    
+            }
+            
 
-            } else {
-                $account_payable_and_receivable_id = AccountPayableAndReceivable::where('formulir_reference_id', $this->form_reference_id)
-                    ->where('person_id', $this->subledger_id)
-                    ->first()
-                    ->id;
+            if (! $account_payable_and_receivable_id) {
+                $account_payable_and_receivable_id = $account_payable_and_receivable->id;
             }
 
             if (AccountPayableAndReceivableHelper::isDone($account_payable_and_receivable_id)) {
