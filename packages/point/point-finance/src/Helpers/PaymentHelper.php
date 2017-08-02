@@ -103,7 +103,7 @@ class PaymentHelper
                 || app('request')->input('amount')[$i] == 0) {
                 continue;
             }
-            $cheque_detail = new ChequeDetail;
+            $cheque_detail = new ChequeDetailPayment;
             $cheque_detail->point_finance_cheque_id = $cheque->id;
             $cheque_detail->coa_id = app('request')->input('coa_id')[$i];
             $cheque_detail->notes_detail = app('request')->input('notes_detail')[$i];
@@ -116,6 +116,17 @@ class PaymentHelper
             $cheque_detail->reference_type = app('request')->input('reference_type')[$i]?: null;
             $cheque_detail->save();
             $count++;
+        }
+
+        for ($i=0 ; $i<count(app('request')->input('bank')) ; $i++) {
+            $cheque_detail = new ChequeDetail;
+            $cheque_detail->point_finance_cheque_id = $cheque->id;
+            $cheque_detail->bank = app('request')->input('bank')[$i];
+            $cheque_detail->due_date = date_format_db(app('request')->input('due_date_cheque')[$i]);
+            $cheque_detail->number = app('request')->input('number_cheque')[$i];
+            $cheque_detail->notes = app('request')->input('notes_cheque')[$i];
+            $cheque_detail->amount = number_format_db(app('request')->input('amount_cheque')[$i]);
+            $cheque_detail->save();
         }
 
         if ($count == 0) {

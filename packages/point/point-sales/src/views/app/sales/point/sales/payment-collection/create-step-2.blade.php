@@ -59,6 +59,7 @@
                                     data-placeholder="Please choose">
                                 <option value="cash">Cash</option>
                                 <option value="bank">Bank</option>
+                                <option value="cheque">Cheque</option>
                             </select>
                         </div>
                     </div>

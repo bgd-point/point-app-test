@@ -33,7 +33,6 @@ class ChequeOutController extends Controller
         $view->list_coa = Coa::where('coa_category_id', 9)->active()->get();
         $view->list_bank = MasterBank::all();
 
-
         return $view;
     }
 
