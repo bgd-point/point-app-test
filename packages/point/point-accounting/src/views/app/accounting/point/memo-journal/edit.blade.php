@@ -79,12 +79,10 @@
                                 </tr>
                                 </thead>
                                 <tbody class="manipulate-row">
-
                                  @for($i=0;$i<count($details);$i++)
                                  <?php
                                     $data = \Point\Core\Helpers\TempDataHelper::searchKeyValue('memo.journal', ['coa_id', 'subledger_id', 'subledger_type', 'form_reference_id', 'description', 'debit', 'credit'],
                                         [$details[$i]['coa_id'], $details[$i]['subledger_id'], $details[$i]['subledger_type'], $details[$i]['form_reference_id'], $details[$i]['description'], $details[$i]['debit'], $details[$i]['credit']]);
-                                         
                                  ?>
                                     <tr>
                                         <td><a href="javascript:void(0)" class="remove-row btn btn-danger"  data-item="{{$data['rowid']}}"><i class="fa fa-trash"></i></a></td>
@@ -97,11 +95,11 @@
                                             </select>
                                         </td>
                                         <td>
-
+                                        <?php
+                                            $list_journal = Point\Framework\Models\Journal::joinCoa()->coaHasSubleger()->where('coa.id', $details[$i]['coa_id'])->get();
+                                        ?>
                                             <select id="master-{{$i}}" name="master[]" class="selectize" style="width:100%;" data-placeholder="Choose one.." onchange="selectMaster(this.value, {{$i}} )">
-                                                <option ></option>
                                                 <?php
-                                                    $list_journal = Point\Framework\Models\Journal::joinCoa()->coaHasSubleger()->where('coa.id', $details[$i]['coa_id'])->get();
                                                     if($list_journal){
                                                         foreach($list_journal as $journal) {
                                                             if($journal->subledger_id && $journal->subledger_type){
@@ -110,7 +108,6 @@
                                                                 $name = $subledger->name;
 
                                                                 $subleger_id_temp = $details[$i]['subledger_id'].'#'.$details[$i]['subledger_type'];
-
                                                                 if($value == $subleger_id_temp){
                                                                     echo "<option value='".$value."' selected>$name</option>";
                                                                 }else{
@@ -120,8 +117,7 @@
                                                         }
                                                     }
                                                 ?>
-                                               
-                                            
+                                            </select>
                                         </td>
                                         <td>
                                             <select id="invoice-{{$i}}" name="invoice[]" class="selectize" style="width:100%;" data-placeholder="Choose one..">
@@ -179,7 +175,7 @@
                     <div class="col-md-6 col-md-offset-3">
                         <button type="submit" class="btn btn-effect-ripple btn-primary">Submit</button>
                         @if(count($details) > 0)
-                            <a href="{{url('accounting/point/memo-journal/cancel')}}" class="btn btn-effect-ripple btn-danger" data-toggle="modal">CLEAR</a>
+                            <a href="{{url('accounting/point/memo-journal/cancel/'.$memo_journal->id)}}" class="btn btn-effect-ripple btn-danger" data-toggle="modal">CLEAR</a>
                         @endif  
                     </div>
                 </div>
@@ -191,9 +187,9 @@
 
 @section('scripts')
 <script>
-    initDatatable('#item-datatable');
-    calculateAll();
+    var item_table = initDatatable('#item-datatable');
     var counter = {{count($details)}};
+    calculateAll();
 
     $('#addItemRow').on('mouseup', function () {
         item_table.row.add( [

@@ -15,7 +15,7 @@ Route::group(['prefix' => 'accounting/point', 'namespace' => 'Point\PointAccount
 		Route::get('/memo-journal/update-form', 'MemoJournalController@_formReference');
 		Route::post('/memo-journal/delete-temp', 'MemoJournalController@_removeTemp');
 		Route::get('/memo-journal/clear-temp', 'MemoJournalController@clear');
-		Route::get('/memo-journal/cancel', 'MemoJournalController@cancel');
+		Route::get('/memo-journal/cancel/{id}', 'MemoJournalController@cancel');
 
 		Route::get('/memo-journal/request-approval', 'MemoJournalApprovalController@requestApproval');
 		Route::post('/memo-journal/send-request-approval', 'MemoJournalApprovalController@sendRequestApproval');

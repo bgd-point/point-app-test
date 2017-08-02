@@ -100,6 +100,11 @@ class MemoJournalController extends Controller
             if($coa_id[$i] == '') {
                 return false;
             }
+
+            $coa = Coa::find($coa_id[$i]);
+            if ($coa->has_subledger && $request->input('master')[$i] == '') {
+                return false;
+            }
         }
 
         if ($request->input('foot_debit') == 0 || $request->input('foot_credit') == 0) {
@@ -209,6 +214,7 @@ class MemoJournalController extends Controller
         $formulir = FormulirHelper::update($request->input(), $formulir_old->archived, $formulir_old->form_raw_number);
         $memo_journal = MemoJournalHelper::create($formulir->id, $request);
         timeline_publish('update.memo.journal', 'update memo journal ' . $memo_journal->formulir->form_number . ' success');
+        TempDataHelper::clear('memo.journal', auth()->user()->id);
 
         DB::commit();
 
@@ -359,10 +365,10 @@ class MemoJournalController extends Controller
         return redirect()->back();
     }
 
-    public function cancel()
+    public function cancel($id)
     {
         TempDataHelper::clear('memo.journal', auth()->user()->id);
-        return redirect()->back();
+        return redirect('accounting/point/memo-journal/'.$id);
     }
 }
 
