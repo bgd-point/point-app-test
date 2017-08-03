@@ -33,17 +33,24 @@ class PaymentOrderApprovalController extends Controller
 
         $list_approver = PaymentOrder::selectApproverList(app('request')->input('formulir_id'));
         $request = $request->input();
+        $token = md5(date('ymdhis'));
 
         foreach ($list_approver as $data_approver) {
             $list_payment_order = PaymentOrder::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $array_formulir_id = [];
+            foreach ($list_payment_order as $payment_order) {
+                array_push($array_formulir_id, $payment_order->formulir_id);
+            }
+
+            $array_formulir_id = implode(',', $array_formulir_id);
             $approver = User::find($data_approver->approval_to);
-            $token = md5(date('ymdhis'));
             $data = [
                 'list_data' => $list_payment_order,
                 'token' => $token,
                 'username' => auth()->user()->name,
                 'url' => url('/'),
-                'approver' => $approver
+                'approver' => $approver,
+                'array_formulir_id' => $array_formulir_id
             ];
 
             \Queue::push(function ($job) use ($approver, $data, $request) {
@@ -118,5 +125,47 @@ class PaymentOrderApprovalController extends Controller
 
         gritter_success('form rejected', false);
         return $this->getRedirectLink($request, $payment_order->formulir);
+    }
+
+    public function approveAll()
+    {
+        $token = \Input::get('token');
+        $array_formulir_id = explode(',', \Input::get('formulir_id'));
+        $approval_message = '';
+
+        DB::beginTransaction();
+        foreach ($array_formulir_id as $id) {
+            $payment_order = PaymentOrder::where('formulir_id', $id)->first();
+            FormulirHelper::approve($payment_order->formulir, $approval_message, 'approval.point.finance.payment.order', $token);
+            timeline_publish('approve', $payment_order->formulir->form_number . ' approved', $payment_order->formulir->approval_to);
+        }
+        DB::commit();
+
+        $view = view('framework::app.approval-all-status');
+        $view->array_formulir_id = $array_formulir_id;
+        $view->formulir = \Input::get('formulir_id');
+
+        return $view;
+    }
+
+    public function rejectAll()
+    {
+        $token = \Input::get('token');
+        $array_formulir_id = explode(',', \Input::get('formulir_id'));
+        $approval_message = '';
+
+        DB::beginTransaction();
+        foreach ($array_formulir_id as $id) {
+            $payment_order = PaymentOrder::where('formulir_id', $id)->first();
+            FormulirHelper::reject($payment_order->formulir, $approval_message, 'approval.point.finance.payment.order', $token);
+            timeline_publish('reject', $payment_order->formulir->form_number . ' rejected', $payment_order->formulir->approval_to);
+        }
+        DB::commit();
+
+        $view = view('framework::app.approval-all-status');
+        $view->array_formulir_id = $array_formulir_id;
+        $view->formulir = \Input::get('formulir_id');
+
+        return $view;
     }
 }
