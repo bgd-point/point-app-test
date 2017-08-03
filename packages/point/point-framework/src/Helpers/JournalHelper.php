@@ -176,7 +176,7 @@ class JournalHelper
     public static function coaOpeningBalance($coa_id, $date_from)
     {
         $journal = Journal::where('coa_id', $coa_id)
-            ->where('form_date', '<', $date_from)
+            ->where('form_date', '<=', $date_from)
             ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
             ->groupBy('coa_id')
             ->first();
@@ -237,5 +237,14 @@ class JournalHelper
             ->whereBetween('form_date', [$date_from, $date_to])
             ->sum('credit');
         return $journal_credit;
+    }
+
+    public static function totalBalance($form_date)
+    {
+        $journal = Journal::where('form_date', '<=', $form_date)
+            ->selectRaw('sum(debit) as debit, sum(credit) as credit')
+            ->first();
+
+        return $journal->debit - $journal->credit;
     }
 }
