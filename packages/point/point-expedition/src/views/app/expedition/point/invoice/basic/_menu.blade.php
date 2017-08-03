@@ -1,4 +1,4 @@
-<a href="{{ url('expedition/point/invoice/basic') }}" class="btn {{\Request::segment(5)==''?'btn-primary':'btn-info'}}">
+<a href="{{ url('expedition/point/invoice') }}" class="btn {{\Request::segment(4)==''?'btn-primary':'btn-info'}}">
     List Data
 </a>
 <a href="{{ url('expedition/point/invoice/basic/create') }}"
