@@ -235,7 +235,7 @@ class JournalHelper
     {
         $journal_debit = Journal::where('coa_id', $coa_id)
             ->whereBetween('form_date', [$date_from, $date_to])
-            ->sum('debit');
+            ->sum('credit');
         return $journal_debit;
     }
 }
