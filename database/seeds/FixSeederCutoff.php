@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Models\AccountPayableAndReceivable;
+use Point\Framework\Models\FixedAsset;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Item;
@@ -22,7 +23,7 @@ class FixSeederCutoff extends Seeder
         foreach ($list_cutoff_account as $cutoff_account) {
         	foreach ($cutoff_account->cutOffAccountDetail as $cut_off_account_detail) {
         		if ($cut_off_account_detail->coa->has_subledger) {
-                // insert inventory
+                    // insert inventory
 	                if ($cut_off_account_detail->coa->subledger_type == get_class(new Item())) {
 	                    self::accountInventory($cutoff_account, $cut_off_account_detail);
 	                }
@@ -32,6 +33,11 @@ class FixSeederCutoff extends Seeder
 	                    self::accountPayable($cutoff_account, $cut_off_account_detail);
 	                    self::accountReceivable($cutoff_account, $cut_off_account_detail);
 	                }
+
+                    // insert fixed assets
+                    if ($cut_off_account_detail->coa->subledger_type == get_class(new FixedAsset())) {
+                        self::accountFixedAsset($cut_off_account, $cut_off_account_detail);
+                    }
 	            }
         	}
         }
@@ -163,6 +169,38 @@ class FixSeederCutoff extends Seeder
                 $journal->form_reference_id;
                 $journal->subledger_id = $cut_off_inventory_detail->subledger_id;
                 $journal->subledger_type = $cut_off_inventory_detail->subledger_type;
+                $journal->save();
+            }
+        }
+    }
+
+    private static function accountFixedAsset($cut_off_account, $cut_off_account_detail)
+    {
+        $cut_off_fixed_assets = CutOffFixedAssets::joinFormulir()
+            ->approvalApproved()
+            ->close()
+            ->notArchived()
+            ->where('form_date', 'like', date('Y-m-d', strtotime($cut_off_account->formulir->form_date)) . '%')
+            ->selectOriginal()
+            ->orderby('id', 'desc')
+            ->first();
+
+        if ($cut_off_fixed_assets) {
+            foreach ($cut_off_fixed_assets->cutOffFixedAssetsDetail as $cut_off_fixed_assets_detail) {
+                $journal = Journal::where('form_journal_id', $cut_off_account->formulir_id)->where('coa_id', $cut_off_fixed_assets_detail->coa_id)->first();
+                if ($journal) {
+                    continue;
+                }
+                $position = JournalHelper::position($cut_off_account_detail->coa_id);
+                $journal = new Journal();
+                $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
+                $journal->coa_id = $cut_off_fixed_assets_detail->coa_id;
+                $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
+                $journal->$position = $cut_off_fixed_assets_detail->total_price;
+                $journal->form_journal_id = $cut_off_account->formulir_id;
+                $journal->form_reference_id;
+                $journal->subledger_id = $cut_off_fixed_assets_detail->subledger_id;
+                $journal->subledger_type = get_class( new FixedAsset());
                 $journal->save();
             }
         }
