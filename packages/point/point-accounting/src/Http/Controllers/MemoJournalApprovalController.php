@@ -35,18 +35,24 @@ class MemoJournalApprovalController extends Controller
         }
 
         $list_approver = MemoJournal::selectApproverList(app('request')->input('formulir_id'));
-
         $request = $request->input();
+        $token = md5(date('ymdhis'));
         foreach($list_approver as $data_approver) {
             $list_memo_journal = MemoJournal::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $array_formulir_id = [];
+            foreach ($list_memo_journal as $memo_journal) {
+                array_push($array_formulir_id, $memo_journal->formulir_id);
+            }
+
+            $array_formulir_id = implode(',', $array_formulir_id);
             $approver = User::find($data_approver->approval_to);
-            $token = md5(date('ymdhis'));
             $data = [
                 'list_data' => $list_memo_journal, 
                 'token' => $token, 
                 'username' => auth()->user()->name, 
                 'url' => url('/'),
-                'approver' => $approver
+                'approver' => $approver,
+                'array_formulir_id' => $array_formulir_id
                 ];
 
             \Queue::push(function($job) use ($approver, $data, $request) {
@@ -99,5 +105,47 @@ class MemoJournalApprovalController extends Controller
 
         gritter_success('form rejected', 'false');
         return $this->getRedirectLink($request, $memo_journal->formulir);
+    }
+
+    public function approveAll()
+    {
+        $token = \Input::get('token');
+        $array_formulir_id = explode(',', \Input::get('formulir_id'));
+        $approval_message = '';
+
+        DB::beginTransaction();
+        foreach ($array_formulir_id as $id) {
+            $memo_journal = MemoJournal::where('formulir_id', $id)->first();
+            FormulirHelper::approve($memo_journal->formulir, $approval_message, 'approval.point.accounting.memo.journal', $token);
+            timeline_publish('approve', $memo_journal->formulir->form_number . ' approved', $memo_journal->formulir->approval_to);
+        }
+        DB::commit();
+
+        $view = view('framework::app.approval-all-status');
+        $view->array_formulir_id = $array_formulir_id;
+        $view->formulir = \Input::get('formulir_id');
+
+        return $view;
+    }
+
+    public function rejectAll()
+    {
+        $token = \Input::get('token');
+        $array_formulir_id = explode(',', \Input::get('formulir_id'));
+        $approval_message = '';
+
+        DB::beginTransaction();
+        foreach ($array_formulir_id as $id) {
+            $memo_journal = MemoJournal::where('formulir_id', $id)->first();
+            FormulirHelper::reject($memo_journal->formulir, $approval_message, 'approval.point.accounting.memo.journal', $token);
+            timeline_publish('reject', $memo_journal->formulir->form_number . ' rejected', $memo_journal->formulir->approval_to);
+        }
+        DB::commit();
+
+        $view = view('framework::app.approval-all-status');
+        $view->array_formulir_id = $array_formulir_id;
+        $view->formulir = \Input::get('formulir_id');
+
+        return $view;
     }
 }

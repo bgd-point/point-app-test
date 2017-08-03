@@ -18,6 +18,9 @@ Route::group(['namespace' => 'Point\Core\Http\Controllers'], function () {
         Route::get('facility', function () {
             return view('core::app.facility.menu');
         });
+
+        // Download File
+        Route::get('download/{project}/{folder}/{name}', 'DownloadFileController@download');
     });
 
     Route::get('error', function () {
@@ -41,6 +44,7 @@ Route::group(['namespace' => 'Point\Core\Http\Controllers'], function () {
         // password reset routes
         Route::get('password/reset/{token}', 'PasswordController@getReset');
         Route::post('password/reset', 'PasswordController@postReset');
+
     });
 
     // setting routes

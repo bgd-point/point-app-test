@@ -61,7 +61,6 @@ class MemoJournalHelper
         ];
 
         self::addDetails($memo_journal, $items);
-
         return $memo_journal;
     }
 
@@ -87,8 +86,7 @@ class MemoJournalHelper
             $memo_journal_detail->credit = 0;
 
             $memo_journal_detail->form_journal_id = $memo_journal->formulir_id;
-            $memo_journal_detail->form_reference_id = $form_reference_id[$i];
-
+            $memo_journal_detail->form_reference_id = $memo_journal_detail->coa->has_subledger ? $form_reference_id[$i] : null;
             if($debit[$i])
                 $memo_journal_detail->debit = number_format_db($debit[$i]);
 
@@ -101,7 +99,6 @@ class MemoJournalHelper
             }
 
             $memo_journal_detail->save();
-
         }
     }
 
@@ -117,7 +114,7 @@ class MemoJournalHelper
 
     public static function addToJournal($memo_journal)
     {
-        foreach ($memo_journal->memoJournalDetails as $memo_journal_item) {
+        foreach ($memo_journal->detail as $memo_journal_item) {
             $journal = new Journal;
             $journal->form_date = $memo_journal->formulir->form_date;
             $journal->coa_id = $memo_journal_item->coa_id;

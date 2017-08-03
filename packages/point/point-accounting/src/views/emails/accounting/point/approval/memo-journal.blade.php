@@ -159,20 +159,20 @@
 
             <table cellpadding="0" cellspacing="0">
                 <tr class="heading">
-                    <td align="center">COA</td>
-                    <td align="center">Master Refference</td>
-                    <td align="center">From Refference</td>
-                    <td align="center">Description</td>
+                    <td>COA</td>
+                    <td>Master Refference</td>
+                    <td>From Refference</td>
+                    <td>Description</td>
                     <td align="right">Debit</td>
                     <td align="right">Credit</td>
                 </tr>
             
-                @foreach($memo_journal->memoJournalDetails as $detail)
+                @foreach($memo_journal->detail as $detail)
                     <tr class="item">
-                        <td align="center">{{ $detail->coaModel->name }}</td>
-                        <td align="center">@if($detail->subledger_id > 0){{ $master->name }}@else - @endif </td>
-                        <td align="center"> @if($detail->form_reference_id > 0){{ $form->form_number }}@else - @endif </td>
-                        <td align="center">{{ $detail->description }}</td>
+                        <td>{{ $detail->coa->name }}</td>
+                        <td>{{ $detail->subledger_type ? $detail->subledger_type::find($detail->subledger_id)->name : '-' }}</td>
+                        <td>{{ $detail->form_reference_id ? $detail->reference->form_number : '-' }}</td>
+                        <td>{{ $detail->description }}</td>
                         <td align="right">{{ number_format_accounting($detail->debit) }}</td>
                         <td align="right">{{ number_format_accounting($detail->credit) }}</td>
                     </tr>
@@ -193,6 +193,15 @@
                 </tr>
             </table>
         @endforeach
+        @if($list_data->count() > 1)
+        <br>
+        <a href="{{ $url . '/accounting/point/memo-journal/approve-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
+            <input type="button" class="btn btn-primary" value="Approve All">
+        </a>
+        <a href="{{ $url . '/accounting/point/memo-journal/reject-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
+            <input type="button" class="btn btn-warning" value="Reject All">
+        </a>
+        @endif
     </div>
 </body>
 </html>
