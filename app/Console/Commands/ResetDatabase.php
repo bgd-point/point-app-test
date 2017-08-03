@@ -43,7 +43,6 @@ class ResetDatabase extends Command
         Artisan::call('framework:default-account', ['db_name' => $this->argument('db_name')]);
         Artisan::call('db:seed', ['--force' => true, '--class' => 'CoreDevDatabaseSeeder']);
         Artisan::call('db:seed', ['--force' => true, '--class' => 'FrameworkDevDatabaseSeeder']);
-        Artisan::call('db:seed', ['--force' => true, '--class' => 'StagingUserDatabaseSeeder']);
 
         // ADD PLUGINS SEEDING HERE
         Artisan::call('db:seed', ['--force' => true, '--class' => 'PointInventoryDatabaseSeeder']);
