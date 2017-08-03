@@ -37,7 +37,7 @@ class MemoJournal extends Model
         $q->joinFormulir()->notArchived()->notCanceled()->selectOriginal();
     }
 
-    public function memoJournalDetails()
+    public function detail()
     {
         return $this->hasMany('\Point\PointAccounting\Models\MemoJournalDetail', 'memo_journal_id');
     }
@@ -45,5 +45,15 @@ class MemoJournal extends Model
     public static function bladeEmail()
     {
         return 'point-accounting::emails.accounting.point.approval.memo-journal';
+    }
+
+    public static function showUrl($id)
+    {
+        $memo_journal = MemoJournal::find($id);
+        if ($memo_journal->formulir->form_number) {
+            return '/accounting/point/memo-journal/'.$memo_journal->id;
+        } else {
+            return '/accounting/point/memo-journal/'.$memo_journal->id.'/archived';
+        }
     }
 }
