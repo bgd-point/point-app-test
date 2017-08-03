@@ -46,4 +46,14 @@ class MemoJournal extends Model
     {
         return 'point-accounting::emails.accounting.point.approval.memo-journal';
     }
+
+    public static function showUrl($id)
+    {
+        $memo_journal = MemoJournal::find($id);
+        if ($memo_journal->formulir->form_number) {
+            return '/accounting/point/memo-journal/'.$memo_journal->id;
+        } else {
+            return '/accounting/point/memo-journal/'.$memo_journal->id.'/archived';
+        }
+    }
 }
