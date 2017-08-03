@@ -243,16 +243,16 @@ class CutOffHelper {
         }
 
         // CUTOFF INVENTORY SUBLEDGER
-        foreach($cut_off_inventory->cutOffInventoryDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_inventory_detail) {
+        foreach($cut_off_inventory->cutOffInventoryDetail as $cut_off_inventory_detail) {
 
             // EMPTY JOURNAL
-            $coa_value = JournalHelper::getTotalValueBySubledger($cut_off_account_detail->coa_id, $cut_off_account->formulir->form_date, $cut_off_inventory_detail->subledger_type, $cut_off_inventory_detail->subledger_id);
+            $coa_value = JournalHelper::getTotalValueBySubledger($cut_off_inventory_detail->coa_id, $cut_off_account->formulir->form_date, $cut_off_inventory_detail->subledger_type, $cut_off_inventory_detail->subledger_id);
             if ($cut_off_inventory_detail->stock > 0 && $cut_off_inventory_detail->amount > 0) {
                 $position = JournalHelper::position($cut_off_inventory_detail->coa_id);
                 if ($coa_value->debit > 0 || $coa_value->credit > 0) {
                     $journal = new Journal();
                     $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
-                    $journal->coa_id = $cut_off_account_detail->coa_id;
+                    $journal->coa_id = $cut_off_inventory_detail->coa_id;
                     $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
                     $journal->debit = $coa_value->credit;
                     $journal->credit = $coa_value->debit;
@@ -278,7 +278,7 @@ class CutOffHelper {
                 // CUTOFF JOURNAL
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
-                $journal->coa_id = $cut_off_account_detail->coa_id;
+                $journal->coa_id = $cut_off_inventory_detail->coa_id;
                 $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
                 $journal->$position = $cut_off_inventory_detail->amount;
                 $journal->form_journal_id = $cut_off_account->formulir_id;
@@ -289,9 +289,7 @@ class CutOffHelper {
             }
         }
 
-        if ($cut_off_inventory->cutOffInventoryDetail->where('coa_id', $cut_off_account_detail->coa_id)->count()) {
-            FormulirHelper::close($cut_off_inventory->formulir_id);
-        }
+        FormulirHelper::close($cut_off_inventory->formulir_id);
     }
 
     private static function accountPayable($cut_off_account, $cut_off_account_detail)
@@ -306,10 +304,10 @@ class CutOffHelper {
             ->first();
 
         if ($cut_off_payable) {
-            foreach($cut_off_payable->cutOffPayableDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_payable_detail) {
+            foreach($cut_off_payable->cutOffPayableDetail as $cut_off_payable_detail) {
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
-                $journal->coa_id = $cut_off_account_detail->coa_id;
+                $journal->coa_id = $cut_off_payable_detail->coa_id;
                 $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
                 $journal->debit = 0;
                 $journal->credit = $cut_off_payable_detail->amount;
@@ -320,9 +318,7 @@ class CutOffHelper {
                 $journal->save(['reference_type' => get_class($cut_off_payable_detail), 'reference_id' => $cut_off_payable_detail->id]);
             }
 
-            if ($cut_off_payable->cutOffPayableDetail->where('coa_id', $cut_off_account_detail->coa_id)->count()) {
-                FormulirHelper::close($cut_off_payable->formulir_id);
-            }
+            FormulirHelper::close($cut_off_payable->formulir_id);
         }
     }
 
@@ -338,10 +334,10 @@ class CutOffHelper {
             ->first();
 
         if ($cut_off_receivable) {
-            foreach($cut_off_receivable->cutOffReceivableDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_receivable_detail) {
+            foreach($cut_off_receivable->cutOffReceivableDetail as $cut_off_receivable_detail) {
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
-                $journal->coa_id = $cut_off_account_detail->coa_id;
+                $journal->coa_id = $cut_off_receivable_detail->coa_id;
                 $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
                 $journal->debit = $cut_off_receivable_detail->amount;
                 $journal->credit = 0;
@@ -352,9 +348,7 @@ class CutOffHelper {
                 $journal->save(['reference_type' => get_class($cut_off_receivable_detail), 'reference_id' => $cut_off_receivable_detail->id]);
             }
 
-            if ($cut_off_receivable->cutOffReceivableDetail->where('coa_id', $cut_off_account_detail->coa_id)->count()) {
-                FormulirHelper::close($cut_off_receivable->formulir_id);
-            }
+            FormulirHelper::close($cut_off_receivable->formulir_id);
         }
     }
 
@@ -369,11 +363,11 @@ class CutOffHelper {
             ->orderby('id', 'desc')
             ->first();
         if ($cut_off_fixed_assets) {
-            foreach ($cut_off_fixed_assets->cutOffFixedAssetsDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_fixed_assets_detail) {
+            foreach ($cut_off_fixed_assets->cutOffFixedAssetsDetail as $cut_off_fixed_assets_detail) {
                 $position = JournalHelper::position($cut_off_account_detail->coa_id);
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
-                $journal->coa_id = $cut_off_account_detail->coa_id;
+                $journal->coa_id = $cut_off_fixed_assets_detail->coa_id;
                 $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
                 $journal->$position = $cut_off_fixed_assets_detail->total_price;
                 $journal->form_journal_id = $cut_off_account->formulir_id;
@@ -383,9 +377,7 @@ class CutOffHelper {
                 $journal->save();
             }
 
-            if ($cut_off_fixed_assets->cutOffFixedAssetsDetail->where('coa_id', $cut_off_account_detail->coa_id)->count()) {
-                FormulirHelper::close($cut_off_fixed_assets->formulir_id);
-            }
+            FormulirHelper::close($cut_off_fixed_assets->formulir_id);
         }
         
     }
