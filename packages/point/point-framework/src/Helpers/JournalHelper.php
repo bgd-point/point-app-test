@@ -233,9 +233,9 @@ class JournalHelper
 
     public static function coaCredit($coa_id, $date_from, $date_to)
     {
-        $journal_debit = Journal::where('coa_id', $coa_id)
+        $journal_credit = Journal::where('coa_id', $coa_id)
             ->whereBetween('form_date', [$date_from, $date_to])
             ->sum('credit');
-        return $journal_debit;
+        return $journal_credit;
     }
 }
