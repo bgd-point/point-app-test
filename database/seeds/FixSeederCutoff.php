@@ -21,6 +21,8 @@ class FixSeederCutoff extends Seeder
         \DB::beginTransaction();
         $list_cutoff_account = CutOffAccount::joinFormulir()->close()->notArchived()->approvalApproved()->selectOriginal()->get();
         foreach ($list_cutoff_account as $cutoff_account) {
+            $journal = Journal::where('form_journal_id', $cutoff_account->formulir_id )->selectRaw('sum(debit) as debit, sum(credit) as credit')->first();
+            \Log::info('before :: debit = ' . $journal->debit. ' credit = '.$journal->credit);
         	foreach ($cutoff_account->cutOffAccountDetail as $cut_off_account_detail) {
         		if ($cut_off_account_detail->coa->has_subledger) {
                     // insert inventory
@@ -40,6 +42,8 @@ class FixSeederCutoff extends Seeder
                     }
 	            }
         	}
+            $journal = Journal::where('form_journal_id', $cutoff_account->formulir_id )->selectRaw('sum(debit) as debit, sum(credit) as credit')->first();
+            \Log::info('after :: debit = ' . $journal->debit. ' credit = '.$journal->credit);
         }
         \DB::commit();
     }
@@ -59,9 +63,11 @@ class FixSeederCutoff extends Seeder
             foreach($cut_off_payable->cutOffPayableDetail as $cut_off_payable_detail) {
             	$account_payable = AccountPayableAndReceivable::where('reference_type', get_class($cut_off_payable_detail))->where('reference_id', $cut_off_payable_detail->id)->first();
             	if ($account_payable) {
+                    \Log::info('journal Account Payable continue '. $cut_off_payable_detail->coa->name);
             		continue;
             	}
 
+                \Log::info('journal account payable started');
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
                 $journal->coa_id = $cut_off_payable_detail->coa_id;
@@ -92,8 +98,11 @@ class FixSeederCutoff extends Seeder
             foreach($cut_off_receivable->cutOffReceivableDetail as $cut_off_receivable_detail) {
             	$account_receivable = AccountPayableAndReceivable::where('reference_type', get_class($cut_off_receivable_detail))->where('reference_id', $cut_off_receivable_detail->id)->first();
             	if ($account_receivable) {
+                    \Log::info('journal Account Receivable continue '. $cut_off_receivable_detail->coa->name);
             		continue;
             	}
+
+                \Log::info('journal account receivable started');
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
                 $journal->coa_id = $cut_off_receivable_detail->coa_id;
@@ -128,10 +137,12 @@ class FixSeederCutoff extends Seeder
             // EMPTY JOURNAL
             $coa_value = JournalHelper::getTotalValueBySubledger($cut_off_inventory_detail->coa_id, $cut_off_account->formulir->form_date, $cut_off_inventory_detail->subledger_type, $cut_off_inventory_detail->subledger_id);
             if ($cut_off_inventory_detail->stock > 0 && $cut_off_inventory_detail->amount > 0) {
-            	$journal = Journal::where('form_journal_id', $cut_off_account->formulir_id)->where('coa_id', $cut_off_inventory_detail->coa_id)->first();
-            	if ($journal) {
-            		continue;
-            	}
+                $journal = Journal::where('form_journal_id', $cut_off_account->formulir_id)->where('coa_id', $cut_off_inventory_detail->coa_id)->first();
+                if ($journal) {
+                    \Log::info('journal inventory continue '. $cut_off_inventory_detail->coa->name);
+                    continue;
+                }
+                \Log::info('journal inventory started');
                 $position = JournalHelper::position($cut_off_inventory_detail->coa_id);
                 if ($coa_value->debit > 0 || $coa_value->credit > 0) {
                     $journal = new Journal();
@@ -189,8 +200,10 @@ class FixSeederCutoff extends Seeder
             foreach ($cut_off_fixed_assets->cutOffFixedAssetsDetail as $cut_off_fixed_assets_detail) {
                 $journal = Journal::where('form_journal_id', $cut_off_account->formulir_id)->where('coa_id', $cut_off_fixed_assets_detail->coa_id)->first();
                 if ($journal) {
+                    \Log::info('journal FA continue '. $cut_off_fixed_assets_detail->coa->name);
                     continue;
                 }
+                \Log::info('journal FA started');
                 $position = JournalHelper::position($cut_off_account_detail->coa_id);
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
