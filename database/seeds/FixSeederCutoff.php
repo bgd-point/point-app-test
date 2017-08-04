@@ -40,12 +40,31 @@ class FixSeederCutoff extends Seeder
                     if ($cut_off_account_detail->coa->subledger_type == get_class(new FixedAsset())) {
                         self::accountFixedAsset($cut_off_account, $cut_off_account_detail);
                     }
-	            }
+	            } else {
+                    self::accountNonSubledger($cut_off_account, $cut_off_account_detail);
+                }
         	}
             $journal = Journal::where('form_journal_id', $cutoff_account->formulir_id )->selectRaw('sum(debit) as debit, sum(credit) as credit')->first();
             \Log::info('after :: debit = ' . $journal->debit. ' credit = '.$journal->credit);
         }
         \DB::commit();
+    }
+
+    private static function accountNonSubledger($cut_off_account, $cut_off_account_detail)
+    {
+        if ($cut_off_account_detail->debit > 0 || $cut_off_account_detail->credit > 0) {
+            $journal = new Journal();
+            $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
+            $journal->coa_id = $cut_off_account_detail->coa_id;
+            $journal->description = "Cut Off from formulir number " . $cut_off_account->formulir->form_number;
+            $journal->debit = $cut_off_account_detail->debit;
+            $journal->credit = $cut_off_account_detail->credit;
+            $journal->form_journal_id = $cut_off_account->formulir_id;
+            $journal->form_reference_id;
+            $journal->subledger_id;
+            $journal->subledger_type;
+            $journal->save();
+        }
     }
 
     private static function accountPayable($cut_off_account, $cut_off_account_detail)
