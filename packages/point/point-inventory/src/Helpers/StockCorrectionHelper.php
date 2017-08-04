@@ -56,7 +56,7 @@ class StockCorrectionHelper
             $stock_correction_item->point_inventory_stock_correction_id = $stock_correction->id;
             $stock_correction_item->item_id = app('request')->input('item_id')[$i];
             $stock_correction_item->stock_in_database = number_format_db(app('request')->input('stock_exist')[$i]);
-            $stock_correction_item->quantity_correction = app('request')->input('quantity_correction')[$i];
+            $stock_correction_item->quantity_correction = number_format_db(app('request')->input('quantity_correction')[$i]);
             $stock_correction_item->correction_notes = app('request')->input('correction_notes')[$i];
             $unit = $stock_correction_item->item->unit()->first();
             $stock_correction_item->unit = $unit->name;
