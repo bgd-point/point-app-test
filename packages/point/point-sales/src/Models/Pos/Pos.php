@@ -84,12 +84,14 @@ class Pos extends Model
         return $this->belongsTo('\Point\Framework\Models\Master\Person', 'customer_id');
     }
 
-    public static function showUrl()
+    public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
-            return '/sales/point/pos/'.$this->id;
+        $class = self::find($id);
+
+        if ($class->formulir->form_number) {
+            return '/sales/point/pos/'.$class->id;
         } else {
-            return '/sales/point/pos/'.$this->id.'/archived';
+            return '/sales/point/pos/'.$class->id.'/archived';
         }
     }
 }

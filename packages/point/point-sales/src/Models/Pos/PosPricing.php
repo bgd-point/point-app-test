@@ -88,12 +88,12 @@ class PosPricing extends Model
         return $this->hasMany('Point\PointSales\Models\Pos\PosPricingItem', 'pos_pricing_id');
     }
 
-    public static function showUrl()
+    public static function showUrl($id)
     {
-
-        if ($this->formulir->form_number) {
-            return '/sales/point/pos/pricing/'.$this->id;
+        $class = self::find($id);
+        if ($class->formulir->form_number) {
+            return '/sales/point/pos/pricing/'.$class->id;
         }
-        return '/sales/point/pos/pricing/'.$this->id.'/archived';
+        return '/sales/point/pos/pricing/'.$class->id.'/archived';
     }
 }
