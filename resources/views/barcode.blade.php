@@ -2,6 +2,7 @@
 
     .paper {
         width: 99px;
+        font-size: 11px;
     }
 
     .paper-block-1 {
@@ -23,13 +24,13 @@ $barcode = new DNS1D;
 <div class="paper">
     <span class="paper-block-1">
         <?php
-        echo $barcode->getBarcodeSVG("1234", "EAN13", 0.8);
+        echo $barcode->getBarcodeSVG("123456", "c128", 1);
         echo '<br> Test';
         ?>
     </span>
     <span class="paper-block-2">
         <?php
-        echo $barcode->getBarcodeSVG("1234", "EAN13", 0.8);
+        echo $barcode->getBarcodeSVG("123456", "C128", 1);
         echo '<br> Test';
         ?>
     </span>
