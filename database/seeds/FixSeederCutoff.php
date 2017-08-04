@@ -53,6 +53,7 @@ class FixSeederCutoff extends Seeder
     private static function accountNonSubledger($cut_off_account, $cut_off_account_detail)
     {
         if ($cut_off_account_detail->debit > 0 || $cut_off_account_detail->credit > 0) {
+            \Log::info('journal account non subledger started');
             $journal = new Journal();
             $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
             $journal->coa_id = $cut_off_account_detail->coa_id;
