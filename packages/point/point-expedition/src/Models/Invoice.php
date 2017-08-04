@@ -122,12 +122,14 @@ class Invoice extends Model
         }
     }
 
-    public static function showUrl()
+    public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
-            return '/expedition/point/invoice/' . $this->id;
+        $class = self::find($id);
+
+        if ($class->formulir->form_number) {
+            return '/expedition/point/invoice/' . $id;
         }
 
-        return '/expedition/point/invoice/' . $this->id . '/archived';
+        return '/expedition/point/invoice/' . $id . '/archived';
     }
 }

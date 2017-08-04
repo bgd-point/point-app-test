@@ -52,13 +52,15 @@ class PaymentOrder extends Model
         return $this->hasMany('\Point\PointExpedition\Models\PaymentOrderOther', 'point_expedition_payment_order_id');
     }
 
-    public static function showUrl()
+    public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
-            return '/expedition/point/payment-order/' . $this->id;
+        $class = self::find($id);
+
+        if ($class->formulir->form_number) {
+            return '/expedition/point/payment-order/' . $class->id;
         }
 
-        return '/expedition/point/payment-order/' . $this->id . '/archived';
+        return '/expedition/point/payment-order/' . $class->id . '/archived';
     }
 
     public static function bladeEmail()
