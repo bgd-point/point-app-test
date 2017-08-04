@@ -99,6 +99,7 @@ class BuyApprovalController extends Controller
                 ->notArchived()
                 ->whereIn('formulir_id', app('request')->input('formulir_id'))
                 ->where('approval_to', '=', $data_approver->approval_to)
+                ->selectOriginal()
                 ->get();
 
             $token = md5(date('ymdhis'));
