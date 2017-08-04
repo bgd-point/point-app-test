@@ -90,12 +90,14 @@ class SalesOrder extends Model
         return $this->belongsTo('\Point\Framework\Models\Master\Person', 'person_id');
     }
 
-    public static function showUrl()
+    public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
-            return '/sales/point/indirect/sales-order/'.$this->id;
+        $class = self::find($id);
+
+        if ($class->formulir->form_number) {
+            return '/sales/point/indirect/sales-order/'.$class->id;
         } else {
-            return '/sales/point/indirect/sales-order/'.$this->id.'/archived';
+            return '/sales/point/indirect/sales-order/'.$class->id.'/archived';
         }
     }
 
