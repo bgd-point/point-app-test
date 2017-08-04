@@ -61,13 +61,15 @@ class Downpayment extends Model
             ->orderByStandard();
     }
 
-    public static function showUrl()
+    public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
-            return '/purchasing/point/downpayment/'.$id;
-        }
+        $class = self::find($id);
 
-        return '/purchasing/point/downpayment/'.$id.'/archived';
+        if ($class->formulir->form_number) {
+            return '/purchasing/point/indirect/downpayment/'.$class->id;
+        } else {
+            return '/purchasing/point/indirect/downpayment/'.$class->id.'/archived';
+        }
     }
 
     public static function bladeEmail()

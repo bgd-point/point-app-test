@@ -4,10 +4,10 @@
 <div id="page-content">
     <ul class="breadcrumb breadcrumb-top">
         @include('point-accounting::app/accounting/point/memo-journal/_breadcrumb')
-        <li><a href="{{url('accounting/point/memo-journal')}}">Memo Journal</a></li>
+        <li><a href="{{url('accounting/point/memo-journal/'.$memo_journal->id)}}">{{$memo_journal->formulir->form_number}}</a></li>
         <li>Archived</li>
     </ul>
-    <h2 class="sub-header">Memo Journal | Edit</h2>
+    <h2 class="sub-header">Memo Journal</h2>
     @include('point-accounting::app.accounting.point.memo-journal._menu')
 
     @include('core::app.error._alert')
@@ -36,20 +36,20 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label">Archived Number</label>
                             <div class="col-md-6 content-show">
-                                {{ $memo_journal->formulir->archived }}
+                                {{ $memo_journal_archived->formulir->archived }}
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="col-md-3 control-label">Notes</label>
                             <div class="col-md-6 content-show">
-                                {{ $memo_journal->formulir->notes }}
+                                {{ $memo_journal_archived->formulir->notes }}
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label">Date</label>
                             <div class="col-md-6 content-show">
-                                {{ date_format_view($memo_journal->formulir->form_date) }}
+                                {{ date_format_view($memo_journal_archived->formulir->form_date) }}
                             </div>
                         </div>
                     </fieldset>
@@ -75,29 +75,11 @@
                                         </tr>
                                         </thead>
                                         <tbody class="manipulate-row">
-                                        @foreach($memo_journal->memoJournalDetails as $detail)
-                                            <?php
-                                            if($detail->subledger_id!=null || $detail->subledger_id!=0) {
-                                                $master = $detail->subledger_type->find($detail->subledger_id);
-                                                $form = \Point\Framework\Models\Formulir::find($detail->form_journal_id);
-                                            }
-                                            ?>
+                                        @foreach($memo_journal_archived->detail as $detail)
                                             <tr>
-                                                <td>{{ $detail->coaModel->name }}</td>
-                                                <td>
-                                                    @if($detail->subledger_id!=null || $detail->subledger_id!=0)
-                                                        {{ $master->name }}
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if($detail->form_journal_id!=null || $detail->form_journal_id!=0)
-                                                        {{ $form->form_number }}
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
+                                                <td>{{ $detail->coa->name }}</td>
+                                                <td>{{ $detail->subledger_type ? $detail->subledger_type::find($detail->subledger_id)->name : '-'}}</td>
+                                                <td>{{ $detail->form_reference_id ? $detail->reference->form_number : '-'}}</td>
                                                 <td>{{ $detail->description }}</td>
                                                 <td>{{ number_format_accounting($detail->debit) }}</td>
                                                 <td>{{ number_format_accounting($detail->credit) }}</td>

@@ -94,12 +94,14 @@ class Invoice extends Model
         return $this->hasMany('\Point\PointSales\Models\Service\InvoiceService', 'point_sales_service_invoice_id');
     }
 
-    public static function showUrl()
+    public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
-            return '/sales/point/service/invoice/'.$this->id;
+        $class = self::find($id);
+
+        if ($class->formulir->form_number) {
+            return '/sales/point/service/invoice/'.$class->id;
         } else {
-            return '/sales/point/service/invoice/'.$this->id.'/archived';
+            return '/sales/point/service/invoice/'.$class->id.'/archived';
         }
     }
 

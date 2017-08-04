@@ -74,38 +74,48 @@ class MemoJournalController extends Controller
             'approval_to'=>'required'
         ]);
 
-        formulir_is_allowed_to_create('create.point.accounting.memo.journal',
-            date_format_db($request->input('form_date')), []);
-
-        $coa_id = $request->input('coa_id');
-        for($i=0; $i<count($coa_id); $i++) {
-            if($coa_id[$i] == '') {
-                gritter_set('Alert', 'COA is required', 'false');
-                return redirect()->back()->withInput();
-            }
-        }
-
-        if($request->input('foot_debit')==0 || $request->input('foot_credit')==0) {
-            gritter_set('Alert', 'Debit or Credit is zero value', 'false');
-            return redirect()->back()->withInput();
-        }
-
-        if(!MemoJournalHelper::isAjeBalance($request->input('foot_debit'), $request->input('foot_credit'))) {
-            gritter_set('Alert', 'Debit and Credit must be balance', 'false');
-            return redirect()->back()->withInput();
+        formulir_is_allowed_to_create('create.point.accounting.memo.journal', date_format_db($request->input('form_date')), []);
+        if (!self::validation($request)) {
+            gritter_error('Failed, Please check your input. Debit and credit must balance and coa is required');
+            return redirect()->back();
         }
 
         DB::beginTransaction();
 
         $formulir = FormulirHelper::create($request->input(), 'point-accounting-memo-journal');
         $memo_journal = MemoJournalHelper::create($formulir->id, $request);
+        TempDataHelper::clear('memo.journal', auth()->user()->id);
+        timeline_publish('create.memo.journal', 'create memo journal ' . $memo_journal->formulir->form_number . ' success');
 
         DB::commit();
-        TempDataHelper::clear('memo.journal', auth()->user()->id);
 
-        timeline_publish('create.memo.journal', 'create memo journal ' . $memo_journal->formulir->form_number . ' success');
         gritter_success('Memo Journal has been saved', 'false');
-        return redirect()->back();
+        return redirect('accounting/point/memo-journal/'.$memo_journal->id);
+    }
+
+    public function validation($request)
+    {
+        $coa_id = $request->input('coa_id');
+        for ($i=0; $i<count($coa_id); $i++) {
+            if($coa_id[$i] == '') {
+                return false;
+            }
+
+            $coa = Coa::find($coa_id[$i]);
+            if ($coa->has_subledger && $request->input('master')[$i] == '') {
+                return false;
+            }
+        }
+
+        if ($request->input('foot_debit') == 0 || $request->input('foot_credit') == 0) {
+            return false;
+        }
+
+        if (number_format_db($request->input('foot_debit')) != number_format_db($request->input('foot_credit'))) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -117,18 +127,10 @@ class MemoJournalController extends Controller
     public function show($id)
     {        
         access_is_allowed('read.point.accounting.memo.journal');
-        if(!$memo_journal = MemoJournal::find($id)) {
-            gritter_error('Memo Journal not found', 'false');
-            return redirect('accounting/point/memo-journal');
-        }
-        if($memo_journal->formulir->form_number==null) {
-            return redirect('accounting/point/memo-journal/'.$id.'/archived');
-        }
+
         $view = view('point-accounting::app.accounting.point.memo-journal.show');
-        $view->memo_journal = $memo_journal;
-        $view->list_memo_journal_archived = MemoJournal::joinFormulir()
-            ->archived($memo_journal->formulir->form_number)->selectOriginal()
-            ->get();
+        $view->memo_journal = MemoJournal::find($id);
+        $view->list_memo_journal_archived = MemoJournal::joinFormulir()->archived($view->memo_journal->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_memo_journal_archived->count();
         return $view;
     }
@@ -143,15 +145,10 @@ class MemoJournalController extends Controller
     public function archived($id)
     {
         access_is_allowed('read.point.accounting.memo.journal');
-        if(!$memo_journal = MemoJournal::find($id)) {
-            gritter_error('Memo Journal not found', 'false');
-            return redirect('accounting/point/memo-journal');
-        }
-        if($memo_journal->formulir->form_number!=null) {
-            return redirect('accounting/point/memo-journal/'.$id);
-        }
+
         $view = view('point-accounting::app.accounting.point.memo-journal.archived');
-        $view->memo_journal = $memo_journal;
+        $view->memo_journal_archived = MemoJournal::find($id);
+        $view->memo_journal = MemoJournal::joinFormulir()->notArchived($view->memo_journal_archived->archived)->selectOriginal()->first();
         return $view;
     }
 
@@ -204,29 +201,10 @@ class MemoJournalController extends Controller
             'approval_to' => 'required'
         ]);
 
-        if(!$memo_journal = MemoJournal::find($id)) {
-            gritter_error('Memo Journal not found.', 'false');
-            return redirect()->back();
-        }
-
-        formulir_is_allowed_to_update('update.point.accounting.memo.journal',
-            date_format_db($request->input('form_date')), $memo_journal->formulir);
-
-        $coa_id = $request->input('coa_id');
-        for($i=0; $i<count($coa_id); $i++) {
-            if($coa_id[$i] == '') {
-                gritter_set('Alert', 'COA is required', 'false');
-                return redirect()->back();
-            }
-        }
-
-        if($request->input('foot_debit')==0 || $request->input('foot_credit')==0) {
-            gritter_set('Alert', 'Debit or Credit is zero value', 'false');
-            return redirect()->back();
-        }
-
-        if(!MemoJournalHelper::isAjeBalance($request->input('foot_debit'), $request->input('foot_credit'))) {
-            gritter_set('Alert', 'Debit and Credit must be balance', 'false');
+        $memo_journal = MemoJournal::find($id);
+        formulir_is_allowed_to_update('update.point.accounting.memo.journal', date_format_db($request->input('form_date')), $memo_journal->formulir);
+        if (!self::validation($request)) {
+            gritter_error('Failed, Please check your input. Debit and credit must balance and coa is required');
             return redirect()->back();
         }
 
@@ -235,10 +213,11 @@ class MemoJournalController extends Controller
         $formulir_old = FormulirHelper::archive($request->input(), $memo_journal->formulir_id);
         $formulir = FormulirHelper::update($request->input(), $formulir_old->archived, $formulir_old->form_raw_number);
         $memo_journal = MemoJournalHelper::create($formulir->id, $request);
+        timeline_publish('update.memo.journal', 'update memo journal ' . $memo_journal->formulir->form_number . ' success');
+        TempDataHelper::clear('memo.journal', auth()->user()->id);
 
         DB::commit();
 
-        timeline_publish('update.memo.journal', 'update memo journal ' . $memo_journal->formulir->form_number . ' success');
         gritter_success('Memo Journal has been saved');
         return redirect('accounting/point/memo-journal/'.$memo_journal->id);
     }
@@ -386,10 +365,10 @@ class MemoJournalController extends Controller
         return redirect()->back();
     }
 
-    public function cancel()
+    public function cancel($id)
     {
         TempDataHelper::clear('memo.journal', auth()->user()->id);
-        return redirect()->back();
+        return redirect('accounting/point/memo-journal/'.$id);
     }
 }
 

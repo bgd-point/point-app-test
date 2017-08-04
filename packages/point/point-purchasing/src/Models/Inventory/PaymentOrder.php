@@ -52,9 +52,10 @@ class PaymentOrder extends Model
         return $this->hasMany('\Point\PointPurchasing\Models\Inventory\PaymentOrderOther', 'point_purchasing_payment_order_id');
     }
 
-    public static function showUrl()
+    public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
+        $class = self::find($id);
+        if ($class->formulir->form_number) {
             return '/purchasing/point/payment-order/'.$id;
         }
 

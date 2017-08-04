@@ -71,13 +71,13 @@ class ExpeditionOrder extends Model
         return $this->belongsTo('\Point\Framework\Models\Master\Person', 'expedition_id');
     }
 
-    public function showUrl()
+    public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
-            return '/expedition/point/expedition-order/' . $this->id;
+        $class = self::find($id);
+        if ($class->formulir->form_number) {
+            return '/expedition/point/expedition-order/' . $class->id;
         }
-
-        return '/expedition/point/expedition-order/' . $this->id . '/archived';
+        return '/expedition/point/expedition-order/' . $class->id . '/archived';
     }
 
     public function person()
