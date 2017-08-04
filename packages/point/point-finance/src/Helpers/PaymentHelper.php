@@ -266,8 +266,8 @@ class PaymentHelper
         $journal->$position = $payment->total;
         $journal->form_journal_id = $payment->formulir_id;
         $journal->form_reference_id;
-        $journal->subledger_id = $position == 'credit' ? $payment->person_id : '';
-        $journal->subledger_type = $position == 'credit' ? get_class(new Person()) : '';
+        $journal->subledger_id = $payment->person_id;
+        $journal->subledger_type = get_class(new Person());
         $journal->save();
 
         if ($journal->debit > 0) {
