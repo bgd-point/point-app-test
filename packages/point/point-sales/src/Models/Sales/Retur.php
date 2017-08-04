@@ -64,12 +64,14 @@ class Retur extends Model
         return $this->hasMany('\Point\PointSales\Models\Sales\ReturItem', 'point_sales_retur_id');
     }
 
-    public static function showUrl()
+    public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
-            return '/sales/point/indirect/retur/'.$this->id;
+        $class = self::find($id);
+
+        if ($class->formulir->form_number) {
+            return '/sales/point/indirect/retur/'.$class->id;
         } else {
-            return '/sales/point/indirect/retur/'.$this->id.'/archived';
+            return '/sales/point/indirect/retur/'.$class->id.'/archived';
         }
     }
 }

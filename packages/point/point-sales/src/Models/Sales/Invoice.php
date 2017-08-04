@@ -83,12 +83,14 @@ class Invoice extends Model
         return $this->hasMany('\Point\PointSales\Models\Sales\InvoiceItem', 'point_sales_invoice_id');
     }
 
-    public static function showUrl()
+    public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
-            return '/sales/point/indirect/invoice/'.$this->id;
+        $class = self::find($id);
+        
+        if ($class->formulir->form_number) {
+            return '/sales/point/indirect/invoice/'.$class->id;
         } else {
-            return '/sales/point/indirect/invoice/'.$this->id.'/archived';
+            return '/sales/point/indirect/invoice/'.$class->id.'/archived';
         }
     }
 

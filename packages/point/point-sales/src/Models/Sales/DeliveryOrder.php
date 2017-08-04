@@ -125,12 +125,14 @@ class DeliveryOrder extends Model
         return null;
     }
 
-    public static function showUrl()
+    public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
-            return '/sales/point/indirect/delivery-oder/'.$this->$id;
+        $class = self::find($id);
+
+        if ($class->formulir->form_number) {
+            return '/sales/point/indirect/delivery-oder/'.$class->id;
         } else {
-            return '/sales/point/indirect/delivery-oder/'.$this->$id.'/archived';
+            return '/sales/point/indirect/delivery-oder/'.$class->id.'/archived';
         }
     }
 
