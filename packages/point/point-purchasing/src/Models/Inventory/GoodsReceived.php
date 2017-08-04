@@ -80,9 +80,10 @@ class GoodsReceived extends Model
         return null;
     }
 
-    public static function showUrl()
+    public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
+        $class = self::find($id);
+        if ($class->formulir->form_number) {
             return '/purchasing/point/goods-received/'.$id;
         }
 

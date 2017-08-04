@@ -188,6 +188,21 @@ class JournalHelper
         return static::journalValue($journal);
     }
 
+    public static function coaEndingBalance($coa_id, $date_to)
+    {
+        $journal = Journal::where('coa_id', $coa_id)
+            ->where('form_date', '<=', $date_to)
+            ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+            ->groupBy('coa_id')
+            ->first();
+
+        if (!$journal) {
+            return 0;
+        }
+
+        return static::journalValue($journal);
+    }
+
     public function groupCategoryValue($coa_group_category_id, $date_from, $date_to)
     {
         $coa_from_group_category = Coa::join('coa_category', 'coa_category.id', '=', 'coa.coa_category_id')
@@ -206,5 +221,30 @@ class JournalHelper
         }
 
         return static::journalValue($journal);
+    }
+
+    public static function coaDebit($coa_id, $date_from, $date_to)
+    {
+        $journal_debit = Journal::where('coa_id', $coa_id)
+            ->whereBetween('form_date', [$date_from, $date_to])
+            ->sum('debit');
+        return $journal_debit;
+    }
+
+    public static function coaCredit($coa_id, $date_from, $date_to)
+    {
+        $journal_credit = Journal::where('coa_id', $coa_id)
+            ->whereBetween('form_date', [$date_from, $date_to])
+            ->sum('credit');
+        return $journal_credit;
+    }
+
+    public static function totalBalance($form_date)
+    {
+        $journal = Journal::where('form_date', '<=', $form_date)
+            ->selectRaw('sum(debit) as debit, sum(credit) as credit')
+            ->first();
+
+        return $journal->debit - $journal->credit;
     }
 }

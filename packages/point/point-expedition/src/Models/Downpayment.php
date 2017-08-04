@@ -32,13 +32,15 @@ class Downpayment extends Model
         return $this;
     }
 
-    public static function showUrl()
+    public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
-            return '/expedition/point/downpayment/' . $this->id;
+        $class = self::find($id);
+
+        if ($class->formulir->form_number) {
+            return '/expedition/point/downpayment/' . $class->id;
         }
 
-        return '/expedition/point/downpayment/' . $this->id . '/archived';
+        return '/expedition/point/downpayment/' . $class->id . '/archived';
     }
 
     public function expedition()

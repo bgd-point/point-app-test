@@ -40,4 +40,13 @@ class CutOffAccount extends Model
     {
         return 'point-accounting::emails.accounting.point.approval.cut-off';
     }
+
+    public static function showUrl($id)
+    {
+        $class = self::find($id);
+        if ($class->formulir->form_number) {
+            return '/accounting/point/cut-off/account/' . $class->id;
+        }
+        return '/accounting/point/cut-off/account/' . $class->id . '/archived';
+    }
 }
