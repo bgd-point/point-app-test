@@ -276,10 +276,10 @@
                 var total_per_row = dbNum($('#item-quantity-' + i).val()) * dbNum($('#item-price-' + i).val())
                         - ( dbNum($('#item-quantity-' + i).val()) * dbNum($('#item-price-' + i).val()) / 100 * dbNum($('#item-discount-' + i).val()) );
                 subtotal += total_per_row;
-                $('#item-total-' + i).val(accountingNum(total_per_row));
+                $('#item-total-' + i).val(appNum(total_per_row));
             }
 
-            $('#subtotal').val(accountingNum(subtotal));
+            $('#subtotal').val(appNum(subtotal));
 
             if (dbNum($('#discount').val()) >= 100) {
                 dbNum($('#discount').val(99))
@@ -307,10 +307,10 @@
                 $("#tax-choice-non-tax").val("include");
             }
 
-            $('#tax_base').val(accountingNum(tax_base));
-            $('#tax').val(accountingNum(tax));
+            $('#tax_base').val(appNum(tax_base));
+            $('#tax').val(appNum(tax));
             var expedition_fee = dbNum($('#expedition-fee').val());
-            $('#total').val(accountingNum(tax_base + tax + expedition_fee));
+            $('#total').val(appNum(tax_base + tax + expedition_fee));
         }
     </script>
 @stop
