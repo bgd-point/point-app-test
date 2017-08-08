@@ -111,7 +111,7 @@ class SharesStockHelper
             $subtotal += $subtotal_without_fee + ($subtotal_without_fee * $stock->fee / 100);
         }
 
-        $ex_sale = $subtotal / $total_qty;
+        $ex_sale = ($subtotal != 0) ? ($subtotal / $total_qty) : 0;
         foreach ($list_stock as $stock) {
             $stock->average_price = $ex_sale;
             $stock->save();
