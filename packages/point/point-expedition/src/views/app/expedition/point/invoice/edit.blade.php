@@ -252,9 +252,9 @@
                 $('#discount').prop('readonly', false);
             }
 
-            $('#tax_base').val(appNum(tax_base));
-            $('#tax').val(appNum(tax));
-            $('#total').val(appNum(tax_base + tax));
+            $('#tax_base').val(accountingNum(tax_base));
+            $('#tax').val(accountingNum(tax));
+            $('#total').val(accountingNum(tax_base + tax));
         }
 
     </script>

@@ -189,6 +189,8 @@ class InvoiceHelper
         $formulir->approval_status = 1;
         $formulir->save();
 
+        JournalHelper::checkJournalBalance($formulir->id);
+
         return $invoice;
     }
 
@@ -242,6 +244,8 @@ class InvoiceHelper
 
         $formulir->approval_status = 1;
         $formulir->save();
+        
+        JournalHelper::checkJournalBalance($formulir->id);
 
         return $invoice;
     }
