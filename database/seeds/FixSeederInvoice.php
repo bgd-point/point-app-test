@@ -19,8 +19,10 @@ class FixSeederInvoice extends Seeder
     {
         \DB::beginTransaction();
 
+        \Log::info('Seeder started');
         self::fixSeederInvoiceExpedition();
         self::fixSeederInvoicePurchasingInventory();
+        \Log::info('Seeder finished');
 
         \DB::commit();
     }
@@ -117,6 +119,7 @@ class FixSeederInvoice extends Seeder
         $list_invoice = InvoicePurchasing::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->selectOriginal()->get();
         \Log::info('Journal invoice purchase inventory started');
         foreach ($list_invoice as $invoice) {
+        	$subtotal = 0;
         	foreach ($invoice->items as $invoice_detail) {
 	            $warehouse_id = UserWarehouse::getWarehouse($invoice->formulir->created_by);
 	            $goods_received_item = ReferHelper::getReferBy(get_class($invoice_detail), $invoice_detail->id, get_class($invoice), $invoice->id); 
@@ -127,6 +130,8 @@ class FixSeederInvoice extends Seeder
 	 
 	            // Journal inventory
 	            $total_per_row = $invoice_detail->quantity * $invoice_detail->price - $invoice_detail->quantity * $invoice_detail->price / 100 * $invoice_detail->discount;
+            	$subtotal += $total_per_row;
+	            
 	            if ($invoice->type_of_tax == 'include') {
 	                $total_per_row = $total_per_row * 100 / 110;
 	            }
@@ -157,6 +162,24 @@ class FixSeederInvoice extends Seeder
 	            $inventory_helper = new InventoryHelper($inventory);
 	            $inventory_helper->in();
 	        }
+
+	        $discount = $subtotal * $invoice->discount/100;
+	        $tax_base = $subtotal - $discount;
+	        $tax = 0;
+	        if ($invoice->type_of_tax == 'include') {
+	        	$tax_base = $subtotal * 100 / 110;
+                $tax = $subtotal * 10 / 100;
+	        } else if ($invoice->type_of_tax == 'exclude') {
+                $tax = $subtotal * 10 / 100;
+	        }
+
+	        $invoice->subtotal = $subtotal;
+	        $invoice->discount = $invoice->discount;
+	        $invoice->tax_base = $tax_base;
+	        $invoice->tax = $tax;
+	        $invoice->type_of_tax = $invoice->type_of_tax;
+	        $invoice->total = $tax_base + $tax + $invoice->expedition_fee;
+	        $invoice->save();
 
 	        // Journal tax exclude and non-tax
 	        if ($invoice->type_of_tax == 'exclude' || $invoice->type_of_tax == 'non') {
