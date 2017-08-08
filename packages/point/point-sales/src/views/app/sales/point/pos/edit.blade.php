@@ -11,32 +11,41 @@
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <form action="{{ url('sales/point/pos/create') }}" name="addToCart" id="addToCart" method="get" class="form-horizontal">
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Customer *</label>
-                    <div class="col-md-6" id="content-customer">
-                        <div class="content-show">{{ $pos->customer->name }}</div>
+            <form action="{{ url('sales/point/pos/create') }}" name="addToCart" id="addToCart" method="get" class="form-horizontal row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Customer *</label>
+                        <div class="col-md-6" id="content-customer">
+                            <div class="content-show">{{ $pos->customer->name }}</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Warehouse</label>
+                        <div class="col-md-9 content-show">
+                            {{ $warehouse->name }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3 control-label">
+                            <strong>Date</strong>
+                        </div>
+                        <div class="col-md-9 content-show">
+                            {{ date_format_view(date('Y-m-d'))}}
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label">Warehouse</label>
-                    <div class="col-md-9 content-show">
-                        {{ $warehouse->name }}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-3 control-label">
-                        <strong>Date</strong>
-                    </div>
-                    <div class="col-md-9 content-show">
-                        {{ date_format_view(date('Y-m-d'))}}
+                <div class="col-md-6">
+                    <img src="{{url_logo()}}" height="150px" width="auto" class="img pull-right" style="border:3px dotted #000; margin-left: 10px">
+                    <div class="pull-right text-right v-center">
+                        <div class="h3 text-primary"><strong>{{$warehouse_profiles->store_name}}</strong></div>
+                        <p><b>{{$warehouse_profiles->address}}<br> {{$warehouse_profiles->phone}}</b></p>
                     </div>
                 </div>
             </form>
 
             <br/><br/>
 
-            <form action="{{ url('sales/point/pos/'.$pos->id) }}" method="post" class="form-horizontal">
+            <form action="{{ url('sales/point/pos/'.$pos->id) }}" method="post" class="form-horizontal row">
                 {!! csrf_field() !!}
                 <input name="_method" type="hidden" value="PUT">
                 <input type="hidden" name="form_date" value="{{ date('Y-m-d') }}" />
@@ -88,7 +97,9 @@
                             <tr>
                                 <td></td>
                                 <td>
-                                    <select id="item-default" name="item_default" class="selectize" onChange="validate()" data-placeholder="Choose Item"></select>
+                                    <select id="item-default" name="item_default" class="selectize" onChange="validate()" data-placeholder="Choose Item">
+                                    </select>
+
                                     <!-- <input type="text" id="item-default" name="item_default" value="" style="width:100%" class="form-control" placeholder="Item" autofocus></td> -->
                                 <td>
                                     <div class="input-group">
@@ -107,64 +118,109 @@
                                 <td><input type="text" readonly id="nett-default" name="nett_default" value="0" class="form-control text-right" readonly></td>
                             </tr>
                             <tr>
-                                <td colspan="5" class="text-right">SUB TOTAL</td>
-                                <td><input type="text" readonly id="subtotal" name="foot_subtotal" class="form-control format-quantity calculate text-right" value="0" /></td>
-                            </tr>
-                            <tr>
-                                <td colspan="5" class="text-right">DISCOUNT</td>
-                                <td>
-                                    <div class="input-group">
-                                        <input type="text" id="discount" name="foot_discount" class="form-control format-quantity calculate text-right" value="0" />
-                                        <span class="input-group-addon">%</span>
+                                <td colspan="3">
+                                    <div class="col-sm-3">
+                                        <div class="col-sm-12">
+                                            <input type="radio" id="tax-choice-include-tax" name="tax_type" {{ old('tax_type') == 'on' ? 'checked'  : '' }}  onchange="calculate()" value="include"> Tax Included <br/>
+                                            <input type="radio" id="tax-choice-exclude-tax" name="tax_type" {{ old('tax_type') == 'on' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
+                                        </div>
+                                        <br>
+                                        <div class="col-sm-12">
+                                            <a href="{{url('sales/point/pos/clear')}}" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-danger btn-block">Cancel</a>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input type="submit" onclick="setAction('draft')" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-info btn-block" id="submit" value="draft" />
+                                            <input type="radio" id="tax-choice-non-tax" name="tax_type" {{ old('tax_type') == 'on' ? 'checked'  : '' }} checked onchange="calculate()" value="non" style="visibility: hidden;">
+                                            <input type="hidden" name="action" id="action">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <div class="form-group">
+                                            <div class="col-md-3 control-label  content-show">
+                                                <label>SUB TOTAL</label>
+                                            </div>
+                                            <div class="col-md-9 content-show">
+                                                <input type="text" readonly id="subtotal" name="foot_subtotal" class="form-control format-quantity calculate text-right" value="0" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-md-3 control-label  content-show">
+                                                <label>DISCOUNT</label>
+                                            </div>
+                                            <div class="col-md-9 content-show">
+                                                <div class="input-group">
+                                                    <input type="text" id="discount" name="foot_discount" class="form-control format-quantity calculate text-right" value="0" />
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-md-3 control-label  content-show">
+                                                <label>TAX BASE</label>
+                                            </div>
+                                            <div class="col-md-9 content-show">
+                                                <input type="text" readonly id="tax_base" name="foot_tax_base" class="form-control format-quantity calculate text-right" value="0" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-md-3 control-label  content-show">
+                                                <label>TAX</label>
+                                            </div>
+                                            <div class="col-md-9 content-show">
+                                                <input type="text" readonly="" id="tax" name="foot_tax" class="form-control format-quantity calculate text-right" value="0" />
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td colspan="5" class="text-right">TAX BASE</td>
-                                <td><input type="text" readonly id="tax_base" name="foot_tax_base" class="form-control format-quantity calculate text-right" value="0" /></td>
-                            </tr>
-                            <tr>
-                                <td colspan="5" class="text-right">TAX</td>
-                                <td><input type="text" readonly="" id="tax" name="foot_tax" class="form-control format-quantity calculate text-right" value="0" /></td>
-                            </tr>
-                            <tr>
-                                <td colspan="5"></td>
-                                <td>
-                                    <input type="radio" id="tax-choice-include-tax" name="tax_type" {{ old('tax_type') == 'on' ? 'checked'  : '' }}  onchange="calculate()" value="include"> Tax Included <br/>
-                                    <input type="radio" id="tax-choice-exclude-tax" name="tax_type" {{ old('tax_type') == 'on' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
+                                <td colspan="2">
+                                    <div class="form-group">
+                                        <div class="col-md-3 control-label  content-show">
+                                            <label>TOTAL ITEM</label>
+                                        </div>
+                                        <div class="col-md-9 content-show text-right">
+                                            <label id="total-item">0</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-3 control-label  content-show">
+                                            <label>TOTAL QUANTITY</label>
+                                        </div>
+                                        <div class="col-md-9 content-show text-right">
+                                            <label id="total-quantity">0</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-3 control-label  content-show">
+                                            <label>TOTAL</label>
+                                        </div>
+                                        <div class="col-md-9 content-show">
+                                            <input type="text" readonly id="total" name="foot_total" class="form-control format-quantity calculate text-right" value="0" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-3 control-label  content-show">
+                                            <label>MONEY RECEIVED</label>
+                                        </div>
+                                        <div class="col-md-9 content-show">
+                                            <input type="text" id="money-received" name="foot_money_received" onkeyup="calculateChange()" class="form-control format-quantity text-right" value="0" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-3 control-label  content-show">
+                                            <label>CHANGE</label>
+                                        </div>
+                                        <div class="col-md-9 content-show">
+                                            <input type="text" readonly id="change" name="foot_change" class="form-control format-quantity calculate text-right" value="0" />
+                                        </div>
+                                    </div>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td colspan="5" class="text-right">TOTAL</td>
-                                <td><input type="text" readonly id="total" name="foot_total" class="form-control format-quantity calculate text-right" value="0" /></td>
-                            </tr>
-                             <tr>
-                                <td colspan="5" class="text-right">MONEY RECIEVED</td>
-                                <td><input type="text" id="money-received" name="foot_money_received" onkeyup="calculateChange()" class="form-control format-quantity text-right" value="0" /></td>
-                            </tr>
-                             <tr>
-                                <td colspan="5" class="text-right">CHANGE</td>
-                                <td><input type="text" readonly id="change" name="foot_change" class="form-control format-quantity calculate text-right" value="0" /></td>
+                                <td>
+                                    <input type="checkbox" name="print" value="true" checked=""><label>Print</label>
+                                    <button type="submit" onclick="setAction('save')" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-primary btn-block" id="submit" style="padding:50px"><font size="20">Close</font> <br>Transaction</button>
+                                </td>
                             </tr>
                         </tfoot>
                     </table>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-sm-3">
-                        <a href="{{url('sales/point/pos/clear')}}" class="btn btn-effect-ripple btn-effect-ripple btn-danger btn-block">Clear</a>
-                    </div>
-                    <input type="hidden" name="action" id="action">
-                    <div class="col-sm-3">
-                        <input type="submit" onclick="setAction('cancel')" class="btn btn-effect-ripple btn-effect-ripple btn-warning btn-block" id="submit" value="cancel" />
-                        <input type="radio" id="tax-choice-non-tax" name="tax_type" {{ old('tax_type') == 'on' ? 'checked'  : '' }} checked onchange="calculate()" value="non" style="visibility: hidden;">
-                    </div>
-                    <div class="col-sm-3">
-                        <input type="submit" onclick="setAction('draft')" class="btn btn-effect-ripple btn-effect-ripple btn-info btn-block" id="submit" value="draft" />
-                    </div>
-                    <div class="col-sm-3">
-                        <input type="submit" onclick="setAction('save')" class="btn btn-effect-ripple btn-effect-ripple btn-primary btn-block" id="submit" value="Close Transaction" />
-                    </div>
                 </div>
             </form>
         </div>
@@ -215,10 +271,14 @@
     function calculate() {
         var rows_length = $("#item-datatable").dataTable().fnGetNodes().length;
         var subtotal = 0;
+        var total_item = 0;
+        var total_quantity = 0;
         for(var i=0; i<rows_length; i++) {
             var total_per_row = dbNum($('#item-quantity-'+i).val()) * dbNum($('#item-price-'+i).val()) - ( dbNum($('#item-discount-'+i).val()) / 100 * dbNum($('#item-quantity-'+i).val()) * dbNum($('#item-price-'+i).val()) );
             subtotal += total_per_row;
             $('#item-total-'+i).val(appNum(total_per_row));
+            total_quantity += dbNum($('#item-quantity-'+i).val());
+            total_item += 1;
         }
 
         $('#subtotal').val(appNum(subtotal));
@@ -295,12 +355,10 @@
     }
     
     function validate(){
-        reloadItemHavingQuantity('#item-default');
         var item = $("#item-default option:selected").val();
         var customer_id = $('#customer_id').val();
         if (item.trim() == "") {
             resetItemDefault();
-            notification('Failed', 'Please, select item');
         } else if (customer_id.trim()=="") {
             resetItemDefault();
             notification('Failed', 'Please, choose customer');
@@ -308,6 +366,7 @@
             addToCart(item);
         }
 
+        reloadItemHavingQuantity('#item-default');
         return false;
     }
 

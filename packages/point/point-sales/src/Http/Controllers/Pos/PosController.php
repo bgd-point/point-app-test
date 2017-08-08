@@ -97,12 +97,16 @@ class PosController extends Controller
 
         $formulir = FormulirHelper::create($request->input(), 'point-sales-pos');
         $pos = PosHelper::create($request, $formulir);
-        
+
         DB::commit();
         TempDataHelper::clear('pos', auth()->user()->id);
+        if ($request->input('action') == 'save' && $pos['print'] == true) {
+            gritter_success('sales complete');
+            return redirect('sales/point/pos/print/'.$pos['pos']->id);
+        }
 
         gritter_success('sales complete');
-        return redirect('sales/point/pos/'.$pos->id);
+        return redirect('sales/point/pos/'.$pos['pos']->id);
     }
 
     public function show($id)
@@ -139,7 +143,7 @@ class PosController extends Controller
         if ($results) {
             $view->results = $results;
         }
-
+        $view->warehouse_profiles = Warehouse::find($view->pos->warehouse_id);
         $view->carts = TempDataHelper::get('pos', auth()->user()->id, ['is_pagination' => true]);
         return $view;
     }
@@ -171,8 +175,13 @@ class PosController extends Controller
         TempDataHelper::clear('pos', auth()->user()->id);
         Session::forget('customer_id');
 
+        if ($request->input('action') == 'save' && $pos['print'] == true) {
+            gritter_success('sales complete');
+            return redirect('sales/point/pos/print/'.$pos['pos']->id);
+        }
+
         gritter_success('sales complete');
-        return redirect('sales/point/pos/'.$pos->id);
+        return redirect('sales/point/pos/'.$pos['pos']->id);
     }
 
     public function clear()

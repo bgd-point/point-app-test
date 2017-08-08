@@ -128,10 +128,15 @@ class PosHelper
         $formulir->form_status = 0;
         $cost_of_sales = self::storePosItem($request, $pos, $formulir, $item_id, $quantity, $discount, $customer_id, $price, $money_received, $warehouse_id);
         
+        $print = false;
         if ($request->input('action') == 'save') {
             $formulir->form_status = 1;
             $cost_of_sales = self::journalInventory($request, $pos, $formulir, $item_id, $quantity, $discount, $customer_id, $price, $money_received, $warehouse_id);
             self::journalPos($request, $pos, $formulir, $cost_of_sales, $item_id, $quantity, $discount, $customer_id, $price, $money_received, $warehouse_id);
+
+            if ($request->input('print')) {
+                $print = true;
+            }
         }
 
         if ($request->input('action') == 'cancel') {
@@ -145,7 +150,8 @@ class PosHelper
             return redirect()->back();
         }
         
-        return $pos;
+
+        return ['pos' => $pos, 'print' => $print];
     }
 
     public static function storePosItem($request, $pos, $formulir, $item_id, $quantity, $discount, $customer_id, $price, $money_received, $warehouse_id)
