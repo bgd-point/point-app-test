@@ -199,7 +199,6 @@ class InvoiceHelper
         $journal->form_journal_id = $data['formulir']->id;
         $journal->form_reference_id;
         $journal->subledger_id = $data['invoice']->person_id;
-        ;
         $journal->subledger_type = get_class($data['invoice']->person);
         $journal->save();
 
@@ -215,7 +214,6 @@ class InvoiceHelper
             $journal->form_journal_id = $data['formulir']->id;
             $journal->form_reference_id;
             $journal->subledger_id = $data['invoice']->person_id;
-            ;
             $journal->subledger_type = get_class($data['invoice']->person);
             $journal->save();
         }
@@ -232,7 +230,6 @@ class InvoiceHelper
             $journal->form_journal_id = $data['formulir']->id;
             $journal->form_reference_id;
             $journal->subledger_id = $data['invoice']->person_id;
-            ;
             $journal->subledger_type = get_class($data['invoice']->person);
             $journal->save();
         }
