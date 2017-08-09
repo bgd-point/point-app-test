@@ -9,15 +9,19 @@ use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\PointSales\Models\Sales\Invoice;
+use Point\PointSales\Models\Service\Invoice as ServiceInvoice;
 
 class RejournalSalesSeeder extends Seeder
 {
     public function run()
     {
     	\DB::beginTransaction();
-        \Log::info('Rejournal seeder started');
+        \Log::info('---- Seeder Sales invoice starting ----');
         self::invoice();
-        \Log::info('Rejournal seeder finished');
+        \Log::info('---- Seeder Sales invoice finished ----');
+        \Log::info('---- Seeder Sales service invoice starting ----');
+        self::invoiceService();
+        \Log::info('---- Seeder Sales service invoice finished ----');
         \DB::commit();
     }
 
@@ -181,6 +185,219 @@ class RejournalSalesSeeder extends Seeder
             $journal->subledger_id = $data['invoice']->person_id;
             $journal->subledger_type = get_class($data['invoice']->person);
             $journal->save();
+        }
+    }
+
+    public function invoiceService()
+    {
+        $list_invoice = ServiceInvoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->select('formulir.id')->get()->toArray();
+        $journal = Journal::whereIn('form_journal_id', $list_invoice)->delete();
+        $inventory = Inventory::whereIn('formulir_id', $list_invoice)->delete();
+        $list_invoice = ServiceInvoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->selectOriginal()->get();
+        \Log::info('Journal invoice service started');
+        foreach ($list_invoice as $invoice) {
+            $subtotal_service = 0;
+            $subtotal_item = 0;
+
+            foreach ($invoice->items as $invoice_detail) {
+                $total_per_row = $invoice_detail->quantity * $invoice_detail->price - $invoice_detail->quantity * $invoice_detail->price / 100 * $invoice_detail->discount;
+                $subtotal_item += $total_per_row;
+            }
+
+            foreach ($invoice->items as $invoice_detail) {
+                $total_per_row = $invoice_detail->quantity * $invoice_detail->price - $invoice_detail->quantity * $invoice_detail->price / 100 * $invoice_detail->discount;
+                $subtotal_service += $total_per_row;
+            }
+
+            $subtotal = $subtotal_item + $subtotal_service;
+            $discount = $subtotal * $invoice->discount/100;
+            $tax_base = $subtotal - $discount;
+            $tax = 0;
+            if ($invoice->type_of_tax == 'include') {
+                $tax_base = $subtotal * 100 / 110;
+                $tax = $subtotal * 10 / 100;
+            } else if ($invoice->type_of_tax == 'exclude') {
+                $tax = $subtotal * 10 / 100;
+            }
+
+            $invoice->subtotal = $subtotal;
+            $invoice->discount = $invoice->discount;
+            $invoice->tax_base = $tax_base;
+            $invoice->tax = $tax;
+            $invoice->type_of_tax = $invoice->type_of_tax;
+            $invoice->total = $tax_base + $tax;
+            $invoice->save();
+
+            // Journal tax exclude and non-tax
+            if ($invoice->type_of_tax == 'exclude' || $invoice->type_of_tax == 'non') {
+                $data = array(
+                    'value_of_account_receivable' => $invoice->total,
+                    'value_of_income_tax_payable' => $tax,
+                    'value_of_sale_of_goods' => $subtotal_item,
+                    'value_of_discount' => $discount * (-1),
+                    'value_cost_of_sales' => $subtotal_item,
+                    'value_of_service_income' => $subtotal_service,
+                    'formulir' => $invoice->formulir,
+                    'invoice' => $invoice
+                );
+                self::journalService($data);
+            } elseif ($invoice->type_of_tax == 'include') {
+                $data = array(
+                    'value_of_account_receivable' => $invoice->total,
+                    'value_of_income_tax_payable' => $tax,
+                    'value_of_sale_of_goods' => $subtotal_item,
+                    'value_of_discount' => $discount,
+                    'value_cost_of_sales' => $subtotal_item,
+                    'value_of_service_income' => $subtotal_service,
+                    'formulir' => $invoice->formulir,
+                    'invoice' => $invoice
+                );
+                self::journalService($data);
+            }
+
+            JournalHelper::checkJournalBalance($invoice->formulir_id);
+        }
+    }
+
+    public static function journalService($data)
+    {
+        \Log::info('Journal Account Receivable');
+        // 1. Journal Account Receivable
+        $account_receivable = JournalHelper::getAccount('point sales service', 'account receivable');
+        $position = JournalHelper::position($account_receivable);
+        $journal = new Journal;
+        $journal->form_date = $data['formulir']->form_date;
+        $journal->coa_id = $account_receivable;
+        $journal->description = 'invoice service sales [' . $data['formulir']->form_number.']';
+        $journal->$position = $data['value_of_account_receivable'];
+        $journal->form_journal_id = $data['formulir']->id;
+        $journal->form_reference_id;
+        $journal->subledger_id = $data['invoice']->person_id;
+        $journal->subledger_type = get_class($data['invoice']->person);
+        $journal->save();
+
+        \Log::info('Journal Income Tax Payable');
+        // 2. Journal Income Tax Payable
+        if ($data['invoice']->tax != 0) {
+            $income_tax_receivable = JournalHelper::getAccount('point sales service', 'income tax payable');
+            $position = JournalHelper::position($income_tax_receivable);
+            $journal = new Journal;
+            $journal->form_date = $data['formulir']->form_date;
+            $journal->coa_id = $income_tax_receivable;
+            $journal->description = 'invoice service sales [' . $data['formulir']->form_number.']';
+            $journal->$position = $data['value_of_income_tax_payable'];
+            $journal->form_journal_id = $data['formulir']->id;
+            $journal->form_reference_id;
+            $journal->subledger_id;
+            $journal->subledger_type;
+            $journal->save();
+        }
+
+        // 3. Journal Sales of Goods
+        if($data['value_of_sale_of_goods'] > 0) {
+            \Log::info('Journal Sales of Goods');
+            $sales_of_goods = JournalHelper::getAccount('point sales service', 'sale of goods');
+            $position = JournalHelper::position($sales_of_goods);
+            $journal = new Journal;
+            $journal->form_date = $data['formulir']->form_date;
+            $journal->coa_id = $sales_of_goods;
+            $journal->description = 'invoice service sales [' . $data['formulir']->form_number.']';
+            $journal->$position = $data['value_of_sale_of_goods'];
+            $journal->form_journal_id = $data['formulir']->id;
+            $journal->form_reference_id;
+            $journal->subledger_id;
+            $journal->subledger_type;
+            $journal->save();
+        }
+
+        // 4. Journal Sales Discount
+        if ($data['invoice']->discount > 0) {
+            \Log::info('Journal Sales Discount');
+            $sales_discount = JournalHelper::getAccount('point sales service', 'sales discount');
+            $position = JournalHelper::position($sales_discount);
+            $journal = new Journal;
+            $journal->form_date = $data['formulir']->form_date;
+            $journal->coa_id = $sales_discount;
+            $journal->description = 'invoice service sales [' . $data['formulir']->form_number.']';
+            $journal->$position = $data['value_of_discount'];
+            $journal->form_journal_id = $data['formulir']->id;
+            $journal->form_reference_id;
+            $journal->subledger_id;
+            $journal->subledger_type;
+            $journal->save();
+        }
+
+        \Log::info('Journal Sales Service Income');
+        $service_income = JournalHelper::getAccount('point sales service', 'service income');
+        $position = JournalHelper::position($service_income);
+        $journal = new Journal;
+        $journal->form_date = $data['formulir']->form_date;
+        $journal->coa_id = $service_income;
+        $journal->description = 'invoice service sales [' . $data['formulir']->form_number.']';
+        $journal->$position = $data['value_of_service_income'];
+        $journal->form_journal_id = $data['formulir']->id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
+
+        if($data['value_of_sale_of_goods'] > 0) {
+            self::journalInventory($data);
+        }
+    }
+
+    public static function journalInventory($data)
+    {
+        $warehouse_id = UserWarehouse::getWarehouse($data['invoice']->formulir->created_by);
+        foreach ($data['invoice']->items as $invoice_item) {
+            $quantity = $invoice_item->quantity;
+            $price = $invoice_item->price;
+
+            if ($quantity > 0) {
+                \Log::info('Inventory Out');
+                // inventory control
+                $inventory = new Inventory;
+                $inventory->formulir_id = $data['formulir']->id;
+                $inventory->item_id = $invoice_item->item_id;
+                $inventory->quantity = $quantity;
+                $inventory->price = $price;
+                $inventory->form_date = $data['formulir']->form_date;
+                $inventory->warehouse_id = $warehouse_id;
+
+                $inventory_helper = new InventoryHelper($inventory);
+                $inventory_helper->out();
+
+                $cost = InventoryHelper::getCostOfSales(\Carbon::now(), $inventory->item_id, $warehouse_id) * $inventory->quantity;
+
+                // JOURNAL #5 of #6 - INVENTORY
+                \Log::info('Journal Inventory');
+                
+                $journal = new Journal;
+                $journal->form_date = $data['formulir']->form_date;
+                $journal->coa_id = $inventory->item->account_asset_id;
+                $journal->description = 'invoice service sales [' . $data['formulir']->form_number.']';
+                $journal->credit = $cost;
+                $journal->form_journal_id = $data['formulir']->id;
+                $journal->form_reference_id;
+                $journal->subledger_id = $inventory->item_id;
+                $journal->subledger_type = get_class($inventory->item);
+                $journal->save();
+
+                \Log::info('Journal Cost of sales');
+                // 5. Journal cost of sales
+                $sales_discount = JournalHelper::getAccount('point sales service', 'cost of sales');
+                $position = JournalHelper::position($sales_discount);
+                $journal = new Journal;
+                $journal->form_date = $data['formulir']->form_date;
+                $journal->coa_id = $sales_discount;
+                $journal->description = 'invoice service sales [' . $data['formulir']->form_number.']';
+                $journal->$position = $cost;
+                $journal->form_journal_id = $data['formulir']->id;
+                $journal->form_reference_id;
+                $journal->subledger_id;
+                $journal->subledger_type;
+                $journal->save();
+            }
         }
     }
 }

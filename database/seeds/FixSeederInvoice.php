@@ -19,10 +19,12 @@ class FixSeederInvoice extends Seeder
     {
         \DB::beginTransaction();
 
-        \Log::info('Seeder started');
+        \Log::info('---- Seeder Invoice Expedition Started ----');
         self::fixSeederInvoiceExpedition();
+        \Log::info('---- Seeder Invoice Expedition Finished ----');
+        \Log::info('---- Seeder Invoice Purchasing Started ----');
         self::fixSeederInvoicePurchasingInventory();
-        \Log::info('Seeder finished');
+        \Log::info('---- Seeder Invoice Purchasing Finished ----');
 
         \DB::commit();
     }
