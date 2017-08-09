@@ -424,6 +424,8 @@ class CutOffHelper {
                 self::accountNonSubledger($cut_off_account, $cut_off_account_detail);
             }
         }
+
+        JournalHelper::checkJournalBalance($cut_off_account->formulir_id);
     }
 
     /**
