@@ -90,12 +90,10 @@ class SharesStockHelper
                 $stock_fifo->average_price = $stock->average_price;
                 $stock_fifo->price = $shares_sell->price;
                 $stock_fifo->save();
-                $stock->save();
             }
         }
 
         // Search Ex Sales Value
-
         $list_stock_ex_sales = Stock::where('shares_id', '=', $shares_sell->shares_id)
             ->where('date', '<', $shares_sell->formulir->form_date)
             ->where('remaining_quantity', '>', 0)

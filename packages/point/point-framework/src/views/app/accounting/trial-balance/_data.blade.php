@@ -19,12 +19,16 @@
     <?php 
         $total_opening_balance = \JournalHelper::totalBalance($date_from);
         $total_ending_balance = \JournalHelper::totalBalance($date_to);
+        $total_debit = 0;
+        $total_credit = 0;
     ?>
     @foreach($list_coa as $coa)
     <?php 
         $opening_balance = \JournalHelper::coaOpeningBalance($coa->id, $date_from);
         $debit = \JournalHelper::coaDebit($coa->id, $date_from, $date_to);
+        $total_debit += $debit;
         $credit = \JournalHelper::coaCredit($coa->id, $date_from, $date_to);
+        $total_credit += $credit;
         $ending_balance = \JournalHelper::coaEndingBalance($coa->id, $date_to);
     ?>
     <tr>
@@ -38,8 +42,8 @@
     <tr>
         <td><strong>Total</strong></td>
         <td class="text-right">{{ $export ? $total_opening_balance : number_format_quantity($total_opening_balance) }}</td>
-        <td></td>
-        <td></td>
+        <td class="text-right">{{ $export ? $total_debit : number_format_quantity($total_debit) }}</td>
+        <td class="text-right">{{ $export ? $total_credit : number_format_quantity($total_credit) }}</td>
         <td class="text-right">{{ $export ? $total_ending_balance : number_format_quantity($total_ending_balance) }}</td>
     </tr>
     </tbody>

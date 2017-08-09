@@ -40,7 +40,7 @@ class CutOffFixedAssetsController extends Controller
 		access_is_allowed('create.point.accounting.cut.off.fixed.assets');
 		
 		$view = view('point-accounting::app.accounting.point.cut-off.fixed-assets.create');
-        $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Fixed Assets')->where('has_subledger', 1)->selectOriginal()->get(); // get all coa where category fixed.assets
+        $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Fixed Assets')->where('has_subledger', 1)->selectOriginal()->orderBy('coa.coa_number')->orderBy('coa.name')->get(); // get all coa where category fixed.assets
         $view->list_user_approval = UserHelper::getAllUser();
 
         return $view;
@@ -68,7 +68,7 @@ class CutOffFixedAssetsController extends Controller
 	{
 		access_is_allowed('read.point.accounting.cut.off.fixed.assets');
 		$view = view('point-accounting::app.accounting.point.cut-off.fixed-assets.show');
-        $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Fixed Assets')->where('has_subledger', 1)->selectOriginal()->get();
+        $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Fixed Assets')->where('has_subledger', 1)->selectOriginal()->orderBy('coa.coa_number')->orderBy('coa.name')->get();
         $view->cut_off_fixed_assets = CutOffFixedAssets::find($id);
         $view->list_cut_off_fixed_assets_archived = CutOffFixedAssets::joinFormulir()->archived($view->cut_off_fixed_assets->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_cut_off_fixed_assets_archived->count();
@@ -80,7 +80,7 @@ class CutOffFixedAssetsController extends Controller
 		access_is_allowed('read.point.accounting.cut.off.fixed.assets');
         $view = view('point-accounting::app.accounting.point.cut-off.fixed-assets.archived');
         $view->cut_off_fixed_assets_archived = CutOffFixedAssets::find($id);
-        $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Fixed Assets')->where('has_subledger', 1)->selectOriginal()->get();
+        $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Fixed Assets')->where('has_subledger', 1)->selectOriginal()->orderBy('coa.coa_number')->orderBy('coa.name')->get();
 
         return $view;
     }
@@ -92,7 +92,7 @@ class CutOffFixedAssetsController extends Controller
 		$view = view('point-accounting::app.accounting.point.cut-off.fixed-assets.edit');
 		$view->cut_off_fixed_assets = CutOffFixedAssets::find($id);
         self::restoreToTemp($view->cut_off_fixed_assets);
-        $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Fixed Assets')->where('has_subledger', 1)->selectOriginal()->get();
+        $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Fixed Assets')->where('has_subledger', 1)->selectOriginal()->orderBy('coa.coa_number')->orderBy('coa.name')->get();
         $view->list_user_approval = UserHelper::getAllUser();
 
         return $view;
