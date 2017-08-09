@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
         Commands\EmailApproval::class,
         Commands\ClearTransaction::class,
         Commands\UnbalanceJournalChecker::class,
+        Commands\Rejournal::class,
     ];
 
     /**

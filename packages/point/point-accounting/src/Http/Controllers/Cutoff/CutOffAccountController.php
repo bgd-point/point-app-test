@@ -43,7 +43,7 @@ class CutOffAccountController extends Controller
 		access_is_allowed('create.point.accounting.cut.off.account');
 		
 		$view = view('point-accounting::app.accounting.point.cut-off.account.create');
-        $view->list_coa = Coa::active()->get();
+        $view->list_coa = Coa::active()->orderBy('coa_number')->orderBy('name')->get();
         $view->list_user_approval = UserHelper::getAllUser();
 
         return $view;
@@ -71,7 +71,7 @@ class CutOffAccountController extends Controller
 	{
 		access_is_allowed('read.point.accounting.cut.off.account');
 		$view = view('point-accounting::app.accounting.point.cut-off.account.show');
-        $view->list_coa = Coa::all();
+        $view->list_coa = Coa::active()->orderBy('coa_number')->orderBy('name')->get();
         $view->cut_off_account = CutOffAccount::find($id);
         $view->list_cut_off_account_detail = CutOffAccountDetail::where('cut_off_account_id', $id);
         $view->list_cut_off_account_archived = CutOffAccount::joinFormulir()->archived($view->cut_off_account->formulir->form_number)->selectOriginal()->get();
@@ -84,7 +84,7 @@ class CutOffAccountController extends Controller
 		access_is_allowed('read.point.accounting.cut.off.account');
         $view = view('point-accounting::app.accounting.point.cut-off.account.archived');
         $view->cut_off_account = CutOffAccount::find($id);
-        $view->list_coa = Coa::all();
+        $view->list_coa = Coa::active()->orderBy('coa_number')->orderBy('name')->get();
         $view->cut_off_account_archived = CutOffAccountDetail::where('cut_off_account_id', $id);
         
         return $view;
@@ -101,7 +101,7 @@ class CutOffAccountController extends Controller
             self::restoreToTemp($view->cut_off_account);
         }
         
-        $view->list_coa = Coa::active()->get();
+        $view->list_coa = Coa::active()->orderBy('coa_number')->orderBy('name')->get();
         $view->list_user_approval = UserHelper::getAllUser();
 
         return $view;

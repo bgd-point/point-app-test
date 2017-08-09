@@ -14,6 +14,11 @@ class CutOffInventoryDetail extends Model
         return $this->belongsTo('Point\Framework\Models\Master\Item','subledger_id');
     }
 
+    public function coa()
+    {
+        return $this->belongsTo('Point\Framework\Models\Master\Coa','coa_id');
+    }
+
     public function warehouse()
     {
         return $this->belongsTo('Point\Framework\Models\Master\Warehouse','warehouse_id');

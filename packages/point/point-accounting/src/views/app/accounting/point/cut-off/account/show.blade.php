@@ -258,7 +258,7 @@
                                                     @endif
 
                                                 </td>
-                                                <td><strong id="coa-name-{{$i}}">{{$coa->name}}</strong></td>
+                                                <td><strong id="coa-name-{{$i}}">{{$coa->account}}</strong></td>
                                                 <td>
                                                     @if($cut_off_account_detail)
                                                         <input type="text" class="form-control format-quantity text-right" readonly value="{{$cut_off_account_detail->debit}}">

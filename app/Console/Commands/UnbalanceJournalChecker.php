@@ -37,7 +37,7 @@ class UnbalanceJournalChecker extends Command
             $credit = Journal::where('form_journal_id', $journal->form_journal_id)->sum('credit');
 
             if ($debit != $credit) {
-                $this->comment($journal->form_journal_id . ' ' . $journal->formulir->form_number . ' ' . $journal->formulir->formulirable_type);
+                $this->comment($journal->form_journal_id . ' ' . $journal->formulir->form_number . ' ' . $journal->formulir->formulirable_type . ' ' . $debit . ' ' . $credit);
                 \Log::info($journal->form_journal_id . ' ' . $journal->formulir->form_number . ' ' . $journal->formulir->formulirable_type);
             }
         }
