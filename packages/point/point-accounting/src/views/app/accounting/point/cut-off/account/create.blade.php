@@ -95,7 +95,7 @@
                                             
                                         ?>
                                         <tr>
-                                            <td>{{$coa->name}}</td>
+                                            <td>{{$coa->account}}</td>
                                             <td>
                                                 @if($coa_debit)
                                                     <input type="text" onkeyup="updateTemp({{$index}}, 'debit')" id="debit-{{$index}}" value="{{ $coa_debit['amount']}}" name="debit[]" class="form-control text-right format-quantity">

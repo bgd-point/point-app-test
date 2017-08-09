@@ -35,7 +35,7 @@ class TrialBalanceController extends Controller
 
             $excel->sheet('Trial Balance', function($sheet) use ($date_from, $date_to) {
                 $data = array(
-                    'list_coa' => Coa::active()->orderBy('coa_number')->orderBy('name')->get();
+                    'list_coa' => Coa::active()->orderBy('coa_number')->orderBy('name')->get(),
                     'date_to' => $date_to,
                     'date_from' => $date_from,
                     'export' => true
