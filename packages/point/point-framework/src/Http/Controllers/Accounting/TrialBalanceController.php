@@ -19,7 +19,7 @@ class TrialBalanceController extends Controller
         $date_from = date('Y-m-01 00:00:00');
         $date_to = date('Y-m-d 23:59:59');
         $view = view('framework::app.accounting.trial-balance.index');
-        $view->list_coa = Coa::active()->get();
+        $view->list_coa = Coa::active()->orderBy('coa_number')->orderBy('name')->get();
         $view->date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : $date_from;
         $view->date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : $date_to;
         $view->export = false;
@@ -35,7 +35,7 @@ class TrialBalanceController extends Controller
 
             $excel->sheet('Trial Balance', function($sheet) use ($date_from, $date_to) {
                 $data = array(
-                    'list_coa' => Coa::active()->get(),
+                    'list_coa' => Coa::active()->orderBy('coa_number')->orderBy('name')->get();
                     'date_to' => $date_to,
                     'date_from' => $date_from,
                     'export' => true
