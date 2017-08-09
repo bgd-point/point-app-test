@@ -136,7 +136,7 @@ class InvoiceHelper
         $expedition_cost = 0;
         if ($invoice->type_of_tax == 'include') {
             $expedition_cost = $invoice->tax_base;
-        } elseif ($invoice->type_of_tax == 'exclude') {
+        } else {
             $expedition_cost = $invoice->subtotal;
         }
 
@@ -188,6 +188,8 @@ class InvoiceHelper
 
         $formulir->approval_status = 1;
         $formulir->save();
+
+        JournalHelper::checkJournalBalance($formulir->id);
 
         return $invoice;
     }
@@ -242,6 +244,8 @@ class InvoiceHelper
 
         $formulir->approval_status = 1;
         $formulir->save();
+        
+        JournalHelper::checkJournalBalance($formulir->id);
 
         return $invoice;
     }

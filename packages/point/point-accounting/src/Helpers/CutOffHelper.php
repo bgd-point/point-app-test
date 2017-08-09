@@ -124,7 +124,7 @@ class CutOffHelper {
             ->orderBy('form_date', 'desc')
             ->get();
 
-        foreach ($inventories as $inventory) {
+        if ($inventories) {
             $emptying_inventory = new Inventory();
             $emptying_inventory->form_date = $cut_off_account->formulir->form_date;
             $emptying_inventory->formulir_id = $cut_off_account->formulir_id;
@@ -245,23 +245,8 @@ class CutOffHelper {
         // CUTOFF INVENTORY SUBLEDGER
         foreach($cut_off_inventory->cutOffInventoryDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_inventory_detail) {
 
-            // EMPTY JOURNAL
-            $coa_value = JournalHelper::getTotalValueBySubledger($cut_off_account_detail->coa_id, $cut_off_account->formulir->form_date, $cut_off_inventory_detail->subledger_type, $cut_off_inventory_detail->subledger_id);
             if ($cut_off_inventory_detail->stock > 0 && $cut_off_inventory_detail->amount > 0) {
                 $position = JournalHelper::position($cut_off_inventory_detail->coa_id);
-                if ($coa_value->debit > 0 || $coa_value->credit > 0) {
-                    $journal = new Journal();
-                    $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
-                    $journal->coa_id = $cut_off_account_detail->coa_id;
-                    $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
-                    $journal->debit = $coa_value->credit;
-                    $journal->credit = $coa_value->debit;
-                    $journal->form_journal_id = $cut_off_account->formulir_id;
-                    $journal->form_reference_id;
-                    $journal->subledger_id = $cut_off_inventory_detail->subledger_id;
-                    $journal->subledger_type = $cut_off_inventory_detail->subledger_type;
-                    $journal->save();
-                }
 
                 // CUTOFF INVENTORY
                 $inventory = new Inventory;
@@ -439,6 +424,8 @@ class CutOffHelper {
                 self::accountNonSubledger($cut_off_account, $cut_off_account_detail);
             }
         }
+
+        JournalHelper::checkJournalBalance($cut_off_account->formulir_id);
     }
 
     /**

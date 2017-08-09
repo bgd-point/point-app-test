@@ -41,7 +41,7 @@ class CutOffInventoryController extends Controller
 		access_is_allowed('create.point.accounting.cut.off.inventory');
 		
 		$view = view('point-accounting::app.accounting.point.cut-off.inventory.create');
-        $view->list_coa = Coa::active()->where('coa_category_id', 4)->get(); // get all coa where category inventory
+        $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Inventories')->selectOriginal()->orderBy('coa_number')->orderBy('name')->get(); // get all coa where category inventory
         $view->list_user_approval = UserHelper::getAllUser();
 
         return $view;
@@ -69,7 +69,7 @@ class CutOffInventoryController extends Controller
 	{
 		access_is_allowed('read.point.accounting.cut.off.inventory');
 		$view = view('point-accounting::app.accounting.point.cut-off.inventory.show');
-        $view->list_coa = Coa::active()->where('coa_category_id', 4)->get();
+        $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Inventories')->selectOriginal()->orderBy('coa_number')->orderBy('name')->get();
         $view->cut_off_inventory = CutOffInventory::find($id);
         $view->list_cut_off_inventory_archived = CutOffInventory::joinFormulir()->archived($view->cut_off_inventory->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_cut_off_inventory_archived->count();
@@ -81,7 +81,7 @@ class CutOffInventoryController extends Controller
 		access_is_allowed('read.point.accounting.cut.off.inventory');
         $view = view('point-accounting::app.accounting.point.cut-off.inventory.archived');
         $view->cut_off_inventory_archived = CutOffInventory::find($id);
-        $view->list_coa = Coa::active()->where('coa_category_id', 4)->get();
+        $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Inventories')->selectOriginal()->orderBy('coa_number')->orderBy('name')->get();
 
         return $view;
     }
@@ -93,7 +93,7 @@ class CutOffInventoryController extends Controller
 		$view = view('point-accounting::app.accounting.point.cut-off.inventory.edit');
 		$view->cut_off_inventory = CutOffInventory::find($id);
         self::restoreToTemp($view->cut_off_inventory);
-        $view->list_coa = Coa::active()->where('coa_category_id', 4)->get();
+        $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Inventories')->selectOriginal()->orderBy('coa_number')->orderBy('name')->get();
         $view->list_user_approval = UserHelper::getAllUser();
 
         return $view;
