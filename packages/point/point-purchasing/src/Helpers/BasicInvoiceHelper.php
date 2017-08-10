@@ -94,6 +94,10 @@ class BasicInvoiceHelper
         foreach ($invoice->items as $invoice_detail) {
             // Journal inventory
             $total_per_row = $invoice_detail->quantity * $invoice_detail->price - $invoice_detail->quantity * $invoice_detail->price / 100 * $invoice_detail->discount;
+            if ($invoice->discount) {
+                $discounty = $total_per_row * $discount / $subtotal;
+                $total_per_row = $total_per_row - $discounty;
+            }
             if ($request->input('type_of_tax') == 'include') {
                 $total_per_row = $total_per_row * 100 / 110;
             }
@@ -129,7 +133,6 @@ class BasicInvoiceHelper
             $data = array(
                 'value_of_account_payable' => $total,
                 'value_of_income_tax_receiveable' => $tax,
-                'value_of_discount' => $discount * (-1),
                 'value_of_expedition_cost' => $invoice->expedition_fee,
                 'formulir' => $formulir,
                 'invoice' => $invoice
@@ -139,7 +142,6 @@ class BasicInvoiceHelper
             $data = array(
                 'value_of_account_payable' => $total,
                 'value_of_income_tax_receiveable' => $tax,
-                'value_of_discount' => $discount,
                 'value_of_expedition_cost' => $invoice->expedition_fee,
                 'formulir' => $formulir,
                 'invoice' => $invoice
@@ -179,22 +181,6 @@ class BasicInvoiceHelper
         $journal->subledger_id;
         $journal->subledger_type;
         $journal->save();
-
-        // 3. Journal Purchase Discount
-        if ($data['invoice']->discount > 0) {
-            $purchasing_discount = JournalHelper::getAccount('point purchasing', 'purchase discount');
-            $position = JournalHelper::position($purchasing_discount);
-            $journal = new Journal;
-            $journal->form_date = $data['formulir']->form_date;
-            $journal->coa_id = $purchasing_discount;
-            $journal->description = 'invoice purchasing [' . $data['formulir']->form_number.']';
-            $journal->$position = $data['value_of_discount'];
-            $journal->form_journal_id = $data['formulir']->id;
-            $journal->form_reference_id;
-            $journal->subledger_id;
-            $journal->subledger_type;
-            $journal->save();
-        }
 
         // 3. Journal Expedition Cost
         if ($data['invoice']->expedition_fee > 0) {
