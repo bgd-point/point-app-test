@@ -149,6 +149,7 @@ class BasicInvoiceHelper
             self::journal($data);
         }
 
+        JournalHelper::checkJournalBalance($invoice->formulir_id);
         return $invoice;
     }
 
