@@ -247,4 +247,18 @@ class JournalHelper
 
         return $journal->debit - $journal->credit;
     }
+
+    public static function checkJournalBalance($formulir_id)
+    {
+        $journal = Journal::where('form_journal_id', $formulir_id)
+            ->selectRaw('sum(debit) as debit, sum(credit) as credit')
+            ->first();
+
+        \Log::info('Debit : ' . $journal->debit . ' >><< Credit : ' .$journal->credit);
+        if ($journal->debit != $journal->credit) {
+            throw new PointException('Journal unbalance, Please contact administrator to fix this error');
+        }
+        
+        return true;
+    }
 }

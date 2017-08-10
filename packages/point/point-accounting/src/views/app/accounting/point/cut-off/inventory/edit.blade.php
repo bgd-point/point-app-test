@@ -94,7 +94,7 @@
                                                 <a href="javascript:void(0)" class="btn btn-primary" onclick="openDetail({{$coa->id}},{{$index}})"><i class="fa fa-plus"></i></a>
                                                 @endif
                                             </td>
-                                            <td><strong id="coa-name-{{$index}}">{{$coa->name}}</strong></td>
+                                            <td><strong id="coa-name-{{$index}}">{{$coa->account}}</strong></td>
                                             <td><input type="text" id="row-amount-{{$index}}" value="{{ $amount }}" onkeyup="reCalculate()" name="amount[]" @if($coa->has_subledger) '' : readonly @endif class="form-control text-right format-quantity"></td>
                                         </tr>
                                         <?php $index++;?>
