@@ -15,9 +15,19 @@
                 @if(!$list_cheque_detail->count())
                 <h3>Please, make cheque transaction first</h3>
                 @endif
+                <div class="form-group row">
+                    <div class="col-sm-3">
+                        <select class="selectize" name="status" id="status" onchange="selectData()">
+                            <option value="0" @if(\Input::get('status') == 0) selected @endif>pending</option>
+                            <option value="1" @if(\Input::get('status') == 1) selected @endif>done</option>
+                            <option value="-1" @if(\Input::get('status') == -1) selected @endif>rejected</option>
+                            <option value="all" @if(\Input::get('status') == 'all') selected @endif>all</option>
+                        </select>
+                    </div>
+                </div>
                 @if($list_cheque_detail->count())
                 <div class="table-responsive">
-                    {!! $list_cheque_detail->render() !!}
+                    {!! $list_cheque_detail->appends(['status'=>app('request')->get('status')])->render() !!}
                     <table class="table table-striped table-bordered">
                         <thead>
                         <tr>
@@ -54,18 +64,22 @@
                                 <td>
                                     {{ number_format_price($cheque_detail->amount)}}
                                 </td>
-                                <td> {{ $cheque_detail->statusLabel() }}</td>
+                                <td>{!! $cheque_detail->statusLabel() !!}</td>
                             </tr>
                         <?php $i++;?>
                         @endforeach
                         </tbody>
                     </table>
-                    {!! $list_cheque_detail->render() !!}
+                    {!! $list_cheque_detail->appends(['status'=>app('request')->get('status')])->render() !!}
                 </div>
                 <div class="form-group">
                     <div class="col-md-12">
+                        @if((\Input::get('status') == 0 || \Input::get('status') == -1) && \Input::get('status') != 'all' && \Input::get('status') != null)
                         <button onclick="select('liquid')" class="btn btn-effect-ripple btn-primary">Liquid</button>
-                        <button onclick="select('decline')" class="btn btn-effect-ripple btn-danger">Decline</button>
+                        @endif
+                        @if((\Input::get('status') == 0 || \Input::get('status') == 1) && \Input::get('status') != 'all' && \Input::get('status') != null)
+                        <button onclick="select('reject')" class="btn btn-effect-ripple btn-danger">Reject</button>
+                        @endif
                     </div>
                 </div>
                 @endif
@@ -85,7 +99,7 @@
             }
         };
 
-        url = '{{url()}}/finance/point/cheque/decline/?id='+cheque_detail_id;
+        url = '{{url()}}/finance/point/cheque/reject/?id='+cheque_detail_id;
         if (key == 'liquid') {
             url = '{{url()}}/finance/point/cheque/liquid/?id='+cheque_detail_id;
         }
@@ -96,6 +110,12 @@
     $("#check-all").change(function () {
         $("input:checkbox").prop('checked', $(this).prop("checked"));
     });
+
+    function selectData() {
+        var status = $("#status option:selected").val();
+        var url = '{{url()}}/finance/point/cheque/list?status='+status;
+        location.href = url;
+    }
 
 </script>
 @stop

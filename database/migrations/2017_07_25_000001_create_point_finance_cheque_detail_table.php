@@ -21,10 +21,17 @@ class CreatePointFinanceChequeDetailTable extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->timestamp('due_date')->useCurrent();
-            $table->timestamp('liquid_date')->nullable();
-            $table->timestamp('decline_date')->nullable();
+            $table->timestamp('disbursement_at')->nullable();
+            $table->timestamp('rejected_at')->nullable();
+            $table->integer('disbursement_coa_id')->unsigned()->index('disbursement_coa_id_index')->nullable();
+            $table->foreign('disbursement_coa_id', 'disbursement_coa_id_foreign')
+                ->references('id')->on('coa')
+                ->onUpdate('restrict')
+                ->onDelete('restrict');
+            
             $table->string('number')->index()->nullable();
             $table->string('bank')->index()->nullable();
+            $table->integer('rejected_counter')->unsigned();
             $table->decimal('amount', 16, 4);
             $table->text('notes');
             $table->boolean('status')->default(false);

@@ -80,10 +80,10 @@ class ChequeController extends Controller
         return $view;
     }
 
-    public function pendingCheque()
+    public function listCheque()
     {
-        $view = view('point-finance::app.finance.point.cheque.pending-cheque');
-        $view->list_cheque_detail = ChequeDetail::joinCheque()->joinFormulir()->where('formulir.form_status', 1)->whereNull('formulir.archived')->where('point_finance_cheque_detail.status', 0)->select('point_finance_cheque_detail.*')->paginate(100);
+        $view = view('point-finance::app.finance.point.cheque.list-cheque');
+        $view->list_cheque_detail = ChequeDetail::searchList(\Input::get('status') ? : 'all')->paginate(100);
 
         return $view;
     }
@@ -98,6 +98,15 @@ class ChequeController extends Controller
         return $view;
     }
 
+    public function reject()
+    {
+        $view = view('point-finance::app.finance.point.cheque.reject');
+        $id = explode(',', \Input::get('id'));
+        $view->list_cheque_detail = ChequeDetail::whereIn('id', $id)->get();
+
+        return $view;
+    }
+
     public function liquidProcess(Request $request)
     {
         $id_cheque = explode(',', \Input::get('id'));
@@ -105,11 +114,36 @@ class ChequeController extends Controller
         \DB::beginTransaction();
         foreach ($id_cheque as $id) {
             $cheque_detail = ChequeDetail::find($id);
-            $cheque_detail->liquid_date = date_format_db(\Input::get('liquid_date'), \Input::get('time'));
+            $cheque_detail->disbursement_at = date_format_db(\Input::get('disbursement_at'), \Input::get('time'));
             $cheque_detail->status = 1;
             $cheque_detail->save();
 
             self::journal($cheque_detail, $request);
+        }
+        \DB::commit();
+
+        return redirect('finance/point/cheque');
+    }
+
+    public function rejectProcess(Request $request)
+    {
+        $id_cheque = explode(',', \Input::get('id'));
+
+        \DB::beginTransaction();
+        foreach ($id_cheque as $id) {
+            $cheque_detail = ChequeDetail::find($id);
+            $cheque_detail->rejected_at = date_format_db(\Input::get('rejected_at'), \Input::get('time'));
+            $cheque_detail->notes = \Input::get('reject_notes');
+            $cheque_detail->rejected_counter = $cheque_detail->rejected_counter + 1;
+            $cheque_detail->save();
+
+            if ($cheque_detail->disbursement_coa_id) {
+                self::rejectJournal($cheque_detail, $request);
+            }
+
+            $cheque_detail->disbursement_coa_id = '';
+            $cheque_detail->status = -1;
+            $cheque_detail->save();
         }
         \DB::commit();
 
@@ -145,6 +179,45 @@ class ChequeController extends Controller
         $journal->coa_id = $request->input('coa_id');
         $journal->description = $cheque_detail->notes ?: '';
         $journal->$position = $cheque_detail->amount;
+        $journal->form_journal_id = $cheque->formulir_id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
+
+        $cheque_detail->disbursement_coa_id = $journal->coa_id;
+        $cheque_detail->save();
+    }
+
+    public static function rejectJournal($cheque_detail, $request)
+    {
+        // CHEQUE
+        $cheque = $cheque_detail->cheque;
+
+        $position = JournalHelper::position($cheque->coa_id);
+        $journal = new Journal();
+        $journal->form_date = $cheque->formulir->form_date;
+        $journal->coa_id = $cheque->coa_id;
+        $journal->description = $cheque_detail->notes ?: '';
+        $journal->$position = $cheque_detail->amount;
+        $journal->form_journal_id = $cheque->formulir_id;
+        $journal->form_reference_id = $cheque->formulir_id;
+        $journal->subledger_id = $cheque->person_id;
+        $journal->subledger_type = get_class(new Person());
+        $journal->save();
+
+        if ($journal->debit > 0) {
+            $position = 'credit';
+        } else {
+            $position = 'debit';
+        }
+
+        // BANK
+        $journal = new Journal();
+        $journal->form_date = $cheque->formulir->form_date;
+        $journal->coa_id = $cheque_detail->disbursement_coa_id;
+        $journal->description = $cheque_detail->notes ?: '';
+        $journal->$position = $cheque_detail->amount * -1;
         $journal->form_journal_id = $cheque->formulir_id;
         $journal->form_reference_id;
         $journal->subledger_id;

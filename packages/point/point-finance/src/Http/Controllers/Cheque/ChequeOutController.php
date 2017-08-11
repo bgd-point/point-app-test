@@ -30,7 +30,7 @@ class ChequeOutController extends Controller
         $view->person = Person::find($payment_reference->person_id);
         $view->payment_reference = $payment_reference;
         $view->pay_to = $payment_reference->person_id;
-        $view->list_coa = Coa::where('coa_category_id', 8)->active()->get();
+        $view->list_coa = Coa::joinCategory()->where('coa_category.name', 'Current Liability')->active()->select('coa.*')->get();
         $view->list_bank = MasterBank::all();
 
         return $view;
