@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
+use Point\Framework\Models\AccountPayableAndReceivable;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Coa;
@@ -29,6 +30,7 @@ class RejournalSalesSeeder extends Seeder
     {
         $list_invoice = Invoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->select('formulir.id')->get()->toArray();
         $journal = Journal::whereIn('form_journal_id', $list_invoice)->delete();
+        $account_receivable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $list_invoice)->delete();
         $inventory = Inventory::whereIn('formulir_id', $list_invoice)->delete();
         $list_invoice = Invoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->selectOriginal()->get();
         \Log::info('Journal invoice indirect started');
@@ -192,6 +194,7 @@ class RejournalSalesSeeder extends Seeder
     {
         $list_invoice = ServiceInvoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->select('formulir.id')->get()->toArray();
         $journal = Journal::whereIn('form_journal_id', $list_invoice)->delete();
+        $account_receivable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $list_invoice)->delete();
         $inventory = Inventory::whereIn('formulir_id', $list_invoice)->delete();
         $list_invoice = ServiceInvoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->selectOriginal()->get();
         \Log::info('Journal invoice service started');
