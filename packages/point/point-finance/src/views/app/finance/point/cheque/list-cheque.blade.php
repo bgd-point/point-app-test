@@ -21,7 +21,7 @@
                             <option value="0" @if(\Input::get('status') == 0) selected @endif>pending</option>
                             <option value="1" @if(\Input::get('status') == 1) selected @endif>done</option>
                             <option value="-1" @if(\Input::get('status') == -1) selected @endif>rejected</option>
-                            <option value="all" @if(\Input::get('status') == 'all') selected @endif>all</option>
+                            <option value="all" @if((\Input::get('status') == 'all') || (!\Input::get('status') && \Input::get('status') != 0)) selected @endif>all</option>
                         </select>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                 <div class="form-group">
                     <div class="col-md-12">
                         @if((\Input::get('status') == 0 || \Input::get('status') == -1) && \Input::get('status') != 'all' && \Input::get('status') != null)
-                        <button onclick="select('liquid')" class="btn btn-effect-ripple btn-primary">Liquid</button>
+                        <button onclick="select('disbursement')" class="btn btn-effect-ripple btn-primary">Disbursement</button>
                         @endif
                         @if((\Input::get('status') == 0 || \Input::get('status') == 1) && \Input::get('status') != 'all' && \Input::get('status') != null)
                         <button onclick="select('reject')" class="btn btn-effect-ripple btn-danger">Reject</button>
@@ -100,8 +100,8 @@
         };
 
         url = '{{url()}}/finance/point/cheque/reject/?id='+cheque_detail_id;
-        if (key == 'liquid') {
-            url = '{{url()}}/finance/point/cheque/liquid/?id='+cheque_detail_id;
+        if (key == 'disbursement') {
+            url = '{{url()}}/finance/point/cheque/disbursement/?id='+cheque_detail_id;
         }
 
         location.href = url;

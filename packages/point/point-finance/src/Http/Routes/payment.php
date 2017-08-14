@@ -72,8 +72,8 @@ Route::group(['middleware' => 'auth', 'prefix' => 'finance/point', 'namespace' =
         Route::get('cheque/print/{id}', 'ChequeController@printCheque');
         Route::get('cheque/pending', 'ChequeController@pendingCheque');
         Route::get('cheque/list', 'ChequeController@listCheque');
-        Route::get('cheque/liquid', 'ChequeController@liquid');
-        Route::post('cheque/liquid', 'ChequeController@liquidProcess');
+        Route::get('cheque/disbursement', 'ChequeController@disbursement');
+        Route::post('cheque/disbursement', 'ChequeController@disbursementProcess');
         Route::get('cheque/reject', 'ChequeController@reject');
         Route::post('cheque/reject', 'ChequeController@rejectProcess');
 

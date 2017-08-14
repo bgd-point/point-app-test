@@ -23,7 +23,7 @@ class CreatePointFinanceChequeDetailTable extends Migration
             $table->timestamp('due_date')->useCurrent();
             $table->timestamp('disbursement_at')->nullable();
             $table->timestamp('rejected_at')->nullable();
-            $table->integer('disbursement_coa_id')->unsigned()->index('disbursement_coa_id_index')->nullable();
+            $table->integer('disbursement_coa_id')->unsigned()->nullable()->index('disbursement_coa_id_index');
             $table->foreign('disbursement_coa_id', 'disbursement_coa_id_foreign')
                 ->references('id')->on('coa')
                 ->onUpdate('restrict')

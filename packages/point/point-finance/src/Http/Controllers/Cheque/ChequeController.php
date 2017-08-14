@@ -83,14 +83,14 @@ class ChequeController extends Controller
     public function listCheque()
     {
         $view = view('point-finance::app.finance.point.cheque.list-cheque');
-        $view->list_cheque_detail = ChequeDetail::searchList(\Input::get('status') ? : 'all')->paginate(100);
+        $view->list_cheque_detail = ChequeDetail::searchList(\Input::get('status'))->paginate(100);
 
         return $view;
     }
 
-    public function liquid()
+    public function disbursement()
     {
-        $view = view('point-finance::app.finance.point.cheque.liquid');
+        $view = view('point-finance::app.finance.point.cheque.disbursement');
         $id = explode(',', \Input::get('id'));
         $view->list_cheque_detail = ChequeDetail::whereIn('id', $id)->get();
         $view->list_coa = Coa::whereIn('coa_category_id', [1,2])->active()->get();
@@ -107,7 +107,7 @@ class ChequeController extends Controller
         return $view;
     }
 
-    public function liquidProcess(Request $request)
+    public function disbursementProcess(Request $request)
     {
         $id_cheque = explode(',', \Input::get('id'));
 
@@ -115,6 +115,7 @@ class ChequeController extends Controller
         foreach ($id_cheque as $id) {
             $cheque_detail = ChequeDetail::find($id);
             $cheque_detail->disbursement_at = date_format_db(\Input::get('disbursement_at'), \Input::get('time'));
+            $cheque_detail->notes = \Input::get('cheque_notes');
             $cheque_detail->status = 1;
             $cheque_detail->save();
 
@@ -141,7 +142,7 @@ class ChequeController extends Controller
                 self::rejectJournal($cheque_detail, $request);
             }
 
-            $cheque_detail->disbursement_coa_id = '';
+            $cheque_detail->disbursement_coa_id = null;
             $cheque_detail->status = -1;
             $cheque_detail->save();
         }
@@ -206,11 +207,11 @@ class ChequeController extends Controller
         $journal->subledger_type = get_class(new Person());
         $journal->save();
 
-        if ($journal->debit > 0) {
-            $position = 'credit';
-        } else {
-            $position = 'debit';
-        }
+        // if ($journal->debit > 0) {
+        //     $position = 'credit';
+        // } else {
+        //     $position = 'debit';
+        // }
 
         // BANK
         $journal = new Journal();
@@ -223,5 +224,7 @@ class ChequeController extends Controller
         $journal->subledger_id;
         $journal->subledger_type;
         $journal->save();
+
+        JournalHelper::checkJournalBalance($cheque->formulir_id);
     }
 }
