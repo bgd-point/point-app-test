@@ -4,13 +4,14 @@ namespace Point\PointFinance\Models\Cheque;
 
 use Illuminate\Database\Eloquent\Model;
 use Point\Framework\Traits\FormulirTrait;
+use Point\PointFinance\Vesa\ChequeVesa;
 
 class Cheque extends Model
 {
     protected $table = 'point_finance_cheque';
     public $timestamps = false;
 
-    use FormulirTrait;
+    use FormulirTrait, ChequeVesa;
 
     /**
      * Inject function when saving

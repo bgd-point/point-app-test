@@ -13,6 +13,7 @@ use Point\Framework\Models\AccountPayableAndReceivable;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Coa;
+use Point\Framework\Models\Master\MasterBank;
 use Point\Framework\Models\Master\Person;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
@@ -108,6 +109,52 @@ class ChequeController extends Controller
         $view->list_cheque_detail = ChequeDetail::whereIn('id', $id)->get();
 
         return $view;
+    }
+
+    public function action($id)
+    {
+        $view = view('point-finance::app.finance.point.cheque.action');
+        $view->cheque_detail = ChequeDetail::find($id);
+
+        return $view;
+    }
+
+    public function createNew($id)
+    {
+        $view = view('point-finance::app.finance.point.cheque.create-new');
+        $view->cheque_detail = ChequeDetail::find($id);
+        $view->list_bank = MasterBank::all();
+
+        return $view;
+    }
+
+    public function createNewStore()
+    {
+        $cheque = ChequeDetail::find(app('request')->input('reference_detail_id'));
+        $cheque->status = 2;
+        $cheque->save();
+
+        \DB::beginTransaction();
+        $amount = 0;
+        for ($i=0 ; $i<count(app('request')->input('bank')); $i++) {
+            $cheque_detail = new ChequeDetail;
+            $cheque_detail->point_finance_cheque_id = app('request')->input('reference_id');
+            $cheque_detail->bank = app('request')->input('bank')[$i];
+            $cheque_detail->due_date = date_format_db(app('request')->input('due_date_cheque')[$i]);
+            $cheque_detail->number = app('request')->input('number_cheque')[$i];
+            $cheque_detail->notes = app('request')->input('notes_cheque')[$i];
+            $cheque_detail->amount = number_format_db(app('request')->input('amount_cheque')[$i]);
+            $cheque_detail->save();
+            $amount += $cheque_detail->amount;
+        }
+
+        if ($amount != $cheque->amount) {
+            throw new PointException('TOTAL CHEQUE MUST BALANCE WTIH REFERENCE');
+        }
+
+        \DB::commit();
+
+        return redirect('finance/point/cheque/list');
     }
 
     public function disbursementProcess(Request $request)

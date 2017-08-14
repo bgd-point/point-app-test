@@ -6,6 +6,7 @@ use Point\PointExpedition\Models\Downpayment as DownpaymentExpedition;
 use Point\PointExpedition\Models\ExpeditionOrder;
 use Point\PointExpedition\Models\Invoice as InvoiceExpedition;
 use Point\PointExpedition\Models\PaymentOrder as PaymentOrderExpedition;
+use Point\PointFinance\Models\Cheque\Cheque;
 use Point\PointFinance\Models\PaymentOrder\PaymentOrder as PaymentOrderFinance;
 use Point\PointFinance\Models\PaymentReference;
 use Point\PointInventory\Models\InventoryUsage\InventoryUsage;
@@ -86,6 +87,7 @@ class DashboardController extends Controller
         // FINANCE
         $array_vesa = array_merge($array_vesa, PaymentOrderFinance::getVesa());
         $array_vesa = array_merge($array_vesa, PaymentReference::getVesa());
+        $array_vesa = array_merge($array_vesa, Cheque::getVesa());
 
         // ACCOUNTING
 

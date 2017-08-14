@@ -34,7 +34,7 @@ class CreatePointFinanceChequeDetailTable extends Migration
             $table->integer('rejected_counter')->unsigned();
             $table->decimal('amount', 16, 4);
             $table->text('notes');
-            $table->boolean('status')->default(false);
+            $table->boolean('status')->default(false); // 1 = disbursement, -1 = rejected, 0 = pending, 2 = close permanent
         });
     }
 
