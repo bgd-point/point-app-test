@@ -55,9 +55,6 @@ class FrameworkCoaTableSeeder extends Seeder
         $coa_category = CoaCategory::insert(1, $coa_group_category->id, 'Bank Account');
         Coa::insert($coa_category->id, 'Bank Account');
 
-        $coa_category = CoaCategory::insert(1, $coa_group_category->id, 'Cheque Receivable');
-        Coa::insert($coa_category->id, 'Cheque Receivable');
-
         $coa_category = CoaCategory::insert(1, $coa_group_category->id, 'Account Receivable');
         Coa::insert($coa_category->id, 'Account Receivable - Sales', true, 'Point\Framework\Models\Master\Person');
         Coa::insert($coa_category->id, 'Cheque Receivable', true, 'Point\Framework\Models\Master\Person');

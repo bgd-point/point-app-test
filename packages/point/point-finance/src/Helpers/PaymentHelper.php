@@ -381,5 +381,7 @@ class PaymentHelper
                 'reference_type' => $payment_detail->reference_type
             ]);
         }
+
+        JournalHelper::checkJournalBalance($payment->formulir->id);
     }
 }

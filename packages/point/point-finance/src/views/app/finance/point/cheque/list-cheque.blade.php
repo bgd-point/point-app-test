@@ -21,7 +21,7 @@
                             <option value="0" @if(\Input::get('status') == 0) selected @endif>pending</option>
                             <option value="1" @if(\Input::get('status') == 1) selected @endif>done</option>
                             <option value="-1" @if(\Input::get('status') == -1) selected @endif>rejected</option>
-                            <option value="all" @if((\Input::get('status') == 'all') || (!\Input::get('status') && \Input::get('status') != 0)) selected @endif>all</option>
+                            <option value="all" @if((\Input::get('status') == 'all') || (\Input::get('status') == null)) selected @endif>all</option>
                         </select>
                     </div>
                 </div>
@@ -38,6 +38,8 @@
                             <th>Number</th>
                             <th>Notes</th>
                             <th>Amount</th>
+                            <th>Rejected Counter</th>
+                            <th>Rejected At</th>
                             <th>Status</th>
                         </tr>
                         </thead>
@@ -63,6 +65,12 @@
                                 </td>
                                 <td>
                                     {{ number_format_price($cheque_detail->amount)}}
+                                </td>
+                                <td>
+                                    {{ $cheque_detail->rejected_counter ? $cheque_detail->rejected_counter .'x' : ''}}
+                                </td>
+                                <td>
+                                    {{ date_format_view($cheque_detail->rejected_at) }}
                                 </td>
                                 <td>{!! $cheque_detail->statusLabel() !!}</td>
                             </tr>

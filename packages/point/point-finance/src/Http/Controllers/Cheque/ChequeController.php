@@ -6,8 +6,11 @@ use Illuminate\Auth\id;
 use Illuminate\Http\Request;
 use Point\Core\Exceptions\PointException;
 use Point\Core\Traits\ValidationTrait;
+use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Http\Controllers\Controller;
+use Point\Framework\Models\AccountPayableAndReceivable;
+use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Master\Person;
@@ -115,6 +118,7 @@ class ChequeController extends Controller
         foreach ($id_cheque as $id) {
             $cheque_detail = ChequeDetail::find($id);
             $cheque_detail->disbursement_at = date_format_db(\Input::get('disbursement_at'), \Input::get('time'));
+            $cheque_detail->rejected_at = null;
             $cheque_detail->notes = \Input::get('cheque_notes');
             $cheque_detail->status = 1;
             $cheque_detail->save();
@@ -133,10 +137,16 @@ class ChequeController extends Controller
         \DB::beginTransaction();
         foreach ($id_cheque as $id) {
             $cheque_detail = ChequeDetail::find($id);
+            $cheque_detail->disbursement_at = null;
             $cheque_detail->rejected_at = date_format_db(\Input::get('rejected_at'), \Input::get('time'));
             $cheque_detail->notes = \Input::get('reject_notes');
             $cheque_detail->rejected_counter = $cheque_detail->rejected_counter + 1;
             $cheque_detail->save();
+
+            if ($cheque_detail->rejected_counter > 3) {
+                throw new PointException("CHEQUE/WESEL MORE THAN 3 TIMES IN REJECT");
+                
+            }
 
             if ($cheque_detail->disbursement_coa_id) {
                 self::rejectJournal($cheque_detail, $request);
@@ -155,6 +165,20 @@ class ChequeController extends Controller
     {
         // CHEQUE
         $cheque = $cheque_detail->cheque;
+        $account_payable_receivable = AccountPayableAndReceivable::where('reference_id', $cheque->id)->where('reference_type', get_class($cheque))->where('done', 0)->first();
+
+        $form_number = FormulirHelper::number('point-finance-cheque-disbursement', $cheque->formulir->form_date);
+        $formulir = new Formulir;
+        $formulir->form_date = $cheque->formulir->form_date;
+        $formulir->form_number = $form_number['form_number'];
+        $formulir->form_raw_number = $form_number['raw'];
+        $formulir->approval_to = 1;
+        $formulir->approval_status = 1;
+        $formulir->form_status = 1;
+        $formulir->created_by = auth()->user()->id;
+        $formulir->updated_by = auth()->user()->id;
+        $formulir->save();
+
 
         $position = JournalHelper::position($cheque->coa_id);
         $journal = new Journal();
@@ -162,8 +186,8 @@ class ChequeController extends Controller
         $journal->coa_id = $cheque->coa_id;
         $journal->description = $cheque_detail->notes ?: '';
         $journal->$position = $cheque_detail->amount * -1;
-        $journal->form_journal_id = $cheque->formulir_id;
-        $journal->form_reference_id = $cheque->formulir_id;
+        $journal->form_journal_id = $formulir->id;
+        $journal->form_reference_id = $account_payable_receivable ? $account_payable_receivable->formulir_reference_id : $cheque->formulir->id;
         $journal->subledger_id = $cheque->person_id;
         $journal->subledger_type = get_class(new Person());
         $journal->save();
@@ -180,8 +204,8 @@ class ChequeController extends Controller
         $journal->coa_id = $request->input('coa_id');
         $journal->description = $cheque_detail->notes ?: '';
         $journal->$position = $cheque_detail->amount;
-        $journal->form_journal_id = $cheque->formulir_id;
-        $journal->form_reference_id;
+        $journal->form_journal_id = $formulir->id;
+        $journal->form_reference_id = $cheque->formulir->id;
         $journal->subledger_id;
         $journal->subledger_type;
         $journal->save();
@@ -195,23 +219,33 @@ class ChequeController extends Controller
         // CHEQUE
         $cheque = $cheque_detail->cheque;
 
+        $form_number = FormulirHelper::number('point-finance-cheque-reject', $cheque->formulir->form_date);
+
+        $formulir = new Formulir;
+        $formulir->form_date = $cheque->formulir->form_date;
+        $formulir->form_number = $form_number['form_number'];
+        $formulir->form_raw_number = $form_number['raw'];
+        $formulir->approval_to = 1;
+        $formulir->approval_status = 1;
+        $formulir->form_status = 1;
+        $formulir->created_by = auth()->user()->id;
+        $formulir->updated_by = auth()->user()->id;
+        $formulir->save();
+
         $position = JournalHelper::position($cheque->coa_id);
         $journal = new Journal();
         $journal->form_date = $cheque->formulir->form_date;
         $journal->coa_id = $cheque->coa_id;
         $journal->description = $cheque_detail->notes ?: '';
         $journal->$position = $cheque_detail->amount;
-        $journal->form_journal_id = $cheque->formulir_id;
-        $journal->form_reference_id = $cheque->formulir_id;
+        $journal->form_journal_id = $formulir->id;
+        $journal->form_reference_id = $cheque->formulir->id;
         $journal->subledger_id = $cheque->person_id;
         $journal->subledger_type = get_class(new Person());
-        $journal->save();
-
-        // if ($journal->debit > 0) {
-        //     $position = 'credit';
-        // } else {
-        //     $position = 'debit';
-        // }
+        $journal->save([
+                'reference_id' => $cheque->id,
+                'reference_type' => get_class($cheque)
+            ]);
 
         // BANK
         $journal = new Journal();
@@ -219,11 +253,12 @@ class ChequeController extends Controller
         $journal->coa_id = $cheque_detail->disbursement_coa_id;
         $journal->description = $cheque_detail->notes ?: '';
         $journal->$position = $cheque_detail->amount * -1;
-        $journal->form_journal_id = $cheque->formulir_id;
-        $journal->form_reference_id;
+        $journal->form_journal_id = $formulir->id;
+        $journal->form_reference_id = $cheque->formulir->id;
         $journal->subledger_id;
         $journal->subledger_type;
         $journal->save();
+
 
         JournalHelper::checkJournalBalance($cheque->formulir_id);
     }
