@@ -9,6 +9,8 @@ use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Person;
 use Point\PointFinance\Models\Bank\Bank;
 use Point\PointFinance\Models\Bank\BankDetail;
+use Point\PointFinance\Models\Cash\Cash;
+use Point\PointFinance\Models\Cash\CashDetail;
 use Point\PointFinance\Models\Cheque\Cheque;
 use Point\PointFinance\Models\Cheque\ChequeDetail;
 use Point\PointFinance\Models\Cheque\ChequeDetailPayment;
@@ -144,6 +146,93 @@ class PaymentHelper
         self::journal($cheque);
 
         return $cheque;
+    }
+
+    public static function cashOut($formulir)
+    {
+        $payment_reference = PaymentReference::find(app('request')->input('payment_reference_id'));
+
+        $cash = new Cash;
+        $cash->formulir_id = $formulir->id;
+        $cash->person_id = app('request')->input('person_id');
+        $cash->coa_id = app('request')->input('account_cash_id');
+        $cash->payment_flow = $payment_reference->payment_flow;
+        $cash->total = number_format_db(app('request')->input('total')) * -1;
+        $cash->save();
+
+        self::updatePaymentReference($payment_reference, $formulir->id);
+
+        for ($i=0 ; $i<count(app('request')->input('notes_detail')) ; $i++) {
+            $cash_detail = new CashDetail;
+            $cash_detail->point_finance_cash_id = $cash->id;
+            $cash_detail->coa_id = app('request')->input('coa_id')[$i];
+            $cash_detail->notes_detail = app('request')->input('notes_detail')[$i];
+            $cash_detail->amount = number_format_db(app('request')->input('amount')[$i]);
+            $cash_detail->allocation_id = number_format_db(app('request')->input('allocation_id')[$i]);
+            $cash_detail->form_reference_id = app('request')->input('formulir_reference_id')[$i] ?: null;
+            $cash_detail->subledger_id = app('request')->input('person_id')  ?: null;
+            $cash_detail->subledger_type = app('request')->input('formulir_reference_class')[$i]  ?: null;
+            $cash_detail->reference_id = app('request')->input('reference_id')[$i] ?: null;
+            $cash_detail->reference_type = app('request')->input('reference_type')[$i]?: null;
+            $cash_detail->save();
+        }
+
+        FormulirHelper::close($payment_reference->payment_reference_id);
+        FormulirHelper::close($cash->formulir->id);
+        FormulirHelper::lock($payment_reference->payment_reference_id, $formulir->id);
+        self::journal($cash);
+
+        return $cash;
+    }
+
+    public static function cashIn($formulir)
+    {
+        $payment_reference = PaymentReference::find(app('request')->input('payment_reference_id'));
+
+        $cash = new Cash;
+        $cash->formulir_id = $formulir->id;
+        $cash->person_id = app('request')->input('person_id');
+        $cash->coa_id = app('request')->input('account_cash_id');
+        $cash->payment_flow = 'in';
+        $cash->total = number_format_db(app('request')->input('total'));
+        $cash->save();
+
+        $count = 0;
+        for ($i=0 ; $i<count(app('request')->input('coa_id')) ; $i++) {
+            if (app('request')->input('coa_id')[$i] == ''
+                || app('request')->input('amount')[$i] == 0) {
+                continue;
+            }
+            $cash_detail = new CashDetail;
+            $cash_detail->point_finance_cash_id = $cash->id;
+            $cash_detail->coa_id = app('request')->input('coa_id')[$i];
+            $cash_detail->notes_detail = app('request')->input('notes_detail')[$i];
+            $cash_detail->amount = number_format_db(app('request')->input('amount')[$i]);
+            $cash_detail->allocation_id = number_format_db(app('request')->input('allocation_id')[$i]);
+            $cash_detail->form_reference_id = app('request')->input('formulir_reference_id')[$i] ?: null;
+            $cash_detail->subledger_id = app('request')->input('person_id')  ?: null;
+            $cash_detail->subledger_type = app('request')->input('formulir_reference_class')[$i]  ?: null;
+            $cash_detail->reference_id = app('request')->input('reference_id')[$i] ?: null;
+            $cash_detail->reference_type = app('request')->input('reference_type')[$i]?: null;
+            $cash_detail->save();
+            $count++;
+        }
+
+        if ($count == 0) {
+            throw new PointException('Cannot save empty payment, please check your input');
+        }
+
+        if ($payment_reference) {
+            self::updatePaymentReference($payment_reference, $formulir->id);
+            FormulirHelper::close($payment_reference->payment_reference_id);
+            FormulirHelper::lock($payment_reference->payment_reference_id, $formulir->id);
+        }
+
+        FormulirHelper::close($cash->formulir->id);
+
+        self::journal($cash);
+
+        return $cash;
     }
 
     public static function bankOut($formulir)
