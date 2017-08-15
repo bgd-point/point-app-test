@@ -54,9 +54,13 @@
                     <label class="col-md-3 control-label">Payment Reference</label>
                     <div class="col-md-6 content-show">
                         <?php $class = $payment_reference->reference->formulirable_type; ?>
+                        @if($class)
                         <a href="{{ $class::showUrl($payment_reference->reference->formulirable_id) }}">
                             {{$payment_reference->reference->form_number}}
                         </a>
+                        @else
+                        {{$payment_reference->reference->form_number}}
+                        @endif
                     </div>
                 </div>
                 <div class="form-group">

@@ -7,6 +7,7 @@ use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Person;
+use Point\PointFinance\Helpers\ChequeHelper;
 use Point\PointFinance\Models\Bank\Bank;
 use Point\PointFinance\Models\Bank\BankDetail;
 use Point\PointFinance\Models\Cash\Cash;
@@ -136,7 +137,7 @@ class PaymentHelper
 
         if ($payment_reference) {
             self::updatePaymentReference($payment_reference, $formulir->id);
-            FormulirHelper::close($payment_reference->payment_reference_id);
+            FormulirHelper::close($payment_reference->payment_reference_id); 
             FormulirHelper::lock($payment_reference->payment_reference_id, $formulir->id);
         }
 
@@ -174,7 +175,7 @@ class PaymentHelper
             $cash_detail->save();
         }
 
-        FormulirHelper::close($payment_reference->payment_reference_id);
+        ChequeHelper::checkIsRejected($payment_reference->payment_reference_id);
         FormulirHelper::close($cash->formulir->id);
         FormulirHelper::lock($payment_reference->payment_reference_id, $formulir->id);
         self::journal($cash);
@@ -221,7 +222,7 @@ class PaymentHelper
 
         if ($payment_reference) {
             self::updatePaymentReference($payment_reference, $formulir->id);
-            FormulirHelper::close($payment_reference->payment_reference_id);
+            ChequeHelper::checkIsRejected($payment_reference->payment_reference_id);
             FormulirHelper::lock($payment_reference->payment_reference_id, $formulir->id);
         }
 
@@ -261,7 +262,7 @@ class PaymentHelper
             $bank_detail->save();
         }
 
-        FormulirHelper::close($payment_reference->payment_reference_id);
+        ChequeHelper::checkIsRejected($payment_reference->payment_reference_id);
         FormulirHelper::close($bank->formulir->id);
         FormulirHelper::lock($payment_reference->payment_reference_id, $formulir->id);
         self::journal($bank);
@@ -307,7 +308,7 @@ class PaymentHelper
         $payment_reference = PaymentReference::find(app('request')->input('payment_reference_id'));
         if ($payment_reference) {
             self::updatePaymentReference($payment_reference, $formulir->id);
-            FormulirHelper::close($payment_reference->payment_reference_id);
+            ChequeHelper::checkIsRejected($payment_reference->payment_reference_id);
             FormulirHelper::lock($payment_reference->payment_reference_id, $formulir->id);
         }
 

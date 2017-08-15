@@ -18,6 +18,7 @@ use Point\Framework\Models\Master\Person;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
 use Point\PointAccounting\Models\AssetsRefer;
+use Point\PointFinance\Helpers\ChequeHelper;
 use Point\PointFinance\Models\Cheque\Cheque;
 use Point\PointFinance\Models\Cheque\ChequeDetail;
 use Point\PointFinance\Models\PaymentReference;
@@ -192,7 +193,7 @@ class ChequeController extends Controller
         return response()->json(
             array(
                 'status' => 'success',
-                'message' => 'please check your vesa'
+                'message' => '<div class="alert alert-info"><strong>Success!</strong> please check your vesa.</div>'
             )
         );
     }
@@ -252,8 +253,8 @@ class ChequeController extends Controller
             $formulir->updated_by = auth()->user()->id;
             $formulir->save();
 
-
             self::journal($cheque_detail, $request, $formulir);
+            ChequeHelper::close($cheque->formulir_id);
         }
         \DB::commit();
 
@@ -291,6 +292,7 @@ class ChequeController extends Controller
             $formulir->updated_by = auth()->user()->id;
             $formulir->save();
 
+            ChequeHelper::open($cheque->formulir_id);
             if ($cheque_detail->disbursement_coa_id) {
                 self::rejectJournal($cheque_detail, $request, $formulir);
             }
@@ -299,6 +301,7 @@ class ChequeController extends Controller
             $cheque_detail->disbursement_coa_id = null;
             $cheque_detail->status = -1;
             $cheque_detail->save();
+
         }
         \DB::commit();
 
