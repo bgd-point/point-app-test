@@ -77,8 +77,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'finance/point', 'namespace' =
         Route::get('cheque/reject', 'ChequeController@reject');
         Route::post('cheque/reject', 'ChequeController@rejectProcess');
         Route::get('cheque/reject/action/{id}', 'ChequeController@action');
-        Route::get('cheque/create-new/{id}', 'ChequeController@createNew');
+        Route::get('cheque/create-new/{id}', 'ChequeController@createNewCheque');
         Route::post('cheque/create-new/store', 'ChequeController@createNewStore');
+        Route::get('cheque/create-new-cash-bank', 'ChequeController@createNewCashBank');
 
         // Cheque In
         Route::get('cheque/in/create/{payment_reference}', 'ChequeInController@createFromReference');

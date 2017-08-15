@@ -80,7 +80,6 @@ class PaymentHelper
         }
 
         FormulirHelper::close($payment_reference->payment_reference_id);
-        FormulirHelper::close($cheque->formulir->id);
         FormulirHelper::lock($payment_reference->payment_reference_id, $formulir->id);
         self::journal($cheque);
 
@@ -140,8 +139,6 @@ class PaymentHelper
             FormulirHelper::close($payment_reference->payment_reference_id);
             FormulirHelper::lock($payment_reference->payment_reference_id, $formulir->id);
         }
-
-        FormulirHelper::close($cheque->formulir->id);
 
         self::journal($cheque);
 

@@ -50,18 +50,80 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-md-2 control-label">Notes</label>
+                    <div class="col-md-10 content-show">
+                        {{ $cheque_detail->notes }}
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-md-2 control-label"></label>
                     <div class="col-md-10">
-                        @if($cheque_detail->rejected_counter != 3)
                         <a href="{{url('finance/point/cheque/disbursement?id='.$cheque_detail->id)}}" class="btn btn-effect-ripple btn-primary">Disbursement</a>
-                        <a href="{{url('finance/point/cheque/reject?id='.$cheque_detail->id)}}" class="btn btn-effect-ripple btn-danger">Reject</a>
-                        @else
-                        <a href="{{url('finance/point/cheque/create-new/'.$cheque_detail->id)}}" class="btn btn-effect-ripple btn-info">Create New</a>
-                        @endif
+                        <a data-toggle="modal" data-target="#modal-cheque-action" class="btn btn-effect-ripple btn-info">Create New</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div id="modal-cheque-action" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title"><strong>Select Payment</strong></h3>
+            </div>
+            <div class="modal-body">
+                <a onclick="createNew('bank', {{$cheque_detail->id}})" class="btn btn-effect-ripple btn-primary col-sm-12">BANK</a>
+                <a onclick="createNew('cash', {{$cheque_detail->id}})" class="btn btn-effect-ripple btn-info col-sm-12">CASH</a>
+                <a href="{{url('finance/point/cheque/create-new/'.$cheque_detail->id)}}" class="btn btn-effect-ripple btn-default col-sm-12">CHEQUE / WESEL</a>
+                <div class="text-center" id="message" style="margin-top:150px; word-wrap: break-word;">
+                    
+                </div>
+                <div id="preloader" style="display:none; margin-top:125px;" class="text-center col-sm-12">
+                    <i class="fa fa-spinner fa-spin" style="font-size:48px;"></i>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
 </div>
+</div>
+@stop
+
+@section('scripts')
+<style type="text/css">
+    .modal-dialog{
+        position: relative;
+        display: table; /* This is important */ 
+        overflow-y: auto;    
+        overflow-x: auto;
+        width: auto;
+        width: 300px;   
+    }
+</style>
+
+<script type="text/javascript">
+    function createNew (paymentType, id) {
+        var url = '{{url()}}/finance/point/cheque/create-new-cash-bank/';
+        $("#preloader").fadeIn();
+        $("#message").fadeOut(0);
+        $.ajax({
+            url: url,
+            async: true,
+            data: {type: paymentType, id: id},
+            success: function(result) {
+                console.log(result);
+                $("#preloader").fadeOut(0);
+                $('#message').fadeIn();
+                $('#message').html(result.message);
+            },
+            error: function (result) {
+                console.log(result);  
+            }
+        })
+    }
+</script>
 @stop

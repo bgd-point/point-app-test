@@ -28,13 +28,19 @@ class CreatePointFinanceChequeDetailTable extends Migration
                 ->references('id')->on('coa')
                 ->onUpdate('restrict')
                 ->onDelete('restrict');
+
+            $table->integer('rejected_formulir_id')->unsigned()->nullable()->index('finance_cheque_detail_reject_form_id_index');
+            $table->foreign('rejected_formulir_id', 'finance_cheque_detail_reject_form_id_foreign')
+                ->references('id')->on('formulir')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             
             $table->string('number')->index()->nullable();
             $table->string('bank')->index()->nullable();
             $table->integer('rejected_counter')->unsigned();
             $table->decimal('amount', 16, 4);
             $table->text('notes');
-            $table->boolean('status')->default(false);
+            $table->boolean('status')->default(false); // 1 = disbursement, -1 = rejected, 0 = pending, 2 = close permanent
         });
     }
 

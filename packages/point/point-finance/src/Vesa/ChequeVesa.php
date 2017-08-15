@@ -26,7 +26,7 @@ trait ChequeVesa
             array_push($array, [
                 'url' => url('finance/point/cheque/vesa-reject'),
                 'deadline' => $list_cheque_detail->orderBy('id', 'DESC')->first()->due_date,
-                'message' => 'disbursement cheque or create new from rejected list',
+                'message' => 'Cheque have been rejected, disbursement cheque or create new from rejected list',
                 'permission_slug' => 'create.point.finance.cashier.cheque',
                 'due_date' => true
             ]);
@@ -39,7 +39,7 @@ trait ChequeVesa
             array_push($array, [
                 'url' => url('finance/point/cheque/reject/action/' . $cheque_detail->id),
                 'deadline' => $cheque_detail->due_date,
-                'message' => 'disbursement cheque or create new cheque ' . $cheque_detail->number,
+                'message' => 'Cheque have been rejected, disbursement cheque or create new payment from cheque ' . $cheque_detail->number,
                 'permission_slug' => 'create.point.finance.cashier.cheque',
                 'due_date' => true
             ]);

@@ -28,6 +28,12 @@ class CreatePointFinanceChequeDetailTable extends Migration
                 ->references('id')->on('coa')
                 ->onUpdate('restrict')
                 ->onDelete('restrict');
+
+            $table->integer('rejected_formulir_id')->unsigned()->nullable()->index('finance_cheque_detail_reject_form_id_index');
+            $table->foreign('rejected_formulir_id', 'finance_cheque_detail_reject_form_id_foreign')
+                ->references('id')->on('formulir')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             
             $table->string('number')->index()->nullable();
             $table->string('bank')->index()->nullable();

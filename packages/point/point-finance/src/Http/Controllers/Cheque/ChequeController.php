@@ -20,6 +20,8 @@ use Point\Framework\Models\Master\Warehouse;
 use Point\PointAccounting\Models\AssetsRefer;
 use Point\PointFinance\Models\Cheque\Cheque;
 use Point\PointFinance\Models\Cheque\ChequeDetail;
+use Point\PointFinance\Models\PaymentReference;
+use Point\PointFinance\Models\PaymentReferenceDetail;
 
 class ChequeController extends Controller
 {
@@ -119,13 +121,80 @@ class ChequeController extends Controller
         return $view;
     }
 
-    public function createNew($id)
+    public function createNewCheque($id)
     {
-        $view = view('point-finance::app.finance.point.cheque.create-new');
+        $view = view('point-finance::app.finance.point.cheque.create-new-cheque');
         $view->cheque_detail = ChequeDetail::find($id);
         $view->list_bank = MasterBank::all();
-
+        if ($view->cheque_detail->status == 2) {
+            gritter_error('Failed! You can not make payment with this transaction because it is already in process, please check your vesa.');
+            return redirect('finance/point/cheque/list');
+        }
+        
         return $view;
+    }
+
+    public function createNewCashbank(Request $request)
+    {
+        if (!$this->validateCSRF()) {
+            return response()->json($this->restrictionAccessMessage());
+        }
+
+        \DB::beginTransaction();
+
+        $type = \Input::get('type');
+        $id = \Input::get('id');
+
+        $cheque_detail = ChequeDetail::find($id);
+        if ($cheque_detail->status == 2) {
+            return response()->json(
+                array(
+                    'status' => 'error',
+                    'message' => '<div class="alert alert-warning"><strong>Failed!</strong> You can not make payment with this transaction because it is already in process, please check your vesa.</div>'
+                )
+            );
+        }
+
+        $cheque_detail->status = 2;
+        $cheque_detail->save();
+
+        $cheque = $cheque_detail->cheque;
+
+        $account_payable_receivable = AccountPayableAndReceivable::where('formulir_reference_id', $cheque_detail->rejected_formulir_id)->first();
+        $rejected_formulir_id = $cheque->formulir_id;
+        if ($account_payable_receivable) {
+            $rejected_formulir_id = $cheque_detail->rejected_formulir_id;
+        }
+
+        $payment_reference = new PaymentReference;
+        $payment_reference->payment_reference_id = $rejected_formulir_id;
+        $payment_reference->person_id = $cheque->person_id;
+        $payment_reference->payment_flow = $cheque->payment_flow;
+        $payment_reference->payment_type = $type;
+        $payment_reference->total = $cheque_detail->amount;
+        $payment_reference->save();
+
+        $payment_reference_detail = new PaymentReferenceDetail;
+        $payment_reference_detail->point_finance_payment_reference_id = $payment_reference->id;
+        $payment_reference_detail->coa_id = $cheque->coa_id;
+        $payment_reference_detail->allocation_id = 1;
+        $payment_reference_detail->notes_detail = $cheque_detail->notes;
+        $payment_reference_detail->amount = $cheque_detail->amount;
+        $payment_reference_detail->form_reference_id = $rejected_formulir_id;
+        $payment_reference_detail->subledger_id = $cheque->person_id;
+        $payment_reference_detail->subledger_type = get_class(new Person);
+        $payment_reference_detail->reference_id;
+        $payment_reference_detail->reference_type;
+        $payment_reference_detail->save();
+
+        \DB::commit();
+
+        return response()->json(
+            array(
+                'status' => 'success',
+                'message' => 'please check your vesa'
+            )
+        );
     }
 
     public function createNewStore()
@@ -170,11 +239,25 @@ class ChequeController extends Controller
             $cheque_detail->status = 1;
             $cheque_detail->save();
 
-            self::journal($cheque_detail, $request);
+            $cheque = $cheque_detail->cheque;
+            $form_number = FormulirHelper::number('point-finance-cheque-disbursement', $cheque->formulir->form_date);
+            $formulir = new Formulir;
+            $formulir->form_date = $cheque->formulir->form_date;
+            $formulir->form_number = $form_number['form_number'];
+            $formulir->form_raw_number = $form_number['raw'];
+            $formulir->approval_to = 1;
+            $formulir->approval_status = 1;
+            $formulir->form_status = 0;
+            $formulir->created_by = auth()->user()->id;
+            $formulir->updated_by = auth()->user()->id;
+            $formulir->save();
+
+
+            self::journal($cheque_detail, $request, $formulir);
         }
         \DB::commit();
 
-        return redirect('finance/point/cheque');
+        return redirect('finance/point/cheque/list');
     }
 
     public function rejectProcess(Request $request)
@@ -192,41 +275,43 @@ class ChequeController extends Controller
 
             if ($cheque_detail->rejected_counter > 3) {
                 throw new PointException("CHEQUE/WESEL MORE THAN 3 TIMES IN REJECT");
-                
             }
+
+            $cheque = $cheque_detail->cheque;
+            $form_number = FormulirHelper::number('point-finance-cheque-reject', $cheque->formulir->form_date);
+
+            $formulir = new Formulir;
+            $formulir->form_date = $cheque->formulir->form_date;
+            $formulir->form_number = $form_number['form_number'];
+            $formulir->form_raw_number = $form_number['raw'];
+            $formulir->approval_to = 1;
+            $formulir->approval_status = 1;
+            $formulir->form_status = 0;
+            $formulir->created_by = auth()->user()->id;
+            $formulir->updated_by = auth()->user()->id;
+            $formulir->save();
 
             if ($cheque_detail->disbursement_coa_id) {
-                self::rejectJournal($cheque_detail, $request);
+                self::rejectJournal($cheque_detail, $request, $formulir);
             }
 
+            $cheque_detail->rejected_formulir_id = $formulir->id;
             $cheque_detail->disbursement_coa_id = null;
             $cheque_detail->status = -1;
             $cheque_detail->save();
         }
         \DB::commit();
 
-        return redirect('finance/point/cheque');
+        return redirect('finance/point/cheque/list');
     }
 
-    public static function journal($cheque_detail, $request)
+    public static function journal($cheque_detail, $request, $formulir)
     {
         // CHEQUE
         $cheque = $cheque_detail->cheque;
         $account_payable_receivable = AccountPayableAndReceivable::where('reference_id', $cheque->id)->where('reference_type', get_class($cheque))->where('done', 0)->first();
 
-        $form_number = FormulirHelper::number('point-finance-cheque-disbursement', $cheque->formulir->form_date);
-        $formulir = new Formulir;
-        $formulir->form_date = $cheque->formulir->form_date;
-        $formulir->form_number = $form_number['form_number'];
-        $formulir->form_raw_number = $form_number['raw'];
-        $formulir->approval_to = 1;
-        $formulir->approval_status = 1;
-        $formulir->form_status = 1;
-        $formulir->created_by = auth()->user()->id;
-        $formulir->updated_by = auth()->user()->id;
-        $formulir->save();
-
-
+        
         $position = JournalHelper::position($cheque->coa_id);
         $journal = new Journal();
         $journal->form_date = $cheque->formulir->form_date;
@@ -261,23 +346,10 @@ class ChequeController extends Controller
         $cheque_detail->save();
     }
 
-    public static function rejectJournal($cheque_detail, $request)
+    public static function rejectJournal($cheque_detail, $request, $formulir)
     {
         // CHEQUE
         $cheque = $cheque_detail->cheque;
-
-        $form_number = FormulirHelper::number('point-finance-cheque-reject', $cheque->formulir->form_date);
-
-        $formulir = new Formulir;
-        $formulir->form_date = $cheque->formulir->form_date;
-        $formulir->form_number = $form_number['form_number'];
-        $formulir->form_raw_number = $form_number['raw'];
-        $formulir->approval_to = 1;
-        $formulir->approval_status = 1;
-        $formulir->form_status = 1;
-        $formulir->created_by = auth()->user()->id;
-        $formulir->updated_by = auth()->user()->id;
-        $formulir->save();
 
         $position = JournalHelper::position($cheque->coa_id);
         $journal = new Journal();
@@ -305,7 +377,6 @@ class ChequeController extends Controller
         $journal->subledger_id;
         $journal->subledger_type;
         $journal->save();
-
 
         JournalHelper::checkJournalBalance($cheque->formulir_id);
     }

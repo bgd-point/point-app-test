@@ -31,7 +31,7 @@
                     <table class="table table-striped table-bordered">
                         <thead>
                         <tr>
-                            <th width="100px" class="text-center"><input type="checkbox" id="check-all"></th>
+                            @if(\Input::get('status') != 'all') <th width="100px" class="text-center"><input type="checkbox" id="check-all"></th> @endif
                             <th>Reference</th>
                             <th>Bank</th>
                             <th>Due Date</th>
@@ -47,9 +47,11 @@
                         @foreach($list_cheque_detail as $cheque_detail)
 
                             <tr id="list-{{$cheque_detail->id}}">
+                                @if(\Input::get('status') != 'all')
                                 <td class="text-center">
                                     <input type="checkbox" name="cheque_detail_id[]" id="cheque-detail-id-{{$i}}" value="{{$cheque_detail->id}}">
                                 </td>
+                                @endif
                                 <td>{{ $cheque_detail->cheque->formulir->form_number }}</td>
                                 <td>
                                     {{ $cheque_detail->bank}}
@@ -67,10 +69,10 @@
                                     {{ number_format_price($cheque_detail->amount)}}
                                 </td>
                                 <td>
-                                    {{ $cheque_detail->rejected_counter ? $cheque_detail->rejected_counter .'x' : ''}}
+                                    {{ $cheque_detail->rejected_counter ? $cheque_detail->rejected_counter .'x' : '-'}}
                                 </td>
                                 <td>
-                                    {{ date_format_view($cheque_detail->rejected_at) }}
+                                    {{ $cheque_detail->rejected_at != null ? date_format_view($cheque_detail->rejected_at) : '-' }}
                                 </td>
                                 <td>{!! $cheque_detail->statusLabel() !!}</td>
                             </tr>
