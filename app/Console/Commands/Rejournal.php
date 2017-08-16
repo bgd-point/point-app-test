@@ -30,6 +30,7 @@ class Rejournal extends Command
     public function handle()
     {
         Artisan::call('db:seed', ['--force' => true, '--class' => 'FixSeederInvoice']);
+        Artisan::call('db:seed', ['--force' => true, '--class' => 'FixStockCorrectionJournalSeeder']);
         Artisan::call('db:seed', ['--force' => true, '--class' => 'RejournalSalesSeeder']);
         Artisan::call('db:seed', ['--force' => true, '--class' => 'RejournalCashBankSeeder']);
     }
