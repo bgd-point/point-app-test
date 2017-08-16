@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Models\AccountPayableAndReceivable;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Item;
@@ -36,6 +37,8 @@ class FixSeederInvoice extends Seeder
     {
     	$list_invoice = Invoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->select('formulir.id')->get()->toArray();
         $journal = Journal::whereIn('form_journal_id', $list_invoice)->delete();
+        $account_payable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $list_invoice)->delete();
+        $inventory = Inventory::whereIn('formulir_id', $list_invoice)->delete();
         $list_invoice = Invoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->selectOriginal()->get();
         
         foreach ($list_invoice as $invoice) {
@@ -121,6 +124,8 @@ class FixSeederInvoice extends Seeder
     {
     	$list_invoice = InvoicePurchasing::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->select('formulir.id')->get()->toArray();
         $journal = Journal::whereIn('form_journal_id', $list_invoice)->delete();
+        $account_payable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $list_invoice)->delete();
+        $inventory = Inventory::whereIn('formulir_id', $list_invoice)->delete();
         $list_invoice = InvoicePurchasing::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->selectOriginal()->get();
         \Log::info('Journal invoice purchase inventory started');
 
@@ -279,6 +284,7 @@ class FixSeederInvoice extends Seeder
     {
     	$list_invoice = ServiceInvoicePurchasing::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->select('formulir.id')->get()->toArray();
         $journal = Journal::whereIn('form_journal_id', $list_invoice)->delete();
+        $account_payable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $list_invoice)->delete();
         $inventory = Inventory::whereIn('formulir_id', $list_invoice)->delete();
         $list_invoice = ServiceInvoicePurchasing::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->selectOriginal()->get();
         \Log::info('Journal invoice service started');
