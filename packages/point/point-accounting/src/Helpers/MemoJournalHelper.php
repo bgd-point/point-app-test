@@ -128,6 +128,8 @@ class MemoJournalHelper
 
             $journal->save();
         }
+        
+        JournalHelper::checkJournalBalance($memo_journal->formulir_id);
         return $memo_journal;
     }
 }

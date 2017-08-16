@@ -95,7 +95,7 @@ function dbNum(num) {
 }
 
 function appNum(num) {
-    return number_format(num, 0);
+    return number_format(num, 2);
 }
 
 function accountingNum(num) {
