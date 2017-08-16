@@ -77,7 +77,7 @@
                                         $coa_debit = Point\Core\Helpers\TempDataHelper::searchKeyValue('cut.off', auth()->user()->id, ['coa_id','position'], [$coa->id,'debit']);
                                     ?>
                                     <tr>
-                                        <td><strong id="coa-name-{{$index}}">{{$coa->name}}</strong></td>
+                                        <td><strong id="coa-name-{{$index}}">{{$coa->account}}</strong></td>
                                         <td>
                                             @if($coa_debit)
                                                 <input type="text" onChange="updateTemp({{$index}}, 'debit')" id="debit-{{$index}}" value="{{ $coa_debit['amount']}}" name="debit[]" class="form-control text-right format-quantity">

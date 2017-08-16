@@ -63,12 +63,12 @@
                                 @if($sales->formulir->form_status == 0)
                                 <a href="{{ url('sales/point/pos/'.$sales->id.'/edit') }}" data-toggle="tooltip" title="Update" class="btn btn-effect-ripple btn-xs btn-info">Update</a>
                                 @else
-                                <a href="{{ url('sales/point/pos/'.$sales->id) }}" data-toggle="tooltip" title="Show" class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-file"></i></a>
+
                                 <a href="#" onclick="pagePrint('/sales/point/pos/print/{{$sales->id}}');" data-toggle="tooltip" title="Print" class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-print"></i></a>
                                 @endif
                             </td>
-                            <td>{{ $sales->formulir->form_number }}</td>
                             <td>{{ date_format_view($sales->formulir->form_date, true) }}</td>
+                            <td><a href="{{ url('sales/point/pos/'.$sales->id) }}">{{ $sales->formulir->form_number }}</a></td>
                             <td>{{ $sales->customer->codeName }}</td>
                             <td>{{ $sales->formulir->createdBy->name }}</td>
                             <td>@include('framework::app.include._form_status_label', ['form_status' => $sales->formulir->form_status])</td>
