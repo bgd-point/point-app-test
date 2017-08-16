@@ -90,7 +90,7 @@ class ChequeController extends Controller
     public function listCheque()
     {
         $view = view('point-finance::app.finance.point.cheque.list-cheque');
-        $view->list_cheque_detail = ChequeDetail::searchList(\Input::get('status'))->paginate(100);
+        $view->list_cheque_detail = ChequeDetail::searchList(\Input::get('status'), \Input::get('flow'))->paginate(100);
 
         return $view;
     }
@@ -99,8 +99,14 @@ class ChequeController extends Controller
     {
         $view = view('point-finance::app.finance.point.cheque.disbursement');
         $id = explode(',', \Input::get('id'));
+
         $view->list_cheque_detail = ChequeDetail::whereIn('id', $id)->get();
-        $view->list_coa = Coa::whereIn('coa_category_id', [1,2])->active()->get();
+        $coa_category = [1, 2];
+        if (\Input::get('id') == 'out') {
+            $coa_category = [1];
+        }
+
+        $view->list_coa = Coa::whereIn('coa_category_id', $coa_category)->active()->get();
 
         return $view;
     }

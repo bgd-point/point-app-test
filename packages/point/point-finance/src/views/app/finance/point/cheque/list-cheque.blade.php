@@ -18,10 +18,17 @@
                 <div class="form-group row">
                     <div class="col-sm-3">
                         <select class="selectize" name="status" id="status" onchange="selectData()">
+                            <option value="-1" @if(\Input::get('status') == -1) selected @endif>rejected</option>
                             <option value="0" @if(\Input::get('status') == 0) selected @endif>pending</option>
                             <option value="1" @if(\Input::get('status') == 1) selected @endif>done</option>
-                            <option value="-1" @if(\Input::get('status') == -1) selected @endif>rejected</option>
+                            <option value="2" @if(\Input::get('status') == 2) selected @endif>closed</option>
                             <option value="all" @if((\Input::get('status') == 'all') || (\Input::get('status') == null)) selected @endif>all</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <select class="selectize" name="flow" id="flow" onchange="selectData()">
+                            <option value="in" @if(\Input::get('flow') == 'in') selected @endif>in</option>
+                            <option value="out" @if(\Input::get('flow') == 'out') selected @endif>out</option>
                         </select>
                     </div>
                 </div>
@@ -31,7 +38,7 @@
                     <table class="table table-striped table-bordered">
                         <thead>
                         <tr>
-                            @if(\Input::get('status') != 'all') <th width="100px" class="text-center"><input type="checkbox" id="check-all"></th> @endif
+                            @if((\Input::get('status') != 'all' && \Input::get('status') != 2  && \Input::get('status') != null))<th width="100px" class="text-center"><input type="checkbox" id="check-all"></th> @endif
                             <th>Reference</th>
                             <th>Bank</th>
                             <th>Due Date</th>
@@ -47,7 +54,7 @@
                         @foreach($list_cheque_detail as $cheque_detail)
 
                             <tr id="list-{{$cheque_detail->id}}">
-                                @if(\Input::get('status') != 'all')
+                                @if((\Input::get('status') != 'all' && \Input::get('status') != 2 && \Input::get('status') != null))
                                 <td class="text-center">
                                     <input type="checkbox" name="cheque_detail_id[]" id="cheque-detail-id-{{$i}}" value="{{$cheque_detail->id}}">
                                 </td>
@@ -109,9 +116,10 @@
             }
         };
 
-        url = '{{url()}}/finance/point/cheque/reject/?id='+cheque_detail_id;
+        var flow = $("#flow option:selected").val();
+        url = '{{url()}}/finance/point/cheque/reject/?id='+cheque_detail_id+'&flow='+flow;
         if (key == 'disbursement') {
-            url = '{{url()}}/finance/point/cheque/disbursement/?id='+cheque_detail_id;
+            url = '{{url()}}/finance/point/cheque/disbursement/?id='+cheque_detail_id+'&flow='+flow;
         }
 
         location.href = url;
@@ -123,7 +131,8 @@
 
     function selectData() {
         var status = $("#status option:selected").val();
-        var url = '{{url()}}/finance/point/cheque/list?status='+status;
+        var flow = $("#flow option:selected").val();
+        var url = '{{url()}}/finance/point/cheque/list?status='+status+'&flow='+flow;
         location.href = url;
     }
 

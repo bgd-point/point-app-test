@@ -77,9 +77,9 @@ class ChequeInController extends Controller
         $view = view('point-finance::app.finance.point.cheque.in.create');
         $view->list_person = Person::active()->get();
         $view->list_allocation = Allocation::active()->get();
-        $view->list_cheque_account = Coa::where('coa_category_id', 2)->active()->get();
+        $view->list_cheque_account = Coa::where('coa_category_id', 3)->active()->get();
         $view->list_coa = Coa::active()->hasNotSubledger()->get();
-
+        $view->list_bank = MasterBank::all();
         $view->coa_revenue = CoaPosition::where("name", "Revenue")->first();
         $view->list_coa_category_revenue = CoaCategory::where('coa_position_id', $view->coa_revenue->id)->get();
 

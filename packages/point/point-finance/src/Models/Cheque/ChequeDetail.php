@@ -27,21 +27,27 @@ class ChequeDetail extends Model
 
     public function statusLabel()
     {
-        $label = '<i class="btn-xs btn-primary">done</i>';
-        if ($this->status == -1) {
-            $label = '<i class="btn-xs btn-danger">rejected</i>';
-        } elseif ($this->status == 0) {
+        $label = '<i class="btn-xs btn-danger">rejected</i>';
+        if ($this->status == 0) {
             $label = '<i class="btn-xs btn-warning">pending</i>';
+        } elseif ($this->status == 1) {
+            $label = '<i class="btn-xs btn-primary">done</i>';
+        } elseif ($this->status == 2) {
+            $label = '<i class="btn-xs btn-info">closed</i>';
         }
 
         return $label;
     }
 
-    public static function searchList($status)
+    public static function searchList($status, $flow)
     {
-        $list_check = ChequeDetail::joinCheque()->joinFormulir()->whereNull('formulir.archived')->whereIn('point_finance_cheque_detail.status', [-1, 0, 1])->select('point_finance_cheque_detail.*');
+        $list_check = ChequeDetail::joinCheque()->joinFormulir()->whereNull('formulir.archived')->whereIn('point_finance_cheque_detail.status', [-1, 0, 1, 2])->select('point_finance_cheque_detail.*');
         if ($status != 'all' && $status != null) {
             $list_check = $list_check->where('point_finance_cheque_detail.status', $status);
+        }
+
+        if ($flow != null) {
+            $list_check = $list_check->where('point_finance_cheque.payment_flow', $flow);
         }
 
         return $list_check;

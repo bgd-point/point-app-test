@@ -253,7 +253,9 @@
     function calculateCheque() {
         var total_cheque = 0;
         for (var i = 0; i < counter_cheque; i++) {
-            total_cheque += dbNum($('#amount-cheque-'+i).val());
+            if ($('#amount-cheque-'+i).length != 0) {
+                total_cheque += dbNum($('#amount-cheque-'+i).val());
+            }
         }
         $('#total-cheque').val(appNum(total_cheque));
     }
