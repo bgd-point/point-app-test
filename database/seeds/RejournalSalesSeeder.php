@@ -1,13 +1,17 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Point\Core\Exceptions\PointException;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
+use Point\Framework\Models\AccountPayableAndReceivable;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\UserWarehouse;
+use Point\Framework\Models\Master\Warehouse;
+use Point\PointSales\Models\Pos\Pos;
 use Point\PointSales\Models\Sales\Invoice;
 use Point\PointSales\Models\Service\Invoice as ServiceInvoice;
 
@@ -22,6 +26,10 @@ class RejournalSalesSeeder extends Seeder
         \Log::info('---- Seeder Sales service invoice starting ----');
         self::invoiceService();
         \Log::info('---- Seeder Sales service invoice finished ----');
+        \Log::info('---- Seeder POS starting ----');
+        self::pos();
+        \Log::info('---- Seeder POS starting ----');
+
         \DB::commit();
     }
 
@@ -29,6 +37,7 @@ class RejournalSalesSeeder extends Seeder
     {
         $list_invoice = Invoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->select('formulir.id')->get()->toArray();
         $journal = Journal::whereIn('form_journal_id', $list_invoice)->delete();
+        $account_receivable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $list_invoice)->delete();
         $inventory = Inventory::whereIn('formulir_id', $list_invoice)->delete();
         $list_invoice = Invoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->selectOriginal()->get();
         \Log::info('Journal invoice indirect started');
@@ -192,6 +201,7 @@ class RejournalSalesSeeder extends Seeder
     {
         $list_invoice = ServiceInvoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->select('formulir.id')->get()->toArray();
         $journal = Journal::whereIn('form_journal_id', $list_invoice)->delete();
+        $account_receivable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $list_invoice)->delete();
         $inventory = Inventory::whereIn('formulir_id', $list_invoice)->delete();
         $list_invoice = ServiceInvoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->selectOriginal()->get();
         \Log::info('Journal invoice service started');
@@ -399,5 +409,150 @@ class RejournalSalesSeeder extends Seeder
                 $journal->save();
             }
         }
+    }
+
+    public function pos()
+    {
+        $formulir_pos = Pos::joinFormulir()->close()->notArchived()->select('formulir_id')->get()->toArray();
+        $journal = Journal::whereIn('form_journal_id', $formulir_pos)->delete();
+        $remove_inventory = Inventory::whereIn('formulir_id', $formulir_pos)->delete();
+        $list_pos = Pos::whereIn('formulir_id', $formulir_pos)->get();
+        foreach ($list_pos as $pos) {
+            $cost_of_sales = self::costOfSales($pos);
+            self::journalPos($cost_of_sales, $pos);
+            JournalHelper::checkJournalBalance($pos->formulir_id);
+        }
+    }
+
+    public static function costOfSales($pos)
+    {
+        $cost_of_sales = 0;
+        foreach ($pos->items as $pos_item) {
+            // inventory control
+            $inventory = new Inventory;
+
+            $inventory->formulir_id = $pos->formulir_id;
+            $inventory->item_id = $pos_item->item_id;
+            $inventory->quantity = $pos_item->quantity;
+            $inventory->price = $pos_item->price;
+            $inventory->form_date = $pos->formulir->form_date;
+            $inventory->warehouse_id = $pos->warehouse_id;
+
+            $inventory_helper = new InventoryHelper($inventory);
+            $inventory_helper->out();
+
+            $cost = InventoryHelper::getCostOfSales($pos->formulir->form_date, $inventory->item_id, $pos->warehouse_id) * abs($inventory->quantity);
+            $cost_of_sales += $cost;
+
+            // JOURNAL #5 of #6 - INVENTORY
+            $journal = new Journal;
+            $journal->form_date = $pos->formulir->form_date;
+            $journal->coa_id = $inventory->item->account_asset_id;
+            $journal->description = 'point of sales "' . $inventory->item->codeName.'"';
+            $journal->credit = $cost;
+            $journal->form_journal_id = $pos->formulir_id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $inventory->item_id;
+            $journal->subledger_type = get_class($inventory->item);
+            $journal->save();
+        }
+
+        return $cost_of_sales;
+    }
+
+    public static function journalPos($cost_of_sales, $pos)
+    {
+        /**
+         * COA CATEGORY     | ACCOUNT               | DEBIT         | CREDIT
+         * ------------------------------------------------------------------
+         * CURRENT ASSET    | PETTY CASH            | xxxx          |
+         * LIABILITY        | INCOME TAX PAYABLE    |               | xxxx
+         * INCOME           | SALE OF GOODS         |               | xxxx
+         * EXPENSE          | SALES DISCOUNT        | xxxx          |
+         * CURRENT ASSET    | INVENTORY             |               | xxxx
+         * EXPENSE          | COST OF SALES         | xxxx          |
+         * ------------------------------------------------------------------
+         */
+        if ($pos->tax_type == 'include') {
+            $pos->subtotal = $pos->tax_base;
+        }
+
+        \Log::info('journal petty cash');
+        // JOURNAL #1 of #6 - PETTY CASH
+        $warehouse = Warehouse::find($pos->warehouse_id);
+        if (! $warehouse->petty_cash_account) {
+            throw new PointException('Please set petty cash account for your warehouse');
+        }
+        $journal = new Journal;
+        $journal->form_date = $pos->formulir->form_date;
+        $journal->coa_id = $warehouse->petty_cash_account;
+        $journal->description = 'point of sales "' . $pos->formulir->form_number.'"';
+        $journal->debit = $pos->total;
+        $journal->form_journal_id = $pos->formulir_id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
+
+        // JOURNAL #2 of #6 - INCOME TAX PAYABLE
+        if ($pos->tax != 0) {
+            \Log::info('journal income tax payable sales');
+
+            $income_tax_payable_account = JournalHelper::getAccount('point sales pos', 'income tax payable');
+            $journal = new Journal();
+            $journal->form_date = $pos->formulir->form_date;
+            $journal->coa_id = $income_tax_payable_account;
+            $journal->description = 'point of sales "' . $pos->formulir->form_number.'"';
+            $journal->credit = $pos->tax;
+            $journal->form_journal_id = $pos->formulir_id;
+            $journal->form_reference_id;
+            $journal->subledger_id;
+            $journal->subledger_type;
+            $journal->save();
+        }
+
+        \Log::info('journal sales of goods');
+        // JOURNAL #3 of #6 - SALE OF GOODS
+        $sale_of_goods_account = JournalHelper::getAccount('point sales pos', 'sale of goods');
+        $journal = new Journal;
+        $journal->form_date = $pos->formulir->form_date;
+        $journal->coa_id = $sale_of_goods_account;
+        $journal->description = 'point of sales "' . $pos->formulir->form_number.'"';
+        $journal->credit = $pos->subtotal;
+        $journal->form_journal_id = $pos->formulir_id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
+
+        if ($pos->discount) {
+            // JOURNAL #4 of #6 - SALE DISCOUNT
+            \Log::info('journal sales of goods');
+            $sale_discount_account = JournalHelper::getAccount('point sales pos', 'sales discount');
+            $journal = new Journal;
+            $journal->form_date = $pos->formulir->form_date;
+            $journal->coa_id = $sale_discount_account;
+            $journal->description = 'point of sales "' . $pos->formulir->form_number.'"';
+            $journal->debit = $pos->subtotal * $pos->discount / 100;
+            $journal->form_journal_id = $pos->formulir_id;
+            $journal->form_reference_id;
+            $journal->subledger_id;
+            $journal->subledger_type;
+            $journal->save();
+        }
+
+        \Log::info('journal cost of sales');
+        // JOURNAL #6 of #6 - COST OF SALES
+        $cost_of_sales_account = JournalHelper::getAccount('point sales pos', 'cost of sales');
+        $journal = new Journal;
+        $journal->form_date = $pos->formulir->form_date;
+        $journal->coa_id = $cost_of_sales_account;
+        $journal->description = 'point of sales "' . $pos->formulir->form_number.'"';
+        $journal->debit = $cost_of_sales;
+        $journal->form_journal_id = $pos->formulir_id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
     }
 }
