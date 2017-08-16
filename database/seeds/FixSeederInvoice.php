@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Models\AccountPayableAndReceivable;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Item;
@@ -36,6 +37,8 @@ class FixSeederInvoice extends Seeder
     {
     	$list_invoice = Invoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->select('formulir.id')->get()->toArray();
         $journal = Journal::whereIn('form_journal_id', $list_invoice)->delete();
+        $account_payable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $list_invoice)->delete();
+        $inventory = Inventory::whereIn('formulir_id', $list_invoice)->delete();
         $list_invoice = Invoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->selectOriginal()->get();
         
         foreach ($list_invoice as $invoice) {
@@ -121,10 +124,20 @@ class FixSeederInvoice extends Seeder
     {
     	$list_invoice = InvoicePurchasing::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->select('formulir.id')->get()->toArray();
         $journal = Journal::whereIn('form_journal_id', $list_invoice)->delete();
+        $account_payable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $list_invoice)->delete();
+        $inventory = Inventory::whereIn('formulir_id', $list_invoice)->delete();
         $list_invoice = InvoicePurchasing::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->selectOriginal()->get();
         \Log::info('Journal invoice purchase inventory started');
+
         foreach ($list_invoice as $invoice) {
         	$subtotal = 0;
+        	foreach ($invoice->items as $invoice_detail) {
+        		$total_per_row = $invoice_detail->quantity * $invoice_detail->price - $invoice_detail->quantity * $invoice_detail->price / 100 * $invoice_detail->discount;
+        		$subtotal += $total_per_row;
+        	}
+
+        	$discount = $subtotal * $invoice->discount/100;
+	        
         	foreach ($invoice->items as $invoice_detail) {
 	            $warehouse_id = UserWarehouse::getWarehouse($invoice->formulir->created_by);
 	            $goods_received_item = ReferHelper::getReferBy(get_class($invoice_detail), $invoice_detail->id, get_class($invoice), $invoice->id); 
@@ -135,13 +148,16 @@ class FixSeederInvoice extends Seeder
 	 
 	            // Journal inventory
 	            $total_per_row = $invoice_detail->quantity * $invoice_detail->price - $invoice_detail->quantity * $invoice_detail->price / 100 * $invoice_detail->discount;
-            	$subtotal += $total_per_row;
+	            if ($invoice->discount) {
+	                $discounty = $total_per_row * $discount / $subtotal;
+	                $total_per_row = $total_per_row - $discounty;
+	            }
 	            
 	            if ($invoice->type_of_tax == 'include') {
 	                $total_per_row = $total_per_row * 100 / 110;
 	            }
 
-	            \Log::info('Journal inventory invoice '. $invoice->formulir->id);
+	            \Log::info('Journal inventory invoice ');
 	            $position = JournalHelper::position($invoice_detail->item->account_asset_id);
 	            $journal = new Journal();
 	            $journal->form_date = $invoice->formulir->form_date;
@@ -172,10 +188,10 @@ class FixSeederInvoice extends Seeder
 	        $tax_base = $subtotal - $discount;
 	        $tax = 0;
 	        if ($invoice->type_of_tax == 'include') {
-	        	$tax_base = $subtotal * 100 / 110;
-                $tax = $subtotal * 10 / 100;
+	        	$tax_base = $tax_base * 100 / 110;
+                $tax = $tax_base * 10 / 100;
 	        } else if ($invoice->type_of_tax == 'exclude') {
-                $tax = $subtotal * 10 / 100;
+                $tax = $tax_base * 10 / 100;
 	        }
 
 	        $invoice->subtotal = $subtotal;
@@ -191,7 +207,6 @@ class FixSeederInvoice extends Seeder
 	            $data = array(
 	                'value_of_account_payable' => $invoice->total,
 	                'value_of_income_tax_receiveable' => $invoice->tax,
-	                'value_of_discount' => $invoice->discount * (-1),
 	                'value_of_expedition_cost' => $invoice->expedition_fee,
 	                'formulir' => $invoice->formulir,
 	                'invoice' => $invoice
@@ -201,7 +216,6 @@ class FixSeederInvoice extends Seeder
 	            $data = array(
 	                'value_of_account_payable' => $invoice->total,
 	                'value_of_income_tax_receiveable' => $invoice->tax,
-	                'value_of_discount' => $invoice->discount,
 	                'value_of_expedition_cost' => $invoice->expedition_fee,
 	                'formulir' => $invoice->formulir,
 	                'invoice' => $invoice
@@ -247,24 +261,6 @@ class FixSeederInvoice extends Seeder
         $journal->subledger_type;
         $journal->save();
 
-        \Log::info('Journal Purchase Discount');
-
-        // 3. Journal Purchase Discount
-        if ($data['invoice']->discount > 0) {
-            $purchasing_discount = JournalHelper::getAccount('point purchasing', 'purchase discount');
-            $position = JournalHelper::position($purchasing_discount);
-            $journal = new Journal;
-            $journal->form_date = $data['formulir']->form_date;
-            $journal->coa_id = $purchasing_discount;
-            $journal->description = 'invoice purchasing [' . $data['formulir']->form_number.']';
-            $journal->$position = $data['value_of_discount'];
-            $journal->form_journal_id = $data['formulir']->id;
-            $journal->form_reference_id;
-            $journal->subledger_id;
-            $journal->subledger_type;
-            $journal->save();
-        }
-
         \Log::info('Journal Expedition Cost');
 
         // 3. Journal Expedition Cost
@@ -288,6 +284,7 @@ class FixSeederInvoice extends Seeder
     {
     	$list_invoice = ServiceInvoicePurchasing::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->select('formulir.id')->get()->toArray();
         $journal = Journal::whereIn('form_journal_id', $list_invoice)->delete();
+        $account_payable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $list_invoice)->delete();
         $inventory = Inventory::whereIn('formulir_id', $list_invoice)->delete();
         $list_invoice = ServiceInvoicePurchasing::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->selectOriginal()->get();
         \Log::info('Journal invoice service started');
