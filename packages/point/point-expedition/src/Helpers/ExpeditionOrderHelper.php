@@ -60,7 +60,7 @@ class ExpeditionOrderHelper
         $expedition_order->form_reference_id = $reference->formulir_id;
         $expedition_order->type_of_fee = '';
         $expedition_order->expedition_fee = number_format_db($request->input('subtotal'));
-        $expedition_order->delivery_date = $request->input('form_date') . " " . $request->input('time');
+        $expedition_order->delivery_date = date_format_db($request->input('form_date'), $request->input('time'));
         $expedition_order->type_of_tax = $request->input('type_of_tax');
         $expedition_order->tax_base = number_format_db($request->input('tax_base'));
         $expedition_order->tax = number_format_db($request->input('tax'));
