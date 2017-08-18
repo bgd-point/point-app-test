@@ -253,7 +253,10 @@
 
 @section('scripts')
 <style type="text/css">
-    div.dataTables_wrapper { height: 300px; }
+    div.dataTables_wrapper {
+        height: 300px;
+        overflow-x: scroll;
+    }
 </style>
 <script>
 
