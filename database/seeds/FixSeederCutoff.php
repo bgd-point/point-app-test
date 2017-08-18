@@ -23,9 +23,10 @@ class FixSeederCutoff extends Seeder
     public function run()
     {
         \DB::beginTransaction();
-        self::fixInventory('4');
         $list_cutoff_account = CutOffAccount::joinFormulir()->close()->notArchived()->approvalApproved()->selectOriginal()->get();
         foreach ($list_cutoff_account as $cutoff_account) {
+            // $cutoff_account->formulir->form_date = '2017-03-31 16:59:59';
+            // $cutoff_account->formulir->save();
             $journal = Journal::where('form_journal_id', $cutoff_account->formulir_id )->selectRaw('sum(debit) as debit, sum(credit) as credit')->first();
             \Log::info('before :: debit = ' . $journal->debit. ' credit = '.$journal->credit);
             $journal = Journal::where('form_journal_id', $cutoff_account->formulir_id)->delete();
@@ -212,13 +213,14 @@ class FixSeederCutoff extends Seeder
         $total = 0;
         if ($cut_off_payable) {
             foreach($cut_off_payable->cutOffPayableDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_payable_detail) {
-            	\Log::info('journal account payable started - ' . $cut_off_account_detail->coa->account . ' ' . $cut_off_payable_detail->amount);
+                $position = $cut_off_account_detail->debit ? 'debit' : 'credit';
+            	
+                \Log::info('journal account payable started - ' . $cut_off_account_detail->coa->account . ' '. $position. ' '. $cut_off_payable_detail->amount);
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
                 $journal->coa_id = $cut_off_payable_detail->coa_id;
                 $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
-                $journal->debit = 0;
-                $journal->credit = $cut_off_payable_detail->amount;
+                $journal->$position = $cut_off_payable_detail->amount;
                 $journal->form_journal_id = $cut_off_account->formulir_id;
                 $journal->form_reference_id;
                 $journal->subledger_id = $cut_off_payable_detail->subledger_id;
@@ -229,7 +231,7 @@ class FixSeederCutoff extends Seeder
             }
         }
 
-        \Log::info('-------- total :'. $total);
+        $total ? \Log::info('-------- total :'. $total) : '';
     }
 
     private static function accountReceivable($cut_off_account, $cut_off_account_detail)
@@ -246,13 +248,13 @@ class FixSeederCutoff extends Seeder
         $total = 0;
         if ($cut_off_receivable) {
             foreach($cut_off_receivable->cutOffReceivableDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_receivable_detail) {
-            	\Log::info('journal account receivable started  - ' . $cut_off_account_detail->coa->account . ' ' . $cut_off_receivable_detail->amount);
+            	$position = $cut_off_account_detail->debit ? 'debit' : 'credit';
+                \Log::info('journal account receivable started  - ' . $cut_off_account_detail->coa->account . ' ' . $position. ' '. $cut_off_receivable_detail->amount);
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
                 $journal->coa_id = $cut_off_receivable_detail->coa_id;
                 $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
-                $journal->debit = $cut_off_receivable_detail->amount;
-                $journal->credit = 0;
+                $journal->$position = $cut_off_receivable_detail->amount;
                 $journal->form_journal_id = $cut_off_account->formulir_id;
                 $journal->form_reference_id;
                 $journal->subledger_id = $cut_off_receivable_detail->subledger_id;
@@ -262,7 +264,7 @@ class FixSeederCutoff extends Seeder
                 $total += $cut_off_receivable_detail->amount;
             }
         }
-        \Log::info('-------- total :'. $total);
+        $total ? \Log::info('-------- total :'. $total) : '';
     }
 
     private static function accountInventory($cut_off_account, $cut_off_account_detail)
@@ -285,8 +287,8 @@ class FixSeederCutoff extends Seeder
             // EMPTY JOURNAL
             $coa_value = JournalHelper::getTotalValueBySubledger($cut_off_inventory_detail->coa_id, $cut_off_account->formulir->form_date, $cut_off_inventory_detail->subledger_type, $cut_off_inventory_detail->subledger_id);
             if ($cut_off_inventory_detail->stock > 0 && $cut_off_inventory_detail->amount > 0) {
-                \Log::info('journal inventory started - ' . $cut_off_account_detail->coa->account . ' ' . $cut_off_inventory_detail->amount);
-                $position = JournalHelper::position($cut_off_inventory_detail->coa_id);
+                $position = $cut_off_account_detail->debit ? 'debit' : 'credit';
+                \Log::info('journal inventory started - ' . $cut_off_account_detail->coa->account . ' ' . $position . ' ' . $cut_off_inventory_detail->amount);
 
                 // CUTOFF INVENTORY
                 $inventory = new Inventory;
@@ -315,7 +317,8 @@ class FixSeederCutoff extends Seeder
                 $total += $journal->$position;
             }
         }
-        \Log::info('-------- total :'. $total);
+        
+        $total ? \Log::info('-------- total :'. $total) : '';
     }
 
     private static function accountFixedAsset($cut_off_account, $cut_off_account_detail)
@@ -332,8 +335,9 @@ class FixSeederCutoff extends Seeder
         if ($cut_off_fixed_assets) {
             \Log::info('journal FA started');
             foreach ($cut_off_fixed_assets->cutOffFixedAssetsDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_fixed_assets_detail) {
-                \Log::info('journal FA -' .$cut_off_fixed_assets_detail->coa->account . ' '. $cut_off_fixed_assets_detail->total_price);
-                $position = JournalHelper::position($cut_off_account_detail->coa_id);
+                $position = $cut_off_account_detail->debit ? 'debit' : 'credit';
+                
+                \Log::info('journal FA -' .$cut_off_fixed_assets_detail->coa->account . ' '. $position. ' ' . $cut_off_fixed_assets_detail->total_price);
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
                 $journal->coa_id = $cut_off_fixed_assets_detail->coa_id;
