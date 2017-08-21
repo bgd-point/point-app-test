@@ -2,20 +2,23 @@
 
 @section('content')
 <div id="page-content">
-    <ul class="breadcrumb breadcrumb-top">
-        @include('point-sales::app/sales/point/pos/_breadcrumb')
-        <li>Create</li>
-    </ul>
     <h2 class="sub-header">Point of Sales</h2>
-    @include('point-sales::app.sales.point.pos._menu')
 
     <div class="panel panel-default">
         <div class="panel-body">
             <form action="{{ url('sales/point/pos/create') }}" name="addToCart" id="addToCart" method="get" class="form-horizontal row">
-                <div class="col-md-6">
+                <div class="col-xs-12 col-md-4">
+                    <img src="{{url_logo()}}" height="80px" width="auto" class="img pull-left" style="margin-left: 10px">
+                    <div class="pull-left text-left v-center">
+                        <div class="h4 text-primary"><strong>{{$warehouse_profiles->store_name}}</strong></div>
+                        <p><b>{{$warehouse_profiles->address}}<br> {{$warehouse_profiles->phone}}</b></p>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-md-8">
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Customer *</label>
-                        <div class="col-md-6" id="content-customer">
+                        <label class="col-xs-12 col-sm-3 col-md-3 control-label">Customer *</label>
+                        <div class="col-xs-12 col-sm-3 col-md-9" id="content-customer">
                             @if(!$carts)
                                 <div class="@if(access_is_allowed_to_view('create.customer')) input-group @endif">
                                     <select id="contact_id" name="customer_id" class="selectize" onchange="selectCustomer(this.value)" data-placeholder="Choose customer...">
@@ -39,46 +42,47 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Warehouse</label>
-                        <div class="col-md-9 content-show">
+                        <label class="col-xs-12 col-sm-3 col-md-3 control-label">Warehouse</label>
+                        <div class="col-xs-12 col-sm-9 col-md-9 content-show">
                             {{ $warehouse->name }}
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-md-3 control-label">
+                        <div class="col-xs-12 col-sm-3 col-md-3 control-label">
                             <strong>Date</strong>
                         </div>
-                        <div class="col-md-9 content-show">
+                        <div class="col-xs-12 col-sm-9 col-md-9 content-show">
                             {{ date_format_view(date('Y-m-d'))}}
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <img src="{{url_logo()}}" height="150px" width="auto" class="img pull-right" style="border:3px dotted #000; margin-left: 10px">
-                    <div class="pull-right text-right v-center">
-                        <div class="h3 text-primary"><strong>{{$warehouse_profiles->store_name}}</strong></div>
-                        <p><b>{{$warehouse_profiles->address}}<br> {{$warehouse_profiles->phone}}</b></p>
-                    </div>
-
-                </div>
             </form>
-
-            <br/><br/>
-
             <form action="{{ url('sales/point/pos') }}" method="post" class="form-horizontal row">
                 {!! csrf_field() !!}
                 <input type="hidden" name="form_date" value="{{ date('d-m-y', time()) }}" />
                 <input type="hidden" readonly name="input_customer" id="input_customer" value="{{ Point\PointSales\Helpers\PosHelper::getCustomer() }}">
                 <div class="table-responsive">
-                    <table id="item-datatable" class="table table-striped" style="width:100%">
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th width="5%"></th>
-                                <th width="20%">ITEM</th>
+                                <th width="15%">ITEM</th>
                                 <th width="15%">QUANTITY</th>
-                                <th width="15%" class="text-right">PRICE</th>
+                                <th width="20%" class="text-right">PRICE</th>
                                 <th width="15%" class="text-right">DISCOUNT</th>
-                                <th width="15%" class="text-right">TOTAL</th>
+                                <th width="20%" class="text-right">TOTAL</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <table id="item-datatable" class="table table-striped table-wrapper">
+                        <thead style="display:none">
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody class="manipulate-row">
@@ -114,10 +118,10 @@
                     </table>
                 </div>
                 <div class="row" style="padding:20px">
-                    <table class="table table-striped">
+                    <table class="table table-striped" width="100%">
                         <tr>
                             <td></td>
-                            <td>
+                            <td style="min-width:200px">
                                 <select id="item-default" name="item_default" class="selectize" onChange="validate()" data-placeholder="Choose Item">
                                 </select>
                             <td>
@@ -138,7 +142,7 @@
                         </tr>
                     </table>
                 </div>
-                <div class="row" style="padding:20px">
+                <div class="row" style="padding:0 20px 0 20px">
                     <div class="col-sm-3">
                         <input type="radio" id="tax-choice-include-tax" name="tax_type" {{ old('tax_type') == 'on' ? 'checked'  : '' }}  onchange="calculate()" value="include"> Tax Included <br/>
                         <input type="radio" id="tax-choice-exclude-tax" name="tax_type" {{ old('tax_type') == 'on' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
@@ -183,13 +187,27 @@
                         </div>
                     </div>
                     <div class="col-sm-3">
-                        <input type="checkbox" name="print" value="true" checked=""><label>Print</label>
+                        <div style="margin-left:20px">
+                            
+                        <div class="[ form-group ]">
+                            <input type="checkbox" name="print" id="print" value="true" checked=""/>
+                            <div class="[ btn-group ]">
+                                <label for="print" class="[ btn btn-info ]">
+                                    <span class="[ fa fa-check ]"></span>
+                                    <span> </span>
+                                </label>
+                                <label for="print" class="[ btn btn-default ]">
+                                    Print Bill
+                                </label>
+                            </div>
+                        </div>
+                        </div>
                     </div>
                 </div>
-                <div class="row" style="padding:20px">
+                <div class="row" style="padding:0 20px 0 20px">
                     <div class="col-sm-3">
-                        <a href="{{url('sales/point/pos/clear')}}" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-danger btn-block" style="padding:30px">Cancel</a>
-                        <input type="submit" onclick="setAction('draft')" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-info btn-block" id="submit" value="draft" style="padding:30px"/>
+                        <a href="{{url('sales/point/pos/clear')}}" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-danger btn-block" style="padding:10px">Cancel</a>
+                        <input type="submit" onclick="setAction('draft')" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-info btn-block" id="submit" value="draft" style="padding:10px"/>
                         <input type="radio" id="tax-choice-non-tax" name="tax_type" {{ old('tax_type') == 'on' ? 'checked'  : '' }} checked onchange="calculate()" value="non" style="visibility: hidden;">
                         <input type="hidden" name="action" id="action">
                     </div>
@@ -238,7 +256,7 @@
                         </div>
                     </div>
                     <div class="col-sm-3">
-                        <button type="submit" onclick="setAction('save')" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-primary btn-block" id="submit" style="padding:50px"><font size="20">Close</font> <br>Transaction</button>
+                        <button type="submit" onclick="setAction('save')" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-primary btn-block" id="submit" style="padding:15px"><font style="font-size:20px; font-weight:bold">Close</font> <br>Transaction</button>
                     </div>
                 </div>
             </form>
@@ -253,19 +271,55 @@
 
 @section('scripts')
 <style type="text/css">
-    div.dataTables_wrapper {
-        height: 300px;
-        overflow-x: scroll;
+     div.dataTables_wrapper { 
+        height: 200px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    .form-group {
+        margin-bottom: 0;
+    }
+
+    .form-group input[type="checkbox"] {
+        display: none;
+    }
+
+    .form-group input[type="checkbox"] + .btn-group > label span {
+        width: 20px;
+    }
+
+    .form-group input[type="checkbox"] + .btn-group > label span:first-child {
+        display: none;
+    }
+    .form-group input[type="checkbox"] + .btn-group > label span:last-child {
+        display: inline-block;   
+    }
+
+    .form-group input[type="checkbox"]:checked + .btn-group > label span:first-child {
+        display: inline-block;
+    }
+    .form-group input[type="checkbox"]:checked + .btn-group > label span:last-child {
+        display: none;   
+    }
+
+    .content-show {
+         padding-top: 0; 
+    }
+
+   tbody.manipulate-row:after {
+        content: "";
+        display: block;
+        height: 0; 
     }
 </style>
 <script>
-
     var item_table = initDatatable('#item-datatable');
     var counter = $("#item-datatable").dataTable().fnGetNodes().length;
     initFunctionRemoveInDatatable('#item-datatable', item_table);
-
+    
     $(function() {
-        
+        App.sidebar('toggle-sidebar');
         @if(!Point\PointSales\Helpers\PosHelper::getCustomer())
             $('#contact_id')[0].selectize.focus();
         @else

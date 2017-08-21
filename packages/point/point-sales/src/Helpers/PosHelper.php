@@ -69,14 +69,16 @@ class PosHelper
 
     public static function validate($request, $item_id, $quantity, $customer_id, $price, $money_received)
     {
+        if (!self::getCustomer()) {
+            throw new PointException("PLEASE FILL IN THE FIELDS CORRECTLY");
+        }
+
         if (!isset($item_id) || !isset($quantity) || !isset($customer_id) || !isset($price) || !isset($money_received)) {
-            gritter_error("please fill in the fields correctly");
-            return redirect()->back();
+            throw new PointException("PLEASE FILL IN THE FIELDS CORRECTLY");
         }
 
         if ($money_received < number_format_db($request->input('foot_total'))) {
-            gritter_error("Failed, cash payment less");
-            return redirect()->back();
+            throw new PointException("FAILED, CASH PAYMENT LESS");
         }
     }
 
@@ -146,8 +148,7 @@ class PosHelper
         $formulir->save();
         
         if (!TempDataHelper::get('pos', auth()->user()->id, ['is_pagination' => true])) {
-            gritter_error('no goods for sale');
-            return redirect()->back();
+            throw new PointException('NO GOODS FOR SALES');
         }
         
 
@@ -233,7 +234,7 @@ class PosHelper
         // JOURNAL #1 of #6 - PETTY CASH
         $warehouse = Warehouse::find($warehouse_id);
         if (! $warehouse->petty_cash_account) {
-            throw new PointException('Please set petty cash account for your warehouse');
+            throw new PointException('PLEASE SET PETTY CASH ACCOUNT FOR YOUR WAREHOUSE');
         }
         $journal = new Journal;
         $journal->form_date = $pos->formulir->form_date;
