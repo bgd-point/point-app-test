@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales/point', 'namespace' => 
         });
         Route::get('pos/daily-sales/export', 'PosReportController@exportDailyReport');
         Route::get('pos/daily-sales', 'PosReportController@daily');
+        Route::get('pos/sales-report/pdf', 'PosReportController@downloadPDF');
         Route::get('pos/sales-report/export', 'PosReportController@exportReport');
         Route::get('pos/sales-report', 'PosReportController@index');
 
