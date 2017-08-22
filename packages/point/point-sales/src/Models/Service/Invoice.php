@@ -47,7 +47,6 @@ class Invoice extends Model
         $q->join('service', 'service.id', '=', 'point_sales_service_invoice_service.service_id');
     }
 
-
     public function scopeAvailableToPaymentCollection($q)
     {
         $invoice_locked = Invoice::getLockedInvoice();
