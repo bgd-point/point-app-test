@@ -286,10 +286,16 @@ class PosReportController extends Controller
                 ->orderBy('point_sales_pos.id');
 
             $list_sales = PosHelper::searchList($list_sales, 'point_sales_pos.id', 'asc',  $date_from, $date_to, $search, 1);
-            
+            $period = 'All time';
+            if ($date_to && $date_from) {
+                $period = date_format_view(date_format_db($date_from));
+                if ($date_from != $date_to) {
+                    $period = date_format_view(date_format_db($date_from)) . ' - '. date_format_view(date_format_db($date_to));
+                }
+            }
+
             $data = array(
-                'date_from' => $date_from ? : date('Y-m-d'),
-                'date_to' => $date_to ? : date('Y-m-d'),
+                'period' => $period,
                 'list_sales' => $list_sales->get()
             );
 

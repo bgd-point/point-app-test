@@ -6,7 +6,7 @@
 </head>
 <body>
     <div class="h3 text-center">Sales Report</div>
-    <div class="text-center">Period : {{date_format_view($date_from)}} - {{date_format_view($date_to)}}</div>
+    <div class="text-center">Period : {{ $period }}</div>
     <br>
     <table class="table tabble-striped table-bordered" cellpadding="0" cellspacing="0" border="0" >
         <thead>
