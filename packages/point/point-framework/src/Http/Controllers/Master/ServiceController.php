@@ -117,7 +117,7 @@ class ServiceController extends Controller
         access_is_allowed('update.service');
 
         $this->validate($request, [
-            'name' => 'required',
+            'name' => 'required|unique:service, name,'.$id,
             'price' => 'required',
         ]);
 
