@@ -37,13 +37,13 @@
                                 </div>
                             @else
                                 <?php $customer_id = Point\PointSales\Helpers\PosHelper::getCustomer();?>
-                                <div class="content-show">{{Point\Framework\Models\Master\Person::find($customer_id)->name}}</div>
+                                <div style="padding-top:10px">{{Point\Framework\Models\Master\Person::find($customer_id)->name}}</div>
                             @endif
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-3 control-label">Warehouse</label>
-                        <div class="col-xs-12 col-sm-9 col-md-9 content-show">
+                        <div class="col-xs-12 col-sm-9 col-md-9 content-show"  style="padding-top:10px">
                             {{ $warehouse->name }}
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                         <div class="col-xs-12 col-sm-3 col-md-3 control-label">
                             <strong>Date</strong>
                         </div>
-                        <div class="col-xs-12 col-sm-9 col-md-9 content-show">
+                        <div class="col-xs-12 col-sm-9 col-md-9 content-show"  style="padding-top:10px">
                             {{ date_format_view(date('Y-m-d'))}}
                         </div>
                     </div>
@@ -114,7 +114,6 @@
                             </tr>
                             @endfor
                         </tbody>
-                        
                     </table>
                 </div>
                 <div class="row" style="padding:20px">
@@ -144,8 +143,9 @@
                 </div>
                 <div class="row" style="padding:0 20px 0 20px">
                     <div class="col-sm-3">
-                        <input type="radio" id="tax-choice-include-tax" name="tax_type" {{ old('tax_type') == 'on' ? 'checked'  : '' }}  onchange="calculate()" value="include"> Tax Included <br/>
-                        <input type="radio" id="tax-choice-exclude-tax" name="tax_type" {{ old('tax_type') == 'on' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
+                        <input type="checkbox" id="tax-choice-include-tax" class="tax" name="tax_type" {{ old('tax_type') == 'include' ? 'checked'  : '' }} onchange="calculate()" value="include"> Tax Included <br/>
+                        <input type="checkbox" id="tax-choice-exclude-tax" class="tax" name="tax_type" {{ old('tax_type') == 'exclude' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
+                        <input type="checkbox" id="tax-choice-non-tax" class="tax" name="tax_type" {{ old('tax_type') == 'non' ? 'checked'  : '' }} checked onchange="calculate()" value="non" style="display:none">
                     </div>
                     <div class="col-sm-3">
                         <div class="form-group">
@@ -188,19 +188,18 @@
                     </div>
                     <div class="col-sm-3">
                         <div style="margin-left:20px">
-                            
-                        <div class="[ form-group ]">
-                            <input type="checkbox" name="print" id="print" value="true" checked=""/>
-                            <div class="[ btn-group ]">
-                                <label for="print" class="[ btn btn-info ]">
-                                    <span class="[ fa fa-check ]"></span>
-                                    <span> </span>
-                                </label>
-                                <label for="print" class="[ btn btn-default ]">
-                                    Print Bill
-                                </label>
+                            <div class="[ form-group ]">
+                                <input type="checkbox" name="print" id="print" value="true" checked=""/>
+                                <div class="[ btn-group ]">
+                                    <label for="print" class="[ btn btn-info ]">
+                                        <span class="[ fa fa-check ]"></span>
+                                        <span> </span>
+                                    </label>
+                                    <label for="print" class="[ btn btn-default ]">
+                                        Print Bill
+                                    </label>
+                                </div>
                             </div>
-                        </div>
                         </div>
                     </div>
                 </div>
@@ -208,7 +207,6 @@
                     <div class="col-sm-3">
                         <a href="{{url('sales/point/pos/clear')}}" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-danger btn-block" style="padding:10px">Cancel</a>
                         <input type="submit" onclick="setAction('draft')" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-info btn-block" id="submit" value="draft" style="padding:10px"/>
-                        <input type="radio" id="tax-choice-non-tax" name="tax_type" {{ old('tax_type') == 'on' ? 'checked'  : '' }} checked onchange="calculate()" value="non" style="visibility: hidden;">
                         <input type="hidden" name="action" id="action">
                     </div>
                     <div class="col-sm-3">
@@ -318,6 +316,18 @@
     var counter = $("#item-datatable").dataTable().fnGetNodes().length;
     initFunctionRemoveInDatatable('#item-datatable', item_table);
     
+    $(".tax").change(function() {
+        var checked = $(this).is(':checked');
+        $(".tax").prop('checked',false);
+        if(checked) {
+            $(this).prop('checked',true);
+        } else {
+            $('#tax-choice-non-tax').prop('checked', true);
+        }
+
+    });
+        
+        
     $(function() {
         App.sidebar('toggle-sidebar');
         @if(!Point\PointSales\Helpers\PosHelper::getCustomer())
@@ -372,7 +382,7 @@
         if($('#tax-choice-include-tax').prop('checked')) {
             $('#discount').val(0);
             $('#discount').prop('readonly', true);
-            var discount = 0;
+            discount = 0;
         } else {
             $('#discount').prop('readonly', false);
         }
