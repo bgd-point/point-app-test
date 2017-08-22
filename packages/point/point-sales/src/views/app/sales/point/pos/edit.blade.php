@@ -336,7 +336,6 @@
             $('#item-default')[0].selectize.focus();
         @endif
 
-        document.getElementById('tax-choice-non-tax').checked = true;
         calculate();       
         reloadItemHavingQuantity('#item-default');
     });
