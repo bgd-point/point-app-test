@@ -82,10 +82,14 @@
                                             <th width="15%" class="text-right">QUANTITY</th>
                                         </tr>
                                         </thead>
-                                        <?php $counter = 1; ?>
+                                        <?php 
+                                        $counter = 1;
+                                        $subtotal = 0;
+                                        ?>
                                         <tbody class="manipulate-row">
 
                                         @foreach($list_expedition_order_invoice as $expedition_order)
+                                            <?php $subtotal += $expedition_order->expedition_fee; ?>
                                             @foreach($expedition_order->items as $receive_order_item)
 
                                                 <tr>
@@ -125,7 +129,7 @@
                         <div class="form-group">
                             <label class="col-md-9 control-label text-right">SUB TOTAL</label>
                             <div class="col-md-3 content-show">
-                                <input type="text" id="subtotal" onclick="setToNontax()" onkeyup="calculate()" name="subtotal" class="form-control format-quantity text-right" value="0"/>
+                                <input type="text" id="subtotal" onclick="setToNontax()" onkeyup="calculate()" name="subtotal" class="form-control format-quantity text-right" value="{{ $subtotal}}"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -242,9 +246,9 @@
                 $('#discount').prop('readonly', false);
             }
 
-            $('#tax_base').val(appNum(tax_base));
-            $('#tax').val(appNum(tax));
-            $('#total').val(appNum(tax_base + tax));
+            $('#tax_base').val(accountingNum(tax_base));
+            $('#tax').val(accountingNum(tax));
+            $('#total').val(accountingNum(tax_base + tax));
         }
 
         function isDiscount(val) {
