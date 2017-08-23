@@ -62,9 +62,9 @@ class InjectCutOffBumiMandiriSeeder extends Seeder
     	}
     }
 
-    public static function personCreate($type, $group, $person)
+    public static function personCreate($type, $group, $person_name)
     {
-        $person = Person::where('name', $person)->first();
+        $person = Person::where('name', $person_name)->first();
         if ($person) {
             return $person;
         }
@@ -76,7 +76,7 @@ class InjectCutOffBumiMandiriSeeder extends Seeder
     	$person->updated_by = 2;
     	$person->save();
     	$person->code = 'CUS-'.$person->id;
-    	$person->name = $person;
+    	$person->name = $person_name;
     	$person->save();
 
     	return $person;
