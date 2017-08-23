@@ -5,6 +5,7 @@ namespace Point\PointSales\Http\Controllers\Service;
 use App\Http\Controllers\Controller;
 use Point\Framework\Models\Master\Service;
 use Point\PointSales\Helpers\ServiceInvoiceHelper;
+use Point\PointSales\Helpers\ServiceReportHelper;
 use Point\PointSales\Models\Service\Invoice;
 use Point\PointSales\Models\Service\InvoiceService;
 
@@ -31,6 +32,19 @@ class ServiceReportController extends Controller
         $view = view('point-sales::app.sales.point.service.report-value');
         $view->list_service = Service::active()->paginate(100);
         
+        return $view;
+    }
+
+    public function detailbyValue($service_id)
+    {
+        $status = \Input::get('status');
+        $date_from = \Input::get('date_from');
+        $date_to = \Input::get('date_to');
+
+        $view = view('point-sales::app.sales.point.service.report-value-detail');
+        $view->list_report = ServiceReportHelper::getDetailByService($service_id, $status, $date_from, $date_to)->paginate(100);
+        $view->service = Service::find($service_id);
+
         return $view;
     }
 }

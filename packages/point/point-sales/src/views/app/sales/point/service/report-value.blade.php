@@ -4,9 +4,10 @@
     <div id="page-content">
         <ul class="breadcrumb breadcrumb-top">
             @include('point-sales::app.sales.point.service._breadcrumb')
-            <li>Report</li>
+            <li><a href="{{url('sales/point/service/report')}}">Report</a></li>
+            <li>with value</li>
         </ul>
-        <h2 class="sub-header">Report</h2>
+        <h2 class="sub-header">Report With Value</h2>
         @include('point-sales::app.sales.point.service.invoice._menu')
 
         <div class="panel panel-default">
@@ -17,7 +18,7 @@
                             <select class="selectize" name="status" id="status" onchange="selectData()">
                                 <option value="0" @if(\Input::get('status') == 0) selected @endif>open</option>
                                 <option value="1" @if(\Input::get('status') == 1) selected @endif>closed</option>
-                                <option value="-1" @if(\Input::get('status') == 'all') selected @endif>all</option>
+                                <option value="all" @if(\Input::get('status') == 'all') selected @endif>all</option>
                             </select>
                         </div>
                         <div class="col-sm-4">
@@ -42,7 +43,7 @@
                 <br/>
 
                 <div class="table-responsive">
-                    {!! $list_service->render() !!}
+                    {!! $list_service->appends(['status'=>app('request')->get('status'), 'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
                     <table class="table">
                         <thead>
                         <tr>
@@ -52,40 +53,34 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <?php $total_price = 0; ?>
+                        <?php $total_price = 0; $total_quantity = 0; ?>
                         @foreach($list_service as $service)
                             <?php
                             $status = \Input::get('status');
-                            $data = Point\PointSales\Models\Service\InvoiceService::joinInvoice()
-                                ->joinFormulir()
-                                ->whereNotNull('formulir.form_number')
-                                ->where(function($query) use ($status) {
-                                    $query->whereIn('formulir.form_status', [0, 1]);
-                                    if ($status && $status != 'all') {
-                                        $query->where('formulir.form_status', $status);
-                                    }
-                                })
-                                ->where('point_sales_service_invoice_service.service_id', $service->id)
-                                ->selectRaw('sum(point_sales_service_invoice_service.quantity) as quantity, sum(point_sales_service_invoice_service.price) as price')
-                                ->first();
-
+                            $date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : '';
+                            $date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : '';
+                            
+                            $data = Point\PointSales\Helpers\ServiceReportHelper::detailByService($service->id, $status, $date_from, $date_to);
                             if ($data) {
                                 $total_price += $data->price;
+                                $total_quantity += $data->quantity;
                             }
                             ?>
                             <tr>
-                                <td>{{ $service->name}}</td>
+                                <td><a href="{{url('sales/point/service/report/value/'.$service->id.'?date_from='.$date_from.'&date_to='.$date_to.'&status='.$status)}}" title="show detail"> {{ $service->name}} </a></td>
                                 <td class="text-right">{{ number_format_quantity($data->quantity, 0)}}</td>
                                 <td class="text-right">{{ number_format_quantity($data->price)}}</td>
                             </tr>
                             
                         @endforeach
                         <tr>
+                            <td class="text-left"><h4><strong>Total</strong></h4></td>
+                            <td class="text-right"><h4><strong>{{number_format_quantity($total_quantity, 0)}}</strong></h4></td>
                             <td colspan="3" class="text-right"><h4><strong>{{number_format_quantity($total_price)}}</strong></h4></td>
                         </tr>
                         </tbody>
                     </table>
-                    {!! $list_service->render() !!}
+                    {!! $list_service->appends(['status'=>app('request')->get('status'), 'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
                 </div>
             </div>
         </div>
