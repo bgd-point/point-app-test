@@ -7,7 +7,7 @@ use Point\Framework\Models\Journal;
 use Point\PointInventory\Helpers\StockCorrectionHelper;
 use Point\PointInventory\Models\StockCorrection\StockCorrection;
 
-class FixStockCorrectionJournalSeeder extends Seeder
+class RejournalStockCorrectionSeeder extends Seeder
 {
     public function run()
     {

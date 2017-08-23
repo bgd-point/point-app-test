@@ -18,7 +18,7 @@ use Point\PointAccounting\Models\CutOffPayable;
 use Point\PointAccounting\Models\CutOffReceivable;
 use Point\PointFinance\Models\PaymentReference;
 
-class FixSeederCutoff extends Seeder
+class RejournalCutoffSeeder extends Seeder
 {
     public function run()
     {

@@ -26,11 +26,13 @@ class InjectCutOffBumiMandiriSeeder extends Seeder
 
     public function uangMukaPembelian()
     {
-    	$person = self::personCreate(1, 1);
     	$cutoff_payable = CutOffPayable::where('formulir_id', 3)->first();
 
+        $persons = array('SPA', 'SPA', 'PT. Gramitrama Jaya Steel');
     	$data = array(1160000000, 500000000, 122200000);
     	for ($i=0; $i < count($data); $i++) { 
+            $person = self::personCreate(1, 1, $persons[$i]);
+
     		$cutoff_payable_detail = new CutOffPayableDetail;
 	    	$cutoff_payable_detail->cut_off_payable_id = $cutoff_payable->id;
 	    	$cutoff_payable_detail->coa_id = 11; // COA name 'uang muka pembelian'
@@ -43,11 +45,13 @@ class InjectCutOffBumiMandiriSeeder extends Seeder
 
     public function uangMukaPenjualan()
     {
-    	$person = self::personCreate(2, 5);
-    	$cutoff_receivable = CutOffReceivable::where('formulir_id', 477)->first();
+        $cutoff_receivable = CutOffReceivable::where('formulir_id', 477)->first();
 
-    	$data = array(46137500, 3850000, 564333000, 80224000, 174605700, 150000000, 35190000);
-    	for ($i=0; $i < count($data); $i++) { 
+        $persons = array('Berkat Jaya Bangunan', 'Surya Baru Besi 8', 'Surya Baru Besi 12', 'Surya Baru (Luwuk) Besi 25 Ulir',
+            'Surya Baru (Luwuk) Besi 16 Ulir', 'Fandi', 'Bumi Indo Moker (Akan Dikembalikan)');
+        $data = array(46137500, 3850000, 564333000, 80224000, 174605700, 150000000, 35190000);
+        for ($i=0; $i < count($data); $i++) { 
+    	    $person = self::personCreate(2, 5, $persons[$i]);
     		$cutoff_receivable_detail = new CutOffReceivableDetail;
 	    	$cutoff_receivable_detail->cut_off_receivable_id = $cutoff_receivable->id;
 	    	$cutoff_receivable_detail->coa_id = 34; // COA name 'uang muka penjualan'
@@ -58,8 +62,13 @@ class InjectCutOffBumiMandiriSeeder extends Seeder
     	}
     }
 
-    public static function personCreate($type, $group)
+    public static function personCreate($type, $group, $person)
     {
+        $person = Person::where('name', $person)->first();
+        if ($person) {
+            return $person;
+        }
+
     	$person = new Person;
     	$person->person_type_id = $type;
     	$person->person_group_id = $group;
@@ -69,8 +78,7 @@ class InjectCutOffBumiMandiriSeeder extends Seeder
     	$person->code = 'person-'.$person->id;
     	$person->name = 'person-'.$person->id;
     	$person->save();
+
     	return $person;
-
     }
-
 }
