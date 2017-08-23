@@ -32,9 +32,17 @@ class RejournalCashBankSeeder extends Seeder
         // $bank_id = BankDetail::whereNull('form_reference_id')->groupBy('point_finance_bank_id')->select('point_finance_bank_id')->get()->toArray();
         $bank_formulir = Bank::joinFormulir()->close()->notArchived()->select('formulir_id')->get()->toArray();
         $journal_emptying = Journal::whereIn('form_journal_id', $bank_formulir)->delete();
-        $account_receivable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $bank_formulir)->delete();
+        $account_receivable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $bank_formulir)->delete(); 
         $list_bank = Bank::whereIn('formulir_id', $bank_formulir)->get();
         foreach ($list_bank as $bank) {
+            $total = 0;
+            foreach ($bank->detail as $bank_detail) {
+                $total += $bank_detail->amount;
+            }
+
+            $bank->total = $total;
+            $bank->save();
+
             self::journal($bank);
             JournalHelper::checkJournalBalance($bank->formulir_id);
         }
@@ -47,6 +55,14 @@ class RejournalCashBankSeeder extends Seeder
         $account_receivable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $cash_formulir)->delete();
         $list_cash = Cash::whereIn('formulir_id', $cash_formulir)->get();
         foreach ($list_cash as $cash) {
+            $total = 0;
+            foreach ($cash->detail as $cash_detail) {
+                $total += $cash_detail->amount;
+            }
+
+            $cash->total = $total;
+            $cash->save();
+            
             self::journal($cash);
             JournalHelper::checkJournalBalance($cash->formulir_id);
         }
