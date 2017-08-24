@@ -57,16 +57,7 @@
                     <div class="widget-content text-right clearfix">
                         <i class="fa fa-4x fa-building push-bit pull-left"></i>
                         <h4 class="widget-heading"><strong>Report</strong></h4>
-                        <span class="text-muted">Daily Report</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-lg-3">
-                <a href="{{url('sales/point/service/report/value')}}" class="widget widget-button">
-                    <div class="widget-content text-right clearfix">
-                        <i class="fa fa-4x fa-building push-bit pull-left"></i>
-                        <h4 class="widget-heading"><strong>Report</strong></h4>
-                        <span class="text-muted">With Value</span>
+                        <span class="text-muted"></span>
                     </div>
                 </a>
             </div>

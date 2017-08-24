@@ -22,17 +22,12 @@ class InvoiceService extends Model
         $q->join('formulir', 'formulir.id', '=', 'point_sales_service_invoice.formulir_id');
     }
 
-    public function scopeGetDetail($q, $service_id, $status, $date_from, $date_to)
+    public function scopeGetDetail($q, $service_id, $date_from, $date_to)
     {
         $q->joinInvoice()
             ->joinFormulir()
             ->whereNotNull('formulir.form_number')
-            ->where(function($query) use ($status) {
-                $query->whereIn('formulir.form_status', [0, 1]);
-                if ($status && $status != 'all') {
-                    $query->where('formulir.form_status', $status);
-                }
-            })
+            ->whereIn('formulir.form_status', [0, 1])
             ->where(function($query) use ($date_from, $date_to) {
                 if ($date_from && $date_to) {
                     $query->whereBetween('formulir.form_date', [$date_from, $date_to]);

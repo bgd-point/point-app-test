@@ -10,9 +10,9 @@ class ServiceReportHelper
 	 * Helper for Report Service by Value
 	 */
 
-	public static function detailByService($service_id, $status, $date_from, $date_to)
+	public static function detailByService($service_id, $date_from, $date_to)
 	{
-		$data = InvoiceService::getDetail($service_id, $status, $date_from, $date_to)
+		$data = InvoiceService::getDetail($service_id, $date_from, $date_to)
 			->selectRaw('sum(point_sales_service_invoice_service.quantity) as quantity, sum(point_sales_service_invoice_service.price) as price')
             ->first();
 
@@ -23,9 +23,9 @@ class ServiceReportHelper
         return null;
 	}
 
-	public static function getDetailByService($service_id, $status, $date_from, $date_to)
+	public static function getDetailByService($service_id, $date_from, $date_to)
 	{
-		$data = InvoiceService::getDetail($service_id, $status, $date_from, $date_to)
+		$data = InvoiceService::getDetail($service_id, $date_from, $date_to)
 			->select('point_sales_service_invoice_service.*');
 
 		return $data;

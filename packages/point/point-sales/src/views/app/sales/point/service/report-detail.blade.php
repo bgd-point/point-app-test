@@ -4,16 +4,15 @@
     <div id="page-content">
         <ul class="breadcrumb breadcrumb-top">
             @include('point-sales::app.sales.point.service._breadcrumb')
-            <li><a href="{{url('sales/point/service/report/value')}}">Report</a></li>
+            <li><a href="{{url('sales/point/service/report')}}">Report</a></li>
             <li>{{$service->name}}</li>
         </ul>
         <h2 class="sub-header">Report "{{$service->name}}"</h2>
-        @include('point-sales::app.sales.point.service.invoice._menu')
 
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="table-responsive">
-                    {!! $list_report->appends(['status'=>app('request')->get('status'), 'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
+                    {!! $list_report->appends(['date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
                     <table class="table">
                         <thead>
                         <tr>
@@ -51,7 +50,7 @@
                         </tr>
                         </tbody>
                     </table>
-                    {!! $list_report->appends(['status'=>app('request')->get('status'), 'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
+                    {!! $list_report->appends(['date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
                 </div>
             </div>
         </div>

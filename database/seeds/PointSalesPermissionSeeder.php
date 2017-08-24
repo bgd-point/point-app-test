@@ -67,5 +67,6 @@ class PointSalesPermissionSeeder extends Seeder
         PermissionHelper::create('POINT SALES SERVICE INVOICE', ['create', 'read', 'update', 'delete', 'approval'], $group);
         PermissionHelper::create('POINT SALES SERVICE DOWNPAYMENT', ['create', 'read', 'update', 'delete', 'approval'], $group);
         PermissionHelper::create('POINT SALES SERVICE PAYMENT COLLECTION', ['create', 'read', 'update', 'delete', 'approval'], $group);
+        PermissionHelper::create('POINT SALES SERVICE REPORT', ['read', 'export'], $group);
     }
 }
