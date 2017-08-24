@@ -71,7 +71,7 @@ class CutOffAccountController extends Controller
 	{
 		access_is_allowed('read.point.accounting.cut.off.account');
 		$view = view('point-accounting::app.accounting.point.cut-off.account.show');
-        $view->list_coa = Coa::active()->orderBy('coa_number')->orderBy('name')->get();
+        $view->list_coa = Coa::active()->get();
         $view->cut_off_account = CutOffAccount::find($id);
         $view->list_cut_off_account_detail = CutOffAccountDetail::where('cut_off_account_id', $id);
         $view->list_cut_off_account_archived = CutOffAccount::joinFormulir()->archived($view->cut_off_account->formulir->form_number)->selectOriginal()->get();
