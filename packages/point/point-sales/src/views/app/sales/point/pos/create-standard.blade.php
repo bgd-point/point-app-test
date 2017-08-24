@@ -67,22 +67,22 @@
                             <tr>
                                 <th width="5%"></th>
                                 <th width="15%">ITEM</th>
-                                <th width="15%">QUANTITY</th>
-                                <th width="20%" class="text-right">PRICE</th>
-                                <th width="15%" class="text-right">DISCOUNT</th>
-                                <th width="20%" class="text-right">TOTAL</th>
+                                <th width="20%">QUANTITY</th>
+                                <th width="15%" class="text-right" style="padding-right:5%">PRICE</th>
+                                <th width="15%" class="text-right" style="padding-right:5%">DISCOUNT</th>
+                                <th width="20%" class="text-right" style="padding-right:5%">TOTAL</th>
                             </tr>
                         </thead>
                     </table>
                     <table id="item-datatable" class="table table-striped table-wrapper">
                         <thead style="display:none">
                             <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
+                                <th width="5%"></th>
+                                <th width="15%"></th>
+                                <th width="20%"></th>
+                                <th width="15%"></th>
+                                <th width="15%"></th>
+                                <th width="20%"></th>
                             </tr>
                         </thead>
                         <tbody class="manipulate-row">
@@ -91,8 +91,8 @@
                             <tr >
                                 <td>
                                 <a href="javascript:void(0)" class="remove-row btn btn-danger" data-item="{{$carts[$i]['id']}}"><i class="fa fa-trash"></i></a></td>
-                                <td>
-                                    <input type="text" readonly id="item_name-{{$i}}" name="item_name[]" value="{{ $item->codeName }}" class="form-control input-item">
+                                <td style="vertical-align:middle">
+                                    {{ $item->codeName }}
                                     <input type="hidden" id="item-id-{{$i}}" name="item_id[]" value="{{$carts[$i]['id']}}"/>
                                 </td>
                                 <td>
@@ -442,7 +442,7 @@
         var label = $("#unit_name_default").val();
         item_table.row.add( [
             '<a href="javascript:void(0)" class="remove-row btn btn-danger" data-item="'+result.id+'"><i class="fa fa-trash"></i></a>',
-            '<input type="text" value="'+result.item_name+'" readonly name="item_name[]" id="item_name-'+counter+'" class="form-control input-item" placeholder="Search Item..." autofocus />'
+            '<div style="margin-top:5px">'+result.item_name+'</div>'
             +'<input type="hidden" id="item-id-'+counter+'" name="item_id[]" value="'+result.id+'"/>',
             '<div class="input-group">'
                 +'<input name="quantity[]"  value="'+result.quantity+'" id="item-quantity-'+counter+'" class="form-control format-quantity calculate text-right" value="1" type="text" onchange="updateTemp('+counter+')" autocomplete="off">'
