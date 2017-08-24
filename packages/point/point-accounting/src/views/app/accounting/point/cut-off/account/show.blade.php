@@ -261,17 +261,17 @@
                                                 <td><strong id="coa-name-{{$i}}">{{$coa->account}}</strong></td>
                                                 <td>
                                                     @if($cut_off_account_detail)
-                                                        <input type="text" class="form-control format-quantity text-right" readonly value="{{$cut_off_account_detail->debit}}">
+                                                        <input type="text" class="form-control format-accounting text-right" readonly value="{{$cut_off_account_detail->debit}}">
                                                     @else
-                                                        <input type="text" class="form-control format-quantity text-right" readonly value="0">
+                                                        <input type="text" class="form-control format-accounting text-right" readonly value="0">
                                                     @endif
 
                                                 </td>
                                                 <td>
                                                     @if($cut_off_account_detail)
-                                                        <input type="text" class="form-control format-quantity text-right" readonly value="{{$cut_off_account_detail->credit}}">
+                                                        <input type="text" class="form-control format-accounting text-right" readonly value="{{$cut_off_account_detail->credit}}">
                                                     @else
-                                                        <input type="text" class="form-control format-quantity text-right" readonly value="0">
+                                                        <input type="text" class="form-control format-accounting text-right" readonly value="0">
                                                     @endif
 
                                                 </td>
@@ -283,8 +283,8 @@
                                         <tfoot>
                                             <tr>
                                                 <td colspan="2"></td>
-                                                <td align="right"><input type="text" value="{{$foot_debit}}" style="font-weight:bold; font-size:16px" readonly name="foot_debit" id="foot_debit" class="form-control format-quantity text-right" /></td>
-                                                <td align="right"><input type="text" value="{{$foot_credit}}" style="font-weight:bold; font-size:16px" readonly name="foot_credit" id="foot_credit" class="form-control format-quantity text-right"/></td>
+                                                <td align="right"><input type="text" value="{{$foot_debit}}" style="font-weight:bold; font-size:16px" readonly name="foot_debit" id="foot_debit" class="form-control format-accounting text-right" /></td>
+                                                <td align="right"><input type="text" value="{{$foot_credit}}" style="font-weight:bold; font-size:16px" readonly name="foot_credit" id="foot_credit" class="form-control format-accounting text-right"/></td>
                                             </tr>
                                         </tfoot>
                                     </table>
