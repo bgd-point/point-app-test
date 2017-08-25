@@ -22,6 +22,7 @@ class RejournalCutoffSeeder extends Seeder
 {
     public function run()
     {
+        \Log::info('============ Rejournal Cutoff started ============');
         \DB::beginTransaction();
         $list_cutoff_account = CutOffAccount::joinFormulir()->close()->notArchived()->approvalApproved()->selectOriginal()->get();
         foreach ($list_cutoff_account as $cutoff_account) {
@@ -58,6 +59,7 @@ class RejournalCutoffSeeder extends Seeder
 
         }
         \DB::commit();
+        \Log::info('============ Rejournal Cutoff finished ============');
     }
 
     private static function fixInventory($formulir_id)
