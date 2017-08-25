@@ -152,13 +152,15 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            @if(formulir_view_edit($cut_off_fixed_assets->formulir, 'update.point.accounting.cut.off.fixed.assets'))
-                            <a href="{{url('accounting/point/cut-off/fixed-assets/'.$cut_off_fixed_assets->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
-                            @endif
-                            @if(formulir_view_cancel($cut_off_fixed_assets->formulir, 'delete.point.accounting.cut.off.fixed.assets'))
-                            <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" 
-                               onclick="secureCancelForm('{{url('accounting/point/cut-off/fixed-assets/cancel')}}', {{$cut_off_fixed_assets->formulir->id}},
-                               'delete.point.accounting.cut.off.fixed.assets')"><i class="fa fa-times"></i> cancel</a>
+                            @if(!$cut_off_fixed_assets->formulir->form_status == 1)
+                                @if(formulir_view_edit($cut_off_fixed_assets->formulir, 'update.point.accounting.cut.off.fixed.assets'))
+                                <a href="{{url('accounting/point/cut-off/fixed-assets/'.$cut_off_fixed_assets->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
+                                @endif
+                                @if(formulir_view_cancel($cut_off_fixed_assets->formulir, 'delete.point.accounting.cut.off.fixed.assets'))
+                                <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" 
+                                   onclick="secureCancelForm('{{url('accounting/point/cut-off/fixed-assets/cancel')}}', {{$cut_off_fixed_assets->formulir->id}},
+                                   'delete.point.accounting.cut.off.fixed.assets')"><i class="fa fa-times"></i> cancel</a>
+                               @endif
                            @endif
                         </div>
                     </div>
