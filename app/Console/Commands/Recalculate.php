@@ -32,47 +32,44 @@ class Recalculate extends Command
         \DB::beginTransaction();
 
         $inventories = Inventory::where('recalculate', 1)
-            ->groupBy('warehouse_id')
-            ->groupBy('item_id')
             ->orderBy('form_date', 'asc')
             ->orderBy('id', 'asc')
-            ->get();
-        
-        \Log::info($inventories);
-        \Log::info('==========================');
+            ->orderBy('formulir_id', 'asc')
+            ->get()
+            ->unique('item_id');
 
         foreach ($inventories as $inventory) {
             $list_inventory = Inventory::where('item_id', '=', $inventory->item_id)
-                ->where('form_date', '>=', $inventory->form_date)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
+                ->where('form_date', '>=', $inventory->form_date)
                 ->orderBy('form_date', 'asc')
                 ->orderBy('id', 'asc')
                 ->get();
 
-            \Log::info($list_inventory);
-            \Log::info('==========================');
-            
             $total_quantity = 0;
             $total_value = 0;
-            $cogs = 0;
+            $cogs_tmp = 0;
             foreach ($list_inventory as $l_inventory) {
-                $total_quantity += $l_inventory->total_quantity;
+                $total_quantity += $l_inventory->quantity;
                 $total_value += $l_inventory->quantity * $l_inventory->price;
 
                 $l_inventory->total_quantity = $total_quantity;
-                $l_inventory->total_value = $total_value;
+                $l_inventory->total_value = $l_inventory->total_quantity ? $total_value : 0;
 
-                $l_inventory->cogs = 0;
-                if ($l_inventory->total_quantity != 0) {
-                    $l_inventory->cogs = $l_inventory->total_value / $l_inventory->total_quantity;
+                if ($l_inventory->quantity > 0) {
+                    if ($l_inventory->total_quantity > 0) {
+                        $cogs_tmp = $l_inventory->total_value / $l_inventory->total_quantity;
+                    }
+
+                    $l_inventory->cogs = $l_inventory->total_quantity ? $cogs_tmp : 0;
+                }
+
+                if ($l_inventory->quantity < 1) {
+                    $l_inventory->cogs = $cogs_tmp;
                 }
 
                 $l_inventory->recalculate = false;
                 $l_inventory->save();
-
-                \Log::info('total quantity : '. $l_inventory->total_quantity);
-                \Log::info('total value : '. $l_inventory->total_value);
-                \Log::info('cogs : '. $l_inventory->cogs);
             }
         }
 
