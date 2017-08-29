@@ -36,7 +36,9 @@ class Recalculate extends Command
             ->orderBy('id', 'asc')
             ->orderBy('formulir_id', 'asc')
             ->get()
-            ->unique('item_id');
+            ->unique(function ($inventory) {
+                return $inventory['item_id'].$inventory['warehouse_id'];
+            });
 
         foreach ($inventories as $inventory) {
             $list_inventory = Inventory::where('item_id', '=', $inventory->item_id)
