@@ -126,6 +126,9 @@ class Journal extends Model
             }
 
             if (! $account_payable_and_receivable_id) {
+                if (!$account_payable_and_receivable) {
+                    \Log::info($this);
+                }
                 $account_payable_and_receivable_id = $account_payable_and_receivable->id;
             }
 

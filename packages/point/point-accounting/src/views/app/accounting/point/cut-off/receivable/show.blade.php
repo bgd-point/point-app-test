@@ -153,6 +153,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
+                        @if(!$cut_off_receivable->formulir->form_status == 1)
                             @if(formulir_view_edit($cut_off_receivable->formulir, 'update.point.accounting.cut.off.receivable'))
                             <a href="{{url('accounting/point/cut-off/receivable/'.$cut_off_receivable->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                             @endif
@@ -161,6 +162,7 @@
                                onclick="secureCancelForm('{{url('accounting/point/cut-off/receivable/cancel')}}', {{$cut_off_receivable->formulir->id}},
                                'delete.point.accounting.cut.off.receivable')"><i class="fa fa-times"></i> cancel</a>
                            @endif
+                        @endif
                         </div>
                     </div>
                 </fieldset>

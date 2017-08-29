@@ -153,13 +153,15 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            @if(formulir_view_edit($cut_off_payable->formulir, 'update.point.accounting.cut.off.payable'))
-                            <a href="{{url('accounting/point/cut-off/payable/'.$cut_off_payable->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
-                            @endif
-                            @if(formulir_view_cancel($cut_off_payable->formulir, 'delete.point.accounting.cut.off.payable'))
-                            <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" 
-                               onclick="secureCancelForm('{{url('accounting/point/cut-off/payable/cancel')}}', {{$cut_off_payable->formulir->id}},
-                               'delete.point.accounting.cut.off.payable')"><i class="fa fa-times"></i> cancel</a>
+                            @if(!$cut_off_payable->formulir->form_status == 1)
+                                @if(formulir_view_edit($cut_off_payable->formulir, 'update.point.accounting.cut.off.payable'))
+                                <a href="{{url('accounting/point/cut-off/payable/'.$cut_off_payable->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
+                                @endif
+                                @if(formulir_view_cancel($cut_off_payable->formulir, 'delete.point.accounting.cut.off.payable'))
+                                <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" 
+                                   onclick="secureCancelForm('{{url('accounting/point/cut-off/payable/cancel')}}', {{$cut_off_payable->formulir->id}},
+                                   'delete.point.accounting.cut.off.payable')"><i class="fa fa-times"></i> cancel</a>
+                               @endif
                            @endif
                         </div>
                     </div>
