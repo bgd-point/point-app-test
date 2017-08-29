@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
         Commands\UnbalanceJournalChecker::class,
         Commands\Rejournal::class,
         Commands\MethodChecker::class,
+        Commands\RemoveSpace::class,
     ];
 
     /**
