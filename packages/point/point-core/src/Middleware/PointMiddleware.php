@@ -15,12 +15,14 @@ class PointMiddleware
      */
     public function handle($request, Closure $next)
     {
-        self::fixerRequest($request->all());
+        $tmpReq = $request->all();
+        self::fixerRequest($tmpReq);
+        $request->replace($tmpReq);
 
         return $next($request);
     }
 
-    private static function fixerRequest($requests)
+    private static function fixerRequest(&$requests)
     {
         foreach ($requests as $key => $value) {
             if (is_string($value)) {
@@ -32,7 +34,5 @@ class PointMiddleware
                 $requests[$key] = self::fixerRequest($value);
             }
         }
-
-        return $requests;
     }
 }
