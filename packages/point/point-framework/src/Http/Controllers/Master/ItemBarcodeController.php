@@ -23,11 +23,9 @@ class ItemBarcodeController extends Controller
 
 	public function print(Request $request)
 	{
-		dd($request->all());
-		// $request = $request->input();
-		// $item_id = app('request')->input('item_id');
-		// $number_print = $request->input('number_of_prints');
+		$item_id = $request->input('item_id');
+		$number_print = $request->input('number_of_prints');
 
-		dd($item_id);
+		dd(array($item_id, $number_print));
 	}
 }
