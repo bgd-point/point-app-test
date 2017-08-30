@@ -60,4 +60,15 @@ class PaymentOrder extends Model
     {
         return 'point-finance::emails.finance.point.approval.payment-order';
     }
+
+    public static function showUrl($id)
+    {
+        $class = self::find($id);
+
+        if ($class->formulir->form_number) {
+            return 'finance/point/payment-order/' . $id;
+        }
+
+        return 'finance/point/payment-order/' . $id . '/archived';
+    }
 }
