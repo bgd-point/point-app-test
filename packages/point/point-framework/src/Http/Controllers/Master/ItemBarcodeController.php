@@ -17,15 +17,27 @@ class ItemBarcodeController extends Controller
 		$view->list_inventory = Inventory::joinItem()
             ->where('inventory.total_quantity', '>', 0)
             ->groupBy('inventory.item_id')
+            ->select('inventory.*')
             ->paginate(100);
         return $view;
 	}
 
 	public function print(Request $request)
 	{
-		$item_id = $request->input('item_id');
-		$number_print = $request->input('number_of_prints');
+		$this->validate($request, [
+            'inventory_id' => 'required',
+            'number_of_prints' => 'required',
+        ]);
+        
+		$view = view('framework::app.master.item.print-barcode');
 
-		dd(array($item_id, $number_print));
+		$view->inventory_rid = $request->input('inventory_rid');
+		$view->inventory_id = $request->input('inventory_id');
+		$view->number_print = $request->input('number_of_prints');
+		$view->list_inventory = Inventory::joinItem()
+			->whereIn('inventory.id', $view->inventory_id)
+			->select('inventory.*')
+			->get();
+		return $view;
 	}
 }
