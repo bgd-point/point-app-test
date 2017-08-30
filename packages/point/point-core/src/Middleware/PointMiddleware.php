@@ -15,9 +15,9 @@ class PointMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $tmpReq = $request->all();
-        self::fixerRequest($tmpReq);
-        $request->replace($tmpReq);
+        // $tmpReq = $request->all();
+        // self::fixerRequest($tmpReq);
+        // $request->replace($tmpReq);
 
         return $next($request);
     }
