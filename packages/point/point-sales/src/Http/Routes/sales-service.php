@@ -5,6 +5,8 @@ Route::group(['prefix' => 'sales/point/service', 'namespace' => 'Point\PointSale
         return view('point-sales::app.sales.point.service.menu');
     });
 
+    Route::get('/report/export', 'ServiceReportController@export');
+    Route::get('/report/{service_id}', 'ServiceReportController@detail');
     Route::get('/report', 'ServiceReportController@index');
 
     // INVOICE
