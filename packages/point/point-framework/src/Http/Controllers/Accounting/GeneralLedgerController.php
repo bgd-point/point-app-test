@@ -2,6 +2,7 @@
 
 namespace Point\Framework\Http\Controllers\Accounting;
 
+use Point\Framework\Helpers\AccountingHelper;
 use Point\Framework\Http\Controllers\Controller;
 use Point\Framework\Models\CoaSaldo;
 use Point\Framework\Models\Journal;
@@ -23,15 +24,7 @@ class GeneralLedgerController extends Controller
         $view->coa_id = \Input::get('coa_filter') ?: 0;
         $view->date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : $date_from;
         $view->date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : $date_to;
-
-        $view->journals = [];
-        if ($view->coa_id > 0) {
-            $view->journals = Journal::where('coa_id', '=', $view->coa_id)
-                ->where('form_date', '>=', $view->date_from)
-                ->where('form_date', '<=', $view->date_to)
-                ->orderBy('form_date')
-                ->get();
-        }
+        $view->journals = AccountingHelper::queryGeneralLedger($view->date_from, $view->date_to, $view->coa_id);
         return $view;
     }
 
@@ -41,17 +34,9 @@ class GeneralLedgerController extends Controller
         $date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : date('Y-m-01 00:00:00');
         $date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : date('Y-m-d 23:59:59');
         $coa_id = \Input::get('coa_filter') ?: 0;
-        $journals = [];
-        if ($coa_id > 0) {
-            $journals = Journal::where('coa_id', '=', $coa_id)
-                ->where('form_date', '>=', $date_from)
-                ->where('form_date', '<=', $date_to)
-                ->orderBy('form_date')
-                ->get();
-        }
-
+        $journals = AccountingHelper::queryGeneralLedger($date_from, $date_to, $coa_id);
+        
         \Excel::create($file_name, function($excel) use ($date_from, $date_to, $coa_id, $journals) {
-
             $excel->sheet('General Ledger', function($sheet) use ($date_from, $date_to, $coa_id, $journals) {
                 $data = array(
                     'list_coa' => Coa::where('id', '>', 0)->orderBy('coa_number')->orderBy('name')->get(),

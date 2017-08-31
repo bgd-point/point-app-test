@@ -56,6 +56,7 @@ class ReportController extends Controller
         $report = self::dataReport($type, $date_from, $date_to, $coa_id, $subledger);
         $view = view('point-finance::app.finance.point.report._detail');
         $view->list_report = $report['report'];
+        \Log::info($view->list_report);
         $view->type = $type;
         $view->opening_balance = $report['journal_debit'] - $report['journal_credit'];
         $view->url = url('finance/point/report/export/?type='.$type.'&subledger_id='.$subledger.'&coa_id='.$coa_id.'&date_from='.$date_from.'&date_to='.$date_to);
@@ -67,11 +68,11 @@ class ReportController extends Controller
     public static function dataReport($type, $date_from, $date_to, $coa_id, $subledger)
     {
         // payment type cash
-        $report_type = Cash::joinFormulir()->notArchived()->close()->selectOriginal()->orderByStandard();
+        $report_type = Cash::joinFormulir()->where('coa_id', $coa_id)->notArchived()->close()->selectOriginal()->orderByStandard();
 
         // payment type bank
         if ($type == 'bank') {
-            $report_type = Bank::joinFormulir()->notArchived()->close()->selectOriginal()->orderByStandard();
+            $report_type = Bank::joinFormulir()->where('coa_id', $coa_id)->notArchived()->close()->selectOriginal()->orderByStandard();
         }
 
         // getting data from Journal
