@@ -106,7 +106,7 @@
                                                 @endif
                                                 </td>
                                                 <td><strong id="coa-name{{$i}}">{{$coa->name}}</strong></td>
-                                                <td><input type="text" id="debit-{{$i}}" class="form-control format-quantity text-right" readonly value="{{$amount}}"></td>
+                                                <td><input type="text" id="debit-{{$i}}" class="form-control format-accounting text-right" readonly value="{{$amount}}"></td>
                                                 
                                             </tr>
                                             <?php $i++;?>
@@ -115,7 +115,7 @@
                                         <tfoot>
                                             <tr>
                                                 <td colspan="2"></td>
-                                                <td align="right"><input type="text" value="{{$total_amount}}" readonly class="form-control format-quantity text-right" /></td>
+                                                <td align="right"><input type="text" value="{{$total_amount}}" readonly class="form-control format-accounting text-right" /></td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -153,6 +153,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
+                        @if(!$cut_off_inventory->formulir->form_status == 1)
                             @if(formulir_view_edit($cut_off_inventory->formulir, 'update.point.accounting.cut.off.inventory'))
                             <a href="{{url('accounting/point/cut-off/inventory/'.$cut_off_inventory->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                             @endif
@@ -161,6 +162,7 @@
                                onclick="secureCancelForm('{{url('accounting/point/cut-off/inventory/cancel')}}', {{$cut_off_inventory->formulir->id}},
                                'delete.point.accounting.cut.off.inventory')"><i class="fa fa-times"></i> cancel</a>
                            @endif
+                        @endif
                         </div>
                     </div>
                 </fieldset>

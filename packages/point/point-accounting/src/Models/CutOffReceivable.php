@@ -60,4 +60,15 @@ class CutOffReceivable extends Model
     {
         return 'point-accounting::emails.accounting.point.approval.cut-off-receivable';
     }
+
+    public static function showUrl($id)
+    {
+        $class = self::find($id);
+
+        if ($class->formulir->form_number) {
+            return '/accounting/point/cut-off/receivable/' . $id;
+        }
+
+        return '/accounting/point/cut-off/receivable/' . $id . '/archived';
+    }
 }

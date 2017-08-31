@@ -60,4 +60,15 @@ class CutOffInventory extends Model
     {
         return 'point-accounting::emails.accounting.point.approval.cut-off-inventory';
     }
+
+    public static function showUrl($id)
+    {
+        $class = self::find($id);
+
+        if ($class->formulir->form_number) {
+            return '/accounting/point/cut-off/inventory/' . $id;
+        }
+
+        return '/accounting/point/cut-off/inventory/' . $id . '/archived';
+    }
 }
