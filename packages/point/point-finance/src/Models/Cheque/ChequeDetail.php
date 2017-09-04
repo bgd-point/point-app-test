@@ -41,9 +41,17 @@ class ChequeDetail extends Model
 
     public static function searchList($status, $flow)
     {
-        $list_check = ChequeDetail::joinCheque()->joinFormulir()->whereNull('formulir.archived')->whereIn('point_finance_cheque_detail.status', [-1, 0, 1, 2])->select('point_finance_cheque_detail.*');
+        $list_check = ChequeDetail::joinCheque()->joinFormulir()->whereNull('formulir.archived')->select('point_finance_cheque_detail.*');
+        if ($status == null) {
+            $list_check = $list_check->where('point_finance_cheque_detail.status', 0);
+        }
+
         if ($status != 'all' && $status != null) {
             $list_check = $list_check->where('point_finance_cheque_detail.status', $status);
+        }
+
+        if ($status == 'all') {
+            $list_check = $list_check->whereIn('point_finance_cheque_detail.status', [-1, 0, 1, 2]);
         }
 
         if ($flow != null) {

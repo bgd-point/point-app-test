@@ -73,6 +73,7 @@ class PaymentHelper
             $cheque_detail = new ChequeDetail;
             $cheque_detail->point_finance_cheque_id = $cheque->id;
             $cheque_detail->bank = app('request')->input('bank')[$i];
+            $cheque_detail->form_date = date_format_db(app('request')->input('form_date_cheque')[$i]);
             $cheque_detail->due_date = date_format_db(app('request')->input('due_date_cheque')[$i]);
             $cheque_detail->number = app('request')->input('number_cheque')[$i];
             $cheque_detail->notes = app('request')->input('notes_cheque')[$i];
@@ -124,6 +125,7 @@ class PaymentHelper
             $cheque_detail = new ChequeDetail;
             $cheque_detail->point_finance_cheque_id = $cheque->id;
             $cheque_detail->bank = app('request')->input('bank')[$i];
+            $cheque_detail->form_date = date_format_db(app('request')->input('form_date_cheque')[$i]);
             $cheque_detail->due_date = date_format_db(app('request')->input('due_date_cheque')[$i]);
             $cheque_detail->number = app('request')->input('number_cheque')[$i];
             $cheque_detail->notes = app('request')->input('notes_cheque')[$i];

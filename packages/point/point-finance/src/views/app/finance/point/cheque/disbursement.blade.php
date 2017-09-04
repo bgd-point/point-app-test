@@ -16,7 +16,7 @@
                     {!! csrf_field() !!}
                     <input type="hidden" name="id" value="{{\Input::get('id')}}">
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Liquid Date *</label>
+                        <label class="col-md-3 control-label">Disbursement Date *</label>
                         <div class="col-md-3">
                             <input type="text" name="disbursement_at" class="form-control date input-datepicker"
                                    data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}"

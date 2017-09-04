@@ -51,8 +51,8 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Payment Type</label>
                         <div class="col-md-6">
-                            <select id="payment_type" name="payment_type" class="selectize" style="width: 100%;"
-                                    data-placeholder="Please choose">
+                            <select id="payment_type" name="payment_type" class="selectize" style="width: 100%;" data-placeholder="Please choose">
+                                <option value="all">All</option>
                                 <option value="cash">Cash</option>
                                 <option value="bank">Bank</option>
                                 <option value="cheque">Cheque</option>

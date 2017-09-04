@@ -102,7 +102,7 @@ class ChequeController extends Controller
 
         $view->list_cheque_detail = ChequeDetail::whereIn('id', $id)->get();
         $coa_category = [1, 2];
-        if (\Input::get('id') == 'out') {
+        if (\Input::get('flow') == 'out') {
             $coa_category = [1];
         }
 
@@ -216,6 +216,7 @@ class ChequeController extends Controller
             $cheque_detail = new ChequeDetail;
             $cheque_detail->point_finance_cheque_id = app('request')->input('reference_id');
             $cheque_detail->bank = app('request')->input('bank')[$i];
+            $cheque_detail->form_date = date_format_db(app('request')->input('form_date_cheque')[$i]);
             $cheque_detail->due_date = date_format_db(app('request')->input('due_date_cheque')[$i]);
             $cheque_detail->number = app('request')->input('number_cheque')[$i];
             $cheque_detail->notes = app('request')->input('notes_cheque')[$i];

@@ -20,6 +20,7 @@ class CreatePointFinanceChequeDetailTable extends Migration
                 ->references('id')->on('point_finance_cheque')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+            $table->timestamp('form_date')->useCurrent();
             $table->timestamp('due_date')->useCurrent();
             $table->timestamp('disbursement_at')->nullable();
             $table->timestamp('rejected_at')->nullable();
