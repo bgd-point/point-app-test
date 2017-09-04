@@ -92,7 +92,7 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::get('/invoice/create-step-2/{person_supplier_id}', 'InvoiceController@createStep2');
         Route::get('/invoice/create-step-3', 'InvoiceController@createStep3');
         Route::post('/invoice/send-email', 'InvoiceController@sendEmail');
-        Route::post('/invoice/{id}/store', 'InvoiceController@storeFb');
+        Route::get('/invoice/{id}/export', 'InvoiceController@exportPDF');
         Route::resource('/invoice', 'InvoiceController');
     });
 
