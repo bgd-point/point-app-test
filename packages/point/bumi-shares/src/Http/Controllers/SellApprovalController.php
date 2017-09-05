@@ -75,7 +75,7 @@ class SellApprovalController extends Controller
         access_is_allowed('approval.bumi.shares.sell');
 
         $view = view('bumi-shares::app.facility.bumi-shares.sell.request-approval');
-        $view->list_shares_sell = Sell::joinFormulir()->notArchived()->approvalPending()->notCanceled()->paginate(100);
+        $view->list_shares_sell = Sell::joinFormulir()->notArchived()->approvalPending()->notCanceled()->selectOriginal()->paginate(100);
         return $view;
     }
 
