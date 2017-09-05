@@ -52,23 +52,21 @@
                         </tr>
                         @foreach($list_cut_off_payable as $cut_off_payable)
                         <?php
-                        $cut_off_payable_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($cut_off_payable), $cut_off_payable->id, $cut_off_payable->amount);
-                        if (! $cut_off_payable_remaining > 0) {
-                            continue;
-                        }
+                        $cut_off_payable_detail = $cut_off_payable->reference_type::find($cut_off_payable->reference_id);
+                        $reference_payable = Point\PointAccounting\Models\CutOffPayable::find($cut_off_payable_detail->cut_off_payable_id);
                         ?>
-                        <tr id="list-{{$cut_off_payable->formulir_id}}">
+                        <tr>
                             <td class="text-center">
-                                <a href="{{ url('purchasing/point/payment-order/create-step-2/'.$cut_off_payable->subledger_id) }}"
+                                <a href="{{ url('purchasing/point/payment-order/create-step-2/'.$cut_off_payable->person_id) }}"
                                    class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-external-link"></i>
                                     Payment Collection</a>
                             </td>
                             <td>
-                                {!! get_url_person($cut_off_payable->person->id) !!}
+                                {!! get_url_person($cut_off_payable->person_id) !!}
                             </td>
                             <td>
-                                {{date_format_view($cut_off_payable->cutoffPayable->formulir->form_date)}}
-                                <a href="{{url('accounting/point/cut-off/payable/'.$cut_off_payable->cutoffPayable->id)}}"> {{$cut_off_payable->cutoffPayable->formulir->form_number}}</a>
+                                {{date_format_view($reference_payable->formulir->form_date)}}
+                                <a href="{{url('accounting/point/cut-off/payable/'.$reference_payable->id)}}"> {{$reference_payable->formulir->form_number}}</a>
                             </td>
                         </tr>
                         @endforeach
