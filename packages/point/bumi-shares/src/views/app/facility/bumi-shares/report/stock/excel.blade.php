@@ -89,10 +89,10 @@
     </tbody>
     <tfoot>
     <tr>
-        <td colspan="5" class="text-right" style="font-size: 20px;font-weight: bold;">Total Quantity</td>
-        <td class="text-right" style="font-size: 20px;font-weight: bold;">{{ number_format_quantity($total_quantity) }}</td>
-        <td colspan="3" class="text-right" style="font-size: 20px;font-weight: bold;">Total + Fee</td>
-        <td class="text-right" style="font-size: 20px;font-weight: bold;">{{ number_format_quantity($total_value) }}</td>
+        <td colspan="5" class="text-right" style="font-size: 10;font-weight: bold;">Total Quantity</td>
+        <td class="text-right" style="font-size: 10;font-weight: bold;">{{ number_format_quantity($total_quantity) }}</td>
+        <td colspan="3" class="text-right" style="font-size: 10;font-weight: bold;">Total + Fee</td>
+        <td class="text-right" style="font-size: 10;font-weight: bold;">{{ number_format_quantity($total_value) }}</td>
     </tr>
     <tr>
         <td colspan="9" class="text-right">Total Estimation of Sales</td>

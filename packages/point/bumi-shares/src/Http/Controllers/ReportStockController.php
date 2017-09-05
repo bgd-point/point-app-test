@@ -81,17 +81,19 @@ class ReportStockController extends Controller
                 $estimation_of_selling_value = 0;
                 $estimation_of_profit_and_loss = 0;
 
-                $sheet->loadView('bumi-shares::app.facility.bumi-shares.report.stock.excel')
-                    ->with('list_owner_group', $list_owner_group)
-                    ->with('list_stock_shares', $list_shares)
-                    ->with('group', $group)
-                    ->with('shares', $shares)
-                    ->with('list_stock_shares', $list_stock_shares)
-                    ->with('total_quantity', $total_quantity)
-                    ->with('total_value', $total_value)
-                    ->with('total_selling', $total_selling)
-                    ->with('estimation_of_selling_value', $estimation_of_selling_value)
-                    ->with('estimation_of_profit_and_loss', $estimation_of_profit_and_loss);
+                $data = array(
+                    'list_owner_group' => $list_owner_group,
+                    'list_stock_shares' => $list_shares,
+                    'group' => $group,
+                    'shares' => $shares,
+                    'list_stock_shares' => $list_stock_shares,
+                    'total_quantity' => $total_quantity,
+                    'total_value' => $total_value,
+                    'total_selling' => $total_selling,
+                    'estimation_of_selling_value' => $estimation_of_selling_value,
+                    'estimation_of_profit_and_loss' => $estimation_of_profit_and_loss,
+                 );
+                $sheet->loadView('bumi-shares::app.facility.bumi-shares.report.stock.excel', $data);
                 $sheet->setColumnFormat(array(
                     'A:O' => '0.00'
                 ));
@@ -151,17 +153,17 @@ class ReportStockController extends Controller
         $price = app('request')->input('price');
 
         for ($i=0;$i<count(app('request')->input('price'));$i++) {
-            $old_perkiraan = SellingPrice::where('shares_id', '=', $shares_id[$i])->first();
+            $old_estimation = SellingPrice::where('shares_id', '=', $shares_id[$i])->first();
 
-            if ($old_perkiraan) {
-                $old_perkiraan->price = \NumberHelper::formatDB($price[$i]);
-                $old_perkiraan->save();
+            if ($old_estimation) {
+                $old_estimation->price = \NumberHelper::formatDB($price[$i]);
+                $old_estimation->save();
             } else {
-                $perkiraan = new SellingPrice;
-                $perkiraan->price = \NumberHelper::formatDB($price[$i]);
-                $perkiraan->shares_id = $shares_id[$i];
-                $perkiraan->updated_by = \Auth::user()->id;
-                $perkiraan->save();
+                $estimation = new SellingPrice;
+                $estimation->price = \NumberHelper::formatDB($price[$i]);
+                $estimation->shares_id = $shares_id[$i];
+                $estimation->updated_by = \Auth::user()->id;
+                $estimation->save();
             }
         }
 
@@ -175,11 +177,7 @@ class ReportStockController extends Controller
     {
         $file_name = 'Shares Mutation '.auth()->user()->id . '' . date('Y-m-d_His');
         \Excel::create($file_name, function($excel) use ($formulir_id, $shares_id) {
-
-            $excel->sheet('Trial Balance', function($sheet) use ($formulir_id, $shares_id) {
-                $list_stock_fifo = 
-                $buy = Buy::where('formulir_id', $formulir_id)->first();
-                $shares = Shares::find($shares_id);
+            $excel->sheet('Shares Stock Report', function($sheet) use ($formulir_id, $shares_id) {
                 $data = array(
                     'list_stock_fifo' => StockFifo::joinFormulirSell()->where('shares_in_id', $formulir_id)->where('quantity', '>', 0)->get(),
                     'buy' => Buy::where('formulir_id', $formulir_id)->first(),
