@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
         Commands\Rejournal::class,
         Commands\MethodChecker::class,
         Commands\RemoveSpace::class,
+        Commands\Recalculate::class,
     ];
 
     /**

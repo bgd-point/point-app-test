@@ -40,6 +40,10 @@ class RejournalCashBankSeeder extends Seeder
                 $total += $bank_detail->amount;
             }
 
+            if ($bank->payment_flow == 'out') {
+                $total = $total * -1;
+            }
+
             $bank->total = $total;
             $bank->save();
 
@@ -58,6 +62,10 @@ class RejournalCashBankSeeder extends Seeder
             $total = 0;
             foreach ($cash->detail as $cash_detail) {
                 $total += $cash_detail->amount;
+            }
+
+            if ($cash->payment_flow == 'out') {
+                $total = $total * -1;
             }
 
             $cash->total = $total;

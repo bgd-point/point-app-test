@@ -2,12 +2,14 @@
 
 namespace Point\BumiShares\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
-use Point\BumiShares\Models\Stock;
-use Point\BumiShares\Models\OwnerGroup;
-use Point\BumiShares\Models\Shares;
-use Point\BumiShares\Models\SellingPrice;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Point\BumiShares\Models\Buy;
+use Point\BumiShares\Models\OwnerGroup;
+use Point\BumiShares\Models\SellingPrice;
+use Point\BumiShares\Models\Shares;
+use Point\BumiShares\Models\Stock;
+use Point\BumiShares\Models\StockFifo;
 
 class ReportStockController extends Controller
 {
@@ -38,6 +40,15 @@ class ReportStockController extends Controller
         $view->total_selling = 0;
         $view->estimation_of_selling_value = 0;
         $view->estimation_of_profit_and_loss = 0;
+        return $view;
+    }
+
+    public function detail($formulir_id, $shares_id)
+    {
+        $view = view('bumi-shares::app.facility.bumi-shares.report.stock.detail');
+        $view->list_stock_fifo = StockFifo::joinFormulirSell()->where('shares_in_id', $formulir_id)->where('quantity', '>', 0)->get();
+        $view->buy = Buy::where('formulir_id', $formulir_id)->first();
+        $view->shares = Shares::find($shares_id);
         return $view;
     }
 
@@ -158,5 +169,26 @@ class ReportStockController extends Controller
 
         gritter_success('update selling price success');
         return redirect('facility/bumi-shares/report/stock');
+    }
+
+    public function detailExport($formulir_id, $shares_id)
+    {
+        $file_name = 'Shares Mutation '.auth()->user()->id . '' . date('Y-m-d_His');
+        \Excel::create($file_name, function($excel) use ($formulir_id, $shares_id) {
+
+            $excel->sheet('Trial Balance', function($sheet) use ($formulir_id, $shares_id) {
+                $list_stock_fifo = 
+                $buy = Buy::where('formulir_id', $formulir_id)->first();
+                $shares = Shares::find($shares_id);
+                $data = array(
+                    'list_stock_fifo' => StockFifo::joinFormulirSell()->where('shares_in_id', $formulir_id)->where('quantity', '>', 0)->get(),
+                    'buy' => Buy::where('formulir_id', $formulir_id)->first(),
+                    'shares' => Shares::find($shares_id)
+                 );
+                
+                $sheet->loadView('bumi-shares::app.facility.bumi-shares.report.stock._data-detail', $data);
+            });
+
+        })->export('xls');
     }
 }

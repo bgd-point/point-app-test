@@ -24,6 +24,7 @@
 @stop
 
 @section('content')
+    @if($invoice->items->count())
     <thead>
     <tr>
         <th width="10px">No</th>
@@ -70,6 +71,7 @@
         <td class="text-right">{{ number_format_quantity($invoice->total) }}</td>
     </tr>
     </tfoot>
+    @endif
 @stop
 
 @section('end-notes')

@@ -213,6 +213,8 @@
                                         <input type="hidden" readonly="" name="invoice_id" value="{{$invoice->id}}">
                                         <input type="submit" class="btn btn-primary" value="Send Email Supplier">
                                     </form>
+                                    <a class="btn btn-effect-ripple btn-info"
+                                    href="{{url('purchasing/point/invoice/'.$invoice->id.'/export')}}">Export PDF</a>
                                 @endif
                             </div>
                         </div>

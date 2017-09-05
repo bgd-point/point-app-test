@@ -8,6 +8,7 @@ Route::group(['prefix' => 'sales/point/indirect', 'namespace' => 'Point\PointSal
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/invoice/vesa-create', 'InvoiceVesaController@create');
         Route::get('/invoice/vesa-rejected', 'InvoiceVesaController@create');
+        Route::get('/invoice/{id}/export', 'InvoiceController@exportPDF');
         // AJAX GETTING ITEM UNIT
         Route::get('/invoice/item/unit', 'InvoiceController@_unit');
 

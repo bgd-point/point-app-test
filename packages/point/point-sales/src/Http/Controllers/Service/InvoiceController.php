@@ -147,4 +147,21 @@ class InvoiceController extends Controller
         gritter_success('Success send email invoice', 'false');
         return redirect()->back();
     }
+
+    public function exportPDF($id)
+    {
+        $invoice = Invoice::find($id);
+        $warehouse = '';
+        $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
+        if ($warehouse_id > 0) {
+            $warehouse = Warehouse::find($warehouse_id);
+        }
+        $data = array(
+            'invoice' => $invoice, 
+            'warehouse' => $warehouse
+        );
+
+        $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.service-invoice-pdf', $data);
+        return $pdf->download($invoice->formulir->form_number.'.pdf');
+    }
 }
