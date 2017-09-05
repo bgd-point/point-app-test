@@ -11,6 +11,7 @@ Route::group(['prefix' => 'purchasing/point/service', 'namespace' => 'Point\Poin
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/invoice/vesa-create', 'ServiceInvoiceVesaController@create');
         Route::get('/invoice/vesa-rejected', 'ServiceInvoiceVesaController@create');
+        Route::get('/invoice/{id}/export', 'InvoiceController@exportPDF');
         Route::get('/invoice/{id}/archived', 'InvoiceController@archived');
         Route::post('/invoice/send-email', 'InvoiceController@sendEmail');
         Route::resource('/invoice', 'InvoiceController');

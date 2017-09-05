@@ -91,7 +91,7 @@
                                             @endif
                                         </td>
                                         <td><strong id="coa-name{{$i}}">{{$coa->name}}</strong></td>
-                                        <td><input type="text" class="form-control format-quantity text-right" readonly value="{{$amount}}"></td>
+                                        <td><input type="text" class="form-control format-accounting text-right" readonly value="{{$amount}}"></td>
                                     </tr>
                                     <?php $i++;?>
                                     @endforeach
@@ -99,7 +99,7 @@
                                 <tfoot>
                                     <tr>
                                         <td colspan="2"></td>
-                                        <td align="right"><input type="text" value="{{$total_amount}}" readonly class="form-control format-quantity text-right" /></td>
+                                        <td align="right"><input type="text" value="{{$total_amount}}" readonly class="form-control format-accounting text-right" /></td>
                                     </tr>
                                 </tfoot>
                             </table>

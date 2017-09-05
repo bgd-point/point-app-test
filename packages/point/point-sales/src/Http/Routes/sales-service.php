@@ -5,11 +5,14 @@ Route::group(['prefix' => 'sales/point/service', 'namespace' => 'Point\PointSale
         return view('point-sales::app.sales.point.service.menu');
     });
 
+    Route::get('/report/export', 'ServiceReportController@export');
+    Route::get('/report/{service_id}', 'ServiceReportController@detail');
     Route::get('/report', 'ServiceReportController@index');
 
     // INVOICE
     Route::group(['middleware' => 'auth'], function () {
         Route::post('/invoice/send-email', 'InvoiceController@sendEmail');
+        Route::get('/invoice/{id}/export', 'InvoiceController@exportPDF');
         Route::get('/invoice/vesa-create', 'ServiceInvoiceVesaController@create');
         Route::get('/invoice/vesa-rejected', 'ServiceInvoiceVesaController@create');
         Route::get('/invoice/{id}/archived', 'InvoiceController@archived');

@@ -67,11 +67,11 @@ class ReportController extends Controller
     public static function dataReport($type, $date_from, $date_to, $coa_id, $subledger)
     {
         // payment type cash
-        $report_type = Cash::joinFormulir()->notArchived()->close()->selectOriginal()->orderByStandard();
+        $report_type = Cash::joinFormulir()->where('coa_id', $coa_id)->notArchived()->close()->selectOriginal()->orderByStandard();
 
         // payment type bank
         if ($type == 'bank') {
-            $report_type = Bank::joinFormulir()->notArchived()->close()->selectOriginal()->orderByStandard();
+            $report_type = Bank::joinFormulir()->where('coa_id', $coa_id)->notArchived()->close()->selectOriginal()->orderByStandard();
         }
 
         // getting data from Journal
