@@ -10,14 +10,14 @@
         </tr>
     </thead>
     <tbody>
-        <?php $balance = \JournalHelper::coaOpeningBalance($coa_id, $date_from); ?>
+        <?php $balance = Point\Framework\Helpers\AccountingHelper::coaOpeningBalance($coa_id, $date_from); ?>
         <tr>
             <td>{{ date_format_view($date_from) }}</td>
             <td></td>
             <td>OPENING BALANCE</td>
             <td></td>
             <td></td>
-            <td>{{ number_format_accounting(\JournalHelper::coaOpeningBalance($coa_id, $date_from)) }}</td>
+            <td>{{ number_format_accounting($balance)}}</td>
         </tr>
 
         @foreach($journals as $journal)
