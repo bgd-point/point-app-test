@@ -65,6 +65,7 @@ class SharesStockHelper
             ->where('owner_group_id', '=', $shares_sell->owner_group_id)
             ->where('owner_id', '=', $shares_sell->owner_id)
             ->where('broker_id', '=', $shares_sell->broker_id)
+            ->where('date', '<', $shares_sell->formulir->form_date)
             ->where('remaining_quantity', '>', 0)
             ->orderBy('date', 'asc')
             ->orderBy('id', 'asc')
@@ -95,6 +96,7 @@ class SharesStockHelper
 
         // Search Ex Sales Value
         $list_stock_ex_sales = Stock::where('shares_id', '=', $shares_sell->shares_id)
+            ->where('date', '<', $shares_sell->formulir->form_date)
             ->where('remaining_quantity', '>', 0)
             ->orderBy('date', 'asc')
             ->orderBy('id', 'asc')
