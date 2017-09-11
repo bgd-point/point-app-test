@@ -78,6 +78,15 @@
                 </div>
             </a>
         </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{{url('facility/bumi-shares/report/sell')}}" class="widget widget-button">
+                <div class="widget-content text-right clearfix">
+                    <i class="fa fa-4x fa-file-text-o push-bit pull-left"></i> 
+                    <h4 class="widget-heading"><strong>Sell</strong></h4>
+                    <span class="text-muted"></span>
+                </div>
+            </a>
+        </div>
         
     </div>
 </div>
