@@ -65,12 +65,10 @@ class SharesStockHelper
             ->where('owner_group_id', '=', $shares_sell->owner_group_id)
             ->where('owner_id', '=', $shares_sell->owner_id)
             ->where('broker_id', '=', $shares_sell->broker_id)
-            ->where('date', '<', $shares_sell->formulir->form_date)
             ->where('remaining_quantity', '>', 0)
             ->orderBy('date', 'asc')
             ->orderBy('id', 'asc')
             ->get();
-
         $selling_quantity = $shares_sell->quantity;
 
         foreach ($list_stock as $stock) {
@@ -90,12 +88,13 @@ class SharesStockHelper
                 $stock_fifo->average_price = $stock->average_price;
                 $stock_fifo->price = $shares_sell->price;
                 $stock_fifo->save();
+
+                $stock->save();
             }
         }
 
         // Search Ex Sales Value
         $list_stock_ex_sales = Stock::where('shares_id', '=', $shares_sell->shares_id)
-            ->where('date', '<', $shares_sell->formulir->form_date)
             ->where('remaining_quantity', '>', 0)
             ->orderBy('date', 'asc')
             ->orderBy('id', 'asc')
@@ -110,7 +109,7 @@ class SharesStockHelper
         }
 
         $ex_sale = $subtotal / $total_qty;
-        foreach ($list_stock as $stock) {
+        foreach ($list_stock_ex_sales as $stock) {
             $stock->average_price = $ex_sale;
             $stock->save();
         }
