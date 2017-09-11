@@ -6,7 +6,6 @@
             <i class="fa fa-arrow-circle-left push-bit"></i> Back
         </a>
         <h2 class="sub-header">General Ledger</h2>
-
         <div class="panel panel-default">
             <div class="panel-body">
                 <form action="{{ url('#') }}" method="get" class="form-horizontal">
@@ -17,13 +16,12 @@
                                 <span class="input-group-addon"><i class="fa fa-chevron-right"></i></span>
                                 <input type="text" name="date_to" id="date-to" class="form-control date input-datepicker" placeholder="To" value="{{\Input::get('date_to') ? \Input::get('date_to') : date(date_format_get(), strtotime($date_to))}}">
                             </div>
-
-                            <select name="coa_filter" id="coa-filter" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
-                                <option></option>
+                            <select id="example-chosen-multiple" name="coa_filter[]" class="select-chosen" data-placeholder="Choose one.." style="width: 250px;" multiple>
                                 @foreach($list_coa as $coa)
-                                    <option value="{{$coa->id}}" {{ $coa->id != $coa_id ? : 'selected' }}>{{$coa->account}}</option>
+                                    <option value="{{$coa->id}}" {{ in_array($coa->id, $coa_id) ? 'selected' : '' }}>{{$coa->account}}</option>
                                 @endforeach
                             </select>
+
                         </div>
                         <div class="col-sm-6">
                             <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
@@ -44,12 +42,13 @@
 @section('scripts')
 <script type="text/javascript">
     function exportExcel() {
-        var coa_filter = $("#coa-filter option:selected").val();
+        <?php 
+        $coa = urlencode(serialize(\Input::get('coa_filter')));
+        ?>
         var date_from = $("#date-from").val();
         var date_to = $("#date-to").val();
-        var url = '{{url()}}/accounting/general-ledger/export/?date_from='+date_from+'&date_to='+date_to+'&coa_filter='+coa_filter;
+        var url = '{{url()}}/accounting/general-ledger/export/?date_from='+date_from+'&date_to='+date_to+'&coa_filter={{$coa}}';
         location.href = url;
     }
-
 </script>
 @stop
