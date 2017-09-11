@@ -307,7 +307,7 @@
         var label = $("#unit_name_default").val();
         item_table.row.add( [
             '<a href="javascript:void(0)" class="remove-row btn btn-danger" data-item="'+result.id+'"><i class="fa fa-trash"></i></a>',
-            '<input type="text" value="'+result.item_name+'" readonly name="item_name[]" id="item_name-'+counter+'" class="form-control input-item" placeholder="Search Item..." autofocus />'
+            '<input type="text" value="'+result.item_name+'" readonly name="item_name[]" id="item_name-'+counter+'" class="form-control input-item" placeholder="Search Item..."/>'
             +'<input type="hidden" id="item-id-'+counter+'" name="item_id[]" value="'+result.id+'"/>',
             '<div class="input-group">'
                 +'<input name="quantity[]"  value="'+result.quantity+'" id="item-quantity-'+counter+'" class="form-control format-quantity calculate text-right" value="1" type="text" onchange="updateTemp('+counter+')" autocomplete="off">'
