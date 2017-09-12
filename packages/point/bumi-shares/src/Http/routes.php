@@ -60,6 +60,7 @@ Route::group(['prefix' => 'facility/bumi-shares', 'namespace' => 'Point\BumiShar
     // REPORT ROUTES
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/report/buy', 'ReportBuyControllerController@index');
+        Route::get('/report/sell/export', 'ReportSellController@export');
         Route::get('/report/sell', 'ReportSellController@index');
         Route::get('/report/stock/estimate-of-selling-price', 'ReportStockController@estimateOfSellingPrice');
         Route::post('/report/stock/estimate-of-selling-price', 'ReportStockController@updateEstimateOfSellingPrice');

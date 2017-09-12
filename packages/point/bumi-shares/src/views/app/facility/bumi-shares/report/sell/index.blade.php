@@ -67,6 +67,22 @@
     <script>
         function generateExcel(){
             $('#export').html('<i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>');
+            $.ajax({
+                url:'{{url("facility/bumi-shares/report/sell/export")}}',
+                success: function (result) {
+                    $('#export').html('Export to excel');
+                    if (result.status == 'success') {
+                        notification('success, please check your email in few minutes');
+                    }
+
+                    console.log(result);
+                },
+                error: function (e) {
+                    console.log(e);
+                    $('#export').html('Export to excel');
+                    notification('failed, please try again');
+                }
+            })
         }
     </script>
 @stop
