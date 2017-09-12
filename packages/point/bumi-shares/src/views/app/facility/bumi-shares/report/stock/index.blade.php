@@ -13,7 +13,7 @@
                 <form action="{{ url('facility/bumi-shares/report/stock') }}" method="get" class="form-horizontal no-print">
                     <div class="form-group">
                         <div class="col-md-3">
-                            <select name="group_id" class="selectize" style="width: 100%;" data-placeholder="Filter by Group ..">
+                            <select name="group_id" name="group-id" class="selectize" style="width: 100%;" data-placeholder="Filter by Group ..">
                                 <option value="0">All</option>
                                 @foreach($list_owner_group as $owner_group_select)
                                     <option @if(app('request')->input('group_id') == $owner_group_select->id) selected @endif value="{{$owner_group_select->id}}">{{$owner_group_select->name}}</option>
@@ -21,7 +21,7 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <select name="shares_id" class="selectize" style="width: 100%;" data-placeholder="Filter by Shares ..">
+                            <select name="shares_id" id="shares-id" class="selectize" style="width: 100%;" data-placeholder="Filter by Shares ..">
                                 <option value="0">All</option>
                                 @foreach($list_shares as $shares_select)
                                     <option @if(app('request')->input('shares_id') == $shares_select->id) selected @endif value="{{$shares_select->id}}">{{$shares_select->name}}</option>
@@ -33,7 +33,7 @@
                         </div>
                         <div class="col-sm-5 text-right">
                             @if(auth()->user()->may('export.bumi.shares.report'))
-                            <a href="{{ url('facility/bumi-shares/report/stock/excel?group_id=') }}{{app('request')->input('group_id')}}" class="btn btn-info">Excel</a>
+                            <a href="javascript:void(0)" id="export" onclick="generateExcel()" class="btn btn-info">Export to excel</a>
                             <a href="javascript:void(0)" onclick="pagePrint('stock/print?group_id={{app('request')->input('group_id')}}&shares_id={{app('request')->input('shares_id')}}');" class="btn btn-info">Print</a>
                             @endif
                             <a href="{{ url('facility/bumi-shares/report/stock/estimate-of-selling-price') }}" class="btn btn-info">Estimate of Selling Price</a>
@@ -162,6 +162,31 @@
             printWindow.addEventListener('load', function(){
                 printWindow.print();
             }, true);
+        }
+
+        function generateExcel(){
+            var shares_id = $('#shares-id option:selected').val();
+            var group_id = $('#group-id option:selected').val();
+            $('#export').html('<i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>');
+            $('#export').addClass('disabled');
+            $.ajax({
+                url:'{{url("facility/bumi-shares/report/stock/export")}}?shares_id='+shares_id+'&group_id='+group_id,
+                success: function (result) {
+                    $('#export').html('Export to excel');
+                    $('#export').removeClass('disabled');
+                    if (result.status == 'success') {
+                        notification('success, please check your email in few minutes');
+                    }
+
+                    console.log(result);
+                },
+                error: function (e) {
+                    console.log(e);
+                    $('#export').html('Export to excel');
+                    $('#export').removeClass('disabled');
+                    notification('failed, please try again');
+                }
+            })
         }
     </script>
 @stop

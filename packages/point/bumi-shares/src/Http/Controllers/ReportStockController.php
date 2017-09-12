@@ -3,13 +3,17 @@
 namespace Point\BumiShares\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Point\BumiShares\Helpers\SharesHelper;
+use Point\BumiShares\Models\Broker;
 use Point\BumiShares\Models\Buy;
 use Point\BumiShares\Models\OwnerGroup;
 use Point\BumiShares\Models\SellingPrice;
 use Point\BumiShares\Models\Shares;
 use Point\BumiShares\Models\Stock;
 use Point\BumiShares\Models\StockFifo;
+use Point\Core\Helpers\QueueHelper;
 
 class ReportStockController extends Controller
 {
@@ -52,56 +56,108 @@ class ReportStockController extends Controller
         return $view;
     }
 
-    public function excel()
+    public function export(Request $request)
     {
-        access_is_allowed('export.bumi.shares.report');
+        $cRequest = $request;
+        $storage = storage_path('app/'.$request->project->url.'/shares-stock-report/');
+        $request = $request->input();
+        $fileName = 'shares stock report '.date('YmdHis');
+        \Queue::push(function ($job) use ($fileName, $storage, $request) {
+            QueueHelper::reconnectAppDatabase($request['database_name']);
+            \Excel::create($fileName, function ($excel) use ($storage, $request) {
+                # Sheet Data
+                $excel->sheet('Data', function ($sheet) use ($request) {
+                    // MERGER COLUMN
+                    $sheet->mergeCells('A1:N1', 'center');
+                    $sheet->cell('A1', function ($cell) {
+                        // Set font
+                        $cell->setFont(array(
+                            'family'     => 'Times New Roman',
+                            'size'       => '14',
+                            'bold'       =>  true
+                        ));
 
-        \Excel::create('Shares Stock Report '.date('d F Y'), function ($excel) {
-            $excel->sheet('Stock', function ($sheet) {
-                $list_owner_group = OwnerGroup::active()->get();
-                $list_shares = Shares::active()->get();
 
-                $group = app('request')->input('group_id') ? OwnerGroup::find(app('request')->input('group_id')) : '';
-                $shares = app('request')->input('shares_id') ? Shares::find(app('request')->input('shares_id')) : '';
-                $list_stock_shares = Stock::where('remaining_quantity', '>', 0);
+                        $cell->setValue(strtoupper('SHARES STOCK REPORT'));
+                    });
 
-                if (app('request')->input('group_id')) {
-                    $list_stock_shares = $list_stock_shares->where('owner_group_id', '=', app('request')->input('group_id'));
-                }
+                    $sheet->cell('A2:N2', function ($cell) {
+                        // Set font
+                        $cell->setFont(array(
+                            'family'     => 'Times New Roman',
+                            'size'       => '12',
+                            'bold'       =>  true
+                        ));
+                    });
 
-                if (app('request')->input('shares_id')) {
-                    $list_stock_shares = $list_stock_shares->where('shares_id', '=', app('request')->input('shares_id'));
-                }
+                    $data = SharesHelper::searchReportStock($request['shares_id'], $request['group_id'])->get()->toArray();
 
-                $list_stock_shares = $list_stock_shares->orderBy('shares_id');
+                    $content = array(array(
+                        'NO', 'SHARES NAME', 'PURCHASE DATE','PRICE', 'EX SALE',
+                        'QUANTITY', 'TOTAL + FEE', 'TOTAL PRICE', 'TOTAL QUANTITY', 'AVERAGE PRICE',
+                        'PRICE OF SALE', 'TOTAL + FEE', 'PROFIT/LOST', 'BROKER'));
 
-                $total_quantity = 0;
-                $total_value = 0;
-                $total_selling = 0;
-                $estimation_of_selling_value = 0;
-                $estimation_of_profit_and_loss = 0;
+                    $total_data = count($data);
+                    $no = 1;
+                    $total_sell_fee = 0;
+                    for($i=0; $i<$total_data; $i++) {
+                        $first = Stock::where('shares_id', $data[$i]['shares_id'])
+                            ->selectRaw('sum(quantity) as total_quantity, sum(price) as total_price')
+                            ->first();
+                        $fifo = StockFifo::where('shares_in_id', $data[$i]['formulir_id'])->first();
+                        $broker = Broker::find($data[$i]['broker_id']);
+                        $shares = Shares::find($data[$i]['shares_id']);
+                        if ($fifo) {
+                            $total_sell_fee = $first->total_quantity *  $fifo->price + $first->total_quantity *  $fifo->price * $data[$i]['fee'] /100;
+                        }
+                        array_push($content, [
+                            $no,
+                            $shares->name,
+                            date_format_view($data[$i]['date']),
+                            number_format_quantity($data[$i]['price']),
+                            number_format_quantity($data[$i]['average_price']),
+                            number_format_quantity($data[$i]['quantity']),
+                            number_format_quantity($data[$i]['quantity'] * $data[$i]['price'] + $data[$i]['quantity'] * $data[$i]['price'] * $data[$i]['fee'] / 100),
+                            number_format_quantity($first->total_price * $first->total_quantity),
+                            number_format_quantity($first->total_quantity),
+                            number_format_quantity($first->total_price * $first->total_quantity / $first->total_quantity),
+                            $fifo ? $fifo->price : 0,
+                            $fifo ? number_format_quantity($total_sell_fee) : 0,
+                            $fifo ? number_format_quantity($total_sell_fee - $first->total_price) : 0,
+                            $broker->name
+                        ]);
 
-                $data = array(
-                    'list_owner_group' => $list_owner_group,
-                    'list_stock_shares' => $list_shares,
-                    'group' => $group,
-                    'shares' => $shares,
-                    'list_stock_shares' => $list_stock_shares,
-                    'total_quantity' => $total_quantity,
-                    'total_value' => $total_value,
-                    'total_selling' => $total_selling,
-                    'estimation_of_selling_value' => $estimation_of_selling_value,
-                    'estimation_of_profit_and_loss' => $estimation_of_profit_and_loss,
-                 );
-                $sheet->loadView('bumi-shares::app.facility.bumi-shares.report.stock.excel', $data);
-                $sheet->setColumnFormat(array(
-                    'A:O' => '0.00'
-                ));
-                $sheet->protect('password');
+                        $no++;
+                    }
+                    
+                    $total_data = $total_data + 2;
+                    $sheet->fromArray($content, null, 'A2', false, false);
+                    $sheet->setBorder('A2:N'.$total_data, 'thin');
+                });
+            })->store('xls', $storage);
+
+            $job->delete();
+        });
+        
+        $data_email = [
+            'username' => auth()->user()->name,
+            'link' => url('download/'.$cRequest->project->url.'/shares-stock-report/'.$fileName.'.xls'),
+            'email' => auth()->user()->email
+        ];
+
+        \Queue::push(function ($job) use ($data_email, $request) {
+            QueueHelper::reconnectAppDatabase($request['database_name']);
+            \Mail::send('bumi-shares::emails.facility.bumi-shares.external.shares-stock-report', $data_email, function ($message) use ($data_email) {
+                $message->to($data_email['email'])->subject('SHARES STOCK REPORT ' . date('ymdHi'));
             });
-        })->export('xls');
+            $job->delete();
+        });
 
-        return redirect()->back();
+        $response = array(
+            'status' => 'success'
+        );
+
+        return response()->json($response);
     }
 
     public function printReport()

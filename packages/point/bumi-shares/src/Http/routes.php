@@ -65,7 +65,7 @@ Route::group(['prefix' => 'facility/bumi-shares', 'namespace' => 'Point\BumiShar
         Route::get('/report/stock/estimate-of-selling-price', 'ReportStockController@estimateOfSellingPrice');
         Route::post('/report/stock/estimate-of-selling-price', 'ReportStockController@updateEstimateOfSellingPrice');
         Route::get('/report/stock/print', 'ReportStockController@printReport');
-        Route::get('/report/stock/excel', 'ReportStockController@excel');
+        Route::get('/report/stock/export', 'ReportStockController@export');
         Route::get('/report/stock/detail/{id}/{shares_id}', 'ReportStockController@detail');
         Route::get('/report/stock/detail/export/{id}/{shares_id}', 'ReportStockController@detailExport');
         Route::get('/report/stock', 'ReportStockController@index');

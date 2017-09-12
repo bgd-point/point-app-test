@@ -2,12 +2,14 @@
 
 namespace Point\BumiShares\Helpers;
 
+use Point\BumiShares\Models\Stock;
 use Point\BumiShares\Models\StockFifo;
 use Point\Core\Exceptions\PointException;
 
 class SharesHelper {
 
-	public static function searchSellReport($date_from, $date_to, $shares_id) {
+	public static function searchSellReport($date_from, $date_to, $shares_id) 
+	{
 		$list_data = StockFifo::joinFormulirSell()->joinSell()
 			->where('bumi_shares_stock_fifo.quantity', '>', 0)
 			->where(function ($query) use ($shares_id) {
@@ -29,5 +31,22 @@ class SharesHelper {
 			->select('bumi_shares_stock_fifo.*');
 
 		return $list_data;
+	}
+
+
+	public static function searchReportStock($shares_id, $group_id) 
+	{
+		$list_data = Stock::where(function ($query) use ($shares_id) {
+			if ($shares_id) {
+				$query->where('shares_id', $shares_id);
+			}
+		})
+		->where(function ($query) use ($group_id) {
+			if ($group_id) {
+				$query->where('owner_group_id', $group_id);
+			}
+		});
+
+		return$list_data;
 	}
 }
