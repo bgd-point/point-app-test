@@ -57,10 +57,8 @@
                             <?php
                             $sell = Point\BumiShares\Models\Sell::where('formulir_id', $stock->shares_out_id)->first();
                             $buy = Point\BumiShares\Models\Buy::where('formulir_id', $stock->shares_in_id)->first();
-                            if (!$stock->quantity) {
-                                continue;
-                            }
-                            $total_plus_fee = $stock->price * $stock->quantity + ($stock->price * $stock->quantity * $sell->fee / 100);
+                            
+                            $total_plus_fee = $sell->price * $sell->quantity + ($sell->price * $sell->quantity * $sell->fee / 100);
                             ?>
                             <tr>
                                 <td>{{ $sell->shares->name}}</td>
@@ -71,7 +69,7 @@
                                 <td>{{ $sell->broker->name}}</td>
                                 <td>{{ date_format_view($sell->formulir->form_date) }}</td>
                                 <td class="text-right">{{ number_format_quantity($stock->quantity) }}</td>
-                                <td class="text-right">{{ number_format_quantity($stock->price) }}</td>
+                                <td class="text-right">{{ number_format_quantity($sell->price) }}</td>
                                 <td class="text-right">{{ number_format_quantity($total_plus_fee) }}</td>
                                 <td class="text-right">{{ number_format_quantity($total_plus_fee - $stock->quantity * $buy->price)}}</td>
                             </tr>

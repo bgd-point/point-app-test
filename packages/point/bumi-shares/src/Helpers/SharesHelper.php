@@ -9,6 +9,7 @@ class SharesHelper {
 
 	public static function searchSellReport($date_from, $date_to, $shares_id) {
 		$list_data = StockFifo::joinFormulirSell()->joinSell()
+			->where('bumi_shares_stock_fifo.quantity', '>', 0)
 			->where(function ($query) use ($shares_id) {
 				if ($shares_id) {
 					$query->where('bumi_shares_sell.shares_id', $shares_id);
@@ -24,7 +25,8 @@ class SharesHelper {
 			            $query->where('formulir.form_date', '<=', date_format_db($date_to, 'end'));
 			        }
 				}
-			});
+			})
+			->select('bumi_shares_stock_fifo.*');
 
 		return $list_data;
 	}

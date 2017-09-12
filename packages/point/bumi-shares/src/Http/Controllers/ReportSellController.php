@@ -69,7 +69,7 @@ class ReportSellController extends Controller
                             continue;
                         }
 
-                        $total_plus_fee = $data[$i]['price'] * $data[$i]['quantity'] + ($data[$i]['price'] * $data[$i]['quantity'] * $sell->fee / 100);
+                        $total_plus_fee = $sell->price * $sell->quantity + ($sell->price * $sell->quantity * $sell->fee / 100);
                         
                     	 array_push($content, [
                     	 	$no,
@@ -81,7 +81,7 @@ class ReportSellController extends Controller
                         	$sell->broker->name,
                         	date_format_view($sell->formulir->form_date),
                         	number_format_quantity($data[$i]['quantity']),
-                        	number_format_quantity($data[$i]['price']),
+                        	number_format_quantity($sell->price),
                         	number_format_quantity($total_plus_fee),
                         	number_format_quantity($total_plus_fee - $data[$i]['quantity'] * $buy->price)
                     	]);
