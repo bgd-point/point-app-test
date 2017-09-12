@@ -4,8 +4,10 @@ namespace Point\BumiShares\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Point\BumiShares\Helpers\SharesHelper;
 use Point\BumiShares\Models\Buy;
 use Point\BumiShares\Models\Sell;
+use Point\BumiShares\Models\Shares;
 use Point\BumiShares\Models\StockFifo;
 use Point\Core\Helpers\QueueHelper;
 
@@ -16,8 +18,10 @@ class ReportSellController extends Controller
         access_is_allowed('read.bumi.shares.report');
 
         $view = view('bumi-shares::app.facility.bumi-shares.report.sell.index');
-        $view->list_stock_fifo = StockFifo::joinFormulirSell()->select('bumi_shares_stock_fifo.*')->paginate(100);
+        $view->list_shares = Shares::active()->get();
 
+        $view->list_stock_fifo = SharesHelper::searchSellReport(\Input::get('date_from'), \Input::get('date_to'), \Input::get('shares_id'))->paginate(100);
+        $view->shares = app('request')->input('shares_id') ? Shares::find(app('request')->input('shares_id')) : '';
         return $view;
     }
 
@@ -29,9 +33,9 @@ class ReportSellController extends Controller
         $fileName = 'shares report '.date('YmdHis');
         \Queue::push(function ($job) use ($fileName, $storage, $request) {
             QueueHelper::reconnectAppDatabase($request['database_name']);
-            \Excel::create($fileName, function ($excel) use ($storage) {
+            \Excel::create($fileName, function ($excel) use ($storage, $request) {
                 # Sheet Data
-                $excel->sheet('Data', function ($sheet) {
+                $excel->sheet('Data', function ($sheet) use ($request) {
                     // MERGER COLUMN
                     $sheet->mergeCells('A1:L1', 'center');
                     $sheet->cell('A1', function ($cell) {
@@ -54,8 +58,7 @@ class ReportSellController extends Controller
                             'bold'       =>  true
                         ));
                     });
-        			
-        			$data = StockFifo::joinFormulirSell()->select('bumi_shares_stock_fifo.*')->get()->toArray();
+        			$data = SharesHelper::searchSellReport($request['date_from'], $request['date_to'], $request['shares_id'])->get()->toArray();
                     $content = array(array('NO', 'SHARES NAME', 'PURCHASE DATE', 'QUANTITY', 'EX SALE', 'NOMINAL PURCHASE', 'BROKER', 'SALE DATE','QUANTITY', 'PRICE', 'TOTAL + FEE', 'PROFIT/LOST'));
                     $total_data = count($data);
                     $no = 1;

@@ -15,6 +15,11 @@ class StockFifo extends Model
     {
         $q->join('formulir', 'formulir.id', '=', $this->table.'.shares_out_id');
     }
+
+    public function scopeJoinSell($q)
+    {
+        $q->join('bumi_shares_sell', 'bumi_shares_sell.formulir_id', '=', $this->table.'.shares_out_id');
+    }
     
     public function StockIn()
     {

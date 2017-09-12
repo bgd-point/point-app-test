@@ -10,12 +10,34 @@
 
         <div class="panel panel-default">
             <div class="panel-body">
-                <div class="col-sm-12">
-                    <a href="javascript:void(0)" id="export" onclick="generateExcel()" class="btn btn-info">Export to excel</a>
-                </div>
+                <form action="{{ url('facility/bumi-shares/report/sell') }}" method="get" class="form-horizontal no-print">
+                    <div class="form-group">
+                        <div class="col-md-5">
+                            <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
+                                <input type="text" name="date_from" id="date-from" class="form-control date input-datepicker"
+                                       placeholder="From" value="{{\Input::get('date_from') ? \Input::get('date_from') : ''}}">
+                                <span class="input-group-addon"><i class="fa fa-chevron-right"></i></span>
+                                <input type="text" name="date_to" id="date-to" class="form-control date input-datepicker"
+                                       placeholder="To" value="{{\Input::get('date_to') ? \Input::get('date_to') : ''}}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="shares_id" id="shares-id" class="selectize" style="width: 100%;" data-placeholder="Filter by Shares ..">
+                                <option value="0">All</option>
+                                @foreach($list_shares as $shares_select)
+                                    <option @if(app('request')->input('shares_id') == $shares_select->id) selected @endif value="{{$shares_select->id}}">{{$shares_select->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
+                            <a href="javascript:void(0)" id="export" onclick="generateExcel()" class="btn btn-info">Export to excel</a>
+                        </div>
+                    </div>
+                </form>
                 <br><br>
                 {!! $list_stock_fifo->render() !!}
-                <div class="table-responsive col-sm-12">
+                <div class="table-responsive">
                     <table class="table table-striped table-bordered" style="white-space: nowrap; ">
                         <tbody>
                             <tr>
@@ -66,11 +88,16 @@
 @section('scripts')
     <script>
         function generateExcel(){
+            var shares_id = $('#shares-id option:selected').val();
+            var date_from = $("#date-from").val();
+            var date_to = $("#date-to").val();
             $('#export').html('<i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>');
+            $('#export').addClass('disabled');
             $.ajax({
-                url:'{{url("facility/bumi-shares/report/sell/export")}}',
+                url:'{{url("facility/bumi-shares/report/sell/export")}}?shares_id='+shares_id+'&date_from='+date_from+'&date_to='+date_to,
                 success: function (result) {
                     $('#export').html('Export to excel');
+                    $('#export').removeClass('disabled');
                     if (result.status == 'success') {
                         notification('success, please check your email in few minutes');
                     }
@@ -80,6 +107,7 @@
                 error: function (e) {
                     console.log(e);
                     $('#export').html('Export to excel');
+                    $('#export').removeClass('disabled');
                     notification('failed, please try again');
                 }
             })
