@@ -11,5 +11,6 @@ class PointExpeditionFormulirNumberSeeder extends Seeder
         FormulirNumberHelper::create('point-expedition-order', 'BE/ORDER/');
         FormulirNumberHelper::create('point-expedition-invoice', 'BE/INVOICE/');
         FormulirNumberHelper::create('point-expedition-payment-order', 'BE/PAYMENT/');
+        FormulirNumberHelper::create('point-expedition-group', 'BE/GROUP/');
     }
 }

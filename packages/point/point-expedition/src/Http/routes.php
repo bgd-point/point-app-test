@@ -13,6 +13,7 @@ Route::group(['prefix' => 'expedition/point', 'namespace' => 'Point\PointExpedit
         Route::get('/expedition-order/vesa-rejected', 'ExpeditionOrderVesaController@rejected');
         Route::get('/expedition-order/vesa-create', 'ExpeditionOrderVesaController@create');
 
+        Route::get('/expedition-order/finish/{id}', 'ExpeditionOrderController@finishOrder');
         Route::post('/expedition-order/cancel', 'ExpeditionOrderController@cancel');
         Route::get('/expedition-order/{id}/archived', 'ExpeditionOrderController@archived');
         Route::get('/expedition-order/create-step-1', 'ExpeditionOrderController@createStep1');

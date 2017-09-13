@@ -12,6 +12,7 @@ use Point\Core\Models\User;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\PersonHelper;
+use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\PersonGroup;
 use Point\Framework\Models\Master\UserWarehouse;
@@ -243,5 +244,16 @@ class ExpeditionOrderController extends Controller
 
         gritter_success('Success send email expedition order', 'false');
         return redirect()->back();
+    }
+
+    public function finishOrder($id)
+    {
+        \DB::beginTransaction();
+
+        $journal = ExpeditionOrderHelper::journalExpeditionOrder($id);
+
+        // \DB::commit();
+
+        dd($journal);
     }
 }

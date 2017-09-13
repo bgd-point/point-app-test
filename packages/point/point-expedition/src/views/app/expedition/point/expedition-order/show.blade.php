@@ -219,6 +219,9 @@
                                 <a href="{{url('expedition/point/expedition-order/create-step-2/'.$reference->formulir_id.'/?group='.$expedition_order->id)}}" class="btn btn-effect-ripple btn-info"> 
                                     Continue to Other Expedition
                                 </a>
+                                <a href="{{url('expedition/point/expedition-order/finish/'.$expedition_order->id)}}" class="btn btn-effect-ripple btn-info"> 
+                                    Finish
+                                </a>
                                 @endif
                                 @if(formulir_view_email_vendor($expedition_order->formulir, 'create.point.expedition.order'))
                                     <form action="{{url('expedition/point/expedition-order/send-email-order')}}" method="post">

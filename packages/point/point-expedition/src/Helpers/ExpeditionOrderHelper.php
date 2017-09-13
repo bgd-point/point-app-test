@@ -6,9 +6,14 @@ use Illuminate\Http\Request;
 use Point\Core\Exceptions\PointException;
 use Point\Core\Models\Vesa;
 use Point\Framework\Helpers\FormulirHelper;
+use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\ReferHelper;
 use Point\Framework\Models\Formulir;
+use Point\Framework\Models\Journal;
+use Point\Framework\Models\Master\Person;
 use Point\PointExpedition\Models\ExpeditionOrder;
+use Point\PointExpedition\Models\ExpeditionOrderGroup;
+use Point\PointExpedition\Models\ExpeditionOrderGroupDetail;
 use Point\PointExpedition\Models\ExpeditionOrderItem;
 use Point\PointExpedition\Models\ExpeditionOrderReference;
 use Point\PointExpedition\Models\ExpeditionOrderReferenceItem;
@@ -166,5 +171,141 @@ class ExpeditionOrderHelper
             $expedition_reference->expedition_order_id = null;
             $expedition_reference->save();
         }
+    }
+
+    public static function journalExpeditionOrder($id)
+    {
+        $expedition_order = ExpeditionOrder::find($id);
+
+        $list_expedition_order = ExpeditionOrder::joinFormulir()->notArchived()->where('group', $expedition_order->group)->where('form_reference_id', $expedition_order->form_reference_id)->selectOriginal();
+        
+        $form_date = date_format_db(date('d-m-Y'), 'start');
+        $form_number = FormulirHelper::number('point-expedition-group', $form_date);
+
+        $formulir = new Formulir;
+        $formulir->form_date = $form_date;
+        $formulir->form_number = $form_number['form_number'];
+        $formulir->approval_to = 1;
+        $formulir->approval_status = 1;
+        $formulir->form_status = 1;
+        $formulir->created_by = auth()->user()->id;
+        $formulir->updated_by = auth()->user()->id;
+        $formulir->save();
+
+        $group = new ExpeditionOrderGroup;
+        $group->formulir_id = $formulir->id;
+        $group->save();
+
+        $total_fee = 0;
+        foreach ($list_expedition_order->get() as $expedition_order) {
+            $group_detail = new ExpeditionOrderGroupDetail;
+            $group_detail->point_expedition_order_group_id = $group->id;
+            $group_detail->point_expedition_order_id = $expedition_order->id;
+            $group_detail->save();
+
+            $subtotal = $expedition_order->expedition_fee;
+            $discount = $expedition_order->discount;
+            $tax_base = $expedition_order->tax_base;
+            $total = $expedition_order->total;
+
+            $expedition_cost = 0;
+            if ($expedition_order->type_of_tax == 'include') {
+                $expedition_cost = $expedition_order->tax_base;
+            } else {
+                $expedition_cost = $expedition_order->total;
+            }
+            $total_fee += $expedition_cost;
+
+            $account_payable_expedition = JournalHelper::getAccount('point expedition', 'account payable - expedition');
+            $position = JournalHelper::position($account_payable_expedition);
+            $journal = new Journal;
+            $journal->form_date = $group->formulir->form_date;
+            $journal->coa_id = $account_payable_expedition;
+            $journal->description = 'expedition order "' . $group->formulir->form_number . '"';
+            $journal->$position = $total;
+            $journal->form_journal_id = $group->formulir_id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $expedition_order->expedition_id;
+            $journal->subledger_type = get_class(new Person);
+            $journal->save();
+            \Log::info('exp '. $position.' '. $total);
+
+            if ($expedition_order->tax != 0) {
+                $income_tax_payable = JournalHelper::getAccount('point expedition', 'income tax receivable');
+                $position = JournalHelper::position($income_tax_payable);
+                $journal = new Journal();
+                $journal->form_date = $group->formulir->form_date;
+                $journal->coa_id = $income_tax_payable;
+                $journal->description = 'expedition order "' . $group->formulir->form_number . '"';
+                $journal->$position = $expedition_order->tax;
+                $journal->form_journal_id = $group->formulir_id;
+                $journal->form_reference_id;
+                $journal->subledger_id;
+                $journal->subledger_type;
+                $journal->save();
+
+                \Log::info('tax '. $position.' '. $expedition_order->tax);
+            }
+
+            if ($expedition_order->discount != 0) {
+                $expedition_discount_account = JournalHelper::getAccount('point expedition', 'expedition discount');
+                $position = JournalHelper::position($expedition_discount_account);
+                $journal = new Journal;
+                $journal->form_date = $order->formulir->form_date;
+                $journal->coa_id = $expedition_discount_account;
+                $journal->description = 'expedition order "' . $order->formulir->form_number . '"';
+                $journal->$position = $expedition_order->discount * -1;
+                $journal->form_journal_id = $order->formulir_id;
+                $journal->form_reference_id;
+                $journal->subledger_id;
+                $journal->subledger_type;
+                $journal->save();
+
+                \Log::info('discount '. $position.' '. $expedition_order->discount);
+
+            }
+        }
+
+        $form_reference = Formulir::find($expedition_order->form_reference_id);
+        $reference = $form_reference->formulirable_type::find($form_reference->formulirable_id);
+        if (! $reference->supplier_id) {
+            $reference->person_id = $reference->person_id;
+        } else{
+            $reference->person_id = $reference->supplier_id;
+        }
+
+        foreach ($expedition_order->first()->items as $expedition_order_item) {
+            $total_value = $expedition_order_item->quantity * $expedition_order_item->price;
+
+            $position = JournalHelper::position($expedition_order_item->item->account_asset_id);
+            $journal = new Journal();
+            $journal->form_date = $group->formulir->form_date;
+            $journal->coa_id = $expedition_order_item->item->account_asset_id;
+            $journal->description = 'expedition order [' . $group->formulir->form_number.']';
+            $journal->$position = $total_value + $total_value / $reference->total * $total_fee;
+            $journal->form_journal_id = $group->formulir_id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $expedition_order_item->item_id;
+            $journal->subledger_type = get_class($expedition_order_item->item);
+            $journal->save();
+            \Log::info('sediaan '. $position.' '. $journal->$position);
+        }
+
+        $account_receiveable = JournalHelper::getAccount('point purchasing', 'account payable');
+        $position = JournalHelper::position($account_receiveable);
+        $journal = new Journal;
+        $journal->form_date = $group->formulir->form_date;
+        $journal->coa_id = $account_receiveable;
+        $journal->description = 'expedition order [' . $group->formulir->form_number.']';
+        $journal->$position = $reference->total;
+        $journal->form_journal_id = $group->formulir_id;
+        $journal->form_reference_id;
+        $journal->subledger_id = $reference->person_id;
+        $journal->subledger_type = get_class(new Person);
+        $journal->save();
+
+        \Log::info('sediaan '. $position.' '. $reference->total);
+
+        JournalHelper::checkJournalBalance($group->formulir_id);
     }
 }

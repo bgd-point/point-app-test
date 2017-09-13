@@ -116,6 +116,7 @@ class InvoiceHelper
          * CURRENT LIABILITY| EXPEDITION DISCOUNT   | xxxx          |
          * --------------------------------------------------------------------------
          **/
+        
         /**
          * Payable = Expense - discount + ppn input
          */
