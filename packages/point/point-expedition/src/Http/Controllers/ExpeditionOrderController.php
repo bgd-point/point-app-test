@@ -252,8 +252,9 @@ class ExpeditionOrderController extends Controller
 
         $journal = ExpeditionOrderHelper::journalExpeditionOrder($id);
 
-        // \DB::commit();
+        \DB::commit();
 
-        dd($journal);
+        gritter_success('Expedition order transaction success', 'false');
+        return redirect(url('expedition/point/expedition-order'));
     }
 }

@@ -214,7 +214,7 @@
                                         Reopen Form
                                     </a>
                                 @endif
-                                @if($expedition_order->formulir->approval_status == 1 && $expedition_order->formulir->form_status == 0)
+                                @if($expedition_order->formulir->approval_status == 1 && $expedition_order->formulir->form_status == 0 && $expedition_order->is_finish == 0)
                                 <a href="{{url('expedition/point/expedition-order/create-step-2/'.$reference->formulir_id.'/?group='.$expedition_order->id)}}" class="btn btn-effect-ripple btn-info"> 
                                     Continue to Other Expedition
                                 </a>

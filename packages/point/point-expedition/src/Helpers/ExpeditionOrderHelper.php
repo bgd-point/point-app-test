@@ -19,6 +19,7 @@ use Point\PointExpedition\Models\ExpeditionOrderReference;
 use Point\PointExpedition\Models\ExpeditionOrderReferenceItem;
 use Point\PointExpedition\Models\ExpeditionRequisition;
 use Point\PointExpedition\Models\PurchaseRequisitionItem;
+use Point\PointPurchasing\Helpers\GoodsReceivedHelper;
 use Point\PointPurchasing\Models\PurchaseOrder;
 use Point\PointSales\Models\Sales\SalesOrder;
 
@@ -198,6 +199,9 @@ class ExpeditionOrderHelper
 
         $total_fee = 0;
         foreach ($list_expedition_order->get() as $expedition_order) {
+            $expedition_order->is_finish = 1;
+            $expedition_order->save();
+
             $group_detail = new ExpeditionOrderGroupDetail;
             $group_detail->point_expedition_order_group_id = $group->id;
             $group_detail->point_expedition_order_id = $expedition_order->id;
@@ -208,13 +212,7 @@ class ExpeditionOrderHelper
             $tax_base = $expedition_order->tax_base;
             $total = $expedition_order->total;
 
-            $expedition_cost = 0;
-            if ($expedition_order->type_of_tax == 'include') {
-                $expedition_cost = $expedition_order->tax_base;
-            } else {
-                $expedition_cost = $expedition_order->total;
-            }
-            $total_fee += $expedition_cost;
+            $total_fee += $expedition_order->tax_base;
 
             $account_payable_expedition = JournalHelper::getAccount('point expedition', 'account payable - expedition');
             $position = JournalHelper::position($account_payable_expedition);
@@ -274,6 +272,7 @@ class ExpeditionOrderHelper
             $reference->person_id = $reference->supplier_id;
         }
 
+        $is_finish = false;
         foreach ($expedition_order->first()->items as $expedition_order_item) {
             $total_value = $expedition_order_item->quantity * $expedition_order_item->price;
 
@@ -289,6 +288,11 @@ class ExpeditionOrderHelper
             $journal->subledger_type = get_class($expedition_order_item->item);
             $journal->save();
             \Log::info('sediaan '. $position.' '. $journal->$position);
+
+            $available_quantity = self::availableQuantity($expedition_order->form_reference_id, $expedition_order_item->item_id);
+            if ($available_quantity == 0) {
+                $is_finish = true;
+            }
         }
 
         $account_receiveable = JournalHelper::getAccount('point purchasing', 'account payable');
@@ -307,5 +311,12 @@ class ExpeditionOrderHelper
         \Log::info('sediaan '. $position.' '. $reference->total);
 
         JournalHelper::checkJournalBalance($group->formulir_id);
+
+        // update expedition reference 
+        if ($is_finish) {
+            $expedition_reference = ExpeditionOrderReference::where('expedition_reference_id', $expedition_order->form_reference_id)->first();
+            $expedition_reference->finish = 1;
+            $expedition_reference->save();
+        }
     }
 }
