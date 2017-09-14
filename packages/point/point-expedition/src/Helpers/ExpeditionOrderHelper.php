@@ -272,7 +272,6 @@ class ExpeditionOrderHelper
             $reference->person_id = $reference->supplier_id;
         }
 
-        $is_finish = false;
         foreach ($expedition_order->first()->items as $expedition_order_item) {
             $total_value = $expedition_order_item->quantity * $expedition_order_item->price;
 
@@ -292,6 +291,8 @@ class ExpeditionOrderHelper
             $available_quantity = self::availableQuantity($expedition_order->form_reference_id, $expedition_order_item->item_id);
             if ($available_quantity == 0) {
                 $is_finish = true;
+            } else {
+                $is_finish = false;
             }
         }
 

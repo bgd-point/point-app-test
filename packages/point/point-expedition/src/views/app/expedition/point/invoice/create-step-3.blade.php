@@ -78,41 +78,52 @@
                                         <thead>
                                         <tr>
                                             <th width="20%">RECEIVE ORDER NUMBER</th>
-                                            <th width="20%">ITEM</th>
-                                            <th width="15%" class="text-right">QUANTITY</th>
+                                            <th width="20%">NOTES</th>
+                                            <th width="15%" class="text-right">EXPEDITION FEE</th>
                                         </tr>
                                         </thead>
                                         <?php $counter = 1; ?>
                                         <tbody class="manipulate-row">
 
                                         @foreach($list_expedition_order_invoice as $expedition_order)
-                                            @foreach($expedition_order->items as $receive_order_item)
-
-                                                <tr>
-                                                    <td>
-                                                        <a href="{{url('expedition/point/expedition-order/'.$expedition_order->id)}}">{{$expedition_order->formulir->form_number}} </a>
-                                                        <br> {{ date_format_view($expedition_order->formulir->form_date)}}
-                                                        <input type="hidden" name="reference_item_id[]"
-                                                               value="{{ $receive_order_item->id }}"/>
-                                                        <input type="hidden" name="reference_item_type[]"
-                                                               value="{{get_class($receive_order_item)}}"/>
-
-                                                        <input type="hidden" name="reference_type[]"
-                                                               value="{{get_class($expedition_order)}}">
-                                                        <input type="hidden" name="reference_id[]"
-                                                               value="{{$expedition_order->id}}">
-                                                    </td>
-                                                    <td> {{ $receive_order_item->item->codeName }} </td>
-                                                    <td class="text-right">
-                                                        <input type="hidden" id="item-quantity-{{$counter}}"
-                                                               name="item_quantity[]" readonly class="format-quantity"
-                                                               value="{{ $receive_order_item->quantity }}"/>
-                                                        {{ number_format_quantity($receive_order_item->quantity) }} {{ $receive_order_item->unit }}
-                                                    </td>
-                                                    </td>
-                                                    <?php $counter++;?>
-                                                </tr>
-                                            @endforeach
+                                            <tr>
+                                                <td>
+                                                    <a href="{{url('expedition/point/expedition-order/'.$expedition_order->id)}}">{{$expedition_order->formulir->form_number}} </a>
+                                                    <br>
+                                                    <i class="fa fa-caret-down"></i> 
+                                                    <a data-toggle="collapse" href="#collapse{{$expedition_order->formulir_id}}">
+                                                        <small>Detail</small>
+                                                    </a>
+                                                </td>
+                                                <td>{{$expedition_order->formulir->notes}}</td>
+                                                <td class="text-right">
+                                                    <input type="text"  onkeyup="calculate()" class="form-control format-accounting text-right" id="expedition-fee-{{$counter}}" name="expedition_fee[]" value="{{$expedition_order->total}}">
+                                                    <input type="hidden" name="expedition_order_id[]" value="{{$expedition_order->id}}" readonly="">
+                                                    <input type="hidden" readonly="" class="form-control" name="original_fee[]" value="{{$expedition_order->total}}">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3" style="border-top: none;">
+                                                    <div id="collapse{{$expedition_order->formulir_id}}"
+                                                         class="panel-collapse collapse">
+                                                        <b>Description</b>
+                                                        <ul class="list-group">
+                                                            @foreach($expedition_order->items as $expedition_order_item)
+                                                                <li class="list-group-item">
+                                                                    <small>{{ $expedition_order_item->item->codeName }}
+                                                                        # {{ number_format_quantity($expedition_order_item->quantity) }} {{ $expedition_order_item->unit }}
+                                                                        <span class="pull-right">@ {{ number_format_quantity($expedition_order_item->price) }}</span>
+                                                                    </small>
+                                                                </li>
+                                                                <input type="hidden" name="reference_item_id[]" value="{{$expedition_order_item->item_id}}">
+                                                                <input type="hidden" name="reference_item_quantity[]" value="{{$expedition_order_item->quantity}}">
+                                                                <input type="hidden" name="reference_item_unit[]" value="{{$expedition_order_item->unit}}">
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <?php $counter++;?>
                                         @endforeach
                                         </tbody>
                                     </table>
@@ -125,14 +136,14 @@
                         <div class="form-group">
                             <label class="col-md-9 control-label text-right">SUB TOTAL</label>
                             <div class="col-md-3 content-show">
-                                <input type="text" id="subtotal" onclick="setToNontax()" onkeyup="calculate()" name="subtotal" class="form-control format-quantity text-right" value="0"/>
+                                <input type="text" readonly="" id="subtotal" onclick="setToNontax()" name="subtotal" class="form-control format-quantity text-right" value="0"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-9 control-label text-right">DISCOUNT</label>
                             <div class="col-md-3 content-show">
                                 <div class="input-group">
-                                    <input type="text" id="discount" onkeypress="isDiscount(this.value)" maxlength="2"
+                                    <input type="text" id="discount" onkeyup="calculate()" maxlength="2"
                                            name="discount" class="form-control format-quantity text-right"
                                            value="0"/>
                                     <span class="input-group-addon">%</span>
@@ -202,7 +213,7 @@
 
 @section('scripts')
     <script>
-        var item_table = initDatatable('#item-datatable');
+        var counter = {{$counter ? : 0}};
 
         $(function () {
             calculate();
@@ -221,10 +232,18 @@
         }
 
         function calculate() {
-            var rows_length = $("#item-datatable").dataTable().fnGetNodes().length;
-            var subtotal = dbNum($('#subtotal').val());
-            var total_fee = 0;
+            var subtotal = 0;
+            for (var i = 1; i < counter; i++) {
+                subtotal += dbNum($('#expedition-fee-'+i).val());
+            };
+            $('#subtotal').val(appNum(subtotal));
+
             var discount = dbNum($('#discount').val());
+            if (discount >= 100) {
+                discount = 0;
+                $('#discount').val(0);
+            }
+
             var tax_base = subtotal - subtotal * discount / 100;
             var tax = 0;
 
@@ -245,12 +264,6 @@
             $('#tax_base').val(appNum(tax_base));
             $('#tax').val(appNum(tax));
             $('#total').val(appNum(tax_base + tax));
-        }
-
-        function isDiscount(val) {
-            if (val.length >= 2) {
-                $("#discount").val("");
-            }
         }
 
         function setToNontax() {

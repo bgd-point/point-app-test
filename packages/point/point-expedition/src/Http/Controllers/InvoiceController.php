@@ -122,9 +122,7 @@ class InvoiceController extends Controller
             array_push($formulir_id, $reference->formulir_id);
         }
 
-        FormulirHelper::isAllowedToCreate('create.point.expedition.invoice',
-            date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
-
+        FormulirHelper::isAllowedToCreate('create.point.expedition.invoice', date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
         $formulir = FormulirHelper::create($request->input(), 'point-expedition-invoice');
         $invoice = InvoiceHelper::create($request, $formulir, $references);
         timeline_publish('create.invoice', 'added new invoice ' . $invoice->formulir->form_number);

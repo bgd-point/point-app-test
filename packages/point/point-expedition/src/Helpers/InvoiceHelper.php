@@ -7,7 +7,10 @@ use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\ReferHelper;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Coa;
+use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\Person;
+use Point\PointExpedition\Models\ExpeditionOrder;
+use Point\PointExpedition\Models\ExpeditionOrderGroupDetail;
 use Point\PointExpedition\Models\Invoice;
 use Point\PointExpedition\Models\InvoiceItem;
 
@@ -54,22 +57,26 @@ class InvoiceHelper
         $invoice->type_of_tax = $request->input('type_of_tax');
         $invoice->save();
 
-        $subtotal = 0;
-        for ($i = 0; $i < count($request->input('reference_item_type')); $i++) {
-            $reference_item_type = $request->input('reference_item_type')[$i];
-            $reference_item = $reference_item_type::find($request->input('reference_item_id')[$i]);
+        $expedition_order_id = $request->input('expedition_order_id');
+        $original_fee = $request->input('original_fee');
+        $expedition_fee = $request->input('expedition_fee');
+        $reference_item_id = $request->input('reference_item_id');
+        $reference_item_quantity = $request->input('reference_item_quantity');
+        $reference_item_unit = $request->input('reference_item_unit');
 
+        $subtotal = 0;
+        for ($i = 0; $i < count($reference_item_id); $i++) {
             $invoice_item = new InvoiceItem;
             $invoice_item->point_expedition_invoice_id = $invoice->id;
-            $invoice_item->item_id = $reference_item->item_id;
-            $invoice_item->quantity = number_format_db($request->input('item_quantity')[$i]);
+            $invoice_item->item_id = $reference_item_id[$i];
+            $invoice_item->quantity = number_format_db($reference_item_quantity[$i]);
             $invoice_item->item_fee = 0;
-            $invoice_item->unit = $reference_item->unit;
+            $invoice_item->unit = $reference_item_unit[$i];
             $invoice_item->save();
 
             ReferHelper::create(
-                $request->input('reference_item_type')[$i],
-                $request->input('reference_item_id')[$i],
+                get_class(new Item),
+                $invoice_item->item_id,
                 get_class($invoice_item),
                 $invoice_item->id,
                 get_class($invoice),
@@ -84,7 +91,6 @@ class InvoiceHelper
             $reference->formulir->save();
         }
 
-        $subtotal += number_format_db($request->input('subtotal'));
         $discount = $request->input('discount') ? number_format_db($request->input('discount')) : 0;
         $discount_value = $subtotal * $discount / 100;
         $tax_base = $subtotal - $discount_value;
@@ -98,6 +104,10 @@ class InvoiceHelper
             $tax = $tax_base * 10 / 100;
         }
 
+        for ($i = 0; $i < count($expedition_fee); $i++) {
+            $subtotal += number_format_db($expedition_fee[$i]);
+        }
+
         $invoice->subtotal = $subtotal;
         $invoice->discount = $discount;
         $invoice->tax_base = $tax_base;
@@ -106,93 +116,90 @@ class InvoiceHelper
         $invoice->save();
 
         /**
-         * JOURNAL INVOICE COST
-         * --------------------------------------------------------------------------
-         * COA CATEGORY     | ACCOUNT               | DEBIT         | CREDIT
-         * --------------------------------------------------------------------------
-         * CURRENT LIABILITY| ACCOUNT PAYABLE - EXP |               | xxxx
-         * DIRECT EXPENSE   | EXPEDITION EXPENSE    | xxxx          |
-         * LIABILITY        | INCOME TAX PAYABLE    | xxxx          |
-         * CURRENT LIABILITY| EXPEDITION DISCOUNT   | xxxx          |
-         * --------------------------------------------------------------------------
-         **/
-        
-        /**
-         * Payable = Expense - discount + ppn input
+         * If in the invoice there is a price change, then the journal again difference
+         * 
          */
-        // 1. JOURNAL ACCOUNT PAYABLE - EXP
-        $account_payable_expedition = JournalHelper::getAccount('point expedition', 'account payable - expedition');
-        $position = JournalHelper::position($account_payable_expedition);
-        $journal = new Journal;
-        $journal->form_date = $invoice->formulir->form_date;
-        $journal->coa_id = $account_payable_expedition;
-        $journal->description = 'expedition invoice "' . $invoice->formulir->form_number . '"';
-        $journal->$position = $invoice->total;
-        $journal->form_journal_id = $invoice->formulir_id;
-        $journal->form_reference_id;
-        $journal->subledger_id = $invoice->expedition_id;
-        $journal->subledger_type = get_class($expedition);
-        $journal->save();
-
-        $expedition_cost = 0;
-        if ($invoice->type_of_tax == 'include') {
-            $expedition_cost = $invoice->tax_base;
-        } else {
-            $expedition_cost = $invoice->subtotal;
-        }
-
-        // 2. JOURNAL EXPEDITION EXPENSE
-        $account_payable_expedition = JournalHelper::getAccount('point expedition', 'expedition cost');
-        $position = JournalHelper::position($account_payable_expedition);
-        $journal = new Journal;
-        $journal->form_date = $invoice->formulir->form_date;
-        $journal->coa_id = $account_payable_expedition;
-        $journal->description = 'expedition invoice "' . $invoice->formulir->form_number . '"';
-        $journal->$position = $expedition_cost;
-        $journal->form_journal_id = $invoice->formulir_id;
-        $journal->form_reference_id;
-        $journal->subledger_id;
-        $journal->subledger_type;
-        $journal->save();
-
-        // 3. JOURNAL INCOME TAX PAYABLE
-        if ($request->input('tax') != 0) {
-            $income_tax_payable = JournalHelper::getAccount('point expedition', 'income tax receivable');
-            $position = JournalHelper::position($income_tax_payable);
-            $journal = new Journal();
-            $journal->form_date = $invoice->formulir->form_date;
-            $journal->coa_id = $income_tax_payable;
-            $journal->description = 'expedition invoice "' . $invoice->formulir->form_number . '"';
-            $journal->$position = $tax;
-            $journal->form_journal_id = $invoice->formulir_id;
-            $journal->form_reference_id;
-            $journal->subledger_id;
-            $journal->subledger_type;
-            $journal->save();
-        }
-
-        // 4. JOURNAL EXPEDITION DISCOUNT
-        if ($request->input('discount') != 0) {
-            $expedition_discount_account = JournalHelper::getAccount('point expedition', 'expedition discount');
-            $position = JournalHelper::position($expedition_discount_account);
-            $journal = new Journal;
-            $journal->form_date = $invoice->formulir->form_date;
-            $journal->coa_id = $expedition_discount_account;
-            $journal->description = 'expedition invoice "' . $invoice->formulir->form_number . '"';
-            $journal->$position = $discount_value * -1;
-            $journal->form_journal_id = $invoice->formulir_id;
-            $journal->form_reference_id;
-            $journal->subledger_id;
-            $journal->subledger_type;
-            $journal->save();
+        for ($i = 0; $i < count($expedition_fee); $i++) {
+            $subtotal += number_format_db($expedition_fee[$i]);
+            if (number_format_db($expedition_fee[$i]) != number_format_db($original_fee[$i])) {
+                self::journalDiferences($invoice, $expedition_order_id[$i], number_format_db($original_fee[$i]), number_format_db($expedition_fee[$i]));
+            }
         }
 
         $formulir->approval_status = 1;
         $formulir->save();
 
         JournalHelper::checkJournalBalance($formulir->id);
-
         return $invoice;
+    }
+
+    public static function journalDiferences($invoice, $expedition_order_id, $original_fee, $expedition_fee)
+    {
+        // ------------------------------------------------------------------
+        // RETURN ACCOUNT PAYABLE FROM EXPEDITION ORDER
+        // ------------------------------------------------------------------
+        $journal_reference_expedition_order = ExpeditionOrderGroupDetail::where('point_expedition_order_id', $expedition_order_id)->first();
+        $expedition_order = ExpeditionOrder::find($expedition_order_id);
+        
+        $account_payable_expedition = JournalHelper::getAccount('point expedition', 'account payable - expedition');
+        $position = JournalHelper::position($account_payable_expedition);
+        $journal = new Journal;
+        $journal->form_date = $invoice->formulir->form_date;
+        $journal->coa_id = $account_payable_expedition;
+        $journal->description = 'expedition order "' . $invoice->formulir->form_number . '"';
+        $journal->$position = $original_fee * -1;
+        $journal->form_journal_id = $invoice->formulir_id;
+        $journal->form_reference_id = $journal_reference_expedition_order->group->formulir_id;
+        $journal->subledger_id = $expedition_order->expedition_id;
+        $journal->subledger_type = get_class(new Person);
+        $journal->save();
+
+        $expedition_cost = JournalHelper::getAccount('point expedition', 'expedition cost');
+        $position = JournalHelper::position($expedition_cost);
+        $journal = new Journal;
+        $journal->form_date = $invoice->formulir->form_date;
+        $journal->coa_id = $expedition_cost;
+        $journal->description = 'expedition order "' . $invoice->formulir->form_number . '"';
+        $journal->$position = $original_fee  * -1;
+        $journal->form_journal_id = $invoice->formulir_id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
+
+        // ------------------------------------------------------------------
+        // JOURNAL 
+        // 1. EXPEDITION COST
+        // 2. EXPEDITION PAYABLE
+        // ------------------------------------------------------------------
+
+        $account_payable_expedition = JournalHelper::getAccount('point expedition', 'account payable - expedition');
+        $position = JournalHelper::position($account_payable_expedition);
+        $journal = new Journal;
+        $journal->form_date = $invoice->formulir->form_date;
+        $journal->coa_id = $account_payable_expedition;
+        $journal->description = 'expedition order "' . $invoice->formulir->form_number . '"';
+        $journal->$position = $expedition_fee;
+        $journal->form_journal_id = $invoice->formulir_id;
+        $journal->form_reference_id;
+        $journal->subledger_id = $expedition_order->expedition_id;
+        $journal->subledger_type = get_class(new Person);
+        $journal->save();
+        \Log::info('- exp '. $position.' '. $journal->$position);
+
+        $expedition_cost = JournalHelper::getAccount('point expedition', 'expedition cost');
+        $position = JournalHelper::position($expedition_cost);
+        $journal = new Journal;
+        $journal->form_date = $invoice->formulir->form_date;
+        $journal->coa_id = $expedition_cost;
+        $journal->description = 'expedition order "' . $invoice->formulir->form_number . '"';
+        $journal->$position = $expedition_fee;
+        $journal->form_journal_id = $invoice->formulir_id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
+        \Log::info('- exp cost '. $position.' '. $original_fee);
     }
 
     public static function storeBasicInvoice(Request $request, $formulir)

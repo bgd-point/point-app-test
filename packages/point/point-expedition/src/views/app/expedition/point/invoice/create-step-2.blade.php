@@ -61,7 +61,7 @@
                                                             <li class="list-group-item">
                                                                 <small>{{ $expedition_order_item->item->codeName }}
                                                                     # {{ number_format_quantity($expedition_order_item->quantity) }} {{ $expedition_order_item->unit }}
-                                                                    <span class="pull-right">{{ number_format_quantity($expedition_order_item->item_fee) }}</span>
+                                                                    <span class="pull-right">@ {{ number_format_quantity($expedition_order_item->price) }}</span>
                                                                 </small>
                                                             </li>
                                                         @endforeach
@@ -133,7 +133,7 @@
                                                             <li class="list-group-item">
                                                                 <small>{{ $expedition_order_item->item->codeName }}
                                                                     # {{ number_format_quantity($expedition_order_item->quantity) }} {{ $expedition_order_item->unit }}
-                                                                    <span class="pull-right">{{ number_format_quantity($expedition_order_item->item_fee) }}</span>
+                                                                    <span class="pull-right">@ {{ number_format_quantity($expedition_order_item->price) }}</span>
                                                                 </small>
                                                             </li>
                                                         @endforeach
