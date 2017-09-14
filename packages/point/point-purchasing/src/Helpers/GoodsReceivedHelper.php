@@ -4,9 +4,15 @@ namespace Point\PointPurchasing\Helpers;
 
 use Illuminate\Http\Request;
 use Point\Core\Exceptions\PointException;
+use Point\Framework\Helpers\InventoryHelper;
+use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\ReferHelper;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\FormulirLock;
+use Point\Framework\Models\Inventory;
+use Point\Framework\Models\Journal;
+use Point\Framework\Models\Master\Item;
+use Point\Framework\Models\Master\UserWarehouse;
 use Point\PointExpedition\Helpers\ExpeditionOrderHelper;
 use Point\PointExpedition\Models\ExpeditionOrder;
 use Point\PointExpedition\Models\ExpeditionOrderItem;
@@ -114,7 +120,6 @@ class GoodsReceivedHelper
             formulir_lock($reference->formulir_id, $goods_received->formulir_id);
         }
 
-
         // update status reference
         self::updateStatusReference($request, $reference);
 
@@ -123,9 +128,110 @@ class GoodsReceivedHelper
             self::updateExpeditionReference($request->input('reference_expedition_order_id'));
         }
 
+        if ($reference->include_expedition) {
+            self::journal($goods_received, $request, $reference);
+        }
+        
+        JournalHelper::checkJournalBalance($goods_received->formulir_id);
         return $goods_received;
     }
 
+    public static function journal($goods_received, $request, $reference)
+    {
+        // $reference is Purchasing
+        
+        // 1. Sedian
+        // 2. Hutang
+        foreach ($reference->items as $purchase_order_item) {
+            $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
+            // Journal inventory
+            $goods_received_item = $goods_received->items->where('item_id', $purchase_order_item->item_id)->first();
+            $total_per_row = $goods_received_item->quantity * $purchase_order_item->price - $goods_received_item->quantity * $purchase_order_item->price / 100 * $purchase_order_item->discount;
+            if ($purchase_order_item->discount) {
+                $discounty = $total_per_row * $reference->discount / $reference->subtotal;
+                $total_per_row = $total_per_row - $discounty;
+            }
+
+            if ($request->input('type_of_tax') == 'include') {
+                $total_per_row = $total_per_row * 100 / 110;
+            }
+
+            $position = JournalHelper::position($purchase_order_item->item->account_asset_id);
+            $journal = new Journal();
+            $journal->form_date = $goods_received->formulir->form_date;
+            $journal->coa_id = $purchase_order_item->item->account_asset_id;
+            $journal->description = 'Goods Received [' . $goods_received->formulir->form_number.']';
+            $journal->$position = $total_per_row + $total_per_row / $reference->tax_base * $reference->expedition_fee;
+            $journal->form_journal_id = $goods_received->formulir_id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $purchase_order_item->item_id;
+            $journal->subledger_type = get_class($purchase_order_item);
+            $journal->save();
+
+            \Log::info('sedian '. $position. ' '. $journal->$position);
+
+            // insert new inventory
+            $item = Item::find($purchase_order_item->item_id);
+            $inventory = new Inventory();
+            $inventory->formulir_id = $goods_received->formulir->id;
+            $inventory->item_id = $item->id;
+            $inventory->quantity = $purchase_order_item->quantity * $purchase_order_item->converter;
+            $inventory->price = $purchase_order_item->price / $purchase_order_item->converter;
+            $inventory->form_date = $goods_received->formulir->form_date;
+            $inventory->warehouse_id = $request->input('warehouse_id');
+
+            $inventory_helper = new InventoryHelper($inventory);
+            $inventory_helper->in();
+        }
+
+        // 1. Journal account receiveable
+        $account_receiveable = JournalHelper::getAccount('point purchasing', 'account payable');
+        $position = JournalHelper::position($account_receiveable);
+        $journal = new Journal;
+        $journal->form_date = $goods_received->formulir->form_date;
+        $journal->coa_id = $account_receiveable;
+        $journal->description = 'Goods Received Purchasing [' . $goods_received->formulir->form_number.']';
+        $journal->$position = $reference->total;
+        $journal->form_journal_id = $goods_received->formulir->id;
+        $journal->form_reference_id;
+        $journal->subledger_id = $reference->supplier_id;
+        $journal->subledger_type = get_class($reference->supplier);
+        $journal->save();
+        \Log::info('akun receivable '. $position. ' '. $journal->$position);
+
+        // 2. Journal income tax receiveable
+        $income_tax_receiveable = JournalHelper::getAccount('point purchasing', 'income tax receivable');
+        $position = JournalHelper::position($income_tax_receiveable);
+        $journal = new Journal;
+        $journal->form_date = $goods_received->formulir->form_date;
+        $journal->coa_id = $income_tax_receiveable;
+        $journal->description = 'Goods Received Purchasing [' . $goods_received->formulir->form_number.']';
+        $journal->$position = $reference->tax;
+        $journal->form_journal_id = $goods_received->formulir->id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
+        \Log::info('tax '. $position. ' '. $journal->$position);
+
+        // 3. Journal Expedition Cost
+        if ($reference->expedition_fee > 0) {
+            $expedition = JournalHelper::getAccount('point purchasing', 'expedition cost');
+            $position = JournalHelper::position($expedition);
+            $journal = new Journal;
+            $journal->form_date = $goods_received->formulir->form_date;
+            $journal->coa_id = $expedition;
+            $journal->description = 'Goods Received Purchasing [' . $goods_received->formulir->form_number.']';
+            $journal->$position = $reference->expedition_fee;
+            $journal->form_journal_id = $goods_received->formulir->id;
+            $journal->form_reference_id;
+            $journal->subledger_id;
+            $journal->subledger_type;
+            $journal->save();
+
+            \Log::info('exp cost '. $position. ' '. $journal->$position);
+        }
+    }
     public static function updateStatusReference($request, $reference)
     {
         // update by remaining quantity

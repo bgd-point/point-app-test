@@ -122,7 +122,7 @@ class InvoiceHelper
         for ($i = 0; $i < count($expedition_fee); $i++) {
             $subtotal += number_format_db($expedition_fee[$i]);
             if (number_format_db($expedition_fee[$i]) != number_format_db($original_fee[$i])) {
-                self::journalDiferences($invoice, $expedition_order_id[$i], number_format_db($original_fee[$i]), number_format_db($expedition_fee[$i]));
+                self::journalDifferences($invoice, $expedition_order_id[$i], number_format_db($original_fee[$i]), number_format_db($expedition_fee[$i]));
             }
         }
 
@@ -133,7 +133,7 @@ class InvoiceHelper
         return $invoice;
     }
 
-    public static function journalDiferences($invoice, $expedition_order_id, $original_fee, $expedition_fee)
+    public static function journalDifferences($invoice, $expedition_order_id, $original_fee, $expedition_fee)
     {
         // ------------------------------------------------------------------
         // RETURN ACCOUNT PAYABLE FROM EXPEDITION ORDER

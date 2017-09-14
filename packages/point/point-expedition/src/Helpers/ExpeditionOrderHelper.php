@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use Point\Core\Exceptions\PointException;
 use Point\Core\Models\Vesa;
 use Point\Framework\Helpers\FormulirHelper;
+use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\ReferHelper;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Person;
+use Point\Framework\Models\Master\Warehouse;
 use Point\PointExpedition\Models\ExpeditionOrder;
 use Point\PointExpedition\Models\ExpeditionOrderGroup;
 use Point\PointExpedition\Models\ExpeditionOrderGroupDetail;
@@ -288,6 +290,20 @@ class ExpeditionOrderHelper
             $journal->save();
             \Log::info('sediaan '. $position.' '. $journal->$position);
 
+            // insert new inventory
+            $warehouse = Warehouse::where('name', 'in transit')->first();
+
+            $inventory = new Inventory();
+            $inventory->formulir_id = $group->formulir->id;
+            $inventory->item_id = $expedition_order_item->id;
+            $inventory->quantity = $expedition_order_item->quantity * $expedition_order_item->converter;
+            $inventory->price = $expedition_order_item->price / $expedition_order_item->converter;
+            $inventory->form_date = $group->formulir->form_date;
+            $inventory->warehouse_id = $$warehouse->id;
+
+            $inventory_helper = new InventoryHelper($inventory);
+            $inventory_helper->in();
+
             $available_quantity = self::availableQuantity($expedition_order->form_reference_id, $expedition_order_item->item_id);
             if ($available_quantity == 0) {
                 $is_finish = true;
@@ -308,8 +324,6 @@ class ExpeditionOrderHelper
         $journal->subledger_id = $reference->person_id;
         $journal->subledger_type = get_class(new Person);
         $journal->save();
-
-        \Log::info('sediaan '. $position.' '. $reference->total);
 
         JournalHelper::checkJournalBalance($group->formulir_id);
 
