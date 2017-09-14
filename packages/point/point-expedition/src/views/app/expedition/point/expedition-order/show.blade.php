@@ -113,13 +113,12 @@
                                             </thead>
                                             <?php $count = 0;?>
                                             @foreach($expedition_order->items as $expedition_order_item)
-                                                <tbody class="">
+                                                <tbody>
                                                 <tr>
                                                     <td>{{ $expedition_order_item->item->codeName }}</td>
                                                     <td class="text-right">{{ number_format_quantity($expedition_order_item->quantity) }}</td>
                                                     <td>{{ $expedition_order_item->unit }}</td>
                                                 </tr>
-
                                                 </tbody>
                                             @endforeach
                                             <tfoot>
@@ -215,7 +214,7 @@
                                         Reopen Form
                                     </a>
                                 @endif
-                                @if($expedition_order->formulir->approval_status == 1)
+                                @if($expedition_order->formulir->approval_status == 1 && $expedition_order->formulir->form_status == 0)
                                 <a href="{{url('expedition/point/expedition-order/create-step-2/'.$reference->formulir_id.'/?group='.$expedition_order->id)}}" class="btn btn-effect-ripple btn-info"> 
                                     Continue to Other Expedition
                                 </a>

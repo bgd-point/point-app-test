@@ -56,7 +56,7 @@ class GoodsReceivedController extends Controller
         $view = view('point-purchasing::app.purchasing.point.inventory.goods-received.create-step-3');
 
         $purchase_order = PurchaseOrder::find($purchase_order_id);
-        $view->list_expedition_order = ExpeditionOrder::joinFormulir()->approvalApproved()->notArchived()->where('done', 0)->where('form_reference_id', $purchase_order->formulir_id)->orderBy('group')->selectOriginal()->paginate(100);
+        $view->list_expedition_order = ExpeditionOrder::joinFormulir()->approvalApproved()->notArchived()->where('formulir.form_status', '!=', -1)->where('done', 0)->where('form_reference_id', $purchase_order->formulir_id)->orderBy('group')->selectOriginal()->paginate(100);
 
         return $view;
     }

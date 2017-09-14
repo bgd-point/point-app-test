@@ -264,7 +264,7 @@ class PurchaseOrder extends Model
         $array_expedition_order_is_locked_by_purchase = [];
         $formulir_expedition_locked = FormulirLock::whereIn('locked_id', $formulir_purchase_order)->get();
         foreach ($formulir_expedition_locked as $formulir_id) {
-            $check_form_is_expedition_order = Formulir::where('id', $formulir_id->locking_id)->where('formulirable_type', get_class(new ExpeditionOrder))->first();
+            $check_form_is_expedition_order = Formulir::where('form_status', '!=', -1)->where('id', $formulir_id->locking_id)->where('formulirable_type', get_class(new ExpeditionOrder))->first();
             if ($check_form_is_expedition_order) {
                 array_push($array_expedition_order_is_locked_by_purchase, $check_form_is_expedition_order->id);
             }

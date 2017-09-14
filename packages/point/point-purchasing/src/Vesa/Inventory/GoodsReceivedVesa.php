@@ -40,6 +40,7 @@ trait GoodsReceivedVesa
         if (($array_expedition_order_locked_by_purchase_order === $array_formulir_expedition_locked_by_goods_received) && ($array_formulir_expedition_locked_by_goods_received)) {
             $list_purchase_order = PurchaseOrder::joinFormulir()->open()->approvalApproved()->notArchived()->whereNotIn('formulir_id', $array_formulir_purchase_order_locked_by_expedition)->selectOriginal()->orderByStandard();
         }
+
         // Grouping vesa
         if ($merge_into_group && $list_purchase_order->get()->count() > 5) {
             array_push($array, [
