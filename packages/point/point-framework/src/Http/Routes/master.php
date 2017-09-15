@@ -67,6 +67,10 @@ Route::group(['middleware' => 'auth', 'prefix' => 'master', 'namespace' => 'Poin
     Route::get('/item/get-quantity', 'ItemController@_getQuantity');
     Route::get('/item/list-having-quantity', 'ItemController@_listItemHavingQuantity');
 
+    // Item Barcode
+    Route::post('/item/barcode/print', 'ItemBarcodeController@print');
+    Route::get('/item/barcode', 'ItemBarcodeController@barcode');
+
     // Item Import
     Route::post('/item/import/insert', 'ItemImportController@_updateTemp');
     Route::get('/item/import/delete/{id}', 'ItemImportController@deleteRow');
