@@ -140,8 +140,6 @@ class GoodsReceivedHelper
     {
         // $reference is Purchasing
         
-        // 1. Sedian
-        // 2. Hutang
         foreach ($reference->items as $purchase_order_item) {
             $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
             // Journal inventory
@@ -152,7 +150,7 @@ class GoodsReceivedHelper
                 $total_per_row = $total_per_row - $discounty;
             }
 
-            if ($request->input('type_of_tax') == 'include') {
+            if ($reference->type_of_tax == 'include') {
                 $total_per_row = $total_per_row * 100 / 110;
             }
 
@@ -161,14 +159,12 @@ class GoodsReceivedHelper
             $journal->form_date = $goods_received->formulir->form_date;
             $journal->coa_id = $purchase_order_item->item->account_asset_id;
             $journal->description = 'Goods Received [' . $goods_received->formulir->form_number.']';
-            $journal->$position = $total_per_row + $total_per_row / $reference->tax_base * $reference->expedition_fee;
+            $journal->$position = $total_per_row;
             $journal->form_journal_id = $goods_received->formulir_id;
             $journal->form_reference_id;
             $journal->subledger_id = $purchase_order_item->item_id;
             $journal->subledger_type = get_class($purchase_order_item);
             $journal->save();
-
-            \Log::info('sedian '. $position. ' '. $journal->$position);
 
             // insert new inventory
             $item = Item::find($purchase_order_item->item_id);
@@ -197,7 +193,6 @@ class GoodsReceivedHelper
         $journal->subledger_id = $reference->supplier_id;
         $journal->subledger_type = get_class($reference->supplier);
         $journal->save();
-        \Log::info('akun receivable '. $position. ' '. $journal->$position);
 
         // 2. Journal income tax receiveable
         $income_tax_receiveable = JournalHelper::getAccount('point purchasing', 'income tax receivable');
@@ -212,7 +207,6 @@ class GoodsReceivedHelper
         $journal->subledger_id;
         $journal->subledger_type;
         $journal->save();
-        \Log::info('tax '. $position. ' '. $journal->$position);
 
         // 3. Journal Expedition Cost
         if ($reference->expedition_fee > 0) {
@@ -228,10 +222,9 @@ class GoodsReceivedHelper
             $journal->subledger_id;
             $journal->subledger_type;
             $journal->save();
-
-            \Log::info('exp cost '. $position. ' '. $journal->$position);
         }
     }
+
     public static function updateStatusReference($request, $reference)
     {
         // update by remaining quantity
@@ -281,6 +274,5 @@ class GoodsReceivedHelper
                 $expedition_order->save();
             }
         }
-
     }
 }

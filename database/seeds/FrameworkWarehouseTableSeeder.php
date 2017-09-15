@@ -14,5 +14,6 @@ class FrameworkWarehouseTableSeeder extends Seeder
     {
         DB::table('warehouse')->truncate();
         DB::table('warehouse')->insert(['id' => 1,'code' => 'GD-001','name' => 'PUSAT', 'created_by' => 1, 'updated_by' => 1]);
+        DB::table('warehouse')->insert(['id' => 2,'code' => 'GD-002','name' => 'IN TRANSIT', 'created_by' => 1, 'updated_by' => 1]);
     }
 }
