@@ -14,6 +14,26 @@ class InvoiceItem extends Model
     protected $table = 'point_sales_invoice_item';
     public $timestamps = false;
 
+    public function scopeJoinInvoice($q)
+    {
+        $q->join('point_sales_invoice', 'point_sales_invoice.id', '=', 'point_sales_invoice_item.point_sales_invoice_id');
+    }
+
+    public function scopeJoinFormulir($q)
+    {
+        $q->join('formulir', 'formulir.id', '=', 'point_sales_invoice.formulir_id');
+    }
+
+    public function scopeJoinCustomer($q)
+    {
+        $q->join('person', 'person.id', '=', 'point_sales_invoice.person_id');
+    }
+
+    public function invoice()
+    {
+        return $this->belongsTo('Point\PointSales\Models\Sales\Invoice', 'point_sales_invoice_id');
+    }
+
     public function item()
     {
         return $this->belongsTo('\Point\Framework\Models\Master\Item', 'item_id');
