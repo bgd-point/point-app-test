@@ -101,8 +101,7 @@ class GoodsReceivedController extends Controller
         $goods_received = GoodsReceivedHelper::create($request, $formulir);
         timeline_publish('create.point.purchasing.goods.received', 'added new goods received '  . $goods_received->formulir->form_number);
 
-        // DB::commit();
-        dd($goods_received);
+        DB::commit();
         gritter_success('received success', false);
         return redirect('/purchasing/point/goods-received/'.$goods_received->id);
     }
