@@ -2,7 +2,11 @@
 
 Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchasing\Http\Controllers\Inventory'], function () {
     Route::resource('/', 'PurchasingMenuController@index');
-
+    Route::group(['middleware' => 'auth'], function () {
+        Route::get('/report/export', 'PurchaseReportController@export');
+        Route::get('/report', 'PurchaseReportController@index');
+    });
+    
     // PURCHASE REQUISITION
     Route::get('/purchase-requisition/reject-all', 'PurchaseRequisitionApprovalController@rejectAll');
     Route::get('/purchase-requisition/approve-all', 'PurchaseRequisitionApprovalController@approveAll');

@@ -71,7 +71,7 @@ class PaymentOrderController extends Controller
             return back();
         }
         $view->person = Person::find(app('request')->input('person_id'));
-        $view->list_coa = Coa::getNonSubledger();
+        $view->list_coa = Coa::getSubledger();
         $view->list_allocation = Allocation::active()->get();
         $view->list_user_approval = UserHelper::getAllUser();
 
