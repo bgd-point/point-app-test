@@ -97,6 +97,17 @@ class ExpeditionOrderHelper
             $expedition_order_item->converter = 1;
             $expedition_order_item->save();
 
+            if ($reference != null) {
+                ReferHelper::create(
+                    $request->input('reference_item_type')[$i],
+                    $request->input('reference_item_id')[$i],
+                    get_class($expedition_order_item),
+                    $expedition_order_item->id,
+                    get_class($expedition_order),
+                    $expedition_order->id,
+                    $expedition_order_item->quantity
+                );
+            }
         }
 
         formulir_lock($reference->formulir_id, $expedition_order->formulir_id);

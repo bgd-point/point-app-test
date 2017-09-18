@@ -15,6 +15,7 @@ use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\PointExpedition\Helpers\ExpeditionOrderHelper;
 use Point\PointExpedition\Models\ExpeditionOrder;
+use Point\PointExpedition\Models\ExpeditionOrderGroupDetail;
 use Point\PointExpedition\Models\ExpeditionOrderItem;
 use Point\PointExpedition\Models\ExpeditionOrderReference;
 use Point\PointPurchasing\Models\Inventory\GoodsReceived;
@@ -130,12 +131,25 @@ class GoodsReceivedHelper
 
         if ($reference->include_expedition) {
             self::journal($goods_received, $request, $reference);
+        } else {
+            self::transferItem($request);
         }
         
         JournalHelper::checkJournalBalance($goods_received->formulir_id);
         return $goods_received;
     }
 
+    public static function transferItem($request)
+    {
+        $expedition_order_group_detail = ExpeditionOrderGroupDetail::where('point_expedition_order_id', $request->input('reference_expedition_order_id'))->first();
+        $form_journal_inventory = $expedition_order_group_detail->group->formulir;
+        $inventories = Inventory::where('formulir_id', $form_journal_inventory->id)->get();
+        foreach ($inventories as $inventory) {
+            $inventory->warehouse_id = $request->input('warehouse_id');
+            $inventory->save();
+        }
+    }
+    
     public static function journal($goods_received, $request, $reference)
     {
         // $reference is Purchasing
