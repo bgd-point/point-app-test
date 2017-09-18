@@ -12,9 +12,7 @@
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <form action="{{ url('master/item/') }}" method="post" class="form-horizontal">
-            {!! csrf_field() !!}
-
+            <form action="{{ url('master/item/') }}" method="get" class="form-horizontal">
                 <div class="form-group">
                     <div class="col-sm-3">
                         <select class="selectize" name="status" id="status" onchange="selectData()">
