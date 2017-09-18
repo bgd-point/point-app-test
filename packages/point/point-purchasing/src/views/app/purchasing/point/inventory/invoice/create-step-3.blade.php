@@ -94,6 +94,10 @@
                                     @foreach($list_goods_received as $goods_received)
                                         <?php $expedition_fee += $goods_received->expedition_fee; ?>
                                         @foreach($goods_received->items as $goods_received_item)
+                                            <?php
+                                                $purchase_order_item = Point\PointPurchasing\Helpers\InvoiceHelper::searchPurchaseOrderDetail($goods_received, $goods_received_item);
+                                            ?>
+                                            
                                             <tr>
                                                 <td>
                                                     <a href="{{url('purchasing/point/goods-received/'.$goods_received->id)}}">{{$goods_received->formulir->form_number}}</a>
@@ -102,6 +106,7 @@
                                                     <input type="hidden" name="item_id[]" value="{{$goods_received_item->item_id}}">
                                                     <input type="hidden" name="reference_item_id[]" value="{{$goods_received_item->id}}">
                                                     <input type="hidden" name="reference_item_type[]" value="{{get_class($goods_received_item)}}">
+                                                    <input type="hidden" name="warehouse_id[]" value="{{$goods_received->warehouse_id}}">
 
                                                 </td>
                                                 <td>
@@ -115,9 +120,15 @@
                                                     {{ number_format_quantity($goods_received_item->quantity) }} {{ $goods_received_item->unit }}
                                                     <input type="hidden" name="item_unit[]" value="{{ $goods_received_item->unit }}">
                                                 </td>
-                                                <td><input type="text" id="item-price-{{$counter}}" name="item_price[]"
+                                                <td>
+                                                    <input type="text" id="item-price-{{$counter}}" name="item_price[]"
                                                            class="form-control format-quantity calculate text-right"
-                                                           value="{{ $goods_received_item->price }}"/></td>
+                                                           value="{{ $goods_received_item->price }}"/>
+
+                                                    <input type="hidden" name="item_price_original[]"
+                                                           class="form-control" readonly="" 
+                                                           value="{{ $purchase_order_item->price }}"/>
+                                                </td>
                                                 <td>
                                                     <div class="input-group">
                                                         <input type="text" id="item-discount-{{$counter}}"

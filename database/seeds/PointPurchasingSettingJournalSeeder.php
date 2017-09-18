@@ -41,6 +41,8 @@ class PointPurchasingSettingJournalSeeder extends Seeder
         SettingJournal::insert('point purchasing', 'expedition cost', $coa ? $coa->id : null);
         $coa = Coa::where('name', '=', 'Purchase Discount')->first();
         SettingJournal::insert('point purchasing', 'purchase discount', $coa ? $coa->id : null);
+        $coa = Coa::where('name', '=', 'Inventory Differeces')->first();
+        SettingJournal::insert('point purchasing', 'inventory differences', $coa ? $coa->id : null);
 
         // PURCHASE SERVICE
         $coa = Coa::where('name', '=', 'Service Cost')->first();

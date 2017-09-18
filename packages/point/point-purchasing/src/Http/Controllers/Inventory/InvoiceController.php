@@ -72,6 +72,7 @@ class InvoiceController extends Controller
             ->whereIn('point_purchasing_goods_received.formulir_id', $array_goods_received_id)
             ->selectOriginal()
             ->get();
+        $view->purchase_order = $view->list_goods_received->first()->purchaseOrder; 
         $view->purchase_order_tax = $view->list_goods_received->first()->purchaseOrder->type_of_tax;
         $view->purchase_order_discount = $view->list_goods_received->first()->purchaseOrder->discount;
         $view->purchase_order_expedition_fee = $view->list_goods_received->first()->purchaseOrder->expedition_fee;
@@ -133,6 +134,7 @@ class InvoiceController extends Controller
         $view->invoice = Invoice::find($id);
         $view->list_invoice_archived = Invoice::joinFormulir()->archived($view->invoice->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_invoice_archived->count();
+        
         return $view;
     }
 
