@@ -9,7 +9,9 @@ use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Helpers\WarehouseHelper;
 use Point\Framework\Models\Formulir;
+use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Person;
 use Point\Framework\Models\Master\Warehouse;
@@ -180,7 +182,7 @@ class ExpeditionOrderHelper
     {
         $expedition_order = ExpeditionOrder::find($id);
 
-        $list_expedition_order = ExpeditionOrder::joinFormulir()->notArchived()->where('group', $expedition_order->group)->where('form_reference_id', $expedition_order->form_reference_id)->selectOriginal();
+        $list_expedition_order = ExpeditionOrder::joinFormulir()->approvalApproved()->notArchived()->where('group', $expedition_order->group)->where('form_reference_id', $expedition_order->form_reference_id)->selectOriginal();
         
         $form_date = date_format_db(date('d-m-Y'), 'start');
         $form_number = FormulirHelper::number('point-expedition-group', $form_date);
@@ -216,6 +218,7 @@ class ExpeditionOrderHelper
 
             $total_fee += $expedition_order->tax_base;
 
+            // Journal Account Payable Expedition
             $account_payable_expedition = JournalHelper::getAccount('point expedition', 'account payable - expedition');
             $position = JournalHelper::position($account_payable_expedition);
             $journal = new Journal;
@@ -230,6 +233,7 @@ class ExpeditionOrderHelper
             $journal->save();
             \Log::info('exp '. $position.' '. $total);
 
+            // Journal Income Tax Expedition
             if ($expedition_order->tax != 0) {
                 $income_tax_payable = JournalHelper::getAccount('point expedition', 'income tax receivable');
                 $position = JournalHelper::position($income_tax_payable);
@@ -247,6 +251,7 @@ class ExpeditionOrderHelper
                 \Log::info('tax '. $position.' '. $expedition_order->tax);
             }
 
+            // Journal Expedition Discount
             if ($expedition_order->discount != 0) {
                 $expedition_discount_account = JournalHelper::getAccount('point expedition', 'expedition discount');
                 $position = JournalHelper::position($expedition_discount_account);
@@ -274,44 +279,54 @@ class ExpeditionOrderHelper
             $reference->person_id = $reference->supplier_id;
         }
 
-        foreach ($expedition_order->first()->items as $expedition_order_item) {
-            $total_value = $expedition_order_item->quantity * $expedition_order_item->price;
+        $continue = false;
+        foreach ($list_expedition_order->get() as $expedition_order) {
+            foreach ($expedition_order->items as $expedition_order_item) {
+                // Journal Inventory
+                $total_value = $expedition_order_item->quantity * $expedition_order_item->price;
 
-            $position = JournalHelper::position($expedition_order_item->item->account_asset_id);
-            $journal = new Journal();
-            $journal->form_date = $group->formulir->form_date;
-            $journal->coa_id = $expedition_order_item->item->account_asset_id;
-            $journal->description = 'expedition order [' . $group->formulir->form_number.']';
-            $journal->$position = $total_value + $total_value / $reference->total * $total_fee;
-            $journal->form_journal_id = $group->formulir_id;
-            $journal->form_reference_id;
-            $journal->subledger_id = $expedition_order_item->item_id;
-            $journal->subledger_type = get_class($expedition_order_item->item);
-            $journal->save();
-            \Log::info('sediaan '. $position.' '. $journal->$position);
+                $position = JournalHelper::position($expedition_order_item->item->account_asset_id);
+                $journal = new Journal();
+                $journal->form_date = $group->formulir->form_date;
+                $journal->coa_id = $expedition_order_item->item->account_asset_id;
+                $journal->description = 'expedition order [' . $group->formulir->form_number.']';
+                $journal->$position = $total_value + $total_value / $reference->total * $total_fee;
+                $journal->form_journal_id = $group->formulir_id;
+                $journal->form_reference_id;
+                $journal->subledger_id = $expedition_order_item->item_id;
+                $journal->subledger_type = get_class($expedition_order_item->item);
+                $journal->save();
+                \Log::info('sediaan '. $position.' '. $journal->$position);
 
-            // insert new inventory
-            $warehouse = Warehouse::where('name', 'in transit')->first();
+                $warehouse = Warehouse::where('name', 'in transit')->first();
+                if (!$warehouse) {
+                    $warehouse = self::createWarehouse();
+                }
+                if (! $continue) {
+                    \Log::info('inventory '. $expedition_order_item->item->codeName);
+                    $inventory = new Inventory();
+                    $inventory->formulir_id = $group->formulir->id;
+                    $inventory->item_id = $expedition_order_item->id;
+                    $inventory->quantity = $expedition_order_item->quantity * $expedition_order_item->converter;
+                    $inventory->price = $expedition_order_item->price / $expedition_order_item->converter;
+                    $inventory->form_date = $group->formulir->form_date;
+                    $inventory->warehouse_id = $warehouse->id;
 
-            $inventory = new Inventory();
-            $inventory->formulir_id = $group->formulir->id;
-            $inventory->item_id = $expedition_order_item->id;
-            $inventory->quantity = $expedition_order_item->quantity * $expedition_order_item->converter;
-            $inventory->price = $expedition_order_item->price / $expedition_order_item->converter;
-            $inventory->form_date = $group->formulir->form_date;
-            $inventory->warehouse_id = $$warehouse->id;
+                    $inventory_helper = new InventoryHelper($inventory);
+                    $inventory_helper->in();
 
-            $inventory_helper = new InventoryHelper($inventory);
-            $inventory_helper->in();
-
-            $available_quantity = self::availableQuantity($expedition_order->form_reference_id, $expedition_order_item->item_id);
-            if ($available_quantity == 0) {
-                $is_finish = true;
-            } else {
-                $is_finish = false;
+                    $available_quantity = self::availableQuantity($expedition_order->form_reference_id, $expedition_order_item->item_id);
+                    if ($available_quantity == 0) {
+                        $is_finish = true;
+                    } else {
+                        $is_finish = false;
+                    }
+                }
             }
+            $continue = true;
         }
 
+        // Journal Account Payable Purchasing
         $account_receiveable = JournalHelper::getAccount('point purchasing', 'account payable');
         $position = JournalHelper::position($account_receiveable);
         $journal = new Journal;
@@ -325,6 +340,7 @@ class ExpeditionOrderHelper
         $journal->subledger_type = get_class(new Person);
         $journal->save();
 
+        \Log::info('purchasing '. $position. ' ' .$journal->$position);
         JournalHelper::checkJournalBalance($group->formulir_id);
 
         // update expedition reference 
@@ -333,5 +349,16 @@ class ExpeditionOrderHelper
             $expedition_reference->finish = 1;
             $expedition_reference->save();
         }
+    }
+
+    public static function createWarehouse()
+    {
+        $warehouse = new Warehouse;
+        $warehouse->code = WarehouseHelper::getLastCode();
+        $warehouse->name = 'in transit';
+        $warehouse->created_by = auth()->user()->id;
+        $warehouse->save();
+
+        return $warehouse;
     }
 }
