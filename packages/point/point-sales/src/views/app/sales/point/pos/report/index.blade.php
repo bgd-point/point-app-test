@@ -34,10 +34,7 @@
                     </a>
                     @endif
                     @if(auth()->user()->may('read.point.sales.pos.report'))
-                    <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" onclick="exportPDF()"> export to PDF</a>
-                    <div id="preloader" style="display:none; margin-top:5px; float: right;position: relative;">
-                        <i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>
-                    </div>
+                    <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" onclick="exportPDF()"> export to PDF</a>
                     @endif
                     <br><br>
                     <table class="table tabble-striped table-bordered" cellpadding="0" cellspacing="0" border="0" >
@@ -85,7 +82,8 @@
         var date_from = $("#date-from").val();
         var date_to = $("#date-to").val();
         var search = $("#search").val();
-        $("#preloader").fadeIn();
+        var loader = '<i class="fa fa-spinner fa-spin" style="font-size:22px;"></i>';
+        $('#btn-pdf').html(loader);
         $(".button-export").addClass('disabled');
         $.ajax({
             url: '{{url("sales/point/pos/sales-report/pdf")}}',
@@ -96,11 +94,11 @@
             },
             success: function(result) {
                 console.log(result);
-                $("#preloader").fadeOut();
+                $('#btn-pdf').html('Export to PDF');
                 $(".button-export").removeClass('disabled');
                 notification('export to PDF data success, please check your email in a few moments');
             }, error:  function (result) {
-                $("#preloader").fadeOut();
+                $('#btn-pdf').html('Export to PDF');
                 $(".button-export").removeClass('disabled');
                 notification('export to PDF data failed, please try again');
             }
