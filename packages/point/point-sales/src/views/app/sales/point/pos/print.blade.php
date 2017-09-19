@@ -48,8 +48,8 @@
         }
     </style>
 </head>
-<body onLoad="window.print()">
-    <div class="page" 
+<body onLoad="window.print(); next()">
+    <div class="page" >
     @if($warehouse_profiles->store_name)
     <strong style="font-size:18px; text-transform: uppercase;">{{$warehouse_profiles->store_name}}</strong> <br/>
     <font style="font-size:12px;text-transform: capitalize;">
@@ -135,10 +135,15 @@
          </tr>
 
      </tbody>
- </table>
- <br />
- <br />
-</div>
+    </table>
+    <br />
+    <br />
+    </div>
 
+<script type="text/javascript">
+    function next () {
+        location.href = '{{url("sales/point/pos/create")}}'
+    }
+</script>
 </body>
 </html>
