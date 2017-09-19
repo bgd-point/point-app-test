@@ -4,7 +4,7 @@
 </a>
 @endif
 @if(auth()->user()->may('create.point.sales.pos.pricing'))
-<a href="{{ url('sales/point/pos/create') }}" class="btn {{\Request::segment(4)=='create'?'btn-primary':'btn-info'}}">
+<a href="{{ url('sales/point/pos/create#posview') }}" class="btn {{\Request::segment(4)=='create'?'btn-primary':'btn-info'}}">
     Create
 </a>
 @endif

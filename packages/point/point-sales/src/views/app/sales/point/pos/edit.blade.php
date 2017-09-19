@@ -5,7 +5,7 @@
     <h2 class="sub-header">Point of Sales</h2>
 
     <div class="panel panel-default">
-        <div class="panel-body">
+        <div class="panel-body" id="posview">
             <form action="{{ url('sales/point/pos/create') }}" name="addToCart" id="addToCart" method="get" class="form-horizontal row">
                 <div class="col-xs-12 col-md-4">
                     <img src="{{url_logo()}}" height="80px" width="auto" class="img pull-left" style="margin-left: 10px">
