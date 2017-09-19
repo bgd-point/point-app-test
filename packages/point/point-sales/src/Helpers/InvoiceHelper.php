@@ -137,6 +137,9 @@ class InvoiceHelper
             $journal->subledger_id = $inventory->item_id;
             $journal->subledger_type = get_class($inventory->item);
             $journal->save();
+
+            \Log::info('inventory credit '. $journal->credit);
+
         }
         
         // Journal tax exclude and non-tax
@@ -145,6 +148,7 @@ class InvoiceHelper
                 'value_of_account_receivable' => $total,
                 'value_of_income_tax_payable' => $tax,
                 'value_of_sale_of_goods' => $subtotal,
+                'value_of_cost_of_sales' => $cost_of_sales,
                 'value_of_discount' => $discount * (-1),
                 'value_of_expedition_income' => $invoice->expedition_fee,
                 'formulir' => $formulir,
@@ -159,6 +163,7 @@ class InvoiceHelper
                 'value_of_account_receivable' => $total,
                 'value_of_income_tax_payable' => $tax,
                 'value_of_sale_of_goods' => $tax_base,
+                'value_of_cost_of_sales' => $cost_of_sales,
                 'value_of_discount' => $discount,
                 'value_of_expedition_income' => $invoice->expedition_fee,
                 'formulir' => $formulir,
@@ -248,5 +253,17 @@ class InvoiceHelper
             $journal->subledger_type = get_class($data['invoice']->person);
             $journal->save();
         }
+
+        $cost_of_sales_account = JournalHelper::getAccount('point sales indirect', 'cost of sales');
+        $journal = new Journal;
+        $journal->form_date = $data['formulir']->form_date;
+        $journal->coa_id = $cost_of_sales_account;
+        $journal->description = 'invoice indirect sales "' . $data['formulir']->form_number.'"';
+        $journal->debit = $data['value_of_cost_of_sales'];
+        $journal->form_journal_id = $data['formulir']->id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
     }
 }
