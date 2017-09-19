@@ -20,8 +20,8 @@ class GeneralLedgerController extends Controller
         $date_from = date('Y-m-01 00:00:00');
         $date_to = date('Y-m-d 23:59:59');
         $view = view('framework::app.accounting.general-ledger.index');
-        $view->list_coa = Coa::where('id', '>', 0)->orderBy('coa_number')->orderBy('name')->get();
-        $view->coa_id = \Input::get('coa_filter') ?: 0;
+        $view->list_coa = Coa::active()->orderBy('coa_number')->orderBy('name')->get();
+        $view->coa_id = \Input::get('coa_filter') ?: [];
         $view->date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : $date_from;
         $view->date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : $date_to;
         $view->journals = AccountingHelper::queryGeneralLedger($view->date_from, $view->date_to, $view->coa_id);
@@ -33,13 +33,12 @@ class GeneralLedgerController extends Controller
         $file_name = 'General Ledger '.auth()->user()->id . '' . date('Y-m-d_His');
         $date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : date('Y-m-01 00:00:00');
         $date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : date('Y-m-d 23:59:59');
-        $coa_id = \Input::get('coa_filter') ?: 0;
+        $coa_id = unserialize(urldecode(\Input::get('coa_filter'))) ? : 0;
         $journals = AccountingHelper::queryGeneralLedger($date_from, $date_to, $coa_id);
-        
         \Excel::create($file_name, function($excel) use ($date_from, $date_to, $coa_id, $journals) {
             $excel->sheet('General Ledger', function($sheet) use ($date_from, $date_to, $coa_id, $journals) {
                 $data = array(
-                    'list_coa' => Coa::where('id', '>', 0)->orderBy('coa_number')->orderBy('name')->get(),
+                    'list_coa' => Coa::active()->orderBy('coa_number')->orderBy('name')->get(),
                     'coa_id' => $coa_id,
                     'journals' => $journals,
                     'date_to' => $date_to,

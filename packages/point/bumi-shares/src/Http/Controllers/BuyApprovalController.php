@@ -73,7 +73,7 @@ class BuyApprovalController extends Controller
         access_is_allowed('create.bumi.shares.buy');
 
         $view = view('bumi-shares::app.facility.bumi-shares.buy.request-approval');
-        $view->list_shares_buy = Buy::joinFormulir()->notArchived()->approvalPending()->notCanceled()->paginate(100);
+        $view->list_shares_buy = Buy::joinFormulir()->notArchived()->approvalPending()->notCanceled()->selectOriginal()->paginate(100);
         return $view;
     }
 

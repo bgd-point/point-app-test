@@ -87,6 +87,7 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::get('/invoice/basic/{id}/edit', 'Basic\InvoiceController@edit');
         Route::put('/invoice/basic/{id}', 'Basic\InvoiceController@update');
 
+        Route::get('/invoice/{id}/print-barcode', 'InvoiceController@printBarcode');
         Route::get('/invoice/{id}/archived', 'InvoiceController@archived');
         Route::get('/invoice/create-step-1', 'InvoiceController@createStep1');
         Route::get('/invoice/create-step-2/{person_supplier_id}', 'InvoiceController@createStep2');

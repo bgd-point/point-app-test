@@ -269,4 +269,12 @@ class InvoiceController extends Controller
         $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.invoice-pdf', $data);
         return $pdf->download($invoice->formulir->form_number.'.pdf');
     }
+
+    public function printBarcode($id)
+    {
+        $view = view('point-purchasing::app.purchasing.point.inventory.invoice.print-barcode');
+        $view->invoice = Invoice::find($id);
+        
+        return $view;
+    }
 }
