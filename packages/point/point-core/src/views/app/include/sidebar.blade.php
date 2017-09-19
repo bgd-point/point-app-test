@@ -2,7 +2,7 @@
     <!-- Sidebar Brand -->
     <div id="sidebar-brand" class="themed-background">
         <a href="/" class="sidebar-title">
-            <img src="{{asset('core/assets/img/logo.png')}}" style="height:30px"> <span style="text-transform: lowercase !important">BETA</span>
+            <img src="{{asset('core/assets/img/logo.png')}}" style="height:30px">@if((\Request::segment(3) != 'pos') && (\Request::segment(4) != 'create' )) <span style="text-transform: lowercase !important">BETA</span>@endif
         </a>
     </div>
     <!-- END Sidebar Brand -->

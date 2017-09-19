@@ -69,14 +69,16 @@ class PosHelper
 
     public static function validate($request, $item_id, $quantity, $customer_id, $price, $money_received)
     {
+        if (!self::getCustomer()) {
+            throw new PointException("PLEASE FILL IN THE FIELDS CORRECTLY");
+        }
+
         if (!isset($item_id) || !isset($quantity) || !isset($customer_id) || !isset($price) || !isset($money_received)) {
-            gritter_error("please fill in the fields correctly");
-            return redirect()->back();
+            throw new PointException("PLEASE FILL IN THE FIELDS CORRECTLY");
         }
 
         if ($money_received < number_format_db($request->input('foot_total'))) {
-            gritter_error("Failed, cash payment less");
-            return redirect()->back();
+            throw new PointException("FAILED, CASH PAYMENT LESS");
         }
     }
 
@@ -128,10 +130,15 @@ class PosHelper
         $formulir->form_status = 0;
         $cost_of_sales = self::storePosItem($request, $pos, $formulir, $item_id, $quantity, $discount, $customer_id, $price, $money_received, $warehouse_id);
         
+        $print = false;
         if ($request->input('action') == 'save') {
             $formulir->form_status = 1;
             $cost_of_sales = self::journalInventory($request, $pos, $formulir, $item_id, $quantity, $discount, $customer_id, $price, $money_received, $warehouse_id);
             self::journalPos($request, $pos, $formulir, $cost_of_sales, $item_id, $quantity, $discount, $customer_id, $price, $money_received, $warehouse_id);
+
+            if ($request->input('print')) {
+                $print = true;
+            }
         }
 
         if ($request->input('action') == 'cancel') {
@@ -141,11 +148,11 @@ class PosHelper
         $formulir->save();
         
         if (!TempDataHelper::get('pos', auth()->user()->id, ['is_pagination' => true])) {
-            gritter_error('no goods for sale');
-            return redirect()->back();
+            throw new PointException('NO GOODS FOR SALES');
         }
         
-        return $pos;
+
+        return ['pos' => $pos, 'print' => $print];
     }
 
     public static function storePosItem($request, $pos, $formulir, $item_id, $quantity, $discount, $customer_id, $price, $money_received, $warehouse_id)
@@ -227,7 +234,7 @@ class PosHelper
         // JOURNAL #1 of #6 - PETTY CASH
         $warehouse = Warehouse::find($warehouse_id);
         if (! $warehouse->petty_cash_account) {
-            throw new PointException('Please set petty cash account for your warehouse');
+            throw new PointException('PLEASE SET PETTY CASH ACCOUNT FOR YOUR WAREHOUSE');
         }
         $journal = new Journal;
         $journal->form_date = $pos->formulir->form_date;

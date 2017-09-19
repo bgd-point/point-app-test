@@ -1,22 +1,40 @@
-<style>
-    @media print {
-        * {
-            text-transform: uppercase;
-            width: 230px;
-            font-family: "Lucida Console", Monaco, monospace;
-            font-size: {{ \Point\Core\Models\Setting::getFontSize() }}px;
-        }
-        table {
-            
-            border-collapse: collapse;
-            border-spacing: 0;
-        }
-        tr, th, td {
-            border: 0;
-            border-collapse: collapse;
-            border-spacing: 0;
-            padding: 3px 5px;
-        } 
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PRINT POS</title>
+    <style>
+        @media print {
+            * {
+                text-transform: uppercase;
+                width: 230px;
+                font-family: "Lucida Console", Monaco, monospace;
+                font-size: {{ \Point\Core\Models\Setting::getFontSize() }}px;
+            }
+            table {
+                
+                border-collapse: collapse;
+                border-spacing: 0;
+            }
+            tr, th, td {
+                border: 0;
+                border-collapse: collapse;
+                border-spacing: 0;
+                padding: 3px 5px;
+            } 
+            .text-left {
+                text-align: left;
+            }
+
+            .text-right {
+                text-align: right;
+            }
+
+            .text-center {
+                text-align: center;
+            }
+        }    
+
         .text-left {
             text-align: left;
         }
@@ -28,32 +46,20 @@
         .text-center {
             text-align: center;
         }
-    }    
-
-    .text-left {
-        text-align: left;
-    }
-
-    .text-right {
-        text-align: right;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-</style>
-
-<div class="page">
+    </style>
+</head>
+<body onLoad="window.print(); next()">
+    <div class="page" >
     @if($warehouse_profiles->store_name)
-        <strong style="font-size:18px; text-transform: uppercase;">{{$warehouse_profiles->store_name}}</strong> <br/>
-        <font style="font-size:12px;text-transform: capitalize;">
-            {{$warehouse_profiles->address}} <br/>
-            {{$warehouse_profiles->phone}} 
-        </font>
+    <strong style="font-size:18px; text-transform: uppercase;">{{$warehouse_profiles->store_name}}</strong> <br/>
+    <font style="font-size:12px;text-transform: capitalize;">
+        {{$warehouse_profiles->address}} <br/>
+        {{$warehouse_profiles->phone}} 
+    </font>
     @else
-        Store Name <br/>
-        Addess......... <br/>
-        Phone Number 
+    Store Name <br/>
+    Addess......... <br/>
+    Phone Number 
     @endif
     <br/> <hr><br/>
 
@@ -125,11 +131,19 @@
             <tr><td></td><td></td></tr>
             <tr><td></td><td></td></tr>
             <tr style="font-size:12px;">
-               <td colspan="2" class="text-center">{{ get_end_notes('sales pos') }}</td> 
-            </tr>
+             <td colspan="2" class="text-center">{{ get_end_notes('sales pos') }}</td> 
+         </tr>
 
-        </tbody>
+     </tbody>
     </table>
-<br />
-<br />
-</div>
+    <br />
+    <br />
+    </div>
+
+<script type="text/javascript">
+    function next () {
+        location.href = '{{url("sales/point/pos/create")}}'
+    }
+</script>
+</body>
+</html>
