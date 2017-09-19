@@ -5,7 +5,7 @@
     <h2 class="sub-header">Point of Sales</h2>
 
     <div class="panel panel-default">
-        <div class="panel-body">
+        <div class="panel-body" id="posview">
             <form action="{{ url('sales/point/pos/create') }}" name="addToCart" id="addToCart" method="get" class="form-horizontal row">
                 <div class="col-xs-12 col-md-4">
                     <img src="{{url_logo()}}" height="80px" width="auto" class="img pull-left" style="margin-left: 10px">
@@ -61,7 +61,7 @@
                 {!! csrf_field() !!}
                 <input type="hidden" name="form_date" value="{{ date('d-m-y', time()) }}" />
                 <input type="hidden" readonly name="input_customer" id="input_customer" value="{{ Point\PointSales\Helpers\PosHelper::getCustomer() }}">
-                <div class="table-responsive">
+                <div class="table-responsive" id="formpos">
                     <table class="table">
                         <thead>
                             <tr>
@@ -436,6 +436,7 @@
         $("#content-customer").html(html);
         $("#input_customer").val(value);
         resetItemDefault();
+        window.location.hash = '#formpos';
     }
 
     function addRow(result){
