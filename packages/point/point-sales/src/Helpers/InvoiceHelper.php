@@ -137,9 +137,6 @@ class InvoiceHelper
             $journal->subledger_id = $inventory->item_id;
             $journal->subledger_type = get_class($inventory->item);
             $journal->save();
-
-            \Log::info('inventory credit '. $journal->credit);
-
         }
         
         // Journal tax exclude and non-tax
