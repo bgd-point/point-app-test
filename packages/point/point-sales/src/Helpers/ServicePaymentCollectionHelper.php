@@ -3,6 +3,7 @@
 namespace Point\PointSales\Helpers;
 
 use Illuminate\Http\Request;
+use Point\Core\Exceptions\PointException;
 use Point\Framework\Helpers\AllocationHelper;
 use Point\Framework\Helpers\ReferHelper;
 use Point\PointSales\Models\Service\PaymentCollection;
@@ -54,6 +55,10 @@ class ServicePaymentCollectionHelper
         for ($i=0 ; $i < count($references) ; $i++) {
             $reference = $references[$i];
             
+            if ($references_amount[$i] > $references_amount_original[$i]) {
+                throw new PointException("AMOUNT FROM ".$reference->formulir->form_number." CAN NOT BE MORE THAN ". number_format_price($references_amount_original[$i]));
+            }
+
             $payment_collection_detail = new PaymentCollectionDetail;
             $payment_collection_detail->point_sales_service_payment_collection_id = $payment_collection->id;
             $payment_collection_detail->detail_notes = $references_notes[$i];

@@ -92,7 +92,7 @@
                                 <td>
                                 <a href="javascript:void(0)" class="remove-row btn btn-danger" data-item="{{$carts[$i]['id']}}"><i class="fa fa-trash"></i></a></td>
                                 <td style="vertical-align:middle">
-                                    {{ $item->codeName }}
+                                    <div style="margin-top:5px" id="item_name-{{$i}}">{{ $item->codeName }}</div>
                                     <input type="hidden" id="item-id-{{$i}}" name="item_id[]" value="{{$carts[$i]['id']}}"/>
                                 </td>
                                 <td>
@@ -329,7 +329,6 @@
         
         
     $(function() {
-        App.sidebar('toggle-sidebar');
         @if(!Point\PointSales\Helpers\PosHelper::getCustomer())
             $('#contact_id')[0].selectize.focus();
         @else
@@ -435,15 +434,15 @@
         html = "<div class='content-show'>"+customer+"</div>";
         $("#content-customer").html(html);
         $("#input_customer").val(value);
-        resetItemDefault();
         window.location.hash = '#formpos';
+        resetItemDefault();
     }
 
     function addRow(result){
         var label = $("#unit_name_default").val();
         item_table.row.add( [
             '<a href="javascript:void(0)" class="remove-row btn btn-danger" data-item="'+result.id+'"><i class="fa fa-trash"></i></a>',
-            '<div style="margin-top:5px">'+result.item_name+'</div>'
+            '<div style="margin-top:5px" id="item_name-'+counter+'">'+result.item_name+'</div>'
             +'<input type="hidden" id="item-id-'+counter+'" name="item_id[]" value="'+result.id+'"/>',
             '<div class="input-group">'
                 +'<input name="quantity[]"  value="'+result.quantity+'" id="item-quantity-'+counter+'" class="form-control format-quantity calculate text-right" value="1" type="text" onchange="updateTemp('+counter+')" autocomplete="off">'
@@ -501,7 +500,7 @@
         if(temps === true){ 
             for (var i = 0; i < counter; i++) {
                 if($('#item_name-'+i).length != 0){
-                    var item = $("#item_name-"+i).val();
+                    var item = $("#item_name-"+i).html();
                     if( item_name === item){
                         $("#item-quantity-"+i).val(quantity);
                         break;

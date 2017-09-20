@@ -4,6 +4,7 @@ namespace Point\PointPurchasing\Helpers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Point\Core\Exceptions\PointException;
 use Point\Framework\Helpers\AllocationHelper;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\ReferHelper;
@@ -73,6 +74,10 @@ class PaymentOrderHelper
             $reference = $references[$i];
             if (get_class($reference) == get_class(new CutOffPayableDetail())) {
                 $reference->formulir_id = $reference->cutoffPayable->formulir_id;
+            }
+
+            if ($references_amount[$i] > $references_amount_original[$i]) {
+                throw new PointException("AMOUNT FROM ".$reference->formulir->form_number." CAN NOT BE MORE THAN ". number_format_price($references_amount_original[$i]));
             }
             
             $payment_order_detail = new PaymentOrderDetail;
