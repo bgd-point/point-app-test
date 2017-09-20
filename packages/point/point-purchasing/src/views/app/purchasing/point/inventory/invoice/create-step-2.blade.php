@@ -9,76 +9,302 @@
         </ul>
         <h2 class="sub-header">Invoice</h2>
         @include('point-purchasing::app.purchasing.point.inventory.invoice._menu')
-        <input type="hidden" name="supplier_id" id="supplier-id" value="{{$supplier_id}}"/>
+
+        @include('core::app.error._alert')
+
         <div class="panel panel-default">
             <div class="panel-body">
-                <div class="table-responsive">
-                    {!! $list_goods_received->render() !!}
-                    <table class="table table-striped table-bordered">
-                        <thead>
-                        <tr>
-                            <th width="100px" class="text-center"></th>
-                            <th>DATE</th>
-                            <th>FORM NUMBER</th>
-                            <th>SUPPLIER</th>
-                            <th>WAREHOUSE</th>
-                            <th>ITEMS</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php $i=0; ?>
-                        @foreach($list_goods_received as $goods_received)
-                            <tr id="list-{{$goods_received->formulir_id}}">
-                                <td class="text-center">
-                                    <input type="checkbox" name="goods_received_id[]" id="goods-received-id-{{$i}}" value="{{$goods_received->formulir_id}}">
-                                </td>
-                                <td>{{ date_format_view($goods_received->formulir->form_date) }}</td>
-                                <td>
-                                    <a href="{{ url('purchasing/point/goods-received/'.$goods_received->id) }}">{{ $goods_received->formulir->form_number}}</a>
-                                </td>
-                                <td>
-                                    {!! get_url_person($goods_received->supplier_id) !!}
-                                </td>
-                                <td>
-                                    <a href="{{ url('master/warehouse/'.$goods_received->warehouse_id) }}">{{ $goods_received->warehouse->codeName}}</a>
-                                </td>
-                                <td>
-                                    @foreach($goods_received->items as $goods_received_item)
-                                        {{ $goods_received_item->item->codeName }}
-                                        = {{ number_format_quantity($goods_received_item->quantity) }} {{ $goods_received_item->unit }}
-                                        <br/>
-                                    @endforeach
-                                </td>
-                            </tr>
-                        <?php $i++; ?>
-                        @endforeach
-                        </tbody>
-                    </table>
-                    {!! $list_goods_received->render() !!}
-                </div>
-                <div class="form-group">
-                    <div class="col-md-12">
-                        <button onclick="next()" class="btn btn-effect-ripple btn-primary">Next</button>
+                <form action="{{url('purchasing/point/invoice')}}" method="post" class="form-horizontal form-bordered">
+                    <input type="hidden" name="reference_type" value="{{get_class($goods_received)}}">
+                    <input type="hidden" name="reference_id" value="{{$goods_received->id}}">
+                    {!! csrf_field() !!}
+                    <fieldset>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <legend><i class="fa fa-angle-right"></i> Form</legend>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Date</label>
+                        <div class="col-md-3">
+                            <input type="text" name="form_date" class="form-control date input-datepicker"
+                                   data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}"
+                                   value="{{ date(date_format_get(), strtotime(\Carbon::now())) }}">
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group bootstrap-timepicker">
+                                <input type="text" id="time" name="time" class="form-control timepicker">
+                                <span class="input-group-btn">
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-primary"><i class="fa fa-clock-o"></i></a>
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Due Date</label>
+                        <div class="col-md-3">
+                            <input type="text" name="due_date" class="form-control date input-datepicker"
+                                   data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}"
+                                   value="{{ date(date_format_get(), strtotime(\Carbon::now())) }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Supplier</label>
+                        <div class="col-md-6 content-show">
+                            <input type="hidden" name="supplier_id" value="{{$goods_received->supplier_id}}">
+                            {!! get_url_person($goods_received->supplier_id) !!}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Notes</label>
+                        <div class="col-md-6">
+                            <input type="text" name="notes" class="form-control" value="">
+                        </div>
+                    </div>
+                    <fieldset>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <legend><i class="fa fa-angle-right"></i> Item</legend>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table id="item-datatable" class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Goods Delivered NUMBER</th>
+                                        <th>ITEM</th>
+                                        <th class="text-right">QUANTITY</th>
+                                        <th class="text-right">PRICE</th>
+                                        <th class="text-right">DISCOUNT</th>
+                                        <th class="text-right">ALLOCATION</th>
+                                        <th class="text-right">TOTAL</th>
+                                    </tr>
+                                    </thead>
+                                    <?php $counter = 0; $expedition_fee = 0; ?>
+                                    <tbody class="manipulate-row">
+                                        @foreach($goods_received->items as $goods_received_item)
+                                            <?php
+                                                $purchase_order_item = Point\PointPurchasing\Helpers\InvoiceHelper::searchPurchaseOrderDetail($goods_received, $goods_received_item);
+                                            ?>
+                                            <tr>
+                                                <td>
+                                                    <a href="{{url('purchasing/point/goods-received/'.$goods_received->id)}}">{{$goods_received->formulir->form_number}}</a>
+                                                    <br/>
+                                                    {{date_format_view($goods_received->formulir->form_date)}}
+                                                    <input type="hidden" name="item_id[]" value="{{$goods_received_item->item_id}}">
+                                                    <input type="hidden" name="reference_item_id[]" value="{{$goods_received_item->id}}">
+                                                    <input type="hidden" name="reference_item_type[]" value="{{get_class($goods_received_item)}}">
+                                                    <input type="hidden" name="warehouse_id[]" value="{{$goods_received->warehouse_id}}">
+
+                                                </td>
+                                                <td>
+                                                    <a href="{{ url('master/item/'.$goods_received_item->item_id) }}">{{ $goods_received_item->item->codeName }}</a>
+                                                </td>
+                                                <td class="text-right">
+                                                    <input id="item-quantity-{{$counter}}" type="hidden"
+                                                           name="item_quantity[]"
+                                                           class="form-control format-quantity text-right calculate"
+                                                           value="{{ $goods_received_item->quantity }}"/>
+                                                    {{ number_format_quantity($goods_received_item->quantity) }} {{ $goods_received_item->unit }}
+                                                    <input type="hidden" name="item_unit[]" value="{{ $goods_received_item->unit }}">
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="item-price-{{$counter}}" name="item_price[]"
+                                                           class="form-control format-quantity calculate text-right"
+                                                           value="{{ $goods_received_item->price }}"/>
+
+                                                    <input type="hidden" name="item_price_original[]"
+                                                           class="form-control" readonly="" 
+                                                           value="{{ $purchase_order_item->price }}"/>
+                                                </td>
+                                                <td>
+                                                    <div class="input-group">
+                                                        <input type="text" id="item-discount-{{$counter}}"
+                                                               name="item_discount[]" maxlength="3"
+                                                               class="form-control format-quantity calculate text-right"
+                                                               value="{{ $goods_received_item->discount }}"/>
+                                                        <span class="input-group-addon">%</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <?php $allocation = Point\Framework\Models\Master\Allocation::find($goods_received_item->allocation_id); ?>
+                                                    <input type="text" class="form-control" readonly value="{{ $allocation ? $allocation->name : 'NO ALLOCATION'}}">
+                                                    <input type="hidden" name="allocation_id[]" value="{{ $allocation ? $allocation->id : 1}}">
+                                                </td>
+                                                <td>
+                                                    <input type="text" readonly id="item-total-{{$counter}}"
+                                                           class="form-control format-quantity text-right" value=""/>
+                                                </td>
+                                            </tr>
+                                            <?php $counter++;?>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="6" class="text-right">SUB TOTAL</td>
+                                        <td><input type="text" readonly id="subtotal" name="subtotal" 
+                                                   class="form-control format-quantity calculate text-right"
+                                                   onclick="setToNontax()" value="0"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="text-right">DISCOUNT</td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input type="text" id="discount" name="discount"
+                                                    maxlength="3"
+                                                    class="form-control format-quantity calculate text-right"
+                                                    style="min-width: 100px"
+                                                    value="{{$goods_received->purchaseOrder->discount}}"/>
+                                                <span class="input-group-addon">%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="text-right">TAX BASE</td>
+                                        <td><input type="text" readonly id="tax_base" name="tax_base"
+                                                   class="form-control format-quantity calculate text-right" value="0"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="text-right">TAX</td>
+                                        <td><input type="text" readonly="" id="tax" name="tax"
+                                                   class="form-control format-quantity calculate text-right" value="0"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6"></td>
+                                        <td>
+                                            <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
+                                                   {{ $goods_received->purchaseOrder->type_of_tax == 'include' ? 'checked'  : '' }} onchange="calculate()"
+                                                   value="include"> Include Tax <br/>
+                                            <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
+                                                   {{ $goods_received->purchaseOrder->type_of_tax == 'exclude' ? 'checked'  : '' }} onchange="calculate()"
+                                                   value="exclude"> Exlude Tax <br/>
+                                            <input type="hidden" id="tax-choice-non-tax" name="type_of_tax" value="non">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="text-right">EXPEDITION FEE</td>
+                                        <td><input type="text" id="expedition-fee" name="expedition_fee"
+                                                   class="form-control format-price calculate text-right"
+                                                   value="{{number_format_db($goods_received->purchaseOrder->expedition_fee)}}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="text-right">TOTAL</td>
+                                        <td><input type="text" readonly id="total" name="total" 
+                                                   class="form-control format-quantity calculate text-right" value="0"/>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <fieldset>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <legend><i class="fa fa-angle-right"></i> PERSON IN CHARGE</legend>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">FORM CREATOR</label>
+
+                            <div class="col-md-6 content-show">
+                                {{\Auth::user()->name}}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="form-group">
+                        <div class="col-md-6 col-md-offset-3">
+                            <button type="submit" class="btn btn-effect-ripple btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 @stop
+
 @section('scripts')
-<script type="text/javascript">
-    function next() {
-        var goods_received_id = [];
-        for (var i = 0; i < {{$i}}; i++) {
-            if ($("#goods-received-id-"+i).is(":checked")) {    
-                goods_received_id.push($("#goods-received-id-"+i).val());
+    <script>
+        var item_table = initDatatable('#item-datatable');
+
+        $('.calculate').keyup(function () {
+            calculate();
+        });
+
+        $(function () {
+            var tax_status = {!! json_encode($goods_received->purchaseOrder->type_of_tax) !!};
+            if (tax_status == 'include') {
+                $("#tax-choice-include-tax").trigger("click");
+            } else if (tax_status == 'exclude') {
+                $("#tax-choice-exclude-tax").trigger("click");
+            } else {
+                $("#tax-choice-non-tax").val("non");
             }
-        };
 
-        var supplier_id = $("#supplier-id").val();
-        var url = '{{url()}}/purchasing/point/invoice/create-step-3/?supplier_id='+supplier_id+'&goods_received_id='+goods_received_id;
-        location.href = url;
-    }
+            calculate();
+        });
 
-</script>
+        function setToNontax() {
+            $("#tax-choice-include-tax").attr("checked", false);
+            $("#tax-choice-exclude-tax").attr("checked", false);
+            $("#tax-choice-non-tax").val("non");
+            calculate();
+        }
+
+        function calculate() {
+            var rows_length = $("#item-datatable").dataTable().fnGetNodes().length;
+            var subtotal = 0;
+            for (var i = 0; i < rows_length; i++) {
+                if (dbNum($('#item-discount-' + i).val()) >= 100) {
+                    dbNum($('#item-discount-' + i).val(99))
+                }
+                var total_per_row = dbNum($('#item-quantity-' + i).val()) * dbNum($('#item-price-' + i).val())
+                        - ( dbNum($('#item-quantity-' + i).val()) * dbNum($('#item-price-' + i).val()) / 100 * dbNum($('#item-discount-' + i).val()) );
+                subtotal += total_per_row;
+                $('#item-total-' + i).val(appNum(total_per_row));
+            }
+
+            $('#subtotal').val(appNum(subtotal));
+
+            if (dbNum($('#discount').val()) >= 100) {
+                dbNum($('#discount').val(99))
+            }
+
+            var discount = dbNum($('#discount').val());
+            if($('#tax-choice-include-tax').prop('checked')) {
+                $('#discount').val(0);
+                $('#discount').prop('readonly', true);
+                var discount = 0;
+            } else {
+                $('#discount').prop('readonly', false);
+            }
+            var tax_base = subtotal - (subtotal / 100 * discount);
+            var tax = 0;
+
+            if ($('#tax-choice-exclude-tax').prop('checked')) {
+                tax = tax_base * 10 / 100;
+                $("#tax-choice-non-tax").val("exclude");
+            }
+
+            if ($('#tax-choice-include-tax').prop('checked')) {
+                tax_base = tax_base * 100 / 110;
+                tax = tax_base * 10 / 100;
+                $("#tax-choice-non-tax").val("include");
+            }
+
+            $('#tax_base').val(appNum(tax_base));
+            $('#tax').val(appNum(tax));
+            var expedition_fee = dbNum($('#expedition-fee').val());
+            $('#total').val(appNum(tax_base + tax + expedition_fee));
+        }
+    </script>
 @stop

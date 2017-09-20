@@ -45,39 +45,15 @@ class InvoiceController extends Controller
     public function createStep1()
     {
         $view = view('point-purchasing::app.purchasing.point.inventory.invoice.create-step-1');
-        $view->list_goods_received = GoodsReceived::joinFormulir()
-            ->availableToInvoiceGroupSupplier()
-            ->selectOriginal()
-            ->paginate(100);
+        $view->list_goods_received = GoodsReceived::joinFormulir()->open()->approvalApproved()->notArchived()->orderByStandard()->selectOriginal()->paginate(100);
         return $view;
     }
 
-    public function createStep2($supplier_id)
+    public function createStep2($goods_received_id)
     {
         $view = view('point-purchasing::app.purchasing.point.inventory.invoice.create-step-2');
-        $view->supplier_id = $supplier_id;
-        $view->list_goods_received = GoodsReceived::joinFormulir()
-            ->availableToInvoice($supplier_id)
-            ->selectOriginal()
-            ->paginate(100);
-        return $view;
-    }
+        $view->goods_received = GoodsReceived::find($goods_received_id);
 
-    public function createStep3()
-    {
-        $view = view('point-purchasing::app.purchasing.point.inventory.invoice.create-step-3');
-        $array_goods_received_id = explode(',', \Input::get('goods_received_id'));
-        $view->supplier = Person::find(\Input::get('supplier_id'));
-        $view->list_goods_received = GoodsReceived::joinFormulir()
-            ->whereIn('point_purchasing_goods_received.formulir_id', $array_goods_received_id)
-            ->selectOriginal()
-            ->get();
-        $view->purchase_order = $view->list_goods_received->first()->purchaseOrder; 
-        $view->purchase_order_tax = $view->list_goods_received->first()->purchaseOrder->type_of_tax;
-        $view->purchase_order_discount = $view->list_goods_received->first()->purchaseOrder->discount;
-        $view->purchase_order_expedition_fee = $view->list_goods_received->first()->purchaseOrder->expedition_fee;
-
-        $view->list_user_approval = UserHelper::getAllUser();
         return $view;
     }
 
@@ -100,20 +76,15 @@ class InvoiceController extends Controller
 
         DB::beginTransaction();
 
-        $formulir_id = [];
-        $references = [];
-        $references_id = $request->input('reference_id');
-        $references_type = $request->input('reference_type');
-        for ($i=0; $i < count($references_type); $i++) {
-            $reference = $references_type[$i]::find($references_id[$i]);
-            array_push($references, $reference);
-            array_push($formulir_id, $reference->formulir_id);
-        }
+        $reference_id = $request->input('reference_id');
+        $reference_type = $request->input('reference_type');
+        $reference = $reference_type::find($reference_id);
+        $formulir_id = [$reference->formulir_id];
 
         FormulirHelper::isAllowedToCreate('create.point.purchasing.invoice', date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
 
         $formulir = FormulirHelper::create($request->input(), 'point-purchasing-invoice');
-        $invoice = InvoiceHelper::create($request, $formulir, $references);
+        $invoice = InvoiceHelper::create($request, $formulir, $reference);
         timeline_publish('create.invoice', 'added new invoice '  . $invoice->formulir->form_number);
 
         DB::commit();

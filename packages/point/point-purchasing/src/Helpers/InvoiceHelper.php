@@ -49,7 +49,7 @@ class InvoiceHelper
         return $list_invoice;
     }
 
-    public static function create(Request $request, $formulir, $references = null)
+    public static function create(Request $request, $formulir, $reference = null)
     {
         $invoice = new Invoice;
         $invoice->formulir_id = $formulir->id;
@@ -75,7 +75,7 @@ class InvoiceHelper
             $amount = ($invoice_item->quantity * $invoice_item->price) - ($invoice_item->quantity * $invoice_item->price /100 * $invoice_item->discount);
             AllocationHelper::save($invoice->formulir_id, $invoice_item->allocation_id, $amount);
 
-            if ($references != null) {
+            if ($reference != null) {
                 ReferHelper::create(
                     $request->input('reference_item_type')[$i],
                     $request->input('reference_item_id')[$i],
@@ -90,12 +90,10 @@ class InvoiceHelper
             $subtotal += $amount;
         }
 
-        if ($references != null) {
-            foreach ($references as $reference) {
-                formulir_lock($reference->formulir_id, $invoice->formulir_id);
-                $reference->formulir->form_status = 1;
-                $reference->formulir->save();
-            }
+        if ($reference != null) {
+            formulir_lock($reference->formulir_id, $invoice->formulir_id);
+            $reference->formulir->form_status = 1;
+            $reference->formulir->save();
         }
 
         $formulir->approval_status = 1;
@@ -112,7 +110,7 @@ class InvoiceHelper
         $invoice->type_of_tax = $request->input('type_of_tax');
         $invoice->total = $tax_base + $tax + $invoice->expedition_fee;
         $invoice->save();
-
+        
         // if price has modyfied, journal again
         for ($i=0 ; $i < count($request->input('item_id')) ; $i++) {
             if ($request->input('item_price_original')[$i] != number_format_db($request->input('item_price')[$i])) {
