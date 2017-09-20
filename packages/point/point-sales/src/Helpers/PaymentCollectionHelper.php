@@ -3,6 +3,7 @@
 namespace Point\PointSales\Helpers;
 
 use Illuminate\Http\Request;
+use Point\Core\Exceptions\PointException;
 use Point\Framework\Helpers\AllocationHelper;
 use Point\Framework\Helpers\ReferHelper;
 use Point\PointAccounting\Models\CutOffReceivableDetail;
@@ -68,6 +69,10 @@ class PaymentCollectionHelper
             $reference = $references[$i];
             if (get_class($reference) == get_class(new CutOffReceivableDetail())) {
                 $reference->formulir_id = $reference->cutoffReceivable->formulir_id;
+            }
+
+            if ($references_amount[$i] > $references_amount_original[$i]) {
+                throw new PointException("AMOUNT FROM ".$reference->formulir->form_number." CAN NOT BE MORE THAN ". number_format_price($references_amount_original[$i]));
             }
 
             $payment_collection_detail = new PaymentCollectionDetail;
