@@ -24,7 +24,7 @@ class DownpaymentApprovalController extends Controller
     {
         access_is_allowed('create.point.purchasing.service.downpayment');
 
-        $view = view('point-purchasing::app.purchasing.point.inventory.downpayment.request-approval');
+        $view = view('point-purchasing::app.purchasing.point.service.downpayment.request-approval');
         $view->list_downpayment = Downpayment::selectRequestApproval()->paginate(100);
         return $view;
     }
