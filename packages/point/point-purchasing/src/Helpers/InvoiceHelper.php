@@ -108,9 +108,18 @@ class InvoiceHelper
         $invoice->tax_base = $tax_base;
         $invoice->tax = $tax;
         $invoice->type_of_tax = $request->input('type_of_tax');
+        
         $invoice->total = $tax_base + $tax + $invoice->expedition_fee;
         $invoice->save();
-        
+
+        /**
+         * jika terjadi perubahan discount dan tax di invoice, maka itu dijournal ulang
+         * tapi masalahnya ada 1 PO bisa mempunyai beberap LPB, dan sistem yang sekrang 1 LPB satu invoice.
+         * Solusi apa yang tepat untuk hal ? Sementar di PO bisa terjadi perubahan tax dan discount
+         *
+         * Jika terjadi perubahan di invoice, maka harus di
+         */
+
         // if price has modyfied, journal again
         for ($i=0 ; $i < count($request->input('item_id')) ; $i++) {
             if ($request->input('item_price_original')[$i] != number_format_db($request->input('item_price')[$i])) {

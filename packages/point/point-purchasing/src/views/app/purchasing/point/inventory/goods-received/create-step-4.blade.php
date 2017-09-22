@@ -145,13 +145,14 @@
                                         <th class="text-center">QUANTITY RECEIVED</th>
                                     </tr>
                                     </thead>
-                                    <?php $counter = 0; $value_deliver = 0; ?>
+                                    <?php $counter = 0; $value_deliver = 0; $subtotal = 0;?>
                                     @if(!$reference_expedition_order)
                                     <tbody class="manipulate-row">
                                     @foreach($reference_purchase_order->items as $reference_item)
                                         <?php 
                                         $order_qty = ReferHelper::remaining(get_class($reference_item), $reference_item->id, $reference_item->quantity);
                                         $deliver_qty = ReferHelper::remaining(get_class($reference_item), $reference_item->id, $reference_item->quantity);
+                                        $subtotal += $reference_item->quantity
                                         ?>
                                         <tr>
                                             <td>
@@ -258,7 +259,7 @@
 
                     <input id="total-order" type="hidden" name="value_order" class="form-control text-right" value="0" readonly/>
                     <input id="total-deliver" type="hidden" name="value_deliver" class="form-control text-right calculate" value="0" readonly>
-
+                    
                     <fieldset>
                         <div class="form-group">
                             <div class="col-md-12">
