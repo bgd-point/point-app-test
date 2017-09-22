@@ -261,17 +261,17 @@
                                                 <td><strong id="coa-name-{{$i}}">{{$coa->account}}</strong></td>
                                                 <td>
                                                     @if($cut_off_account_detail)
-                                                        <input type="text" class="form-control format-quantity text-right" readonly value="{{$cut_off_account_detail->debit}}">
+                                                        <input type="text" class="form-control format-accounting text-right" readonly value="{{$cut_off_account_detail->debit}}">
                                                     @else
-                                                        <input type="text" class="form-control format-quantity text-right" readonly value="0">
+                                                        <input type="text" class="form-control format-accounting text-right" readonly value="0">
                                                     @endif
 
                                                 </td>
                                                 <td>
                                                     @if($cut_off_account_detail)
-                                                        <input type="text" class="form-control format-quantity text-right" readonly value="{{$cut_off_account_detail->credit}}">
+                                                        <input type="text" class="form-control format-accounting text-right" readonly value="{{$cut_off_account_detail->credit}}">
                                                     @else
-                                                        <input type="text" class="form-control format-quantity text-right" readonly value="0">
+                                                        <input type="text" class="form-control format-accounting text-right" readonly value="0">
                                                     @endif
 
                                                 </td>
@@ -283,8 +283,8 @@
                                         <tfoot>
                                             <tr>
                                                 <td colspan="2"></td>
-                                                <td align="right"><input type="text" value="{{$foot_debit}}" style="font-weight:bold; font-size:16px" readonly name="foot_debit" id="foot_debit" class="form-control format-quantity text-right" /></td>
-                                                <td align="right"><input type="text" value="{{$foot_credit}}" style="font-weight:bold; font-size:16px" readonly name="foot_credit" id="foot_credit" class="form-control format-quantity text-right"/></td>
+                                                <td align="right"><input type="text" value="{{$foot_debit}}" style="font-weight:bold; font-size:16px" readonly name="foot_debit" id="foot_debit" class="form-control format-accounting text-right" /></td>
+                                                <td align="right"><input type="text" value="{{$foot_credit}}" style="font-weight:bold; font-size:16px" readonly name="foot_credit" id="foot_credit" class="form-control format-accounting text-right"/></td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -322,13 +322,15 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            @if(formulir_view_edit($cut_off_account->formulir, 'update.point.accounting.cut.off.account'))
-                            <a href="{{url('accounting/point/cut-off/account/'.$cut_off_account->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
-                            @endif
-                            @if(formulir_view_cancel($cut_off_account->formulir, 'delete.point.accounting.cut.off.account'))
-                            <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" 
-                               onclick="secureCancelForm('{{url('accounting/point/cut-off/account/cancel')}}', {{$cut_off_account->formulir->id}},
-                               'delete.point.accounting.cut.off.account')"><i class="fa fa-times"></i> cancel</a>
+                            @if(!$cut_off_account->formulir->form_status == 1)
+                                @if(formulir_view_edit($cut_off_account->formulir, 'update.point.accounting.cut.off.account'))
+                                <a href="{{url('accounting/point/cut-off/account/'.$cut_off_account->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
+                                @endif
+                                @if(formulir_view_cancel($cut_off_account->formulir, 'delete.point.accounting.cut.off.account'))
+                                <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" 
+                                   onclick="secureCancelForm('{{url('accounting/point/cut-off/account/cancel')}}', {{$cut_off_account->formulir->id}},
+                                   'delete.point.accounting.cut.off.account')"><i class="fa fa-times"></i> cancel</a>
+                               @endif
                            @endif
                         </div>
                     </div>

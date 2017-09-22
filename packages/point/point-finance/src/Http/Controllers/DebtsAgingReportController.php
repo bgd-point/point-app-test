@@ -33,11 +33,15 @@ class DebtsAgingReportController extends Controller
             return response()->json($this->restrictionAccessMessage());
         }
 
-        if (\Input::get('subledger_id') == 0) {
-            $report = AccountPayableAndReceivable::where('done', false)->where('account_id', \Input::get('coa_id'))->get();
-        } else {
-            $report = AccountPayableAndReceivable::where('done', false)->where('account_id', \Input::get('coa_id'))->where('person_id', \Input::get('subledger_id'))->get();
-        }
+        $subledger_id = \Input::get('subledger_id') ? : 0;
+        $report = AccountPayableAndReceivable::where('done', 0)
+            ->where('account_id', \Input::get('coa_id'))
+            ->where(function ($query) use ($subledger_id) {
+                if ($subledger_id) {
+                    $query->where('person_id', $subledger_id);
+                }
+            })
+            ->get();
 
         $view = view('point-finance::app.finance.point.debts-aging-report._detail');
         $view->list_report = $report;

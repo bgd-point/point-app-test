@@ -213,6 +213,12 @@
                                         <input type="hidden" readonly="" name="invoice_id" value="{{$invoice->id}}">
                                         <input type="submit" class="btn btn-primary" value="Send Email Supplier">
                                     </form>
+                                    <a class="btn btn-effect-ripple btn-info"
+                                    href="{{url('purchasing/point/invoice/'.$invoice->id.'/export')}}">Export PDF</a>
+                                @endif
+                                @if($invoice->formulir->form_status != -1)
+                                <a class="btn btn-effect-ripple btn-info"
+                                    href="{{url('purchasing/point/invoice/'.$invoice->id.'/print-barcode')}}">Print Barcode</a>
                                 @endif
                             </div>
                         </div>

@@ -15,7 +15,7 @@ use Point\PointPurchasing\Models\Inventory\GoodsReceived;
 use Point\PointPurchasing\Models\Inventory\Invoice as InvoicePurchasing;
 use Point\PointPurchasing\Models\Service\Invoice as ServiceInvoicePurchasing;
 
-class FixSeederInvoice extends Seeder
+class RejournalPurchasingAndExpeditionSeeder extends Seeder
 {
     public function run()
     {

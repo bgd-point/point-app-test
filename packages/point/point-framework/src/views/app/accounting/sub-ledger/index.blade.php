@@ -32,6 +32,7 @@
                                 @if($list_subleder)    
                                 <select name="subledger_id" id="subledger-id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
                                     <option></option>
+                                    <option value="all" {{ \Input::get('subledger_id') == 'all' ? 'selected' : ''}}>All</option>
                                     @foreach($list_subleder as $subledger)
                                         <option value="{{$subledger->id}}" {{ $subledger->id != \Input::get('subledger_id') ? : 'selected' }}>{{$subledger->codeName}}</option>
                                     @endforeach

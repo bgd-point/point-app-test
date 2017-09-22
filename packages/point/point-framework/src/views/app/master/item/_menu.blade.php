@@ -24,10 +24,12 @@
     Journal
 </a>
 @endif
+<a href="{{ url('master/item/barcode') }}" class="btn {{\Request::segment(3)=='barcode'?'btn-primary':'btn-info'}}">
+    Print Barcode
+</a>
 @if(access_is_allowed_to_view('create.role'))
 <a href="{{ url('temporary-access/item/item') }}" class="btn {{\Request::segment(3)=='access'?'btn-primary':'btn-info'}}">
     Temporary Access
 </a>
 @endif
-
 <br/><br/>

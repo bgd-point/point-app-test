@@ -86,7 +86,7 @@
                                 $acc_total += $total; // total is subtotal + fee
                             ?>
                             <tr>
-                                <td>{{ date_format_view($stock->date) }}</td>
+                                <td><a href="{{url('facility/bumi-shares/report/stock/detail/'.$stock->formulir_id.'/'.$report_group->shares_id)}}"> {{ date_format_view($stock->date) }} </a></td>
                                 <td>{{ $stock->ownerGroup->name }}</td>
                                 <td>{{ $stock->owner->name }}</td>
                                 <td>{{ $stock->broker->name }}</td>

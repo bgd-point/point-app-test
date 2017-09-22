@@ -44,7 +44,6 @@ class RejournalSalesSeeder extends Seeder
         foreach ($list_invoice as $invoice) {
             $subtotal = 0;
             foreach ($invoice->items as $invoice_detail) {
-                
                 $total_per_row = $invoice_detail->quantity * $invoice_detail->price - $invoice_detail->quantity * $invoice_detail->price / 100 * $invoice_detail->discount;
                 $subtotal += $total_per_row;
                 

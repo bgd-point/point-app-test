@@ -16,6 +16,7 @@ use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Models\AccountPayableAndReceivable;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\Master\Allocation;
@@ -80,16 +81,7 @@ class PaymentOrderController extends Controller
                 ->paginate(100);
         }
 
-        $view->list_cut_off_payable = CutOffPayableDetail::joinPayable()
-            ->joinFormulir()
-            ->where('formulir.form_status', 1)
-            ->where('formulir.approval_status', 1)
-            ->whereNotNull('formulir.form_number')
-            ->where('point_accounting_cut_off_payable_detail.subledger_type', '=', get_class(new Person()))
-            ->select('point_accounting_cut_off_payable_detail.*')
-            ->groupBy('point_accounting_cut_off_payable_detail.subledger_id')
-            ->get();
-
+        $view->list_cut_off_payable = AccountPayableAndReceivable::where('done', 0)->where('reference_type', get_class(new CutOffPayableDetail))->groupBy('person_id')->get();
         return $view;
     }
 

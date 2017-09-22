@@ -64,16 +64,6 @@
                                 <td>{{number_format_quantity($inventory->total_value)}}</td>
                             </tr>
                         @endforeach
-                        @if($list_inventory->count())
-                        <tr>
-                            <td @if(!$warehouse) colspan="2"> @endif<b>End Stock</b></td>
-                            <td>{{date_format_view($date_to)}}</td>
-                            <td>-</td>
-                            <td>{{number_format_quantity($total_value / $total_quantity)}}</td>
-                            <td>{{number_format_quantity($total_quantity)}}</td>
-                            <td>{{number_format_quantity($total_value)}}</td>
-                        </tr>
-                        @endif
                     </tbody> 
                 </table>
                 {!! $list_inventory->render() !!}
