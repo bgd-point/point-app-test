@@ -123,8 +123,6 @@ class ReferHelper
             $value += $refer->value;
         }
 
-        $value -= $edited_value;
-
         if ($value > $origin_value) {
             throw new PointException('ERROR : EXCESS AMOUNT');
         }
