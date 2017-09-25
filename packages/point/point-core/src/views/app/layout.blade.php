@@ -384,5 +384,25 @@
 
             $(function(){ UiTables.init(); });
         </script>
+        <script>
+            var userIsEditingSomething = false; // set this if something crazy happens
+            oldOnBeforeUnload = window.onbeforeunload;
+
+            window.onbeforeunload = function () {
+                // attempt to handle a previous onbeforeunload
+                if ('function' === typeof oldOnBeforeUnload) {
+                    var message = oldOnBeforeUnload();
+                    if ('undefined' !== typeof message) {
+                        if (confirm('string' === typeof message ? message : 'Are you sure you want to leave this page?')) {
+                            return; // allow user to exit without further annoying pop-ups
+                        }
+                    }
+                }
+                // handle our own
+                if (userIsEditingSomething) {
+                    return 'Are you sure you want to exit?';
+                }
+            };
+        </script>
     </body>
 </html>
