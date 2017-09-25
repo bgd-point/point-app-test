@@ -88,11 +88,11 @@
                         <tbody class="manipulate-row">
                             @for($i=0;$i<count($carts);$i++)
                             <?php $item = \Point\Framework\Models\Master\Item::find($carts[$i]['id']); ?>
-                            <tr >
+                            <tr>
                                 <td>
-                                <a href="javascript:void(0)" class="remove-row btn btn-danger" data-item="{{$carts[$i]['id']}}"><i class="fa fa-trash"></i></a></td>
+                                    <a id="row-item-{{$item->id}}" href="javascript:void(0)" class="remove-row btn btn-danger" data-item="{{$carts[$i]['id']}}"><i class="fa fa-trash"></i></a></td>
                                 <td style="vertical-align:middle">
-                                    <div style="margin-top:5px" id="item_name-{{$i}}">{{ $item->codeName }}</div>
+                                    <div style="margin-top:5px" id="item-name-{{$i}}">{{ $item->codeName }}</div>
                                     <input type="hidden" id="item-id-{{$i}}" name="item_id[]" value="{{$carts[$i]['id']}}"/>
                                 </td>
                                 <td>
@@ -307,6 +307,26 @@
     }
 </style>
 <script>
+    var userIsEditingSomething = true; // set this if something crazy happens
+    oldOnBeforeUnload = window.onbeforeunload;
+
+    window.onbeforeunload = function () {
+        // attempt to handle a previous onbeforeunload
+        if ('function' === typeof oldOnBeforeUnload) {
+            var message = oldOnBeforeUnload();
+            if ('undefined' !== typeof message) {
+                if (confirm('string' === typeof message ? message : 'Are you sure you want to leave this page?')) {
+                    return; // allow user to exit without further annoying pop-ups
+                }
+            }
+        }
+        // handle our own
+        if (userIsEditingSomething) {
+            return 'Are you sure you want to exit?';
+        }
+    };
+</script>
+<script>
     var item_table = initDatatable('#item-datatable');
     var counter = $("#item-datatable").dataTable().fnGetNodes().length;
     initFunctionRemoveInDatatable('#item-datatable', item_table);
@@ -334,7 +354,6 @@
         calculate();  
         populateJsonItem();
         reloadItem('#item-default');
-
     });
     
     $('.calculate').keyup(function(){
@@ -442,8 +461,8 @@
     function addRow(result){
         var label = $("#unit_name_default").val();
         item_table.row.add( [
-            '<a href="javascript:void(0)" class="remove-row btn btn-danger" data-item="'+result.id+'"><i class="fa fa-trash"></i></a>',
-            '<div style="margin-top:5px" id="item_name-'+counter+'">'+result.item_name+'</div>'
+            '<a id="row-item-'+result.id+'" href="javascript:void(0)" class="remove-row btn btn-danger" data-item="'+result.id+'"><i class="fa fa-trash"></i></a>',
+            '<div style="margin-top:5px" id="item-name-'+counter+'">'+result.item_name+'</div>'
             +'<input type="hidden" id="item-id-'+counter+'" name="item_id[]" value="'+result.id+'"/>',
             '<div class="input-group">'
                 +'<input name="quantity[]"  value="'+result.quantity+'" id="item-quantity-'+counter+'" class="form-control format-quantity calculate text-right" value="1" type="text" onchange="updateTemp('+counter+')" autocomplete="off">'
@@ -500,8 +519,8 @@
         }
         if(temps === true){ 
             for (var i = 0; i < counter; i++) {
-                if($('#item_name-'+i).length != 0){
-                    var item = $("#item_name-"+i).html();
+                if($('#item-name-'+i).length != 0){
+                    var item = $("#item-name-"+i).html();
                     if( item_name === item){
                         $("#item-quantity-"+i).val(quantity);
                         break;
@@ -517,6 +536,7 @@
         $("#discount-default").val("0");
         document.getElementById('tax-choice-non-tax').checked = true;
         reloadItem('#item-default');
+        document.getElementById('row-item-' +result.id).scrollIntoView();
     }
 
     function isDiscount(val, counter){
@@ -543,5 +563,6 @@
         calculate();
         $('#action').val(action);
     }
+
 </script>
 @stop
