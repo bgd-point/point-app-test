@@ -57,6 +57,7 @@ class PointSalesPermissionSeeder extends Seeder
         PermissionHelper::create('POINT SALES ORDER', ['create', 'read', 'update', 'delete','approval'], $group);
         PermissionHelper::create('POINT SALES INVOICE', ['create', 'read', 'update', 'delete','approval'], $group);
         PermissionHelper::create('POINT SALES RETURN', ['create', 'read', 'update', 'delete','approval'], $group);
+        PermissionHelper::create('POINT SALES REPORT', ['read', 'export'], $group);
     }
 
     private function salesService()
