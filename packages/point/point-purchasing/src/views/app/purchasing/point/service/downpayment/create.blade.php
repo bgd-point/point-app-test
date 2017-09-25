@@ -82,17 +82,26 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Supplier</label>
                         <div class="col-md-6">
-                            <select name="supplier_id" class="selectize" style="width: 100%;"
-                                    data-placeholder="Choose one..">
-                                @if($purchase_order !== "")
-                                    <option value="{{$purchase_order->supplier->id}}">{{$purchase_order->supplier->codeName}}</option>
-                                @else
-                                    @foreach($list_supplier as $supplier)
-                                        <option value="{{$supplier->id}}"
-                                                @if(old('supplier_id') == $supplier->id) selected @endif>{{$supplier->codeName}}</option>
-                                    @endforeach
+                            <div class="@if(access_is_allowed_to_view('create.supplier')) input-group @endif">
+                                <select name="supplier_id" id="contact_id" class="selectize" style="width: 100%;"
+                                        data-placeholder="Choose one..">
+                                    @if($purchase_order !== "")
+                                        <option value="{{$purchase_order->supplier->id}}">{{$purchase_order->supplier->codeName}}</option>
+                                    @else
+                                        @foreach($list_supplier as $supplier)
+                                            <option value="{{$supplier->id}}"
+                                                    @if(old('supplier_id') == $supplier->id) selected @endif>{{$supplier->codeName}}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                                @if(access_is_allowed_to_view('create.supplier'))
+                                <span class="input-group-btn">
+                                    <a href="#modal-contact" class="btn btn-effect-ripple btn-primary" data-toggle="modal">
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                </span>
                                 @endif
-                            </select>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -156,6 +165,8 @@
             </div>
         </div>
     </div>
+@include('framework::app.master.contact.__create', ['person_type' => 'supplier'])
+    
 @stop
 
 @section('scripts')
