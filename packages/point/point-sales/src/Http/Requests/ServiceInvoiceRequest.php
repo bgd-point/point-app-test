@@ -33,7 +33,7 @@ class ServiceInvoiceRequest extends Request
     {
         $rules = [
             'form_date' => 'required',
-            'person_id' => 'required',
+            'customer_id' => 'required',
             'service_id' => 'required',
             'service_quantity' => 'required',
             'service_price' => 'required',
