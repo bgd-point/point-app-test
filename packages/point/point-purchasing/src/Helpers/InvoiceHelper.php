@@ -3,10 +3,12 @@
 namespace Point\PointPurchasing\Helpers;
 
 use Illuminate\Http\Request;
+use Point\Core\Exceptions\PointException;
 use Point\Framework\Helpers\AllocationHelper;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Models\AccountPayableAndReceivable;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Item;
@@ -108,7 +110,7 @@ class InvoiceHelper
         $invoice->tax_base = $tax_base;
         $invoice->tax = $tax;
         $invoice->type_of_tax = $request->input('type_of_tax');
-        
+
         $invoice->total = $tax_base + $tax + $invoice->expedition_fee;
         $invoice->save();
 
@@ -119,15 +121,137 @@ class InvoiceHelper
          *
          * Jika terjadi perubahan di invoice, maka harus di
          */
+        $changed = false;
+        if (($request->input('original_expedition_fee') != $invoice->expedition_fee) || ($request->input('original_tax_type') != $invoice->type_of_tax) || ($request->input('original_discount') != $invoice->discount)) {
+            self::rejournal($request, $invoice);
+            $changed = true;
+        }
 
         // if price has modyfied, journal again
-        for ($i=0 ; $i < count($request->input('item_id')) ; $i++) {
-            if ($request->input('item_price_original')[$i] != number_format_db($request->input('item_price')[$i])) {
+        for ($i=0 ; $i < count($request->input('item_id')); $i++) {
+            if (($request->input('item_price_original')[$i] != number_format_db($request->input('item_price')[$i])) && $changed == false) {
                 self::journalDifferences($invoice, number_format_db($request->input('item_price')[$i]), $request->input('item_id')[$i]);
             }
         }
 
+        JournalHelper::checkJournalBalance($invoice->formulir_id);
+        dd($invoice);
         return $invoice;
+    }
+
+    public static function rejournal($request, $invoice)
+    {
+        $goods_received = $request->input('reference_type')::find($request->input('reference_id'));
+        if (! $goods_received) {
+            throw new PointException("REFERENCE NOT FOUND");
+        }
+
+        Journal::where('form_journal_id', $goods_received->formulir_id)->delete();
+        AccountPayableAndReceivable::where('formulir_reference_id', $goods_received->formulir_id)->delete();
+        Inventory::where('formulir_id', $goods_received->formulir_id)->delete();
+
+        foreach ($invoice->items as $invoice_item) {
+            $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
+            // Journal inventory
+            $total_per_row = $invoice_item->quantity * $invoice_item->price - $invoice_item->quantity * $invoice_item->price / 100 * $invoice_item->discount;
+            if ($invoice->discount) {
+                $discounty = $total_per_row * $invoice->discount / $invoice->subtotal;
+                $total_per_row = $total_per_row - $discounty;
+            }
+
+            if ($invoice->type_of_tax == 'include') {
+                $total_per_row = $total_per_row * 100 / 110;
+            }
+
+            $position = JournalHelper::position($invoice_item->item->account_asset_id);
+            $journal = new Journal();
+            $journal->form_date = $invoice->formulir->form_date;
+            $journal->coa_id = $invoice_item->item->account_asset_id;
+            $journal->description = 'Goods Received [' . $invoice->formulir->form_number.']';
+            $journal->$position = round($total_per_row, 2);
+            $journal->form_journal_id = $invoice->formulir_id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $invoice_item->item_id;
+            $journal->subledger_type = get_class($invoice_item);
+            $journal->save();
+
+            \Log::info('sedian '. $position. ' ' . $journal->$position);
+            // insert new inventory
+            $item = Item::find($invoice_item->item_id);
+            $inventory = new Inventory();
+            $inventory->formulir_id = $invoice->formulir->id;
+            $inventory->item_id = $item->id;
+            $inventory->quantity = $invoice_item->quantity * $invoice_item->converter;
+            $inventory->price = $invoice_item->price / $invoice_item->converter;
+            $inventory->form_date = $invoice->formulir->form_date;
+            $inventory->warehouse_id = $goods_received->warehouse_id;
+            $inventory_helper = new InventoryHelper($inventory);
+            $inventory_helper->in();
+        }
+
+        $account_receiveable = JournalHelper::getAccount('point purchasing', 'account payable');
+        $position = JournalHelper::position($account_receiveable);
+        $journal = new Journal;
+        $journal->form_date = $invoice->formulir->form_date;
+        $journal->coa_id = $account_receiveable;
+        $journal->description = 'Goods Received Purchasing [' . $invoice->formulir->form_number.']';
+        $journal->$position = $invoice->total;
+        $journal->form_journal_id = $invoice->formulir->id;
+        $journal->form_reference_id;
+        $journal->subledger_id = $invoice->supplier_id;
+        $journal->subledger_type = get_class($invoice->supplier);
+        $journal->save();
+
+        \Log::info('account payable '. $position. ' ' . $journal->$position);
+
+        if ($invoice->tax > 0) {
+            $income_tax_receiveable = JournalHelper::getAccount('point purchasing', 'income tax receivable');
+            $position = JournalHelper::position($income_tax_receiveable);
+            $journal = new Journal;
+            $journal->form_date = $invoice->formulir->form_date;
+            $journal->coa_id = $income_tax_receiveable;
+            $journal->description = 'Goods Received Purchasing [' . $invoice->formulir->form_number.']';
+            $journal->$position = $invoice->tax;
+            $journal->form_journal_id = $invoice->formulir->id;
+            $journal->form_reference_id;
+            $journal->subledger_id;
+            $journal->subledger_type;
+            $journal->save();   
+            \Log::info('tax '. $position. ' ' . $journal->$position);
+
+        }
+
+        if ($invoice->expedition_fee > 0) {
+            $expedition = JournalHelper::getAccount('point purchasing', 'expedition cost');
+            $position = JournalHelper::position($expedition);
+            $journal = new Journal;
+            $journal->form_date = $invoice->formulir->form_date;
+            $journal->coa_id = $expedition;
+            $journal->description = 'Goods Received Purchasing [' . $invoice->formulir->form_number.']';
+            $journal->$position = $invoice->expedition_fee;
+            $journal->form_journal_id = $invoice->formulir->id;
+            $journal->form_reference_id;
+            $journal->subledger_id;
+            $journal->subledger_type;
+            $journal->save();
+            \Log::info('expedition_fee '. $position. ' ' . $journal->$position);
+        }
+
+        if ($invoice->discount > 0) {
+            $account_discount = JournalHelper::getAccount('point purchasing', 'purchase discount');
+            $position = JournalHelper::position($account_discount);
+            $journal = new Journal;
+            $journal->form_date = $invoice->formulir->form_date;
+            $journal->coa_id = $account_discount;
+            $journal->description = 'Goods Received Purchasing [' . $invoice->formulir->form_number.']';
+            $journal->$position = ($invoice->subtotal * $invoice->discount / 100) * -1;
+            $journal->form_journal_id = $invoice->formulir->id;
+            $journal->form_reference_id;
+            $journal->subledger_id;
+            $journal->subledger_type;
+            $journal->save();
+            \Log::info('discount '. $position. ' ' . $journal->$position);
+        }
     }
 
     public static function journalDifferences($invoice, $item_price, $item_id)

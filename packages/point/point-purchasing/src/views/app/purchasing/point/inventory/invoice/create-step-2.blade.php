@@ -161,6 +161,7 @@
                                                     style="min-width: 100px"
                                                     value="{{$goods_received->discount}}"/>
                                                 <span class="input-group-addon">%</span>
+                                                <input type="hidden" name="original_discount" value="{{$goods_received->discount}}">
                                             </div>
                                         </td>
                                     </tr>
@@ -179,16 +180,21 @@
                                     <tr>
                                         <td colspan="6"></td>
                                         <td>
-                                            <input type="checkbox" id="tax-choice-include-tax" class="tax" name="tax_type" {{ $goods_received->type_of_tax == 'include' ? 'checked'  : '' }} onchange="calculate()" value="include"> Tax Included <br/>
-                                            <input type="checkbox" id="tax-choice-exclude-tax" class="tax" name="tax_type" {{ $goods_received->type_of_tax == 'exclude' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
-                                            <input type="checkbox" id="tax-choice-non-tax" class="tax" name="tax_type" {{ $goods_received->type_of_tax == 'non' ? 'checked'  : '' }} onchange="calculate()" value="non" style="display:none">
+                                            <input type="hidden" name="original_tax_type" value="{{$goods_received->type_of_tax}}">
+
+                                            <input type="checkbox" id="tax-choice-include-tax" class="tax" name="type_of_tax" {{ $goods_received->type_of_tax == 'include' ? 'checked'  : '' }} onchange="calculate()" value="include"> Tax Included <br/>
+                                            <input type="checkbox" id="tax-choice-exclude-tax" class="tax" name="type_of_tax" {{ $goods_received->type_of_tax == 'exclude' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
+                                            <input type="checkbox" id="tax-choice-non-tax" class="tax" name="type_of_tax" {{ $goods_received->type_of_tax == 'non' ? 'checked'  : '' }} onchange="calculate()" value="non" style="display:none">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="text-right">EXPEDITION FEE</td>
-                                        <td><input type="text" id="expedition-fee" name="expedition_fee"
+                                        <td>
+                                            <input type="hidden" name="original_expedition_fee" value="{{$goods_received->expedition_fee}}">
+                                            <input type="text" id="expedition-fee" name="expedition_fee"
                                                    class="form-control format-price calculate text-right"
-                                                   value="{{$goods_received->expedition_fee}}"/></td>
+                                                   value="{{$goods_received->expedition_fee}}"/>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="text-right">TOTAL</td>
