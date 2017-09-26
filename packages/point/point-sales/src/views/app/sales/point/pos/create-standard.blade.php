@@ -316,6 +316,12 @@
         $(".tax").prop('checked',false);
         if(checked) {
             $(this).prop('checked',true);
+            if ($(this).val() == 'include') {
+                $('#discount').val(0);
+                $('#discount').prop('readonly', true);
+            } else {
+                $('#discount').prop('readonly', false);
+            }
         } else {
             $('#tax-choice-non-tax').prop('checked', true);
         }
