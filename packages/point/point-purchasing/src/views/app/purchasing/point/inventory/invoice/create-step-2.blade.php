@@ -149,7 +149,7 @@
                                         <td colspan="6" class="text-right">SUB TOTAL</td>
                                         <td><input type="text" readonly id="subtotal" name="subtotal" 
                                                    class="form-control format-quantity calculate text-right"
-                                                   onclick="setToNontax()" value="0"/></td>
+                                                   value="{{$goods_received->subtotal}}"/></td>
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="text-right">DISCOUNT</td>
@@ -159,45 +159,41 @@
                                                     maxlength="3"
                                                     class="form-control format-quantity calculate text-right"
                                                     style="min-width: 100px"
-                                                    value="{{$goods_received->purchaseOrder->discount}}"/>
+                                                    value="{{$goods_received->discount}}"/>
                                                 <span class="input-group-addon">%</span>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="text-right">TAX BASE</td>
-                                        <td><input type="text" readonly id="tax_base" name="tax_base"
-                                                   class="form-control format-quantity calculate text-right" value="0"/>
+                                        <td>
+                                            <input type="text" readonly id="tax_base" name="tax_base" class="form-control format-quantity calculate text-right" value="{{$goods_received->tax_base}}"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="text-right">TAX</td>
-                                        <td><input type="text" readonly="" id="tax" name="tax"
-                                                   class="form-control format-quantity calculate text-right" value="0"/>
+                                        <td>
+                                            <input type="text" readonly="" id="tax" name="tax" class="form-control format-quantity calculate text-right" value="{{$goods_received->tax}}"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td colspan="6"></td>
                                         <td>
-                                            <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
-                                                   {{ $goods_received->purchaseOrder->type_of_tax == 'include' ? 'checked'  : '' }} onchange="calculate()"
-                                                   value="include"> Include Tax <br/>
-                                            <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
-                                                   {{ $goods_received->purchaseOrder->type_of_tax == 'exclude' ? 'checked'  : '' }} onchange="calculate()"
-                                                   value="exclude"> Exlude Tax <br/>
-                                            <input type="hidden" id="tax-choice-non-tax" name="type_of_tax" value="non">
+                                            <input type="checkbox" id="tax-choice-include-tax" class="tax" name="tax_type" {{ $goods_received->type_of_tax == 'include' ? 'checked'  : '' }} onchange="calculate()" value="include"> Tax Included <br/>
+                                            <input type="checkbox" id="tax-choice-exclude-tax" class="tax" name="tax_type" {{ $goods_received->type_of_tax == 'exclude' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
+                                            <input type="checkbox" id="tax-choice-non-tax" class="tax" name="tax_type" {{ $goods_received->type_of_tax == 'non' ? 'checked'  : '' }} onchange="calculate()" value="non" style="display:none">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="text-right">EXPEDITION FEE</td>
                                         <td><input type="text" id="expedition-fee" name="expedition_fee"
                                                    class="form-control format-price calculate text-right"
-                                                   value="{{number_format_db($goods_received->purchaseOrder->expedition_fee)}}"/></td>
+                                                   value="{{$goods_received->expedition_fee}}"/></td>
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="text-right">TOTAL</td>
                                         <td><input type="text" readonly id="total" name="total" 
-                                                   class="form-control format-quantity calculate text-right" value="0"/>
+                                                   class="form-control format-quantity calculate text-right" value="{{$goods_received->total}}"/>
                                         </td>
                                     </tr>
                                     </tfoot>
@@ -234,6 +230,23 @@
 
 @section('scripts')
     <script>
+        $(".tax").change(function() {
+            var checked = $(this).is(':checked');
+            $(".tax").prop('checked',false);
+            if(checked) {
+                $(this).prop('checked',true);
+                if ($(this).val() == 'include') {
+                    $('#discount').val(0);
+                    $('#discount').prop('readonly', true);
+                } else {
+                    $('#discount').prop('readonly', false);
+                }
+            } else {
+                $('#tax-choice-non-tax').prop('checked', true);
+            }
+
+        });
+
         var item_table = initDatatable('#item-datatable');
 
         $('.calculate').keyup(function () {
@@ -241,24 +254,8 @@
         });
 
         $(function () {
-            var tax_status = {!! json_encode($goods_received->purchaseOrder->type_of_tax) !!};
-            if (tax_status == 'include') {
-                $("#tax-choice-include-tax").trigger("click");
-            } else if (tax_status == 'exclude') {
-                $("#tax-choice-exclude-tax").trigger("click");
-            } else {
-                $("#tax-choice-non-tax").val("non");
-            }
-
             calculate();
         });
-
-        function setToNontax() {
-            $("#tax-choice-include-tax").attr("checked", false);
-            $("#tax-choice-exclude-tax").attr("checked", false);
-            $("#tax-choice-non-tax").val("non");
-            calculate();
-        }
 
         function calculate() {
             var rows_length = $("#item-datatable").dataTable().fnGetNodes().length;

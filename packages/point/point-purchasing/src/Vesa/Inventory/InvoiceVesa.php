@@ -21,7 +21,7 @@ trait InvoiceVesa
 
     private static function vesaCreate($array=[], $merge_into_group = true)
     {
-        $list_goods_received = GoodsReceived::joinFormulir()->availableToInvoiceGroupSupplier()->notArchived()->selectOriginal()->orderByStandard()->paginate(100);
+        $list_goods_received = GoodsReceived::joinFormulir()->open()->notArchived()->selectOriginal()->orderByStandard()->paginate(100);
 
         // Grouping vesa
         if ($merge_into_group && $list_goods_received->count() > 5) {
@@ -38,7 +38,7 @@ trait InvoiceVesa
         // Push all
         foreach ($list_goods_received as $goods_received) {
             array_push($array, [
-                'url' => url('purchasing/point/invoice/create-step-2/' . $goods_received->supplier_id),
+                'url' => url('purchasing/point/invoice/create-step-2/' . $goods_received->id),
                 'deadline' => $goods_received->formulir->form_date,
                 'message' => 'Please create invoice from ' . $goods_received->formulir->form_number,
                 'permission_slug' => 'create.point.purchasing.invoice'
