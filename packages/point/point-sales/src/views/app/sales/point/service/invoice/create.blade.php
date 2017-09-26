@@ -57,14 +57,21 @@
                         <label class="col-md-3 control-label">Customer</label>
 
                         <div class="col-md-6">
-                            <select id="person-id" name="person_id" class="selectize" style="width: 100%;"
-                                    data-placeholder="Choose one..">
-                                <option></option>
-                                @foreach($list_person as $person)
-                                    <option value="{{$person->id}}"
-                                            @if(old('person_id') == $person->id) selected @endif>{{$person->codeName}}</option>
-                                @endforeach
-                            </select>
+                            <div class="@if(access_is_allowed_to_view('create.customer')) input-group @endif">
+                                <select id="contact_id" name="customer_id" class="selectize" data-placeholder="Choose customer...">
+                                    <option></option>
+                                    @foreach($list_person as $person)
+                                        <option value="{{$person->id}}" @if(old('person_id') == $person->id) selected @endif>{{$person->codeName}}</option>
+                                    @endforeach
+                                </select>
+                                @if(access_is_allowed_to_view('create.customer'))
+                                <span class="input-group-btn">
+                                    <a href="#modal-contact" class="btn btn-effect-ripple btn-primary" data-toggle="modal">
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                </span>
+                                @endif
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -373,6 +380,8 @@
             </div>
         </div>
     </div>
+
+@include('framework::app.master.contact.__create', ['person_type' => 'customer'])
 @include('framework::scripts.item')
 @include('framework::scripts.service')
 @stop
@@ -593,7 +602,7 @@
         }
 
         if (service_counter > 0 || counter > 0) {
-            initSelectize('#person-id');
+            initSelectize('#contact_id');
         }
 
         if (service_counter > 0) {

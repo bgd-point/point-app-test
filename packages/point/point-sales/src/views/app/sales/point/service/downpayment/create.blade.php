@@ -45,17 +45,24 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Customer</label>
                         <div class="col-md-6">
-                            <select name="person_id" class="selectize" style="width: 100%;"
-                                    data-placeholder="Choose one..">
-                                @if($sales_order !== "")
-                                    <option value="{{$sales_order->person->id}}">{{$sales_order->person->codeName}}</option>
-                                @else
-                                    @foreach($list_person as $person)
-                                        <option value="{{$person->id}}"
-                                                @if(old('person_id') == $person->id) selected @endif>{{$person->codeName}}</option>
-                                    @endforeach
+                            <div class="@if(access_is_allowed_to_view('create.customer')) input-group @endif">
+                                <select id="contact_id" name="person_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                                    @if($sales_order !== "")
+                                        <option value="{{$sales_order->person->id}}">{{$sales_order->person->codeName}}</option>
+                                    @else
+                                        @foreach($list_person as $person)
+                                            <option value="{{$person->id}}" @if(old('person_id') == $person->id) selected @endif>{{$person->codeName}}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                                @if(access_is_allowed_to_view('create.customer'))
+                                <span class="input-group-btn">
+                                    <a href="#modal-contact" class="btn btn-effect-ripple btn-primary" data-toggle="modal">
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                </span>
                                 @endif
-                            </select>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -76,7 +83,6 @@
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label">Notes</label>
-
                         <div class="col-md-6">
                             <input type="text" name="notes" class="form-control" value="{{old('notes')}}">
                         </div>
@@ -90,7 +96,6 @@
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label">Form Creator</label>
-
                             <div class="col-md-6 content-show">
                                 {{auth()->user()->name}}
                             </div>
@@ -119,6 +124,7 @@
             </div>
         </div>
     </div>
+    @include('framework::app.master.contact.__create', ['person_type' => 'customer'])
 @stop
 
 @section('scripts')

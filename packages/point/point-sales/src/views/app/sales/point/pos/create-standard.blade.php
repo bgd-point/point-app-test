@@ -88,11 +88,11 @@
                         <tbody class="manipulate-row">
                             @for($i=0;$i<count($carts);$i++)
                             <?php $item = \Point\Framework\Models\Master\Item::find($carts[$i]['id']); ?>
-                            <tr >
+                            <tr>
                                 <td>
-                                <a href="javascript:void(0)" class="remove-row btn btn-danger" data-item="{{$carts[$i]['id']}}"><i class="fa fa-trash"></i></a></td>
+                                    <a id="row-item-{{$item->id}}" href="javascript:void(0)" class="remove-row btn btn-danger" data-item="{{$carts[$i]['id']}}"><i class="fa fa-trash"></i></a></td>
                                 <td style="vertical-align:middle">
-                                    <div style="margin-top:5px" id="item_name-{{$i}}">{{ $item->codeName }}</div>
+                                    <div style="margin-top:5px" id="item-name-{{$i}}">{{ $item->codeName }}</div>
                                     <input type="hidden" id="item-id-{{$i}}" name="item_id[]" value="{{$carts[$i]['id']}}"/>
                                 </td>
                                 <td>
@@ -119,25 +119,14 @@
                 <div class="row" style="padding:20px">
                     <table class="table table-striped" width="100%">
                         <tr>
-                            <td></td>
-                            <td style="min-width:200px">
+                            <td style="width:400px" class="text-left">
                                 <select id="item-default" name="item_default" class="selectize" onChange="validate()" data-placeholder="Choose Item">
                                 </select>
-                            <td>
-                                <div class="input-group">
-                                    <input name="quantity-default" id="item-quantity-default" class="form-control format-quantity calculate text-right" value="0" type="text" readonly>
-                                    <span class="input-group-addon">
-                                    </span>
-                                </div>
-                            </td>
-                            <td><input type="text" readonly id="price-default" name="price_default" value="0" class="form-control text-right" readonly></td>
-                            <td>
-                                <div class="input-group">
-                                    <input type="text" name="discount-default" id="discount-default"  class="form-control format-price text-right" value="0" readonly/>
-                                    <span class="input-group-addon">%</span>
-                                </div>    
-                            </td>
-                            <td><input type="text" readonly id="nett-default" name="nett_default" value="0" class="form-control text-right" readonly></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     </table>
                 </div>
@@ -152,8 +141,9 @@
                             <div class="col-md-6 control-label  content-show">
                                 <label>SUB TOTAL</label>
                             </div>
-                            <div class="col-md-6 content-show">
-                                <input type="text" readonly id="subtotal" name="foot_subtotal" class="form-control format-quantity calculate text-right" value="0" />
+                            <div class="col-md-6 content-show text-right">
+                                <label id="subtotal-label" style="margin-top:10px">0.00</label>
+                                <input type="hidden" readonly id="subtotal" name="foot_subtotal" class="form-control format-quantity calculate text-right" value="0" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -214,33 +204,37 @@
                             <div class="col-md-6 control-label  content-show">
                                 <label>TAX BASE</label>
                             </div>
-                            <div class="col-md-6 content-show">
-                                <input type="text" readonly id="tax_base" name="foot_tax_base" class="form-control format-quantity calculate text-right" value="0" />
+                            <div class="col-md-6 content-show text-right">
+                                <label id="tax-base-label" style="margin-top:10px">0.00</label>
+                                <input type="hidden" readonly id="tax_base" name="foot_tax_base" class="form-control format-quantity calculate text-right" value="0" />
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-6 control-label  content-show">
                                 <label>TAX</label>
                             </div>
-                            <div class="col-md-6 content-show">
-                                <input type="text" readonly="" id="tax" name="foot_tax" class="form-control format-quantity calculate text-right" value="0" />
+                            <div class="col-md-6 content-show text-right">
+                                <label id="tax-label" style="margin-top:10px">0.00</label>
+                                <input type="hidden" readonly="" id="tax" name="foot_tax" class="form-control format-quantity calculate text-right" value="0" />
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-3">
                         <div class="form-group">
-                            <div class="col-md-6 control-label  content-show">
+                            <div class="col-md-6 control-label content-show">
                                 <label>TOTAL</label>
                             </div>
-                            <div class="col-md-6 content-show">
-                                <input type="text" readonly id="total" name="foot_total" class="form-control format-quantity calculate text-right" value="0" />
+                            <div class="col-md-6 content-show text-right">
+                                <label id="total-label" style="margin-top:10px">0.00</label>
+                                <input type="hidden" readonly id="total" name="foot_total" class="form-control format-quantity calculate text-right" value="0" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-6 control-label  content-show">
+                            <div class="col-md-6 control-label content-show">
                                 <label>MONEY RECEIVED</label>
                             </div>
-                            <div class="col-md-6 content-show">
+                            <div class="col-md-6 content-show text-right">
+                                <!-- <label id="money-received-label">0.00</label> -->
                                 <input type="text" id="money-received" name="foot_money_received" onkeyup="calculateChange()" class="form-control format-quantity text-right" value="0" />
                             </div>
                         </div>
@@ -248,8 +242,9 @@
                             <div class="col-md-6 control-label  content-show">
                                 <label>CHANGE</label>
                             </div>
-                            <div class="col-md-6 content-show">
-                                <input type="text" readonly id="change" name="foot_change" class="form-control format-quantity calculate text-right" value="0" />
+                            <div class="col-md-6 content-show text-right">
+                                <label id="change-label" style="margin-top:10px">0.00</label>
+                                <input type="hidden" readonly id="change" name="foot_change" class="form-control format-quantity calculate text-right" value="0" />
                             </div>
                         </div>
                     </div>
@@ -339,7 +334,6 @@
         calculate();  
         populateJsonItem();
         reloadItem('#item-default');
-
     });
     
     $('.calculate').keyup(function(){
@@ -376,6 +370,7 @@
         }
 
         $('#subtotal').val(appNum(subtotal));
+        $('#subtotal-label').html(appNum(subtotal));
 
         var discount = dbNum($('#discount').val());
         if($('#tax-choice-include-tax').prop('checked')) {
@@ -403,6 +398,11 @@
         $("#money-received").val(appNum(tax_base + tax));
         $("#total-item").html(appNum(total_item)+' ITEM');
         $("#total-quantity").html(appNum(total_quantity));
+
+        $('#tax-base-label').html(appNum(tax_base));
+        $('#tax-label').html(appNum(tax));
+        $('#total-label').html(appNum(tax_base + tax));
+
         calculateChange();
     }
 
@@ -441,8 +441,8 @@
     function addRow(result){
         var label = $("#unit_name_default").val();
         item_table.row.add( [
-            '<a href="javascript:void(0)" class="remove-row btn btn-danger" data-item="'+result.id+'"><i class="fa fa-trash"></i></a>',
-            '<div style="margin-top:5px" id="item_name-'+counter+'">'+result.item_name+'</div>'
+            '<a id="row-item-'+result.id+'" href="javascript:void(0)" class="remove-row btn btn-danger" data-item="'+result.id+'"><i class="fa fa-trash"></i></a>',
+            '<div style="margin-top:5px" id="item-name-'+counter+'">'+result.item_name+'</div>'
             +'<input type="hidden" id="item-id-'+counter+'" name="item_id[]" value="'+result.id+'"/>',
             '<div class="input-group">'
                 +'<input name="quantity[]"  value="'+result.quantity+'" id="item-quantity-'+counter+'" class="form-control format-quantity calculate text-right" value="1" type="text" onchange="updateTemp('+counter+')" autocomplete="off">'
@@ -499,8 +499,8 @@
         }
         if(temps === true){ 
             for (var i = 0; i < counter; i++) {
-                if($('#item_name-'+i).length != 0){
-                    var item = $("#item_name-"+i).html();
+                if($('#item-name-'+i).length != 0){
+                    var item = $("#item-name-"+i).html();
                     if( item_name === item){
                         $("#item-quantity-"+i).val(quantity);
                         break;
@@ -516,6 +516,7 @@
         $("#discount-default").val("0");
         document.getElementById('tax-choice-non-tax').checked = true;
         reloadItem('#item-default');
+        document.getElementById('row-item-' +result.id).scrollIntoView();
     }
 
     function isDiscount(val, counter){
@@ -529,6 +530,7 @@
         var total = dbNum($('#total').val());
 
         $("#change").val(appNum(money_received - total));
+        $("#change-label").html(appNum(money_received - total));
     }
 
     function resetItemDefault() {
@@ -541,5 +543,6 @@
         calculate();
         $('#action').val(action);
     }
+
 </script>
 @stop
