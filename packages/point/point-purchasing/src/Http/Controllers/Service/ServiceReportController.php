@@ -79,7 +79,7 @@ class ServiceReportController extends Controller
 
                         $cell->setValue(strtoupper('PERIOD : ' . $period));
                     });
-                    $sheet->cell('A3:D3', function ($cell) {
+                    $sheet->cell('A3:E3', function ($cell) {
                         // Set font
                         $cell->setFont(array(
                             'family'     => 'Times New Roman',
