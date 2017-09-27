@@ -241,12 +241,12 @@
             $(".tax").prop('checked',false);
             if(checked) {
                 $(this).prop('checked',true);
-                if ($(this).val() == 'include') {
-                    $('#discount').val(0);
-                    $('#discount').prop('readonly', true);
-                } else {
-                    $('#discount').prop('readonly', false);
-                }
+                // if ($(this).val() == 'include') {
+                //     $('#discount').val(0);
+                //     $('#discount').prop('readonly', true);
+                // } else {
+                //     $('#discount').prop('readonly', false);
+                // }
             } else {
                 $('#tax-choice-non-tax').prop('checked', true);
             }
@@ -283,25 +283,24 @@
             }
 
             var discount = dbNum($('#discount').val());
-            if($('#tax-choice-include-tax').prop('checked')) {
-                $('#discount').val(0);
-                $('#discount').prop('readonly', true);
-                var discount = 0;
-            } else {
-                $('#discount').prop('readonly', false);
-            }
+            // if($('#tax-choice-include-tax').prop('checked')) {
+            //     $('#discount').val(0);
+            //     $('#discount').prop('readonly', true);
+            //     var discount = 0;
+            // } else {
+            //     $('#discount').prop('readonly', false);
+            // }
             var tax_base = subtotal - (subtotal / 100 * discount);
             var tax = 0;
-
             if ($('#tax-choice-exclude-tax').prop('checked')) {
                 tax = tax_base * 10 / 100;
-                $("#tax-choice-non-tax").val("exclude");
+                console.log('exclude' + tax);
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
                 tax_base = tax_base * 100 / 110;
                 tax = tax_base * 10 / 100;
-                $("#tax-choice-non-tax").val("include");
+                console.log('include' + tax);
             }
 
             $('#tax_base').val(appNum(tax_base));

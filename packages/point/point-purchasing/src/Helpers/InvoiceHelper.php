@@ -57,9 +57,10 @@ class InvoiceHelper
         $invoice->formulir_id = $formulir->id;
         $invoice->supplier_id = $request->input('supplier_id');
         $invoice->due_date = date_format_db($request->input('due_date'), $request->input('time'));
+        $invoice->type_of_tax = $request->input('type_of_tax');
         $invoice->expedition_fee = number_format_db($request->input('expedition_fee'));
+        $invoice->discount = $request->input('discount');
         $invoice->save();
-
         $subtotal = 0;
         for ($i=0 ; $i < count($request->input('item_id')) ; $i++) {
             $invoice_item = new InvoiceItem;
@@ -102,15 +103,20 @@ class InvoiceHelper
         $formulir->save();
 
         $discount = $subtotal * $request->input('discount')/100;
-        $tax_base = number_format_db($request->input('tax_base'));
-        $tax = number_format_db($request->input('tax'));
-        $total = number_format_db($request->input('total'));
+        $tax_base = $subtotal - $discount;
+        $tax = 0;
+
+        if ($invoice->type_of_tax == 'exclude') {
+            $tax = $tax_base * 10 / 100;
+        }
+        if ($invoice->type_of_tax == 'include') {
+            $tax_base = $tax_base * 100 / 110;
+            $tax = $tax_base * 10 / 100;
+        }
+
         $invoice->subtotal = $subtotal;
-        $invoice->discount = $request->input('discount');
         $invoice->tax_base = $tax_base;
         $invoice->tax = $tax;
-        $invoice->type_of_tax = $request->input('type_of_tax');
-
         $invoice->total = $tax_base + $tax + $invoice->expedition_fee;
         $invoice->save();
 
@@ -150,25 +156,27 @@ class InvoiceHelper
         AccountPayableAndReceivable::where('formulir_reference_id', $goods_received->formulir_id)->delete();
         Inventory::where('formulir_id', $goods_received->formulir_id)->delete();
 
+        $subtotal = 0;
         foreach ($invoice->items as $invoice_item) {
             $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
             // Journal inventory
             $total_per_row = $invoice_item->quantity * $invoice_item->price - $invoice_item->quantity * $invoice_item->price / 100 * $invoice_item->discount;
             if ($invoice->discount) {
-                $discounty = $total_per_row * $invoice->discount / $invoice->subtotal;
+                $discounty = $total_per_row * $invoice->discount / 100;
                 $total_per_row = $total_per_row - $discounty;
             }
 
             if ($invoice->type_of_tax == 'include') {
                 $total_per_row = $total_per_row * 100 / 110;
             }
+            $subtotal += $total_per_row;
 
             $position = JournalHelper::position($invoice_item->item->account_asset_id);
             $journal = new Journal();
             $journal->form_date = $invoice->formulir->form_date;
             $journal->coa_id = $invoice_item->item->account_asset_id;
             $journal->description = 'Goods Received [' . $invoice->formulir->form_number.']';
-            $journal->$position = round($total_per_row, 2);
+            $journal->$position = $total_per_row + $total_per_row / $invoice->tax_base * $invoice->expedition_fee;
             $journal->form_journal_id = $invoice->formulir_id;
             $journal->form_reference_id;
             $journal->subledger_id = $invoice_item->item_id;
@@ -204,7 +212,7 @@ class InvoiceHelper
 
         \Log::info('account payable '. $position. ' ' . $journal->$position);
 
-        if ($invoice->tax > 0) {
+        if ($invoice->tax != 0) {
             $income_tax_receiveable = JournalHelper::getAccount('point purchasing', 'income tax receivable');
             $position = JournalHelper::position($income_tax_receiveable);
             $journal = new Journal;
@@ -218,40 +226,23 @@ class InvoiceHelper
             $journal->subledger_type;
             $journal->save();   
             \Log::info('tax '. $position. ' ' . $journal->$position);
-
         }
 
-        if ($invoice->expedition_fee > 0) {
-            $expedition = JournalHelper::getAccount('point purchasing', 'expedition cost');
-            $position = JournalHelper::position($expedition);
-            $journal = new Journal;
-            $journal->form_date = $invoice->formulir->form_date;
-            $journal->coa_id = $expedition;
-            $journal->description = 'Goods Received Purchasing [' . $invoice->formulir->form_number.']';
-            $journal->$position = $invoice->expedition_fee;
-            $journal->form_journal_id = $invoice->formulir->id;
-            $journal->form_reference_id;
-            $journal->subledger_id;
-            $journal->subledger_type;
-            $journal->save();
-            \Log::info('expedition_fee '. $position. ' ' . $journal->$position);
-        }
-
-        if ($invoice->discount > 0) {
-            $account_discount = JournalHelper::getAccount('point purchasing', 'purchase discount');
-            $position = JournalHelper::position($account_discount);
-            $journal = new Journal;
-            $journal->form_date = $invoice->formulir->form_date;
-            $journal->coa_id = $account_discount;
-            $journal->description = 'Goods Received Purchasing [' . $invoice->formulir->form_number.']';
-            $journal->$position = ($invoice->subtotal * $invoice->discount / 100) * -1;
-            $journal->form_journal_id = $invoice->formulir->id;
-            $journal->form_reference_id;
-            $journal->subledger_id;
-            $journal->subledger_type;
-            $journal->save();
-            \Log::info('discount '. $position. ' ' . $journal->$position);
-        }
+        // if ($invoice->discount != 0) {
+        //     $account_discount = JournalHelper::getAccount('point purchasing', 'purchase discount');
+        //     $position = JournalHelper::position($account_discount);
+        //     $journal = new Journal;
+        //     $journal->form_date = $invoice->formulir->form_date;
+        //     $journal->coa_id = $account_discount;
+        //     $journal->description = 'Goods Received Purchasing [' . $invoice->formulir->form_number.']';
+        //     $journal->$position = ($subtotal * $invoice->discount / 100) * -1;
+        //     $journal->form_journal_id = $invoice->formulir->id;
+        //     $journal->form_reference_id;
+        //     $journal->subledger_id;
+        //     $journal->subledger_type;
+        //     $journal->save();
+        //     \Log::info('discount debit ' . $journal->debit);
+        // }
     }
 
     public static function journalDifferences($invoice, $item_price, $item_id)
