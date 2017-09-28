@@ -59,10 +59,19 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Supplier *</label>
                         <div class="col-md-6">
-                            <?php $supplier = Point\Framework\Models\Master\Person::find(old('supplier_id')); ?>                        
-                            <select id="supplier-id" name="supplier_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
-                                <option value="{{ old('supplier_id') }}">{{ $supplier ? $supplier->codeName : ''}}</option>
-                            </select>
+                            <div class="@if(access_is_allowed_to_view('create.supplier')) input-group @endif">
+                                <?php $supplier = Point\Framework\Models\Master\Person::find(old('supplier_id')); ?>                        
+                                <select id="contact_id" name="supplier_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                                    <option value="{{ old('supplier_id') }}">{{ $supplier ? $supplier->codeName : ''}}</option>
+                                </select>
+                                @if(access_is_allowed_to_view('create.supplier'))
+                                <span class="input-group-btn">
+                                    <a href="#modal-contact" class="btn btn-effect-ripple btn-primary" data-toggle="modal">
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                </span>
+                                @endif
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -77,7 +86,7 @@
 
                         <div class="col-md-6 content-show">
                             <input type="checkbox" id="cash-selling" name="is_cash" checked value="true">
-                            <span class="help-block">If checked, you need to make a downpayment before deliver the order</span>
+                            <span class="help-block">If checked, you need to make a downpayment before delivering the order</span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -277,6 +286,8 @@
             </div>
         </div>
     </div>
+@include('framework::app.master.contact.__create', ['person_type' => 'supplier'])
+
 @stop
 @include('framework::scripts.item')
 @include('framework::scripts.person')
@@ -425,14 +436,14 @@
         // reload data item with ajax
         if (counter > 0) {
             reloadPerson('#employee-id', 'employee', false);
-            reloadPerson('#supplier-id', 'supplier', false);
+            reloadPerson('#contact_id', 'supplier', false);
             for(var i=0; i< counter; i++) {
                 if($('#item-id-'+i).length != 0){
                     reloadItem('#item-id-' + i, false);
                 }
             }    
         } else {
-            reloadPerson('#supplier-id', 'supplier');
+            reloadPerson('#contact_id', 'supplier');
             reloadPerson('#employee-id', 'employee');
         }
     </script>
