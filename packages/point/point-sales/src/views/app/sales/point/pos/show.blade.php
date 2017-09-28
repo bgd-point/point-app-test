@@ -135,7 +135,7 @@
                             <div class="col-md-12">
                                 @if($pos->formulir->form_status == 0)
                                 @if(formulir_view_edit($pos->formulir, 'update.point.sales.order'))
-                                    <a href="{{url('sales/point/pos/'.$pos->id.'/edit')}}"
+                                    <a href="{{url('sales/point/pos/'.$pos->id.'/edit#posview')}}"
                                            class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                 @endif
                                 @endif

@@ -3,6 +3,7 @@
 namespace Point\Framework\Http\Controllers\Accounting;
 
 use Point\Core\Traits\ValidationTrait;
+use Point\Framework\Helpers\AccountingHelper;
 use Point\Framework\Http\Controllers\Controller;
 use Point\Framework\Models\CoaSaldo;
 use Point\Framework\Models\FixedAsset;
@@ -30,25 +31,7 @@ class SubLedgerController extends Controller
         $view->date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : $date_from;
         $view->date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : $date_to;
         $view->subledger_id = \Input::get('subledger_id') ?: 0;
-
-        $view->journals = [];
-        if ($view->coa_id > 0) {
-            if ($view->subledger_id) {
-                $view->journals = Journal::where('coa_id', '=', $view->coa_id)
-                ->where('form_date', '>=', $view->date_from)
-                ->where('form_date', '<=', $view->date_to)
-                ->where('subledger_id', $view->subledger_id)
-                ->orderBy('form_date')
-                ->get();
-            } else {
-                $view->journals = Journal::where('coa_id', '=', $view->coa_id)
-                ->where('form_date', '>=', $view->date_from)
-                ->where('form_date', '<=', $view->date_to)
-                ->groupBy('subledger_id')
-                ->orderBy('form_date')
-                ->get();
-            }
-        }
+        $view->journals = AccountingHelper::querySubledger($view->date_from, $view->date_to, $view->subledger_id, $view->coa_id);
 
         return $view;
     }
@@ -60,25 +43,8 @@ class SubLedgerController extends Controller
         $date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : date('Y-m-d 23:59:59');
         $coa_id = \Input::get('coa_filter') ? : 0;
         $subledger_id = \Input::get('subledger_id') ?: 0;
-        $journals = [];
-        if ($coa_id > 0) {
-            if ($subledger_id) {
-                $journals = Journal::where('coa_id', '=', $coa_id)
-                ->where('form_date', '>=', $date_from)
-                ->where('form_date', '<=', $date_to)
-                ->where('subledger_id', $subledger_id)
-                ->orderBy('form_date')
-                ->get();
-            } else {
-                $journals = Journal::where('coa_id', '=', $coa_id)
-                ->where('form_date', '>=', $date_from)
-                ->where('form_date', '<=', $date_to)
-                ->groupBy('subledger_id')
-                ->orderBy('form_date')
-                ->get();
-            }
-        }
-
+        $journals = AccountingHelper::querySubledger($date_from, $date_to, $subledger_id, $coa_id);
+        
         \Excel::create($file_name, function($excel) use ($date_from, $date_to, $coa_id, $subledger_id, $journals) {
 
             $excel->sheet('Subledger', function($sheet) use ($date_from, $date_to, $coa_id, $subledger_id, $journals) {
@@ -92,7 +58,6 @@ class SubLedgerController extends Controller
                  );
                 
                 $sheet->loadView('framework::app.accounting.sub-ledger._data', $data);
-
             });
 
         })->export('xls');
@@ -110,6 +75,8 @@ class SubLedgerController extends Controller
         }
 
         echo '<select class="selectize" name="subledger_id" id="subledger-id" style="width: 100%;" data-placeholder="Choose one..">';
+        echo '<option></option>';
+        echo '<option value="all">All</option>';
         foreach ($list_subleder as $subledger) {
             echo '<option value="'.$subledger->id.'">'.$subledger->codeName.'</option>';
         }

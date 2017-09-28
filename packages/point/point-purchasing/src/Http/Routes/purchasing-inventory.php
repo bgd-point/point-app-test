@@ -2,7 +2,11 @@
 
 Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchasing\Http\Controllers\Inventory'], function () {
     Route::resource('/', 'PurchasingMenuController@index');
-
+    Route::group(['middleware' => 'auth'], function () {
+        Route::get('/report/export', 'PurchaseReportController@export');
+        Route::get('/report', 'PurchaseReportController@index');
+    });
+    
     // PURCHASE REQUISITION
     Route::get('/purchase-requisition/reject-all', 'PurchaseRequisitionApprovalController@rejectAll');
     Route::get('/purchase-requisition/approve-all', 'PurchaseRequisitionApprovalController@approveAll');
@@ -87,12 +91,13 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::get('/invoice/basic/{id}/edit', 'Basic\InvoiceController@edit');
         Route::put('/invoice/basic/{id}', 'Basic\InvoiceController@update');
 
+        Route::get('/invoice/{id}/print-barcode', 'InvoiceController@printBarcode');
         Route::get('/invoice/{id}/archived', 'InvoiceController@archived');
         Route::get('/invoice/create-step-1', 'InvoiceController@createStep1');
         Route::get('/invoice/create-step-2/{person_supplier_id}', 'InvoiceController@createStep2');
         Route::get('/invoice/create-step-3', 'InvoiceController@createStep3');
         Route::post('/invoice/send-email', 'InvoiceController@sendEmail');
-        Route::post('/invoice/{id}/store', 'InvoiceController@storeFb');
+        Route::get('/invoice/{id}/export', 'InvoiceController@exportPDF');
         Route::resource('/invoice', 'InvoiceController');
     });
 

@@ -55,6 +55,7 @@ Route::group(['prefix' => 'expedition/point', 'namespace' => 'Point\PointExpedit
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/invoice/vesa-rejected', 'InvoiceVesaController@rejected');
 
+        Route::get('/invoice/{id}/export', 'InvoiceController@exportPDF');
         Route::get('/invoice/{id}/archived', 'InvoiceController@archived');
         Route::get('/invoice/create-step-1', 'InvoiceController@createStep1');
         Route::get('/invoice/create-step-2/{person_supplier_id}', 'InvoiceController@createStep2');

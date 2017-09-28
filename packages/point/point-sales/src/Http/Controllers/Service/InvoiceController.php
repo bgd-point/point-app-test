@@ -14,6 +14,8 @@ use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\Permission;
 use Point\Framework\Models\Master\Person;
+use Point\Framework\Models\Master\PersonGroup;
+use Point\Framework\Models\Master\PersonType;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
 use Point\PointSales\Helpers\ServiceInvoiceHelper;
@@ -38,6 +40,10 @@ class InvoiceController extends Controller
         $view->list_person = PersonHelper::getByType(['customer']);
         $view->list_item = Item::active()->get();
         $view->list_allocation = Allocation::active()->get();
+        $person_type = PersonType::where('slug', 'customer')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
+        
         return $view;
     }
 
@@ -146,5 +152,22 @@ class InvoiceController extends Controller
 
         gritter_success('Success send email invoice', 'false');
         return redirect()->back();
+    }
+
+    public function exportPDF($id)
+    {
+        $invoice = Invoice::find($id);
+        $warehouse = '';
+        $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
+        if ($warehouse_id > 0) {
+            $warehouse = Warehouse::find($warehouse_id);
+        }
+        $data = array(
+            'invoice' => $invoice, 
+            'warehouse' => $warehouse
+        );
+
+        $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.service-invoice-pdf', $data);
+        return $pdf->download($invoice->formulir->form_number.'.pdf');
     }
 }

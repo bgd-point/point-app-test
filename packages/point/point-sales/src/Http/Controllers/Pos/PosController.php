@@ -68,11 +68,12 @@ class PosController extends Controller
         $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
         $view->code_contact = PersonHelper::getCode($person_type);
         $results = TempDataHelper::get('pos', auth()->user()->id, ['is_pagination' => true]);
+        $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
+        $view->warehouse_profiles = Warehouse::find($warehouse_id);
+        $view->carts = TempDataHelper::get('pos', auth()->user()->id, ['is_pagination' => true]);
         if ($results) {
             $view->results = $results;
         }
-
-        $view->carts = TempDataHelper::get('pos', auth()->user()->id, ['is_pagination' => true]);
         return $view;
     }
 
@@ -96,12 +97,16 @@ class PosController extends Controller
 
         $formulir = FormulirHelper::create($request->input(), 'point-sales-pos');
         $pos = PosHelper::create($request, $formulir);
-        
+
         DB::commit();
         TempDataHelper::clear('pos', auth()->user()->id);
+        if ($request->input('action') == 'save' && $pos['print'] == true) {
+            gritter_success('sales complete');
+            return redirect('sales/point/pos/print/'.$pos['pos']->id);
+        }
 
         gritter_success('sales complete');
-        return redirect('sales/point/pos/'.$pos->id);
+        return redirect('sales/point/pos/'.$pos['pos']->id);
     }
 
     public function show($id)
@@ -138,7 +143,7 @@ class PosController extends Controller
         if ($results) {
             $view->results = $results;
         }
-
+        $view->warehouse_profiles = Warehouse::find($view->pos->warehouse_id);
         $view->carts = TempDataHelper::get('pos', auth()->user()->id, ['is_pagination' => true]);
         return $view;
     }
@@ -170,8 +175,13 @@ class PosController extends Controller
         TempDataHelper::clear('pos', auth()->user()->id);
         Session::forget('customer_id');
 
+        if ($request->input('action') == 'save' && $pos['print'] == true) {
+            gritter_success('sales complete');
+            return redirect('sales/point/pos/print/'.$pos['pos']->id);
+        }
+
         gritter_success('sales complete');
-        return redirect('sales/point/pos/'.$pos->id);
+        return redirect('sales/point/pos/'.$pos['pos']->id);
     }
 
     public function clear()

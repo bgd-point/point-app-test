@@ -14,6 +14,8 @@ use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\Permission;
 use Point\Framework\Models\Master\Person;
+use Point\Framework\Models\Master\PersonGroup;
+use Point\Framework\Models\Master\PersonType;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
 use Point\PointPurchasing\Helpers\ServiceInvoiceHelper;
@@ -37,6 +39,9 @@ class InvoiceController extends Controller
         $view = view('point-purchasing::app.purchasing.point.service.invoice.create');
         $view->list_person = PersonHelper::getByType(['supplier']);
         $view->list_allocation = Allocation::active()->get();
+        $person_type = PersonType::where('slug', 'supplier')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
         return $view;
     }
 
@@ -88,7 +93,7 @@ class InvoiceController extends Controller
         DB::beginTransaction();
 
         $invoice = Invoice::find($id);
-        FormulirHelper::isAllowedToUpdate('update.point.purchasing.invoice', date_format_db($request->input('form_date'), $request->input('time')), $invoice->formulir);
+        FormulirHelper::isAllowedToUpdate('update.point.purchasing.service.invoice', date_format_db($request->input('form_date'), $request->input('time')), $invoice->formulir);
 
         $formulir_old = FormulirHelper::archive($request->input(), $invoice->formulir_id);
         $formulir = FormulirHelper::update($request->input(), $formulir_old->archived, $formulir_old->form_raw_number);
@@ -143,5 +148,22 @@ class InvoiceController extends Controller
 
         gritter_success('Success send email invoice', 'false');
         return redirect()->back();
+    }
+
+    public function exportPDF($id)
+    {
+        $invoice = Invoice::find($id);
+        $warehouse = '';
+        $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
+        if ($warehouse_id > 0) {
+            $warehouse = Warehouse::find($warehouse_id);
+        }
+        $data = array(
+            'invoice' => $invoice,
+            'warehouse' => $warehouse
+        );
+
+        $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.service-invoice-pdf', $data);
+        return $pdf->download($invoice->formulir->form_number.'.pdf');
     }
 }

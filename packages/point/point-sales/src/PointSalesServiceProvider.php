@@ -22,6 +22,7 @@ class PointSalesServiceProvider extends ServiceProvider
             require __DIR__ . '/Http/Routes/sales-downpayment.php';
             require __DIR__ . '/Http/Routes/sales-delivery-order.php';
             require __DIR__ . '/Http/Routes/sales-invoice.php';
+            require __DIR__ . '/Http/Routes/sales-report.php';
             require __DIR__ . '/Http/Routes/sales-retur.php';
             require __DIR__ . '/Http/Routes/sales-payment-collection.php';
             require __DIR__ . '/Http/Routes/sales-service.php';

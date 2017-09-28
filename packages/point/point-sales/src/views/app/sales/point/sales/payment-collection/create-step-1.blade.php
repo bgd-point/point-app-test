@@ -61,23 +61,21 @@
                         </tr>
                         @foreach($list_cut_off_receivable as $cut_off_receivable)
                         <?php
-                        $cut_off_receivable_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($cut_off_receivable), $cut_off_receivable->id, $cut_off_receivable->amount);
-                        if (! $cut_off_receivable_remaining > 0) {
-                            continue;
-                        }
+                        $cut_off_receivable_detail = $cut_off_receivable->reference_type::find($cut_off_receivable->reference_id);
+                        $reference_receivable = Point\PointAccounting\Models\CutOffReceivable::find($cut_off_receivable_detail->cut_off_receivable_id);
                         ?>
-                        <tr id="list-{{$cut_off_receivable->formulir_id}}">
+                        <tr>
                             <td class="text-center">
-                                <a href="{{ url('sales/point/indirect/payment-collection/create-step-2/'.$cut_off_receivable->subledger_id) }}"
+                                <a href="{{ url('sales/point/indirect/payment-collection/create-step-2/'.$cut_off_receivable->person_id) }}"
                                    class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-external-link"></i>
                                     Payment Collection</a>
                             </td>
                             <td>
-                                <a href="{{ url('master/contact/person/'.$cut_off_receivable->subledger_id) }}">{{ $cut_off_receivable->person->codeName}}</a>
+                                {!! get_url_person($cut_off_receivable->person_id) !!}
                             </td>
                             <td>
-                                {{date_format_view($cut_off_receivable->cutoffReceivable->formulir->form_date)}}
-                                <a href="{{url('accounting/point/cut-off/receivable/'.$cut_off_receivable->cutoffReceivable->id)}}"> {{$cut_off_receivable->cutoffReceivable->formulir->form_number}}</a>
+                                {{date_format_view($reference_receivable->formulir->form_date)}}
+                                <a href="{{url('accounting/point/cut-off/receivable/'.$reference_receivable->id)}}"> {{$reference_receivable->formulir->form_number}}</a>
                             </td>
                         </tr>
                         @endforeach

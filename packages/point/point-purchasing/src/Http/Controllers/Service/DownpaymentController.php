@@ -9,6 +9,8 @@ use Point\Core\Helpers\UserHelper;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\PersonHelper;
+use Point\Framework\Models\Master\PersonGroup;
+use Point\Framework\Models\Master\PersonType;
 use Point\PointFinance\Models\PaymentReference;
 use Point\PointPurchasing\Helpers\ServiceDownpaymentHelper;
 use Point\PointPurchasing\Models\Service\Downpayment;
@@ -49,6 +51,9 @@ class DownpaymentController extends Controller
         $view->purchase_order = "";
         $view->list_supplier = PersonHelper::getByType(['supplier']);
         $view->list_user_approval = UserHelper::getAllUser();
+        $person_type = PersonType::where('slug', 'supplier')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
         return $view;
     }
 
@@ -127,6 +132,10 @@ class DownpaymentController extends Controller
         $view->payment_reference = PaymentReference::where('payment_reference_id', '=', $view->downpayment->formulir_id)->first();
         $view->list_supplier = PersonHelper::getByType(['supplier']);
         $view->list_user_approval = UserHelper::getAllUser();
+        $person_type = PersonType::where('slug', 'supplier')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
+        
         return $view;
     }
 

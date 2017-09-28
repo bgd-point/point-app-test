@@ -76,6 +76,16 @@ class PaymentOrderApprovalController extends Controller
         $approval_message = app('request')->input('approval_message') ? : '';
         $token = app('request')->input('token');
 
+        self::insertPaymentReference($payment_order, $token, $approval_message);
+
+        timeline_publish('approval.point.finance.payment.order', 'Approve Payment Order "'  . $payment_order->formulir->form_number .'"', $this->getUserForTimeline($request, $payment_order->formulir->approval_to));
+        gritter_success('form approved', false);
+
+        return $this->getRedirectLink($request, $payment_order->formulir);
+    }
+
+    public function insertPaymentReference($payment_order, $token, $approval_message)
+    {
         DB::beginTransaction();
 
         $payment_reference = new PaymentReference;
@@ -102,12 +112,8 @@ class PaymentOrderApprovalController extends Controller
         $payment_reference->save();
 
         FormulirHelper::approve($payment_order->formulir, $approval_message, 'approval.point.finance.payment.order', $token);
-        timeline_publish('approval.point.finance.payment.order', 'Approve Payment Order "'  . $payment_order->formulir->form_number .'"', $this->getUserForTimeline($request, $payment_order->formulir->approval_to));
 
         DB::commit();
-
-        gritter_success('form approved', false);
-        return $this->getRedirectLink($request, $payment_order->formulir);
     }
 
     public function reject(Request $request, $id)
@@ -133,13 +139,11 @@ class PaymentOrderApprovalController extends Controller
         $array_formulir_id = explode(',', \Input::get('formulir_id'));
         $approval_message = '';
 
-        DB::beginTransaction();
         foreach ($array_formulir_id as $id) {
             $payment_order = PaymentOrder::where('formulir_id', $id)->first();
-            FormulirHelper::approve($payment_order->formulir, $approval_message, 'approval.point.finance.payment.order', $token);
+            self::insertPaymentReference($payment_order, $token, $approval_message);
             timeline_publish('approve', $payment_order->formulir->form_number . ' approved', $payment_order->formulir->approval_to);
         }
-        DB::commit();
 
         $view = view('framework::app.approval-all-status');
         $view->array_formulir_id = $array_formulir_id;

@@ -140,7 +140,7 @@
                     :
                 </td>
                 <td>
-                    <a href="{{ url('manufacture/point/process-io/'.$process_in->process_id.'/input/'.$process_in->id) }}">{{ $process_in->formulir->form_number }}</a>
+                    <a href="{{ $url .'/manufacture/point/process-io/'.$process_in->process_id.'/input/'.$process_in->id }}">{{ $process_in->formulir->form_number }}</a>
                 </td>
             </tr>
             <tr>
