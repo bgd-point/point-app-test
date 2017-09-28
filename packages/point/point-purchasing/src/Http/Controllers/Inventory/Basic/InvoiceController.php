@@ -14,6 +14,7 @@ use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\ItemUnit;
 use Point\Framework\Models\Master\Permission;
 use Point\Framework\Models\Master\Person;
+use Point\Framework\Models\Master\PersonGroup;
 use Point\PointPurchasing\Helpers\InvoiceHelper;
 use Point\PointPurchasing\Http\Requests\PurchaseRequest;
 use Point\PointPurchasing\Models\GoodsReceived;
@@ -28,6 +29,10 @@ class InvoiceController extends Controller
     {
         $view = view('point-purchasing::app.purchasing.point.inventory.invoice.basic.create');
         $view->list_allocation = Allocation::all();
+        $view->person_type = PersonHelper::getType('supplier');
+        $view->list_group = PersonGroup::where('person_type_id', '=', $view->person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($view->person_type);
+        
         return $view;
     }
     

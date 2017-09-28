@@ -12,6 +12,7 @@ use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\PersonHelper;
 use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\PersonGroup;
+use Point\Framework\Models\Master\PersonType;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
 use Point\PointExpedition\Models\ExpeditionOrderReference;
@@ -55,6 +56,9 @@ class PurchaseOrderController extends Controller
         $view = view('point-purchasing::app.purchasing.point.inventory.purchase-order.basic.create');
         $view->list_user_approval = UserHelper::getAllUser();
         $view->list_allocation = Allocation::all();
+        $person_type = PersonType::where('slug', 'supplier')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
         return $view;
     }
 
@@ -169,6 +173,9 @@ class PurchaseOrderController extends Controller
         $view->purchase_order = PurchaseOrder::find($id);
         $view->list_user_approval = UserHelper::getAllUser();
         $view->list_allocation = Allocation::all();
+        $person_type = PersonType::where('slug', 'supplier')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
         return $view;
     }
 
