@@ -227,7 +227,7 @@
 
                 'enable-cookies'                                enables cookies for remembering active color theme when changed from the sidebar links (You can add it along with any other class)
             -->
-            <div id="page-container" class="header-fixed-top sidebar-visible-lg-full enable-cookies">
+            <div id="page-container" class="header-fixed-top sidebar-visible-lg-mini enable-cookies">
                 <!-- Alternative Sidebar -->
                 @include('core::app.include.sidebar-alt')
                 <!-- END Alternative Sidebar -->
