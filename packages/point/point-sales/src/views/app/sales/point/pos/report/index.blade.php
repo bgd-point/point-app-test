@@ -35,6 +35,7 @@
                     @endif
                     @if(auth()->user()->may('read.point.sales.pos.report'))
                     <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" onclick="exportPDF()"> export to PDF</a>
+                    <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" href="{{url('sales/point/pos/sales-report/preview')}}"> Preview</a>
                     @endif
                     <br><br>
                     <table class="table tabble-striped table-bordered" cellpadding="0" cellspacing="0" border="0" >

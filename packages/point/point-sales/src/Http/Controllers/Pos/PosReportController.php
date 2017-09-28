@@ -325,4 +325,41 @@ class PosReportController extends Controller
 
         return response()->json($response);
     }
+
+    public function previewPDF(Request $request)
+    {
+        access_is_allowed('read.point.sales.pos.report');
+        $storage = storage_path('app/'.$request->project->url.'/pos-report/');
+        $date_from = \Input::get('date_from');
+        $date_to = \Input::get('date_to');
+        $search = \Input::get('search');
+        $file_name = strtotime(date('d-m-Y h:i:s')).'.pdf';
+        $cRequest = $request->input();
+        $list_sales = Pos::joinFormulir()
+            ->joinCustomer()
+            ->joinDetailItem()
+            ->joinItem()
+            ->notArchived()
+            ->groupBy('point_sales_pos.id')
+            ->selectOriginal()
+            ->orderBy('point_sales_pos.id');
+
+        $list_sales = PosHelper::searchList($list_sales, 'point_sales_pos.id', 'asc',  $date_from, $date_to, $search, 1);
+        $period = 'All time';
+        if ($date_to && $date_from) {
+            $period = date_format_view(date_format_db($date_from));
+            if ($date_from != $date_to) {
+                $period = date_format_view(date_format_db($date_from)) . ' - '. date_format_view(date_format_db($date_to));
+            }
+        }
+
+        $data = array(
+            'period' => $period,
+            'list_sales' => $list_sales->get()
+        );
+
+        $pdf = \PDF::loadView('point-sales::app.sales.point.pos.report.pdf', $data);
+        $pdf->render();
+        return $pdf->stream();
+    }
 }
