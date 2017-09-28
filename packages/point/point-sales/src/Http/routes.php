@@ -20,6 +20,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales/point', 'namespace' => 
         Route::get('pos/pricing/create-step-1', 'PosPricingController@createStep1');
         Route::get('pos/pricing/create-step-2', 'PosPricingController@createStep2');
         Route::get('pos/pricing/export', 'PosPricingController@_export');
+        Route::get('pos/pricing/pdf', 'PosPricingController@indexPDF');
         Route::resource('pos/pricing', 'PosPricingController');
     });
     
@@ -28,6 +29,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales/point', 'namespace' => 
         Route::get('pos/menu', function () {
             return view('point-sales::app.sales.point.pos.menu');
         });
+        Route::get('pos/daily-sales/pdf', 'PosReportController@exportDailyPDF');
         Route::get('pos/daily-sales/export', 'PosReportController@exportDailyReport');
         Route::get('pos/daily-sales', 'PosReportController@daily');
         Route::get('pos/sales-report/preview', 'PosReportController@previewPDF');
@@ -43,6 +45,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales/point', 'namespace' => 
         Route::post('pos/remove_item_cart', 'PosController@removeItemCart');
         Route::get('pos/insert', 'PosController@_insert');
         Route::get('pos/add-to-chart', 'PosController@_addToCart');
+        Route::get('pos/pdf', 'PosController@indexPDF');
         Route::resource('pos', 'PosController');
     });
 });

@@ -25,6 +25,7 @@ Route::group(['prefix' => 'sales/point/indirect', 'namespace' => 'Point\PointSal
         Route::get('/invoice/no-reference/{id}/edit', 'InvoiceController@editNoReference');
         Route::put('/invoice/no-reference/{id}', 'InvoiceController@updateNoReference');
         Route::get('/invoice/{id}/archived', 'InvoiceController@archived');
+        Route::get('/invoice/pdf', 'InvoiceController@indexPDF');
         Route::post('/invoice/send-email', 'InvoiceController@sendEmail');
         Route::resource('/invoice', 'InvoiceController');
     });
