@@ -20,6 +20,7 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::post('/purchase-requisition/send-request-approval', 'PurchaseRequisitionApprovalController@sendRequestApproval');
         Route::post('/purchase-requisition/send-email-requisition', 'PurchaseRequisitionController@sendEmailRequisition');
         Route::get('/purchase-requisition/{id}/archived', 'PurchaseRequisitionController@archived');
+        Route::get('/purchase-requisition/pdf', 'PurchaseRequisitionController@indexPDF');
         Route::resource('/purchase-requisition', 'PurchaseRequisitionController');
     });
 
@@ -43,6 +44,7 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::post('/purchase-order/send-email-order', 'PurchaseOrderController@sendEmailOrder');
         Route::post('/purchase-order/basic/store', 'PurchaseOrderController@store');
         Route::get('/purchase-order/basic/create', 'PurchaseOrderController@create');
+        Route::get('/purchase-order/pdf', 'PurchaseOrderController@indexPDF');
         Route::resource('/purchase-order', 'PurchaseOrderController');
     });
 
@@ -59,6 +61,7 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::post('/downpayment/send-request-approval', 'DownpaymentApprovalController@sendRequestApproval');
         Route::get('/downpayment/{id}/archived', 'DownpaymentController@archived');
         Route::get('/downpayment/create/{id?}', 'DownpaymentController@create');
+        Route::get('/downpayment/pdf', 'DownpaymentController@indexPDF');
         Route::resource('/downpayment', 'DownpaymentController');
     });
 
@@ -73,6 +76,7 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::get('/goods-received/create-step-2/{supplier_id}', 'GoodsReceivedController@createStep2');
         Route::get('/goods-received/create-step-3/{purchase_order_id}', 'GoodsReceivedController@createStep3');
         Route::get('/goods-received/create-step-4/{purchase_order_id}/{group_expedition?}', 'GoodsReceivedController@createStep4');
+        Route::get('/goods-received/pdf', 'GoodsReceivedController@indexPDF');
         Route::resource('/goods-received', 'GoodsReceivedController');
     });
 
@@ -98,6 +102,7 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::get('/invoice/create-step-3', 'InvoiceController@createStep3');
         Route::post('/invoice/send-email', 'InvoiceController@sendEmail');
         Route::get('/invoice/{id}/export', 'InvoiceController@exportPDF');
+        Route::get('/invoice/pdf', 'InvoiceController@indexPDF');
         Route::resource('/invoice', 'InvoiceController');
     });
 
@@ -116,6 +121,7 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::post('/retur/send-request-approval', 'ReturApprovalController@sendRequestApproval');
         Route::get('/retur/create-step-1', 'ReturController@createStep1');
         Route::get('/retur/create-step-2/{person_supplier_id}', 'ReturController@createStep2');
+        Route::get('/retur/pdf', 'ReturController@indexPDF');
         Route::post('/retur/{id}/store', 'ReturController@storeRetur');
         Route::resource('/retur', 'ReturController');
     });
@@ -136,6 +142,7 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::get('/payment-order/{id}/archived', 'PaymentOrderController@archived');
         Route::get('/payment-order/create-step-1', 'PaymentOrderController@createStep1');
         Route::get('/payment-order/create-step-2/{person_supplier_id}', 'PaymentOrderController@createStep2');
+        Route::get('/payment-order/pdf', 'PaymentOrderController@indexPDF');
         Route::post('/payment-order/create-step-3', 'PaymentOrderController@createStep3');
         Route::post('/payment-order/send-email-payment', 'PaymentOrderController@sendEmailPayment');
         Route::post('/payment-order/{id}/edit-review', 'PaymentOrderController@editReview');

@@ -31,11 +31,19 @@ class DownpaymentController extends Controller
 
         $list_downpayment = Downpayment::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
         $list_downpayment = DownpaymentHelper::searchList($list_downpayment, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
-
         $view = view('point-purchasing::app.purchasing.point.inventory.downpayment.index');
-
         $view->list_downpayment = $list_downpayment->paginate(100);
         return $view;
+    }
+
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.purchasing.downpayment');
+
+        $list_downpayment = Downpayment::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
+        $list_downpayment = DownpaymentHelper::searchList($list_downpayment, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.inventory.downpayment.index-pdf', ['list_downpayment' => $list_downpayment]);
+        return $pdf->stream();
     }
 
     /**
