@@ -93,7 +93,7 @@ class InvoiceController extends Controller
         DB::beginTransaction();
 
         $invoice = Invoice::find($id);
-        FormulirHelper::isAllowedToUpdate('update.point.purchasing.invoice', date_format_db($request->input('form_date'), $request->input('time')), $invoice->formulir);
+        FormulirHelper::isAllowedToUpdate('update.point.purchasing.service.invoice', date_format_db($request->input('form_date'), $request->input('time')), $invoice->formulir);
 
         $formulir_old = FormulirHelper::archive($request->input(), $invoice->formulir_id);
         $formulir = FormulirHelper::update($request->input(), $formulir_old->archived, $formulir_old->form_raw_number);

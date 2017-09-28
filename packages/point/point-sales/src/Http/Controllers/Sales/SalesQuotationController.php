@@ -12,6 +12,8 @@ use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\PersonHelper;
 use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\Item;
+use Point\Framework\Models\Master\PersonGroup;
+use Point\Framework\Models\Master\PersonType;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
 use Point\PointSales\Helpers\SalesQuotationHelper;
@@ -54,6 +56,10 @@ class SalesQuotationController extends Controller
         $view->list_customer = PersonHelper::getByType(['customer']);
         $view->list_allocation = Allocation::active()->get();
         $view->list_user_approval = UserHelper::getAllUser();
+        $person_type = PersonType::where('slug', 'customer')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
+
         return $view;
     }
 
@@ -131,6 +137,9 @@ class SalesQuotationController extends Controller
         $view->list_customer = PersonHelper::getByType(['customer']);
         $view->list_allocation = Allocation::active()->get();
         $view->list_user_approval = UserHelper::getAllUser();
+        $person_type = PersonType::where('slug', 'customer')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
         return $view;
     }
 

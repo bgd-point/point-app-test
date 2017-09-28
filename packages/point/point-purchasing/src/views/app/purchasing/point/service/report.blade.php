@@ -7,19 +7,11 @@
             <li>Report</li>
         </ul>
         <h2 class="sub-header">Report</h2>
-        @include('point-purchasing::app.purchasing.point.service.invoice._menu')
 
         <div class="panel panel-default">
             <div class="panel-body">
                 <form action="{{ url('purchasing/point/service/report') }}" method="get" class="form-horizontal">
                     <div class="form-group">
-                        <div class="col-sm-3">
-                            <select class="selectize" name="status" id="status" onchange="selectData()">
-                                <option value="0" @if(\Input::get('status') == 0) selected @endif>open</option>
-                                <option value="1" @if(\Input::get('status') == 1) selected @endif>closed</option>
-                                <option value="-1" @if(\Input::get('status') == -1) selected @endif>canceled</option>
-                            </select>
-                        </div>
                         <div class="col-sm-4">
                             <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
                                 <input type="text" name="date_from" id="date-from" class="form-control date input-datepicker"
@@ -36,10 +28,11 @@
                                     placeholder="Search Form Number / Supplier..." value="{{\Input::get('search')}}"
                                     value="{{\Input::get('search') ? \Input::get('search') : ''}}">
                         </div>
-                        <div class="col-sm-1">
-                            <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i
-                                        class="fa fa-search"></i> Search
-                            </button>
+                        <div class="col-sm-3">
+                            <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search </button>
+                            @if(access_is_allowed_to_view('export.point.purchasing.service.report'))
+                            <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" onclick="exportExcel()">Export to excel</a>
+                            @endif
                         </div>
                     </div>
                 </form>
@@ -53,8 +46,7 @@
                         <tr>
                             <th>Date</th>
                             <th>Form Number</th>
-                            <th>Customer</th>
-                            <th>Status</th>
+                            <th>Supplier</th>
                             <th>Total</th>
                         </tr>
                         </thead>
@@ -75,10 +67,6 @@
                                 </td>
                                 <td>
                                     <a href="{{ url('master/contact/'. $invoice->person->type->name . '/' . $invoice->person_id) }}">{{ $invoice->person->codeName}}</a>
-                                </td>
-                                <td>
-                                    @include('framework::app.include._approval_status_label', ['approval_status' => $invoice->formulir->approval_status])
-                                    @include('framework::app.include._form_status_label', ['form_status' => $invoice->formulir->form_status])
                                 </td>
                                 <td class="text-right">{{number_format_quantity($invoice->total, 0)}}</td>
                             </tr>
@@ -115,4 +103,36 @@
             </div>
         </div>
     </div>
+@stop
+
+@section('scripts')
+<script type="text/javascript">
+    function exportExcel() {
+        var spinner = ' <i class="fa fa-spinner fa-spin" style="font-size:16px;"></i>';
+        var date_from = $("#date-from").val();
+        var date_to = $("#date-to").val();
+        var search = $("#search").val();
+        $(".button-export").html(spinner);
+        $(".button-export").addClass('disabled');
+        $.ajax({
+            url: '{{url("purchasing/point/service/report/export")}}',
+            data: {
+                date_from: date_from,
+                date_to: date_to,
+                search: search
+            },
+            success: function(result) {
+                console.log(result);
+                $(".button-export").removeClass('disabled');
+                $(".button-export").html('Export to excel');
+                notification('export data success, please check your email in a few moments');
+            }, error:  function (result) {
+                $(".button-export").removeClass('disabled');
+                $(".button-export").html('Export to excel');
+                notification('export data failed, please try again');
+            }
+
+        });
+    }
+</script>
 @stop
