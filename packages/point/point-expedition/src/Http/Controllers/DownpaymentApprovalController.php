@@ -81,7 +81,7 @@ class DownpaymentApprovalController extends Controller
         DB::beginTransaction();
 
         FormulirHelper::approve($downpayment->formulir, $approval_message, 'approval.point.expedition.downpayment', $token);
-        self::addPaymentReference($downpayment);
+        self::paymentReference($downpayment);
         timeline_publish('approve', $downpayment->formulir->form_number . ' approved', $this->getUserForTimeline($request, $downpayment->formulir->approval_to));
 
         DB::commit();
@@ -117,7 +117,7 @@ class DownpaymentApprovalController extends Controller
         foreach ($array_formulir_id as $id) {
             $downpayment = Downpayment::where('formulir_id', $id)->first();
             FormulirHelper::approve($downpayment->formulir, $approval_message, 'approval.point.expedition.downpayment', $token);
-            self::addPaymentReference($downpayment);
+            self::paymentReference($downpayment);
             timeline_publish('approve', $downpayment->formulir->form_number . ' approved', $downpayment->formulir->approval_to);
         }
         DB::commit();

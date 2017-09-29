@@ -34,6 +34,15 @@ class DownpaymentController extends Controller
         return $view;
     }
 
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.expedition.downpayment');
+        $list_downpayment = Downpayment::joinFormulir()->joinExpedition()->notArchived()->selectOriginal();
+        $list_downpayment = DownpaymentHelper::searchList($list_downpayment, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-expedition::app.expedition.point.downpayment.index-pdf', ['list_downpayment' => $list_downpayment]);
+        return $pdf->stream();
+    }
+
     /**
      * Show the form for creating a new resource.
      *
