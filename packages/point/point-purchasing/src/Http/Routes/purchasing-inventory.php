@@ -3,6 +3,7 @@
 Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchasing\Http\Controllers\Inventory'], function () {
     Route::resource('/', 'PurchasingMenuController@index');
     Route::group(['middleware' => 'auth'], function () {
+        Route::get('/report/pdf', 'PurchaseReportController@indexPDF');
         Route::get('/report/export', 'PurchaseReportController@export');
         Route::get('/report', 'PurchaseReportController@index');
     });
