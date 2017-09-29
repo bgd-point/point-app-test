@@ -37,11 +37,18 @@ class PurchaseOrderController extends Controller
         
         $list_purchase_order = PurchaseOrder::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
         $list_purchase_order = PurchaseOrderHelper::searchList($list_purchase_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
-
         $view = view('point-purchasing::app.purchasing.point.inventory.purchase-order.index');
-
         $view->list_purchase_order = $list_purchase_order->paginate(100);
         return $view;
+    }
+
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.purchasing.order');
+        $list_purchase_order = PurchaseOrder::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
+        $list_purchase_order = PurchaseOrderHelper::searchList($list_purchase_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.inventory.purchase-order.index-pdf', ['list_purchase_order' => $list_purchase_order]);
+        return $pdf->stream();
     }
 
     /**

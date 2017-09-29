@@ -26,11 +26,23 @@ class GoodsReceivedController extends Controller
      */
     public function index()
     {
+        access_is_allowed('read.point.purchasing.goods.received');
+
         $view = view('point-purchasing::app.purchasing.point.inventory.goods-received.index');
         $list_goods_received = GoodsReceived::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
         $list_goods_received = GoodsReceivedHelper::searchList($list_goods_received, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_goods_received = $list_goods_received->paginate(100);
         return $view;
+    }
+
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.purchasing.goods.received');
+
+        $list_goods_received = GoodsReceived::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
+        $list_goods_received = GoodsReceivedHelper::searchList($list_goods_received, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.inventory.goods-received.index-pdf', ['list_goods_received' => $list_goods_received]);
+        return $pdf->stream();
     }
 
     public function createStep1()

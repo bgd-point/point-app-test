@@ -39,11 +39,19 @@ class SalesOrderController extends Controller
         
         $list_sales_order = SalesOrder::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         $list_sales_order = SalesOrderHelper::searchList($list_sales_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
-
         $view = view('point-sales::app.sales.point.sales.sales-order.index');
-
         $view->list_sales_order = $list_sales_order->paginate(100);
         return $view;
+    }
+
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.sales.order');
+        $list_sales_order = SalesOrder::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
+        $list_sales_order = SalesOrderHelper::searchList($list_sales_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-sales::app.sales.point.sales.sales-order.index-pdf', ['list_sales_order' => $list_sales_order]);
+        
+        return $pdf->stream();
     }
 
     /**

@@ -51,6 +51,16 @@ class PaymentOrderController extends Controller
         return $view;
     }
 
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.expedition.payment.order');
+
+        $list_payment_order = PaymentOrder::joinFormulir()->joinExpedition()->notArchived()->selectOriginal();
+        $list_payment_order = PaymentOrderHelper::searchList($list_payment_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-expedition::app.expedition.point.payment-order.index-pdf', ['list_payment_order' => $list_payment_order]);
+        return $pdf->stream();
+    }
+
     /**
      * Show the form for creating a new resource.
      *

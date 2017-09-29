@@ -19,6 +19,15 @@ class SalesReportController extends Controller
         return $view;
 	}
 
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.sales.order');
+        $list_report = SalesReportHelper::searchList(\Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-sales::app.sales.point.sales.report.index-pdf', ['list_report' => $list_report]);
+        
+        return $pdf->stream();
+    }
+
 	public function export(Request $request)
 	{
 		access_is_allowed('export.point.sales.report');

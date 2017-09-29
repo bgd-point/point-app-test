@@ -16,6 +16,7 @@ Route::group(['prefix' => 'sales/point/service', 'namespace' => 'Point\PointSale
         Route::get('/invoice/vesa-create', 'ServiceInvoiceVesaController@create');
         Route::get('/invoice/vesa-rejected', 'ServiceInvoiceVesaController@create');
         Route::get('/invoice/{id}/archived', 'InvoiceController@archived');
+        Route::get('/invoice/pdf', 'InvoiceController@indexPDF');
         Route::resource('/invoice', 'InvoiceController');
     });
 
@@ -32,6 +33,7 @@ Route::group(['prefix' => 'sales/point/service', 'namespace' => 'Point\PointSale
         Route::get('/downpayment/request-approval', 'DownpaymentApprovalController@requestApproval');
         Route::post('/downpayment/send-request-approval', 'DownpaymentApprovalController@sendRequestApproval');
         Route::get('/downpayment/{id}/archived', 'DownpaymentController@archived');
+        Route::get('/downpayment/pdf', 'DownpaymentController@indexPDF');
         Route::get('/downpayment/insert', 'DownpaymentController@insert');
         Route::resource('/downpayment', 'DownpaymentController');
     });
@@ -52,6 +54,7 @@ Route::group(['prefix' => 'sales/point/service', 'namespace' => 'Point\PointSale
         Route::get('/payment-collection/{id}/archived', 'PaymentCollectionController@archived');
         Route::get('/payment-collection/create-step-1', 'PaymentCollectionController@createStep1');
         Route::get('/payment-collection/create-step-2/{person_person_id}', 'PaymentCollectionController@createStep2');
+        Route::get('/payment-collection/pdf', 'PaymentCollectionController@indexPDF');
         Route::post('/payment-collection/create-step-3', 'PaymentCollectionController@createStep3');
         Route::post('/payment-collection/send-email-payment', 'PaymentCollectionController@sendEmailPayment');
         Route::post('/payment-collection/{id}/edit-review', 'PaymentCollectionController@editReview');
