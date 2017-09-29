@@ -4,6 +4,7 @@
 @endif
 
 <a href="{{$url}}" class="btn btn-primary btn-effect-ripple">Export to Excel</a>
+<a href="{{$url_pdf}}" class="btn btn-primary btn-effect-ripple">Export to PDF</a>
 <br><br>
 <div class="table-responsive">
     <table class="table table-striped table-bordered">
