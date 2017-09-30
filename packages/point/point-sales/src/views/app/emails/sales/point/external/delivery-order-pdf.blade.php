@@ -57,9 +57,9 @@
         <div class="signature-person">&nbsp;</div>
     </td>
     <td>
-        Sopir,
-        <div class="signature-date">Date:</div>
+        Driver,
+        <div class="signature-date">{{ \DateHelper::formatView($delivery_order->formulir->form_date) }}</div>
         <div class="signature">____________________</div>
-        <div class="signature-person">&nbsp;</div>
+        <div class="signature-person">{{ $delivery_order->driver }} ({{ $delivery_order->license_plate }})</div>
     </td>
 @stop
