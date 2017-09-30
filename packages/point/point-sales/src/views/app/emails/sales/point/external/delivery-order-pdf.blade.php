@@ -53,19 +53,19 @@
 @section('signature')
     <td>
         Penerima,
-        <div class="signature-date">{{ \DateHelper::formatView($delivery_order->formulir->approval_at) }}</div>
+        <div class="signature-date">&nbsp;</div>
         <div class="signature">____________________</div>
         <div class="signature-person">( Nama Terang )</div>
     </td>
     <td>
         Pengirim / Ekspedisi,
-        <div class="signature-date">Date:</div>
+        <div class="signature-date">&nbsp;</div>
         <div class="signature">____________________</div>
         <div class="signature-person">( Nama Terang )</div>
     </td>
     <td>
         Mengetahui,
-        <div class="signature-date">{{ \DateHelper::formatView($delivery_order->formulir->form_date) }}</div>
+        <div class="signature-date">&nbsp;</div>
         <div class="signature">____________________</div>
         <div class="signature-person">( Nama Terang )</div>
     </td>
