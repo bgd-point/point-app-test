@@ -47,7 +47,7 @@
 @stop
 
 @section('end-notes')
-    {{ get_end_notes('sales invoice') }}
+    {{ get_end_notes('delivery order') }}
 @stop
 
 @section('signature')
