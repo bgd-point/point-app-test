@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Point\Core\Helpers\UserHelper;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
+use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
 use Point\PointExpedition\Models\ExpeditionOrder;
 use Point\PointExpedition\Models\ExpeditionOrderItem;
@@ -195,5 +196,24 @@ class DeliveryOrderController extends Controller
 
         gritter_success('delivery order success', 'false');
         return redirect('/sales/point/indirect/delivery-order/'.$delivery_order->id);
+    }
+
+    public function exportPDF($id)
+    {
+        $delivery_order = DeliveryOrder::find($id);
+        $warehouse = '';
+        $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
+
+        if ($warehouse_id > 0) {
+            $warehouse = Warehouse::find($warehouse_id);
+        }
+
+        $data = array(
+            'delivery_order' => $delivery_order,
+            'warehouse' => $warehouse
+        );
+
+        $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.delivery-order-pdf', $data);
+        return $pdf->stream($delivery_order->formulir->form_number.'.pdf');
     }
 }
