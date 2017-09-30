@@ -55,7 +55,7 @@
     <tr>
         @if(url_logo())
             <td>
-                <img src="{{ url_logo() }}" style="background-color:transparent;width:auto;height:50px;">
+                <img src="{{ public_path('app/'.app('request')->project->url.'/logo/logo.png') }}" style="background-color:transparent;width:auto;height:50px;">
                 <div>
                     {{$warehouse->address ? : ''}}
                     <br>
