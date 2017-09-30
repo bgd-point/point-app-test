@@ -267,15 +267,17 @@ class InvoiceController extends Controller
         $invoice = Invoice::find($id);
         $warehouse = '';
         $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
+
         if ($warehouse_id > 0) {
             $warehouse = Warehouse::find($warehouse_id);
         }
+
         $data = array(
             'invoice' => $invoice, 
             'warehouse' => $warehouse
         );
 
         $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.invoice-pdf', $data);
-        return $pdf->download($invoice->formulir->form_number.'.pdf');
+        return $pdf->stream($invoice->formulir->form_number.'.pdf');
     }
 }
