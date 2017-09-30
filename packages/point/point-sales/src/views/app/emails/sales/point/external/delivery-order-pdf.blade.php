@@ -14,7 +14,7 @@
     <tr>
         <td>Customer</td>
         <td>:</td>
-        <td>{{ ucwords($delivery_order->person->codeName) }}</td>
+        <td>{{ ucwords($delivery_order->person->name) }}</td>
     </tr>
     @if($delivery_order->license_plate)
     <tr>
@@ -52,19 +52,19 @@
 
 @section('signature')
     <td>
-        Penerima,
+        <div class="signature-title">Penerima,</div>
         <div class="signature-date">&nbsp;</div>
         <div class="signature">____________________</div>
         <div class="signature-person">( Nama Terang )</div>
     </td>
     <td>
-        Pengirim / Ekspedisi,
+        <div class="signature-title">Pengirim / Ekspedisi,</div>
         <div class="signature-date">&nbsp;</div>
         <div class="signature">____________________</div>
         <div class="signature-person">( Nama Terang )</div>
     </td>
     <td>
-        Mengetahui,
+        <div class="signature-title">Mengetahui,</div>
         <div class="signature-date">&nbsp;</div>
         <div class="signature">____________________</div>
         <div class="signature-person">( Nama Terang )</div>

@@ -19,7 +19,7 @@
     <tr>
         <td>Customer</td>
         <td>:</td>
-        <td>{{ ucwords($invoice->person->codeName) }}</td>
+        <td>{{ ucwords($invoice->person->name) }}</td>
     </tr>
 @stop
 
@@ -52,24 +52,6 @@
     <tr>
         <td colspan="5" class="text-right">Subtotal</td>
         <td class="text-right">{{ number_format_quantity($invoice->subtotal) }}</td>
-    </tr>
-    <tr>
-        <td colspan="5" class="text-right">Discount (%)</td>
-        <td class="text-right">{{ number_format_quantity($invoice->discount) }}</td>
-    </tr>
-    <tr>
-        <td colspan="5" class="text-right">Tax Base</td>
-        <td class="text-right">{{ number_format_quantity($invoice->tax_base) }}</td>
-    </tr>
-    @if($invoice->type_of_tax != 'non')
-        <tr>
-            <td colspan="5" class="text-right">Tax ({{ ucwords($invoice->type_of_tax) }})</td>
-            <td class="text-right">{{ number_format_quantity($invoice->tax) }}</td>
-        </tr>
-    @endif
-    <tr>
-        <td colspan="5" class="text-right">Expedition Fee</td>
-        <td class="text-right">{{ number_format_quantity($invoice->expedition_fee) }}</td>
     </tr>
     <tr>
         <td colspan="5" class="text-right">Total</td>
