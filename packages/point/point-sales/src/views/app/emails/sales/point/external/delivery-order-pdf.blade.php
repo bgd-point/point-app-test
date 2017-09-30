@@ -2,7 +2,7 @@
 
 @section('header')
     <tr>
-        <td width="25%">No. Delivery Order</td>
+        <td width="25%">No. Delivery</td>
         <td width="10px">:</td>
         <td>{{ $delivery_order->formulir->form_number }}</td>
     </tr>
