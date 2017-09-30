@@ -96,6 +96,7 @@
             <td colspan="2">
                 <!-- END NOTES -->
                 @yield('end-notes')
+                &nbsp;
             </td>
         </tr>
         <tr>
