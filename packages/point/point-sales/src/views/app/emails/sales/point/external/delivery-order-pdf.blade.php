@@ -16,6 +16,13 @@
         <td>:</td>
         <td>{{ ucwords($delivery_order->person->codeName) }}</td>
     </tr>
+    @if($delivery_order->license_plate)
+    <tr>
+        <td>Nopol</td>
+        <td>:</td>
+        <td>{{ ucwords($delivery_order->license_plate) }}</td>
+    </tr>
+    @endif
 @stop
 
 @section('content')
@@ -45,21 +52,21 @@
 
 @section('signature')
     <td>
-        Disetujui,
+        Penerima,
         <div class="signature-date">{{ \DateHelper::formatView($delivery_order->formulir->approval_at) }}</div>
         <div class="signature">____________________</div>
-        <div class="signature-person">&nbsp;</div>
+        <div class="signature-person">( Nama Terang )</div>
     </td>
     <td>
-        Admin Gudang,
+        Pengirim / Ekspedisi,
         <div class="signature-date">Date:</div>
         <div class="signature">____________________</div>
-        <div class="signature-person">&nbsp;</div>
+        <div class="signature-person">( Nama Terang )</div>
     </td>
     <td>
-        Driver,
+        Mengetahui,
         <div class="signature-date">{{ \DateHelper::formatView($delivery_order->formulir->form_date) }}</div>
         <div class="signature">____________________</div>
-        <div class="signature-person">{{ $delivery_order->driver }} ({{ $delivery_order->license_plate }})</div>
+        <div class="signature-person">( Nama Terang )</div>
     </td>
 @stop
