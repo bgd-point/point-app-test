@@ -53,6 +53,24 @@
         <td colspan="5" class="text-right">Subtotal</td>
         <td class="text-right">{{ number_format_quantity($invoice->subtotal) }}</td>
     </tr>
+    @if($invoice->discount > 0)
+    <tr>
+        <td colspan="5" class="text-right">Discount (%)</td>
+        <td class="text-right">{{ number_format_quantity($invoice->discount) }}</td>
+    </tr>
+    @endif
+    @if($invoice->type_of_tax != 'non')
+        <tr>
+            <td colspan="5" class="text-right">Tax ({{ ucwords($invoice->type_of_tax) }})</td>
+            <td class="text-right">{{ number_format_quantity($invoice->tax) }}</td>
+        </tr>
+    @endif
+    @if($invoice->expedition_fee > 0)
+    <tr>
+        <td colspan="5" class="text-right">Expedition Fee</td>
+        <td class="text-right">{{ number_format_quantity($invoice->expedition_fee) }}</td>
+    </tr>
+    @endif
     <tr>
         <td colspan="5" class="text-right">Total</td>
         <td class="text-right">{{ number_format_quantity($invoice->total) }}</td>
