@@ -75,7 +75,6 @@ class GoodsReceivedHelper
         $goods_received->point_purchasing_order_id = $request->input('reference_purchase_order_id');
         $goods_received->include_expedition = $request->input('include_expedition') ? 1 : 0;
         $goods_received->type_of_tax = $reference->type_of_tax;
-        $goods_received->expedition_fee = number_format_db($request->input('expedition_fee'));
         $goods_received->discount = $reference->discount;
         $goods_received->save();
 
@@ -123,8 +122,9 @@ class GoodsReceivedHelper
         
         $total_quantity_reference = PurchaseOrderItem::where('point_purchasing_order_id', $reference->id)->selectRaw('sum(quantity) as quantity')->first()->quantity; 
         $total_quantity_received = GoodsReceivedItem::where('point_purchasing_goods_received_id', $goods_received->id)->selectRaw('sum(quantity) as quantity')->first()->quantity; 
-        $average_expedition_fee = $goods_received->expedition_fee * $total_quantity_received / $total_quantity_reference;
-
+        $average_expedition_fee = $reference->expedition_fee * $total_quantity_received / $total_quantity_reference;
+        
+        $goods_received->expedition_fee = $average_expedition_fee;
         $goods_received->subtotal = $subtotal;
         $goods_received->tax_base = $tax_base;
         $goods_received->tax = $tax;
@@ -163,7 +163,6 @@ class GoodsReceivedHelper
         }
         
         JournalHelper::checkJournalBalance($goods_received->formulir_id);
-        dd($goods_received);
         return $goods_received;
     }
 

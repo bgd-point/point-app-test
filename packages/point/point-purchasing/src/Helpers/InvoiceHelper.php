@@ -134,14 +134,14 @@ class InvoiceHelper
         }
 
         // if price has modyfied, journal again
-        for ($i=0 ; $i < count($request->input('item_id')); $i++) {
+        for ($i=0; $i < count($request->input('item_id')); $i++) {
             if (($request->input('item_price_original')[$i] != number_format_db($request->input('item_price')[$i])) && $changed == false) {
                 self::journalDifferences($invoice, number_format_db($request->input('item_price')[$i]), $request->input('item_id')[$i]);
+                $changed == true;
             }
         }
 
         JournalHelper::checkJournalBalance($invoice->formulir_id);
-        dd($invoice);
         return $invoice;
     }
 
@@ -155,6 +155,8 @@ class InvoiceHelper
         Journal::where('form_journal_id', $goods_received->formulir_id)->delete();
         AccountPayableAndReceivable::where('formulir_reference_id', $goods_received->formulir_id)->delete();
         Inventory::where('formulir_id', $goods_received->formulir_id)->delete();
+
+        $total_quantity = InvoiceItem::where('point_purchasing_invoice_id', $invoice->id)->selectRaw('sum(quantity) as quantity')->first()->quantity;
 
         $subtotal = 0;
         foreach ($invoice->items as $invoice_item) {
@@ -176,7 +178,7 @@ class InvoiceHelper
             $journal->form_date = $invoice->formulir->form_date;
             $journal->coa_id = $invoice_item->item->account_asset_id;
             $journal->description = 'Goods Received [' . $invoice->formulir->form_number.']';
-            $journal->$position = $total_per_row + $total_per_row / $invoice->tax_base * $invoice->expedition_fee;
+            $journal->$position = $total_per_row + $invoice->expedition_fee * $invoice_item->quantity / $total_quantity;
             $journal->form_journal_id = $invoice->formulir_id;
             $journal->form_reference_id;
             $journal->subledger_id = $invoice_item->item_id;
@@ -227,33 +229,10 @@ class InvoiceHelper
             $journal->save();   
             \Log::info('tax '. $position. ' ' . $journal->$position);
         }
-
-        // if ($invoice->discount != 0) {
-        //     $account_discount = JournalHelper::getAccount('point purchasing', 'purchase discount');
-        //     $position = JournalHelper::position($account_discount);
-        //     $journal = new Journal;
-        //     $journal->form_date = $invoice->formulir->form_date;
-        //     $journal->coa_id = $account_discount;
-        //     $journal->description = 'Goods Received Purchasing [' . $invoice->formulir->form_number.']';
-        //     $journal->$position = ($subtotal * $invoice->discount / 100) * -1;
-        //     $journal->form_journal_id = $invoice->formulir->id;
-        //     $journal->form_reference_id;
-        //     $journal->subledger_id;
-        //     $journal->subledger_type;
-        //     $journal->save();
-        //     \Log::info('discount debit ' . $journal->debit);
-        // }
     }
 
     public static function journalDifferences($invoice, $item_price, $item_id)
     {
-        /**
-         * Journal selisih
-         * 1. utang expedisi
-         * 2. sedian
-         * 3. selisih
-         */
-
         $item = Item::find($item_id);
         $position = JournalHelper::position($item->account_asset_id);
         $journal = new Journal();

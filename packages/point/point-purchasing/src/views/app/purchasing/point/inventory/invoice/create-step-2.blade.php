@@ -241,16 +241,10 @@
             $(".tax").prop('checked',false);
             if(checked) {
                 $(this).prop('checked',true);
-                // if ($(this).val() == 'include') {
-                //     $('#discount').val(0);
-                //     $('#discount').prop('readonly', true);
-                // } else {
-                //     $('#discount').prop('readonly', false);
-                // }
             } else {
                 $('#tax-choice-non-tax').prop('checked', true);
             }
-
+            calculate();
         });
 
         var item_table = initDatatable('#item-datatable');
@@ -283,13 +277,6 @@
             }
 
             var discount = dbNum($('#discount').val());
-            // if($('#tax-choice-include-tax').prop('checked')) {
-            //     $('#discount').val(0);
-            //     $('#discount').prop('readonly', true);
-            //     var discount = 0;
-            // } else {
-            //     $('#discount').prop('readonly', false);
-            // }
             var tax_base = subtotal - (subtotal / 100 * discount);
             var tax = 0;
             if ($('#tax-choice-exclude-tax').prop('checked')) {
