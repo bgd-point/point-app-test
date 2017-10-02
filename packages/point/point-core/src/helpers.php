@@ -248,7 +248,7 @@ if (! function_exists('url_logo')) {
      */
     function url_logo()
     {
-        $path = storage_path().'/app/'.app('request')->project->url.'/logo/logo.png';
+        $path = public_path().'/app/'.app('request')->project->url.'/logo/logo.png';
         if (\File::exists($path)) {
             return url('logo/'.app('request')->project->url.'/logo.png');
         }
