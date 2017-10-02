@@ -38,6 +38,16 @@ class InvoiceController extends Controller
         return $view;
     }
 
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.expedition.invoice');
+
+        $list_invoice = Invoice::joinFormulir()->notArchived()->selectOriginal();
+        $list_invoice = InvoiceHelper::searchList($list_invoice, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-expedition::app.expedition.point.invoice.index-pdf', ['list_invoice' => $list_invoice]);
+        return $pdf->stream();
+    }
+
     /**
      * Show the form for creating a new resource.
      *

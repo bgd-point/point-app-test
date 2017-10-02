@@ -14,6 +14,8 @@ use Point\Framework\Models\Formulir;
 use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\Item;
+use Point\Framework\Models\Master\PersonGroup;
+use Point\Framework\Models\Master\PersonType;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
 use Point\PointExpedition\Models\ExpeditionOrderReference;
@@ -37,11 +39,19 @@ class SalesOrderController extends Controller
         
         $list_sales_order = SalesOrder::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         $list_sales_order = SalesOrderHelper::searchList($list_sales_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
-
         $view = view('point-sales::app.sales.point.sales.sales-order.index');
-
         $view->list_sales_order = $list_sales_order->paginate(100);
         return $view;
+    }
+
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.sales.order');
+        $list_sales_order = SalesOrder::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
+        $list_sales_order = SalesOrderHelper::searchList($list_sales_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-sales::app.sales.point.sales.sales-order.index-pdf', ['list_sales_order' => $list_sales_order]);
+        
+        return $pdf->stream();
     }
 
     /**
@@ -66,6 +76,9 @@ class SalesOrderController extends Controller
         $view->sales_quotation = SalesQuotation::find($point_sales_quotation_id);
         $view->list_person = PersonHelper::getByType(['customer']);
         $view->list_user_approval = UserHelper::getAllUser();
+        $person_type = PersonType::where('slug', 'customer')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
 
         return $view;
     }
@@ -79,6 +92,9 @@ class SalesOrderController extends Controller
         $view->list_customer= PersonHelper::getByType(['customer']);
         $view->list_allocation= Allocation::active()->get();
         $view->list_user_approval = UserHelper::getAllUser();
+        $person_type = PersonType::where('slug', 'customer')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
 
         return $view;
     }
@@ -171,6 +187,9 @@ class SalesOrderController extends Controller
         $view->list_person = PersonHelper::getByType(['customer']);
         $view->list_item = Item::get();
         $view->list_user_approval = UserHelper::getAllUser();
+        $person_type = PersonType::where('slug', 'customer')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
 
         return $view;
     }
@@ -185,6 +204,9 @@ class SalesOrderController extends Controller
         $view->list_item = Item::active()->get();
         $view->list_allocation = Allocation::active()->get();
         $view->list_user_approval = UserHelper::getAllUser();
+        $person_type = PersonType::where('slug', 'customer')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
         return $view;
     }
 

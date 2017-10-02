@@ -16,6 +16,7 @@ Route::group(['prefix' => 'sales/point/indirect', 'namespace' => 'Point\PointSal
         Route::post('/sales-quotation/send-email-quotation', 'SalesQuotationController@sendEmailQuotation');
         Route::get('/sales-quotation/get-last-price', 'SalesQuotationController@_getLastPrice');
         Route::get('/sales-quotation/{id}/archived', 'SalesQuotationController@archived');
+        Route::get('/sales-quotation/pdf', 'SalesQuotationController@indexPDF');
         Route::resource('/sales-quotation', 'SalesQuotationController');
     });
 });

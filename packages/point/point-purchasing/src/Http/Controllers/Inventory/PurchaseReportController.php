@@ -19,6 +19,15 @@ class PurchaseReportController extends Controller
         return $view;
 	}
 
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.purchasing.report');
+        $list_report = PurchaseReportHelper::searchList(\Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.inventory.report.index-pdf', ['list_report' => $list_report]);
+        
+        return $pdf->stream();
+    }
+
 	public function export(Request $request)
 	{
 		access_is_allowed('export.point.purchasing.report');

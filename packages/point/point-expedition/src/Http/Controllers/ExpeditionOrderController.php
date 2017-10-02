@@ -55,6 +55,25 @@ class ExpeditionOrderController extends Controller
         return $view;
     }
 
+
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.expedition.order');
+        $list_expedition_order = ExpeditionOrder::joinFormulir()->joinExpedition()->notArchived()->selectOriginal();
+        $list_expedition_order = ExpeditionOrderHelper::searchList(
+            $list_expedition_order,
+            app('request')->input('status'), 
+            app('request')->input('order_by'),
+            app('request')->input('status'),
+            app('request')->input('date_from'),
+            app('request')->input('date_to'),
+            app('request')->input('search')
+        )->get();
+
+        $pdf = \PDF::loadView('point-expedition::app.expedition.point.expedition-order.index-pdf', ['list_expedition_order' => $list_expedition_order]);
+        return $pdf->stream();
+    }
+
     public function createStep1()
     {
         access_is_allowed('create.point.expedition.order');

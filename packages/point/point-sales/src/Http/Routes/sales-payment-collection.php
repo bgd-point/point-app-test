@@ -15,6 +15,7 @@ Route::group(['prefix' => 'sales/point/indirect', 'namespace' => 'Point\PointSal
         Route::post('/payment-collection/cancel', 'PaymentCollectionController@cancel');
         Route::get('/payment-collection/request-approval', 'PaymentCollectionApprovalController@requestApproval');
         Route::post('/payment-collection/send-request-approval', 'PaymentCollectionApprovalController@sendRequestApproval');
+        Route::get('/payment-collection/pdf', 'PaymentCollectionController@indexPDF');
         Route::get('/payment-collection/{id}/archived', 'PaymentCollectionController@archived');
         Route::get('/payment-collection/create-step-1', 'PaymentCollectionController@createStep1');
         Route::get('/payment-collection/create-step-2/{person_person_id}', 'PaymentCollectionController@createStep2');

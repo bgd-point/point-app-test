@@ -222,6 +222,10 @@
                                        onclick="secureReopenForm({{$delivery_order->formulir_id}},'{{url('formulir/reopen')}}')">Reopen
                                         Form</a>
                                 @endif
+                                @if(formulir_view_email_vendor($delivery_order->formulir, 'create.point.sales.invoice'))
+                                    <a class="btn btn-effect-ripple btn-info"
+                                            href="{{url('sales/point/indirect/delivery-order/'.$delivery_order->id.'/export')}}">Print</a>
+                                @endif
                             </div>
                         </div>
                     </fieldset>

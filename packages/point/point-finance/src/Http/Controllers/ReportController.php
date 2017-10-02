@@ -59,9 +59,28 @@ class ReportController extends Controller
         $view->type = $type;
         $view->opening_balance = $report['journal_debit'] - $report['journal_credit'];
         $view->url = url('finance/point/report/export/?type='.$type.'&subledger_id='.$subledger.'&coa_id='.$coa_id.'&date_from='.$date_from.'&date_to='.$date_to);
+        $view->url_pdf = url('finance/point/report/export/pdf?type='.$type.'&subledger_id='.$subledger.'&coa_id='.$coa_id.'&date_from='.$date_from.'&date_to='.$date_to);
 
 
         return $view;
+    }
+
+    public function exportPDF()
+    {
+        $type = \Input::get('type');
+        $subledger = \Input::get('subledger_id');
+        $coa_id = \Input::get('coa_id');
+        $date_from = \Input::get('date_from') ? \Input::get('date_from') : date('d-m-Y');
+        $date_to = \Input::get('date_to') ? \Input::get('date_to') : date('d-m-Y');
+
+        // respon view
+        $report = self::dataReport($type, $date_from, $date_to, $coa_id, $subledger);
+        $opening_balance = $report['journal_debit'] - $report['journal_credit'];
+        $type = $type;
+        $list_report = $report['report'];
+        $pdf = \PDF::loadView('point-finance::app.finance.point.report.report-pdf', ['list_report' => $list_report, 'opening_balance' => $opening_balance, 'type' => $type]);
+        
+        return $pdf->stream();
     }
 
     public static function dataReport($type, $date_from, $date_to, $coa_id, $subledger)

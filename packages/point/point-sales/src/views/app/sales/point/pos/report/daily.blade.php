@@ -13,12 +13,15 @@
         <div class="panel-body">
             <div class="table-responsive">
                 {!! $list_sales->render() !!}
-                @if(auth()->user()->may('export.point.sales.pos.report'))
+                @if(auth()->user()->may('export.point.sales.pos.daily.report'))
                 <a href="{{ url('sales/point/pos/daily-sales/export') }}" class="btn btn-info">
                     Export to excel
                 </a>
-                <br><br>
                 @endif
+                @if(auth()->user()->may('read.point.sales.pos.daily.report'))
+                <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" href="{{url('sales/point/pos/daily-sales/pdf')}}"> export to PDF</a>
+                @endif
+                <br><br>
                 <table class="table tabble-striped table-bordered" cellpadding="0" cellspacing="0" border="0" >
                     <thead>
                         <tr>

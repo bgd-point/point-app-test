@@ -20,6 +20,7 @@ Route::group(['prefix' => 'expedition/point', 'namespace' => 'Point\PointExpedit
         Route::get('/expedition-order/create-step-2/{id}', 'ExpeditionOrderController@createStep2');
         Route::get('/expedition-order/load-form-expedition', 'ExpeditionOrderController@loadFormAddExpedition');
         Route::get('/expedition-order/store-expedition', 'ExpeditionOrderController@storeAjaxExpedition');
+        Route::get('/expedition-order/pdf', 'ExpeditionOrderController@indexPDF');
         Route::post('/expedition-order/send-email-order', 'ExpeditionOrderController@sendEmailOrder');
         Route::post('/expedition-order/{id}/store', 'ExpeditionOrderController@store');
         Route::resource('/expedition-order', 'ExpeditionOrderController');
@@ -36,6 +37,7 @@ Route::group(['prefix' => 'expedition/point', 'namespace' => 'Point\PointExpedit
 
         Route::get('/downpayment/request-approval', 'DownpaymentApprovalController@requestApproval');
         Route::post('/downpayment/send-request-approval', 'DownpaymentApprovalController@sendRequestApproval');
+        Route::get('/downpayment/pdf', 'DownpaymentController@indexPDF');
         Route::get('/downpayment/create/{id}', 'DownpaymentController@create');
         Route::get('/downpayment/{id}/archived', 'DownpaymentController@archived');
         Route::get('/downpayment/create-step-1', 'DownpaymentController@createStep1');
@@ -48,6 +50,7 @@ Route::group(['prefix' => 'expedition/point', 'namespace' => 'Point\PointExpedit
         Route::post('/invoice/basic/store', 'BasicInvoiceController@store');
         Route::post('/invoice/basic/update', 'BasicInvoiceController@update');
         Route::get('/invoice/basic/{id}/archived', 'BasicInvoiceController@archived');
+        Route::get('/invoice/basic/pdf', 'BasicInvoiceController@indexPDF');
         Route::post('/invoice/basic/send-email', 'BasicInvoiceController@sendEmail');
         Route::resource('/invoice/basic', 'BasicInvoiceController');
     });
@@ -60,6 +63,7 @@ Route::group(['prefix' => 'expedition/point', 'namespace' => 'Point\PointExpedit
         Route::get('/invoice/{id}/archived', 'InvoiceController@archived');
         Route::get('/invoice/create-step-1', 'InvoiceController@createStep1');
         Route::get('/invoice/create-step-2/{person_supplier_id}', 'InvoiceController@createStep2');
+        Route::get('/invoice/pdf', 'InvoiceController@indexPDF');
         Route::post('/invoice/create-step-3', 'InvoiceController@createStep3');
         Route::post('/invoice/send-email', 'InvoiceController@sendEmail');
         Route::resource('/invoice', 'InvoiceController', ['except' => ['create', 'delete']]);
@@ -78,6 +82,7 @@ Route::group(['prefix' => 'expedition/point', 'namespace' => 'Point\PointExpedit
         Route::post('/payment-order/send-request-approval', 'PaymentOrderApprovalController@sendRequestApproval');
         Route::post('/payment-order/cancel', 'PaymentOrderController@cancel');
         Route::get('/payment-order/{id}/archived', 'PaymentOrderController@archived');
+        Route::get('/payment-order/pdf', 'PaymentOrderController@indexPDF');
         Route::get('/payment-order/create-step-1', 'PaymentOrderController@createStep1');
         Route::get('/payment-order/create-step-2/{person_supplier_id}', 'PaymentOrderController@createStep2');
         Route::post('/payment-order/create-step-3', 'PaymentOrderController@createStep3');

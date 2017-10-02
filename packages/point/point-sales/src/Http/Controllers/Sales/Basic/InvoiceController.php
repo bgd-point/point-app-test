@@ -13,6 +13,8 @@ use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\Permission;
 use Point\Framework\Models\Master\Person;
+use Point\Framework\Models\Master\PersonGroup;
+use Point\Framework\Models\Master\PersonType;
 use Point\PointSales\Helpers\InvoiceHelper;
 use Point\PointSales\Http\Requests\SalesRequest;
 use Point\PointSales\Models\Sales\Invoice;
@@ -27,6 +29,9 @@ class InvoiceController extends Controller
         $view->list_person = PersonHelper::getByType(['customer']);
         $view->list_item = Item::get();
         $view->list_allocation = Allocation::active()->get();
+        $person_type = PersonType::where('slug', 'customer')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
         return $view;
     }
 
