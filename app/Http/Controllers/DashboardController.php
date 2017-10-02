@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Point\Framework\Vesa\MasterVesa;
+use Point\PointAccounting\Models\MemoJournal;
 use Point\PointExpedition\Models\Downpayment as DownpaymentExpedition;
 use Point\PointExpedition\Models\ExpeditionOrder;
 use Point\PointExpedition\Models\Invoice as InvoiceExpedition;
@@ -13,6 +15,7 @@ use Point\PointInventory\Models\StockCorrection\StockCorrection;
 use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\TransferItem\TransferItem;
 use Point\PointManufacture\Models\InputProcess;
+use Point\PointPurchasing\Models\Inventory\CashAdvance;
 use Point\PointPurchasing\Models\Inventory\Downpayment as DownpaymentPurchasing;
 use Point\PointPurchasing\Models\Inventory\GoodsReceived;
 use Point\PointPurchasing\Models\Inventory\Invoice as InvoicePurchasing;
@@ -47,6 +50,9 @@ class DashboardController extends Controller
          * $array_vesa = array_merge($array_vesa, OtherPackage::getVesa());
          */
 
+        // FRAMEWORK
+        $array_vesa = array_merge($array_vesa, MasterVesa::getVesa());
+        
         // INVENTORY
         $array_vesa = array_merge($array_vesa, InventoryUsage::getVesa());
         $array_vesa = array_merge($array_vesa, StockCorrection::getVesa());
@@ -61,18 +67,21 @@ class DashboardController extends Controller
         $array_vesa = array_merge($array_vesa, InvoiceSales::getVesa());
         $array_vesa = array_merge($array_vesa, ReturSales::getVesa());
         $array_vesa = array_merge($array_vesa, SalesPaymentCollection::getVesa());
-        $array_vesa = array_merge($array_vesa, SalesServiceDownpayment::getVesa());
         $array_vesa = array_merge($array_vesa, ServicePaymentCollection::getVesa());
+        $array_vesa = array_merge($array_vesa, SalesServiceDownpayment::getVesa());
 
-        // PURCHASING
+        // PURCHASING INVENTORY
         $array_vesa = array_merge($array_vesa, PurchaseRequisition::getVesa());
         $array_vesa = array_merge($array_vesa, PurchaseOrder::getVesa());
         $array_vesa = array_merge($array_vesa, DownpaymentPurchasing::getVesa());
         $array_vesa = array_merge($array_vesa, GoodsReceived::getVesa());
         $array_vesa = array_merge($array_vesa, InvoicePurchasing::getVesa());
         $array_vesa = array_merge($array_vesa, PaymentOrderPurchasing::getVesa());
-        $array_vesa = array_merge($array_vesa, PurchaseServiceDownpayment::getVesa());
+        $array_vesa = array_merge($array_vesa, CashAdvance::getVesa());
+
+        // PURCHASING SERVICE
         $array_vesa = array_merge($array_vesa, PurchaseServicePaymentOrder::getVesa());
+        $array_vesa = array_merge($array_vesa, PurchaseServiceDownpayment::getVesa());
 
         // EXPEDITION
         $array_vesa = array_merge($array_vesa, ExpeditionOrder::getVesa());
@@ -88,8 +97,7 @@ class DashboardController extends Controller
         $array_vesa = array_merge($array_vesa, PaymentReference::getVesa());
 
         // ACCOUNTING
-
-        // FACILITY
+        $array_vesa = array_merge($array_vesa, MemoJournal::getVesa());
 
         $view->array_vesa = $array_vesa;
 

@@ -25,6 +25,23 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::resource('/purchase-requisition', 'PurchaseRequisitionController');
     });
 
+    // CASH ADVANCE
+    Route::get('/cash-advance/reject-all', 'CashAdvanceApprovalController@rejectAll');
+    Route::get('/cash-advance/approve-all', 'CashAdvanceApprovalController@approveAll');
+    Route::any('/cash-advance/{id}/approve', 'CashAdvanceApprovalController@approve');
+    Route::any('/cash-advance/{id}/reject', 'CashAdvanceApprovalController@reject');
+    Route::group(['middleware' => 'auth'], function () {
+        Route::get('/cash-advance/vesa-approval', 'CashAdvanceVesaController@approval');
+        Route::get('/cash-advance/vesa-rejected', 'CashAdvanceVesaController@rejected');
+
+        Route::get('/cash-advance/request-approval', 'CashAdvanceApprovalController@requestApproval');
+        Route::post('/cash-advance/send-request-approval', 'CashAdvanceApprovalController@sendRequestApproval');
+        Route::get('/cash-advance/{id}/archived', 'CashAdvanceController@archived');
+        Route::get('/cash-advance/create/{id}', 'CashAdvanceController@create');
+        Route::get('/cash-advance/create-step-1', 'CashAdvanceController@createStep1');
+        Route::resource('/cash-advance', 'CashAdvanceController');
+    });
+
     // PURCHASE ORDER
     Route::get('/purchase-order/reject-all', 'PurchaseOrderApprovalController@rejectAll');
     Route::get('/purchase-order/approve-all', 'PurchaseOrderApprovalController@approveAll');

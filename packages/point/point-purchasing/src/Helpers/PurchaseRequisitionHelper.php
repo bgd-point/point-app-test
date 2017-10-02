@@ -53,6 +53,7 @@ class PurchaseRequisitionHelper
         $purchase_requisition->employee_id = $request->input('employee_id');
         $purchase_requisition->supplier_id = $request->input('supplier_id') ? : null;
         $purchase_requisition->required_date = date_format_db($request->input('required_date'));
+        $purchase_requisition->include_cash_advance = $request->input('include_cash_advance') ? 1 : 0 ;
         $purchase_requisition->save();
 
         for ($i=0 ; $i<count($request->input('item_id')) ; $i++) {

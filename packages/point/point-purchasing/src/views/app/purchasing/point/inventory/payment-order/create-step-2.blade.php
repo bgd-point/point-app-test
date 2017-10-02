@@ -74,6 +74,7 @@
                                         <li class="active"><a href="#block-tabs-invoice">INVOICE</a></li>
                                         <li><a href="#block-tabs-cutoff">CUTOFF</a></li>
                                         <li><a href="#block-tabs-downpayment">DOWNPAYMENT</a></li>
+                                        <li><a href="#block-tabs-cashadvance">CASH ADVANCE</a></li>
                                         <li><a href="#block-tabs-retur">RETUR</a></li>
                                         <li><a href="#block-tabs-other">OTHERS</a></li>
                                     </ul>
@@ -252,6 +253,68 @@
                                         </div>
                                     </div>
 
+                                    <!-- CASH ADVANCE -->
+                                    <div class="tab-pane" id="block-tabs-cashadvance">
+                                        <div class="table-responsive">
+                                            <table id="cashadvance-datatable" class="table table-striped table-vcenter">
+                                                <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>DATE</th>
+                                                    <th>FORM NUMBER</th>
+                                                    <th>EMPLOYEE</th>
+                                                    <th>NOTES</th>
+                                                    <th>AVAILABLE CASH ADVANCE</th>
+                                                    <th>CASH ADVANCE</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @foreach($list_cash_advance as $cash_advance)
+                                                    <?php
+                                                    $cash_advance_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($cash_advance),
+                                                            $cash_advance->id, $cash_advance->amount);
+                                                    if ($cash_advance_remaining < 0) {
+                                                        continue;
+                                                    }
+                                                    ?>
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            <input type="hidden" name="cash_advance_reference_id[]" value="{{$cash_advance->id}}">
+                                                            <input type="hidden" name="cash_advance_reference_type[]" value="{{get_class($cash_advance)}}">
+                                                            <input type="hidden" name="cash_advance_rid[]"
+                                                                   value="{{$cash_advance->formulir_id}}">
+                                                            <input type="checkbox"
+                                                                   id="id-cash-advance-{{$cash_advance->formulir_id}}"
+                                                                   class="row-id" name="cash_advance_id[]"
+                                                                   value="{{$cash_advance->formulir_id}}"
+                                                                   onclick="updateCashAdvance()">
+                                                        </td>
+                                                        <td>{{ date_format_view($cash_advance->formulir->form_date) }}</td>
+                                                        <td>
+                                                            <a href="{{ url('purchasing/point/cash-advance/'.$cash_advance->id) }}">{{ $cash_advance->formulir->form_number}}</a>
+                                                        </td>
+                                                        <td>{!! get_url_person($cash_advance->employee_id) !!}</td>
+                                                        <td>{{ $cash_advance->formulir->notes }}</td>
+                                                        <td>{{ number_format_price($cash_advance_remaining) }}</td>
+                                                        <td>
+                                                            <input type="text"
+                                                                   id="amount-cash-advance-{{$cash_advance->formulir_id}}"
+                                                                   name="amount_cash_advance[]"
+                                                                   class="form-control format-price row-amount"
+                                                                   onkeyup="updateCashAdvance()"
+                                                                   value="{{$cash_advance_remaining}}"/>
+                                                            <input type="hidden" name="available_cash_advance[]"
+                                                                   value="{{$cash_advance_remaining}}"/>
+                                                            <input type="hidden" name="original_amount_cash_advance[]"
+                                                                   value="{{$cash_advance->amount}}"/>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
                                     <!-- RETUR -->
                                     <div class="tab-pane" id="block-tabs-retur">
                                         <div class="table-responsive">
@@ -365,6 +428,8 @@
                                    class="form-control format-price" value="0"/>
                             <input readonly type="hidden" id="total-cutoff" name="total_cutoff"
                                    class="form-control format-price" value="0"/>
+                            <input readonly type="hidden" id="total-cash-advance" name="total_cash_advance"
+                                   class="form-control format-price" value="0"/>
                         </div>
                     </div>
 
@@ -420,6 +485,7 @@
         initDatatable('#invoice-datatable');
         initDatatable('#cutoff-datatable');
         initDatatable('#retur-datatable');
+        initDatatable('#cashadvance-datatable');
         
         var counter = 0;
         $('#addItemRow').on('click', function () {
@@ -479,6 +545,23 @@
         });
 
 
+        function updateCashAdvance() {
+            var rows = $("#cashadvance-datatable").dataTable().fnGetNodes();
+            var total_cash_advance = 0;
+            for (var i = 0; i < rows.length; i++) {
+                if ($(rows[i]).find(".row-id").prop('checked')) {
+                    total_cash_advance += dbNum($(rows[i]).find(".row-amount").val());
+                }
+            }
+            var total_invoice = dbNum($('#total-invoice').val());
+            var total_retur = dbNum($('#total-retur').val());
+            var total_cutoff = dbNum($('#total-cutoff').val());
+            var total_other = dbNum($('#total-other').val());
+            var total_downpayment = dbNum($('#total-downpayment').val());
+            $('#total-cash-advance').val(appNum(total_cash_advance));
+            $('#total-payment').val(appNum(total_invoice + total_cutoff + total_other - total_cash_advance - total_downpayment - total_retur));
+        }
+
         function updateDownpayment() {
             var rows = $("#downpayment-datatable").dataTable().fnGetNodes();
             var total_downpayment = 0;
@@ -491,8 +574,9 @@
             var total_retur = dbNum($('#total-retur').val());
             var total_cutoff = dbNum($('#total-cutoff').val());
             var total_other = dbNum($('#total-other').val());
+            var total_cash_advance = dbNum($('#total-cash-advance').val());
             $('#total-downpayment').val(appNum(total_downpayment));
-            $('#total-payment').val(appNum(total_invoice + total_cutoff + total_other - total_downpayment - total_retur));
+            $('#total-payment').val(appNum(total_invoice + total_cutoff + total_other - total_downpayment - total_cash_advance - total_retur));
         }
 
         function updateInvoice() {
@@ -507,8 +591,9 @@
             var total_retur = dbNum($('#total-retur').val());
             var total_cutoff = dbNum($('#total-cutoff').val());
             var total_other = dbNum($('#total-other').val());
+            var total_cash_advance = dbNum($('#total-cash-advance').val());
             $('#total-invoice').val(appNum(total_invoice));
-            $('#total-payment').val(appNum(total_invoice + total_cutoff + total_other - total_downpayment - total_retur));
+            $('#total-payment').val(appNum(total_invoice + total_cutoff + total_other - total_downpayment - total_cash_advance - total_retur));
         }
 
         function updateCutoff() {
@@ -523,8 +608,9 @@
             var total_invoice = dbNum($('#total-invoice').val());
             var total_retur = dbNum($('#total-retur').val());
             var total_other = dbNum($('#total-other').val());
+            var total_cash_advance = dbNum($('#total-cash-advance').val());
             $('#total-cutoff').val(appNum(total_cutoff));
-            $('#total-payment').val(appNum(total_invoice + total_other + total_cutoff - total_downpayment - total_retur));
+            $('#total-payment').val(appNum(total_invoice + total_other + total_cutoff - total_downpayment - total_cash_advance - total_retur));
         }
 
         function updateRetur() {
@@ -539,8 +625,9 @@
             var total_invoice = dbNum($('#total-invoice').val());
             var total_cutoff = dbNum($('#total-cutoff').val());
             var total_other = dbNum($('#total-other').val());
+            var total_cash_advance = dbNum($('#total-cash-advance').val());
             $('#total-retur').val(appNum(total_retur));
-            $('#total-payment').val(appNum(total_invoice + total_cutoff + total_other - total_downpayment - total_retur));
+            $('#total-payment').val(appNum(total_invoice + total_cutoff + total_other - total_downpayment - total_cash_advance - total_retur));
         }
 
         function calculate() {
@@ -553,8 +640,9 @@
             var total_cutoff = dbNum($('#total-cutoff').val());
             var total_retur = dbNum($('#total-retur').val());
             var total_downpayment = dbNum($('#total-downpayment').val());
+            var total_cash_advance = dbNum($('#total-cash-advance').val());
             $('#total-other').val(appNum(total_other));
-            $('#total-payment').val(appNum(total_other + total_cutoff + total_invoice - total_downpayment - total_retur));
+            $('#total-payment').val(appNum(total_other + total_cutoff + total_invoice - total_downpayment - total_cash_advance - total_retur));
         }
     </script>
 @stop

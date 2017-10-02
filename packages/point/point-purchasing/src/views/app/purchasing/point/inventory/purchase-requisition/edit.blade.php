@@ -80,6 +80,14 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-md-3 control-label">Include Cash Advance</label>
+                        <div class="col-md-6 content-show">
+                            <input type="checkbox" id="include-cash-advance" name="include_cash_advance"  @if($purchase_requisition->include_cash_advance == 1) checked @endif  value="true">
+                            <span class="help-block">Check for create cash advance</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
                         <label class="col-md-3 control-label">Notes</label>
 
                         <div class="col-md-6">

@@ -32,6 +32,7 @@ use Point\PointAccounting\Models\CutOffPayable;
 use Point\PointAccounting\Models\CutOffPayableDetail;
 use Point\PointFinance\Models\PaymentReference;
 use Point\PointPurchasing\Helpers\PaymentOrderHelper;
+use Point\PointPurchasing\Models\Inventory\CashAdvance;
 use Point\PointPurchasing\Models\Inventory\Downpayment;
 use Point\PointPurchasing\Models\Inventory\Invoice;
 use Point\PointPurchasing\Models\Inventory\PaymentOrder;
@@ -106,6 +107,7 @@ class PaymentOrderController extends Controller
         $view->list_coa = Coa::getNonSubledger();
         $view->list_allocation = Allocation::active()->get();
         $view->list_user_approval = UserHelper::getAllUser();
+        $view->list_cash_advance = CashAdvance::availableToCreatePaymentOrder()->get();
         $view->list_cut_off_payable = CutOffPayableDetail::joinPayable()
             ->joinFormulir()
             ->where('formulir.form_status', 1)
@@ -153,6 +155,15 @@ class PaymentOrderController extends Controller
         $view->amount_downpayment = number_format_db(\Input::get('amount_downpayment'));
         $view->available_downpayment = number_format_db(\Input::get('available_downpayment'));
         $view->original_amount_downpayment = number_format_db(\Input::get('original_amount_downpayment'));
+
+        $view->list_cash_advance = CashAdvance::whereIn('formulir_id', \Input::get('cash_advance_id'))->get();
+        $view->cash_advance_rid = \Input::get('cash_advance_rid');
+        $view->cash_advance_id = \Input::get('cash_advance_id');
+        $view->cash_advance_reference_id = \Input::get('cash_advance_reference_id');
+        $view->cash_advance_reference_type = \Input::get('cash_advance_reference_type');
+        $view->amount_cash_advance = number_format_db(\Input::get('amount_cash_advance'));
+        $view->available_cash_advance = number_format_db(\Input::get('available_cash_advance'));
+        $view->original_amount_cash_advance = number_format_db(\Input::get('original_amount_cash_advance'));
 
         $view->list_cut_off_payable = CutOffPayableDetail::whereIn('id', \Input::get('cut_off_id'))->get();
         $view->cutoff_rid = \Input::get('cut_off_rid');
@@ -239,6 +250,21 @@ class PaymentOrderController extends Controller
             array_push($references, $reference_type::find($downpayment_id[$i]));
         }
 
+        $cash_advance_id = $request->input('cash_advance_id');
+        for ($i=0;$i < count($cash_advance_id);$i++) {
+            $reference_type = get_class(new CashAdvance);
+            array_push($formulir_id, CashAdvance::find($cash_advance_id[$i])->formulir_id);
+            array_push($references_id, $cash_advance_id[$i]);
+            array_push($references_type, $reference_type);
+            array_push($references_detail_id, $request->input('cash_advance_reference_id')[$i]);
+            array_push($references_detail_type, $request->input('cash_advance_reference_type')[$i]);
+            array_push($references_account, SettingJournal::where('group', 'point purchasing')->where('name', 'advance to employees')->first()->coa_id);
+            array_push($references_amount, $request->input('cash_advance_amount')[$i]);
+            array_push($references_amount_original, $request->input('cash_advance_amount_original')[$i]);
+            array_push($references_notes, $request->input('cash_advance_notes')[$i]);
+            array_push($references, $reference_type::find($cash_advance_id[$i]));
+        }
+
         $cutoff_id = $request->input('cutoff_id');
         for ($i=0;$i < count($cutoff_id);$i++) {
             $reference_type = get_class(new CutOffPayableDetail);
@@ -258,7 +284,7 @@ class PaymentOrderController extends Controller
         access_is_allowed('create.point.purchasing.payment.order', date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
         $formulir = FormulirHelper::create($request->input(), 'point-purchasing-payment-order');
         $payment_order = PaymentOrderHelper::create($request, $formulir, $references, $references_account, $references_type, $references_id, 
-            $references_amount, $references_amount_original, $references_notes, $references_detail_id, $references_detail_type);
+        $references_amount, $references_amount_original, $references_notes, $references_detail_id, $references_detail_type);
         timeline_publish('create.payment.order', 'added new payment order '  . $payment_order->formulir->form_number);
 
         DB::commit();
@@ -303,6 +329,7 @@ class PaymentOrderController extends Controller
         $downpayment_edit = ReferHelper::getRefersId(get_class(new Downpayment), get_class($payment_order), $payment_order->id);
         $cutoff_edit = ReferHelper::getRefersId(get_class(new CutOffPayableDetail), get_class($payment_order), $payment_order->id);
         $retur_edit = ReferHelper::getRefersId(get_class(new Retur), get_class($payment_order), $payment_order->id);
+        $cash_advance_edit = ReferHelper::getRefersId(get_class(new CashAdvance), get_class($payment_order), $payment_order->id);
         $view = view('point-purchasing::app.purchasing.point.inventory.payment-order.edit');
         $view->payment_order = $payment_order;
         $view->supplier = $payment_order->supplier;
@@ -322,6 +349,11 @@ class PaymentOrderController extends Controller
             ->joinSupplier()
             ->notArchived()
             ->availableToEditPaymentOrder($payment_order->supplier_id, $retur_edit)
+            ->selectOriginal()
+            ->get();
+        $view->list_cash_advance = CashAdvance::joinFormulir()
+            ->notArchived()
+            ->availableToEditPaymentOrder($cash_advance_edit)
             ->selectOriginal()
             ->get();
         $view->list_cut_off_payable = CutOffPayableDetail::joinPayable()
@@ -378,6 +410,16 @@ class PaymentOrderController extends Controller
         $view->available_downpayment = number_format_db(\Input::get('available_downpayment'));
         $view->original_amount_downpayment = number_format_db(\Input::get('original_amount_downpayment'));
         $view->downpayment_amount_edit = number_format_db(\Input::get('downpayment_amount_edit'));
+
+        $view->list_cash_advance = CashAdvance::whereIn('formulir_id', \Input::get('cash_advance_id'))->get();
+        $view->cash_advance_rid = \Input::get('cash_advance_rid');
+        $view->cash_advance_id = \Input::get('cash_advance_id');
+        $view->cash_advance_reference_id = \Input::get('cash_advance_reference_id');
+        $view->cash_advance_reference_type = \Input::get('cash_advance_reference_type');
+        $view->amount_cash_advance = number_format_db(\Input::get('amount_cash_advance'));
+        $view->available_cash_advance = number_format_db(\Input::get('available_cash_advance'));
+        $view->original_amount_cash_advance = number_format_db(\Input::get('original_amount_cash_advance'));
+        $view->cash_advance_amount_edit = number_format_db(\Input::get('cash_advance_amount_edit'));
 
         $view->list_cut_off_payable = CutOffPayableDetail::whereIn('id', \Input::get('cut_off_id'))->get();
         $view->cutoff_rid = \Input::get('cut_off_rid');
@@ -469,6 +511,21 @@ class PaymentOrderController extends Controller
             array_push($references_notes, $request->input('downpayment_notes')[$i]);
             array_push($references, $reference_type::find($downpayment_id[$i]));
         }
+        $cash_advance_id = $request->input('cash_advance_id');
+        for ($i=0;$i < count($cash_advance_id);$i++) {
+            $reference_type = get_class(new CashAdvance);
+            array_push($formulir_id, CashAdvance::find($cash_advance_id[$i])->formulir_id);
+            array_push($references_id, $cash_advance_id[$i]);
+            array_push($references_type, $reference_type);
+            array_push($references_detail_id, $request->input('cash_advance_reference_id')[$i]);
+            array_push($references_detail_type, $request->input('cash_advance_reference_type')[$i]);
+            array_push($references_account, SettingJournal::where('group', 'point purchasing')->where('name', 'advance to employees')->first()->coa_id);
+            array_push($references_amount, $request->input('cash_advance_amount')[$i]);
+            array_push($references_amount_original, $request->input('cash_advance_amount_original')[$i]);
+            array_push($references_amount_edit, $request->input('cash_advance_amount_edit')[$i]);
+            array_push($references_notes, $request->input('cash_advance_notes')[$i]);
+            array_push($references, $reference_type::find($cash_advance_id[$i]));
+        }
         $cutoff_id = $request->input('cutoff_id');
         for ($i=0;$i < count($cutoff_id);$i++) {
             $reference_type = get_class(new CutOffPayableDetail);
@@ -558,7 +615,8 @@ class PaymentOrderController extends Controller
         foreach ($list_formulir_lock as $formulir_lock) {
             $locked_form = Formulir::find($formulir_lock->locked_id);
             if ($locked_form->formulirable_type != get_class(new Downpayment)
-                && $locked_form->formulirable_type != get_class(new CutOffPayable)) {
+                && $locked_form->formulirable_type != get_class(new CutOffPayable)
+                && $locked_form->formulirable_type != get_class(new CashAdvance)) {
                 $locked_form->form_status = 0;
                 $locked_form->save();    
             }

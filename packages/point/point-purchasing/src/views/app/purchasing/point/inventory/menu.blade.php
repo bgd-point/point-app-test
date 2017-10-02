@@ -23,6 +23,17 @@
                     </a>
                 </div>
             @endif
+            @if(auth()->user()->may('read.point.purchasing.cash.advance'))
+                <div class="col-md-4 col-lg-3">
+                    <a href="{{url('purchasing/point/cash-advance')}}" class="widget widget-button">
+                        <div class="widget-content text-right clearfix">
+                            <i class="fa fa-4x fa-check-square-o push-bit pull-left"></i>
+                            <h4 class="widget-heading"><strong>cash advance</strong></h4>
+                            <span class="text-muted"></span>
+                        </div>
+                    </a>
+                </div>
+            @endif
             @if(auth()->user()->may('read.point.purchasing.order'))
                 <div class="col-md-4 col-lg-3">
                     <a href="{{url('purchasing/point/purchase-order')}}" class="widget widget-button">

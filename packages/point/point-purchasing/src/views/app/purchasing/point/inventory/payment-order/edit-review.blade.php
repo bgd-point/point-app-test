@@ -161,6 +161,39 @@
                                             </tr>
                                             <?php $i++;?>
                                         @endforeach
+
+                                        <!-- CASH ADVANCE -->
+                                        @foreach($list_cash_advance as $cash_advance)
+                                            <?php
+                                            $i = array_search($cash_advance->formulir_id, $cash_advance_rid);
+                                            $total_payment -= $amount_cash_advance[$i];
+                                            ?>
+                                            <tr>
+                                                <td>
+                                                    {{ date_Format_view($cash_advance->formulir->form_date) }}
+                                                    <input type="hidden" name="cash_advance_id[]"
+                                                           value="{{$cash_advance->id}}"/>
+                                                    <input type="hidden" name="cash_advance_notes[]"
+                                                           value="{{$cash_advance->formulir->notes}}"/>
+                                                    <input type="hidden" name="cash_advance_amount[]"
+                                                           value="{{$amount_cash_advance[$i] * -1}}"/>
+                                                    <input type="hidden" name="cash_advance_amount_original[]"
+                                                           value="{{$cash_advance->amount}}"/>
+                                                    <input type="hidden" name="cash_advance_amount_edit[]"
+                                                           value="{{$cash_advance_amount_edit[$i] * -1}}"/>
+                                                    <input type="hidden" name="cash_advance_available[]"
+                                                           value="{{$available_cash_advance[$i]}}"/>
+                                                    <input type="hidden" name="cash_advance_reference_id[]" value="{{$cash_advance->id}}">
+                                                    <input type="hidden" name="cash_advance_reference_type[]" value="{{get_class($cash_advance)}}">
+                                                </td>
+                                                <td>
+                                                    <a href="{{ url('purchasing/point/cash-advance/'.$cash_advance->id) }}">{{ $cash_advance->formulir->form_number}}</a>
+                                                </td>
+                                                <td>{{ $cash_advance->formulir->notes }}</td>
+                                                <td class="text-right">{{ number_format_quantity($amount_cash_advance[$i]*-1) }}</td>
+                                            </tr>
+                                            <?php $i++;?>
+                                        @endforeach
                                         
                                         <!-- RETUR -->
                                         @foreach($list_retur as $retur)
