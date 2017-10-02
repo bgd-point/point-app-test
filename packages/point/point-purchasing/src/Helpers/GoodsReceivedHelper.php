@@ -74,8 +74,8 @@ class GoodsReceivedHelper
         $goods_received->license_plate = $request->input('license_plate');
         $goods_received->point_purchasing_order_id = $request->input('reference_purchase_order_id');
         $goods_received->include_expedition = $request->input('include_expedition') ? 1 : 0;
-        $goods_received->expedition_fee = number_format_db($request->input('expedition_fee'));
         $goods_received->type_of_tax = $reference->type_of_tax;
+        $goods_received->expedition_fee = number_format_db($request->input('expedition_fee'));
         $goods_received->discount = $reference->discount;
         $goods_received->save();
 
@@ -121,12 +121,14 @@ class GoodsReceivedHelper
             $tax = $tax_base * 10 / 100;
         }
         
-        $total_quantity = GoodsReceivedItem::where('point_purchasing_goods_received_id', $goods_received->id)->selectRaw('sum(quantity) as quantity')->first()->quantity;
+        $total_quantity_reference = PurchaseOrderItem::where('point_purchasing_order_id', $reference->id)->selectRaw('sum(quantity) as quantity')->first()->quantity; 
+        $total_quantity_received = GoodsReceivedItem::where('point_purchasing_goods_received_id', $goods_received->id)->selectRaw('sum(quantity) as quantity')->first()->quantity; 
+        $average_expedition_fee = $goods_received->expedition_fee * $total_quantity_received / $total_quantity_reference;
 
         $goods_received->subtotal = $subtotal;
         $goods_received->tax_base = $tax_base;
         $goods_received->tax = $tax;
-        $goods_received->total = $tax_base + $tax + $goods_received->expedition_fee / $total_quantity;
+        $goods_received->total = $tax_base + $tax + $average_expedition_fee;
         $goods_received->save();
 
 
@@ -155,12 +157,13 @@ class GoodsReceivedHelper
         }
 
         if ($reference->include_expedition) {
-            self::journal($goods_received, $request, $reference);
+            self::journal($goods_received, $request, $reference, $average_expedition_fee);
         } else {
             self::transferItem($request);
         }
         
         JournalHelper::checkJournalBalance($goods_received->formulir_id);
+        dd($goods_received);
         return $goods_received;
     }
 
@@ -175,7 +178,7 @@ class GoodsReceivedHelper
         }
     }
     
-    public static function journal($goods_received, $request, $reference)
+    public static function journal($goods_received, $request, $reference, $expedition_fee)
     {
         // $reference is Purchasing
         $total_quantity = GoodsReceivedItem::where('point_purchasing_goods_received_id', $goods_received->id)->selectRaw('sum(quantity) as quantity')->first()->quantity;
@@ -185,7 +188,7 @@ class GoodsReceivedHelper
             // Journal inventory
             $total_per_row = $goods_received_item->quantity * $goods_received_item->price - $goods_received_item->quantity * $goods_received_item->price / 100 * $goods_received_item->discount;
             if ($goods_received->discount) {
-                $discounty = $total_per_row * $goods_received->discount / $goods_received->subtotal;
+                $discounty = $total_per_row * $goods_received->discount / 100;
                 $total_per_row = $total_per_row - $discounty;
             }
 
@@ -198,13 +201,14 @@ class GoodsReceivedHelper
             $journal->form_date = $goods_received->formulir->form_date;
             $journal->coa_id = $goods_received_item->item->account_asset_id;
             $journal->description = 'Goods Received [' . $goods_received->formulir->form_number.']';
-            $journal->$position = $total_per_row;
+            $journal->$position = $total_per_row + $expedition_fee * $goods_received_item->quantity / $total_quantity;
             $journal->form_journal_id = $goods_received->formulir_id;
             $journal->form_reference_id;
             $journal->subledger_id = $goods_received_item->item_id;
             $journal->subledger_type = get_class($goods_received_item);
             $journal->save();
 
+            \Log::info('sedian '. $position.' '.$journal->$position);
             // insert new inventory
             $item = Item::find($goods_received_item->item_id);
             $inventory = new Inventory();
@@ -232,6 +236,8 @@ class GoodsReceivedHelper
         $journal->subledger_id = $goods_received->supplier_id;
         $journal->subledger_type = get_class($goods_received->supplier);
         $journal->save();
+        \Log::info('hutang '. $position.' ' .$journal->$position);
+
 
         // 2. Journal income tax receiveable
         if ($goods_received->tax > 0) {
@@ -246,23 +252,10 @@ class GoodsReceivedHelper
             $journal->form_reference_id;
             $journal->subledger_id;
             $journal->subledger_type;
-            $journal->save();    
-        }
-
-        // 3. Journal Expedition Cost
-        if ($goods_received->expedition_fee > 0) {
-            $expedition = JournalHelper::getAccount('point purchasing', 'expedition cost');
-            $position = JournalHelper::position($expedition);
-            $journal = new Journal;
-            $journal->form_date = $goods_received->formulir->form_date;
-            $journal->coa_id = $expedition;
-            $journal->description = 'Goods Received Purchasing [' . $goods_received->formulir->form_number.']';
-            $journal->$position = $goods_received->expedition_fee / $total_quantity;
-            $journal->form_journal_id = $goods_received->formulir->id;
-            $journal->form_reference_id;
-            $journal->subledger_id;
-            $journal->subledger_type;
             $journal->save();
+
+            \Log::info('tax '. $position.' ' .$journal->$position);
+
         }
     }
 
