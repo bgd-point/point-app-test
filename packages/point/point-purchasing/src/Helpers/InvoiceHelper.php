@@ -51,7 +51,7 @@ class InvoiceHelper
         return $list_invoice;
     }
 
-    public static function create(Request $request, $formulir, $reference = null)
+    public static function create(Request $request, $formulir, $reference = null, $invoice_old = null)
     {
         $invoice = new Invoice;
         $invoice->formulir_id = $formulir->id;
@@ -127,17 +127,26 @@ class InvoiceHelper
          *
          * Jika terjadi perubahan di invoice, maka harus di
          */
+        $reset_journal = false;
+        if ($invoice_old) {
+            if ($invoice_old->is_reset_journal) {
+                $reset_journal = true;
+            }
+        }
+
         $changed = false;
-        if (($request->input('original_expedition_fee') != $invoice->expedition_fee) || ($request->input('original_tax_type') != $invoice->type_of_tax) || ($request->input('original_discount') != $invoice->discount)) {
+        if (($request->input('original_expedition_fee') != $invoice->expedition_fee) || ($request->input('original_tax_type') != $invoice->type_of_tax) || ($request->input('original_discount') != $invoice->discount) || $reset_journal) {
             self::rejournal($request, $invoice);
+            $invoice->is_reset_journal = true;
+            $invoice->save();
             $changed = true;
         }
 
         // if price has modyfied, journal again
         for ($i=0; $i < count($request->input('item_id')); $i++) {
-            if (($request->input('item_price_original')[$i] != number_format_db($request->input('item_price')[$i])) && $changed == false) {
+            if (($request->input('item_price_original')[$i] != number_format_db($request->input('item_price')[$i])) && $changed == false && $reset_journal == false) {
                 self::journalDifferences($invoice, number_format_db($request->input('item_price')[$i]), $request->input('item_id')[$i]);
-                $changed == true;
+                $changed = true;
             }
         }
 

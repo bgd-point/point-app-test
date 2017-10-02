@@ -100,7 +100,6 @@
                                                     <input type="hidden" name="reference_item_id[]" value="{{$goods_received_item->id}}">
                                                     <input type="hidden" name="reference_item_type[]" value="{{get_class($goods_received_item)}}">
                                                     <input type="hidden" name="warehouse_id[]" value="{{$goods_received->warehouse_id}}">
-
                                                 </td>
                                                 <td>
                                                     <a href="{{ url('master/item/'.$goods_received_item->item_id) }}">{{ $goods_received_item->item->codeName }}</a>
@@ -181,7 +180,6 @@
                                         <td colspan="6"></td>
                                         <td>
                                             <input type="hidden" name="original_tax_type" value="{{$goods_received->type_of_tax}}">
-
                                             <input type="checkbox" id="tax-choice-include-tax" class="tax" name="type_of_tax" {{ $goods_received->type_of_tax == 'include' ? 'checked'  : '' }} onchange="calculate()" value="include"> Tax Included <br/>
                                             <input type="checkbox" id="tax-choice-exclude-tax" class="tax" name="type_of_tax" {{ $goods_received->type_of_tax == 'exclude' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
                                             <input type="checkbox" id="tax-choice-non-tax" class="tax" name="type_of_tax" {{ $goods_received->type_of_tax == 'non' ? 'checked'  : '' }} onchange="calculate()" value="non" style="display:none">
@@ -198,7 +196,8 @@
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="text-right">TOTAL</td>
-                                        <td><input type="text" readonly id="total" name="total" 
+                                        <td>
+                                            <input type="text" readonly id="total" name="total" 
                                                    class="form-control format-quantity calculate text-right" value="{{$goods_received->total}}"/>
                                         </td>
                                     </tr>
@@ -207,7 +206,6 @@
                             </div>
                         </div>
                     </div>
-
                     <fieldset>
                         <div class="form-group">
                             <div class="col-md-12">
@@ -216,13 +214,11 @@
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label">FORM CREATOR</label>
-
                             <div class="col-md-6 content-show">
                                 {{\Auth::user()->name}}
                             </div>
                         </div>
                     </fieldset>
-
                     <div class="form-group">
                         <div class="col-md-6 col-md-offset-3">
                             <button type="submit" class="btn btn-effect-ripple btn-primary">Submit</button>

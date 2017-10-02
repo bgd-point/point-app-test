@@ -138,11 +138,7 @@ class InvoiceController extends Controller
         $view = view('point-purchasing::app.purchasing.point.inventory.invoice.edit');
         $view->invoice = Invoice::find($id);
         $view->supplier = Person::find($view->invoice->supplier_id);
-        $array_goods_received_id = FormulirHelper::getLockedModelIds($view->invoice->formulir_id);
-        $view->list_goods_received = GoodsReceived::joinFormulir()
-            ->whereIn('point_purchasing_goods_received.id', $array_goods_received_id)
-            ->selectOriginal()
-            ->get();
+        $view->goods_received = FormulirHelper::getLockedModel($view->invoice->formulir_id);
         $view->list_user_approval = UserHelper::getAllUser();
         return $view;
     }
@@ -167,23 +163,17 @@ class InvoiceController extends Controller
 
         DB::beginTransaction();
 
-        $references_type = $request->input('reference_type');
-        $references_id = $request->input('reference_id');
-        $formulir_id = [];
-        $references = [];
-
-        for ($i=0; $i < count($references_type); $i++) {
-            $reference = $references_type[$i]::find($references_id[$i]);
-            array_push($references, $reference);
-            array_push($formulir_id, $reference->formulir_id);
-        }
+        $reference_id = $request->input('reference_id');
+        $reference_type = $request->input('reference_type');
+        $reference = $reference_type::find($reference_id);
+        $formulir_id = [$reference->formulir_id];
 
         $invoice = Invoice::find($id);
         FormulirHelper::isAllowedToUpdate('update.point.purchasing.invoice', date_format_db($request->input('form_date'), $request->input('time')), $invoice->formulir);
 
         $formulir_old = FormulirHelper::archive($request->input(), $invoice->formulir_id);
         $formulir = FormulirHelper::update($request->input(), $formulir_old->archived, $formulir_old->form_raw_number);
-        $invoice = InvoiceHelper::create($request, $formulir, $references);
+        $invoice = InvoiceHelper::create($request, $formulir, $reference, $invoice);
         timeline_publish('update.invoice', 'update invoice '  . $invoice->formulir->form_number);
 
         DB::commit();
