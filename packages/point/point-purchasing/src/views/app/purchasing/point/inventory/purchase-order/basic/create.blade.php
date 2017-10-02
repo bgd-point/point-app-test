@@ -188,8 +188,7 @@
                                     <tr>
                                         <td colspan="6" class="text-right">SUB TOTAL</td>
                                         <td><input type="text" readonly id="subtotal"
-                                                   class="form-control format-quantity calculate text-right"
-                                                   onclick="setToNontax()" value="{{old('subtotal') ? : 0}}" name="subtotal" /></td>
+                                                   class="form-control format-quantity calculate text-right" value="{{old('subtotal') ? : 0}}" name="subtotal" /></td>
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="text-right">DISCOUNT</td>
@@ -217,13 +216,9 @@
                                     <tr>
                                         <td colspan="6"></td>
                                         <td>
-                                            <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
-                                                   {{ old('type_of_tax') == 'on' ? 'checked'  : '' }} onchange="calculate()"
-                                                   value="include"> Tax Included <br/>
-                                            <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
-                                                   {{ old('type_of_tax') == 'on' ? 'checked'  : '' }} onchange="calculate()"
-                                                   value="exclude"> Tax Excluded <br/>
-                                            <input type="hidden" id="tax-choice-non-tax" name="type_of_tax" value="non">
+                                            <input type="checkbox" id="tax-choice-include-tax" class="tax" name="type_of_tax" {{ old('type_of_tax') == 'include' ? 'checked'  : '' }} onchange="calculate()" value="include"> Tax Included <br/>
+                                            <input type="checkbox" id="tax-choice-exclude-tax" class="tax" name="type_of_tax" {{ old('type_of_tax') == 'exclude' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
+                                            <input type="checkbox" id="tax-choice-non-tax" class="tax" name="type_of_tax" {{ old('type_of_tax') == 'non' ? 'checked'  : '' }} onchange="calculate()" value="non" style="display:none">
                                         </td>
                                     </tr>
                                     <tr>
@@ -252,24 +247,20 @@
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label">Form Creator</label>
-
                             <div class="col-md-6 content-show">
                                 {{auth()->user()->name}}
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label">Request Approval To *</label>
-
                             <div class="col-md-6">
                                 <select name="approval_to" class="selectize" style="width: 100%;"
                                         data-placeholder="Choose one..">
                                     @foreach($list_user_approval as $user_approval)
-
                                         @if($user_approval->may('approval.point.purchasing.order'))
                                             <option value="{{$user_approval->id}}"
                                                     @if(old('approval_to') == $user_approval->id) selected @endif>{{$user_approval->name}}</option>
                                         @endif
-
                                     @endforeach
                                 </select>
                             </div>
@@ -293,6 +284,17 @@
 @include('framework::scripts.person')
 @section('scripts')
     <script>
+        $(".tax").change(function() {
+            var checked = $(this).is(':checked');
+            $(".tax").prop('checked',false);
+            if(checked) {
+                $(this).prop('checked',true);
+            } else {
+                $('#tax-choice-non-tax').prop('checked', true);
+            }
+            calculate();
+        });
+
         var item_table = initDatatable('#item-datatable');
         var counter = {{$counter}} > 0 ? {{$counter}} : 0;
 
@@ -305,7 +307,7 @@
                 '<div class="input-group"><input type="text" id="item-quantity-' + counter + '" name="item_quantity[]" class="form-control format-quantity text-right calculate" value="0" /><span id="span_unit-' + counter + '" class="input-group-addon"></span></div><input type="hidden"  id="item-unit-' + counter + '" name="item_unit_name[]" class="form-control format-quantity text-right" value="" />',
                 '<td><input type="text" id="item-price-' + counter + '" name="item_price[]" class="form-control format-quantity calculate text-right" value="0" />',
                 '<div class="input-group">'
-                + '<input type="text" id="item-discount-' + counter + '" name="item_discount[]"  class="form-control calculate text-right" value="0"  /><span class="input-group-addon">%</span></div></td>',
+                + '<input type="text" id="item-discount-' + counter + '" name="item_discount[]"  class="form-control calculate format-quantity text-right" value="0"  /><span class="input-group-addon">%</span></div></td>',
                 '<select id="allocation-id-' + counter + '" name="allocation_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
                 @foreach($list_allocation as $allocation)
                 + '<option value="{{$allocation->id}}">{{$allocation->name}}</option>'
@@ -350,19 +352,6 @@
             }
         });
 
-        $(function () {
-            $('#tax-choice-non-tax').hide();
-            var tax_status = {!! json_encode(old('type_of_tax')) !!};
-
-            if (tax_status == 'include') {
-                $("#tax-choice-include-tax").trigger("click");
-            } else if (tax_status == 'exclude') {
-                $("#tax-choice-exclude-tax").trigger("click");
-            } else {
-                $("#tax-choice-non-tax").val("non");
-            }
-        });
-
         function includeExpedition() {
             if (document.getElementById("include-expedition").checked) {
                 $('#fee-expedition').show();
@@ -370,13 +359,6 @@
                 $('#fee-expedition').val(0);
                 $('#fee-expedition').hide();
             }
-            calculate();
-        }
-
-        function setToNontax() {
-            $("#tax-choice-include-tax").attr("checked", false);
-            $("#tax-choice-exclude-tax").attr("checked", false);
-            $("#tax-choice-non-tax").trigger("click");
             calculate();
         }
 
@@ -401,25 +383,16 @@
             }
 
             var discount = dbNum($('#discount').val());
-            if($('#tax-choice-include-tax').prop('checked')) {
-                $('#discount').val(0);
-                $('#discount').prop('readonly', true);
-                var discount = 0;
-            } else {
-                $('#discount').prop('readonly', false);
-            }
             var tax_base = subtotal - (subtotal / 100 * discount);
             var tax = 0;
 
             if ($('#tax-choice-exclude-tax').prop('checked')) {
                 tax = tax_base * 10 / 100;
-                $("#tax-choice-non-tax").val("exclude");
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
                 tax_base = tax_base * 100 / 110;
                 tax = tax_base * 10 / 100;
-                $("#tax-choice-non-tax").val("include");
             }
 
             var expedition_fee = dbNum($('#fee-expedition').val());

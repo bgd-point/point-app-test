@@ -127,8 +127,7 @@
                                     <?php $counter = 0;?>
                                     @foreach( $purchase_order->items as $purchase_order_item )
                                         <tr>
-                                            <td><a href="javascript:void(0)" class="remove-row btn btn-danger"><i
-                                                            class="fa fa-trash"></i></a></td>
+                                            <td><a href="javascript:void(0)" class="remove-row btn btn-danger"><i class="fa fa-trash"></i></a></td>
                                             <td>
                                                 <select id="item-id-{{$counter}}" name="item_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one.." onchange="selectItem(this.value, {{$counter}})">
                                                     <option value="{{$purchase_order_item->item_id}}">
@@ -177,8 +176,7 @@
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <td><input type="button" id="addItemRow" class="btn btn-primary"
-                                                   value="Add Item"></td>
+                                        <td><input type="button" id="addItemRow" class="btn btn-primary" value="Add Item"></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -188,16 +186,14 @@
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="text-right">SUB TOTAL</td>
-                                        <td><input type="text" readonly id="subtotal"
-                                                   class="form-control format-quantity calculate text-right"
-                                                   onclick="setToNontax()" value="0" name="subtotal" /></td>
+                                        <td><input type="text" readonly id="subtotal" class="form-control format-quantity calculate text-right" value="0" name="subtotal" /></td>
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="text-right">DISCOUNT</td>
                                         <td>
                                             <div class="input-group">
                                                 <input type="text" id="discount" name="discount" maxlength="3"
-                                                       class="form-control calculate text-right"
+                                                       class="form-control calculate text-right format-quantity"
                                                        style="min-width: 100px" value="{{$purchase_order->discount }}"/><span
                                                         class="input-group-addon">%</span></div>
                                         </td>
@@ -218,14 +214,9 @@
                                     <tr>
                                         <td colspan="6"></td>
                                         <td>
-                                            <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
-                                                   {{ $purchase_order->type_of_tax == 'include' ? 'checked' : '' }} onchange="calculate()"
-                                                   value="include"> Tax Included <br/>
-                                            <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
-                                                   {{ $purchase_order->type_of_tax == 'exclude' ? 'checked' : '' }} onchange="calculate()"
-                                                   value="exclude"> Tax Excluded <br/>
-                                            <input type="text" id="tax-choice-non-tax" name="type_of_tax"
-                                                    {{ $purchase_order->type_of_tax == 'non' ? 'checked' : '' }} value="non">
+                                            <input type="checkbox" id="tax-choice-include-tax" class="tax" name="type_of_tax" {{ $purchase_order->type_of_tax == 'include' ? 'checked'  : '' }} onchange="calculate()" value="include"> Tax Included <br/>
+                                            <input type="checkbox" id="tax-choice-exclude-tax" class="tax" name="type_of_tax" {{ $purchase_order->type_of_tax == 'exclude' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
+                                            <input type="checkbox" id="tax-choice-non-tax" class="tax" name="type_of_tax" {{ $purchase_order->type_of_tax == 'non' ? 'checked'  : '' }} onchange="calculate()" value="non" style="display:none">
                                         </td>
                                     </tr>
                                     <tr>
@@ -254,14 +245,12 @@
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label">Form Creator</label>
-
                             <div class="col-md-6 content-show">
                                 {{auth()->user()->name}}
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label">Request Approval To *</label>
-
                             <div class="col-md-6">
                                 <select name="approval_to" class="selectize" style="width: 100%;"
                                         data-placeholder="Choose one..">
@@ -275,7 +264,6 @@
                                 </select>
                             </div>
                         </div>
-
                     </fieldset>
 
                     <div class="form-group">
@@ -294,6 +282,17 @@
 @include('framework::scripts.person')
 @section('scripts')
     <script>
+        $(".tax").change(function() {
+            var checked = $(this).is(':checked');
+            $(".tax").prop('checked',false);
+            if(checked) {
+                $(this).prop('checked',true);
+            } else {
+                $('#tax-choice-non-tax').prop('checked', true);
+            }
+            calculate();
+        });
+
         var item_table = initDatatable('#item-datatable');
         var counter = {{$counter}} > 0 ? {{$counter}} : 0;
 
@@ -353,16 +352,7 @@
         });
 
         $(function () {
-            $('#tax-choice-non-tax').hide();
-            var tax_status = {!! json_encode(old('type_of_tax')) !!};
-
-            if (tax_status == 'include') {
-                $("#tax-choice-include-tax").trigger("click");
-            } else if (tax_status == 'exclude') {
-                $("#tax-choice-exclude-tax").trigger("click");
-            } else {
-                $("#tax-choice-non-tax").val("non");
-            }
+            includeExpedition();
         });
 
         function includeExpedition() {
@@ -372,13 +362,6 @@
                 $('#fee-expedition').val(0);
                 $('#fee-expedition').hide();
             }
-            calculate();
-        }
-
-        function setToNontax() {
-            $("#tax-choice-include-tax").attr("checked", false);
-            $("#tax-choice-exclude-tax").attr("checked", false);
-            $("#tax-choice-non-tax").trigger("click");
             calculate();
         }
 
@@ -402,25 +385,16 @@
             }
 
             var discount = dbNum($('#discount').val());
-            if($('#tax-choice-include-tax').prop('checked')) {
-                $('#discount').val(0);
-                $('#discount').prop('readonly', true);
-                var discount = 0;
-            } else {
-                $('#discount').prop('readonly', false);
-            }
             var tax_base = subtotal - (subtotal / 100 * discount);
             var tax = 0;
 
             if ($('#tax-choice-exclude-tax').prop('checked')) {
                 tax = tax_base * 10 / 100;
-                $("#tax-choice-non-tax").val("exclude");
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
                 tax_base = tax_base * 100 / 110;
                 tax = tax_base * 10 / 100;
-                $("#tax-choice-non-tax").val("include");
             }
 
             var expedition_fee = dbNum($('#fee-expedition').val());
