@@ -14,6 +14,8 @@ use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\Permission;
 use Point\Framework\Models\Master\Person;
+use Point\Framework\Models\Master\PersonGroup;
+use Point\Framework\Models\Master\PersonType;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
 use Point\PointPurchasing\Helpers\ServiceInvoiceHelper;
@@ -32,11 +34,25 @@ class InvoiceController extends Controller
         $view->list_invoice = $list_invoice->paginate(100);
         return $view;
     }
+
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.purchasing.service.invoice');
+
+        $list_invoice = Invoice::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
+        $list_invoice = ServiceInvoiceHelper::searchList($list_invoice, \Input::get('order_by'),\Input::get('order_type'),\Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.service.invoice.index-pdf', ['list_invoice' => $list_invoice]);
+        return $pdf->stream();
+    }
+
     public function create()
     {
         $view = view('point-purchasing::app.purchasing.point.service.invoice.create');
         $view->list_person = PersonHelper::getByType(['supplier']);
         $view->list_allocation = Allocation::active()->get();
+        $person_type = PersonType::where('slug', 'supplier')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
         return $view;
     }
 
@@ -88,7 +104,7 @@ class InvoiceController extends Controller
         DB::beginTransaction();
 
         $invoice = Invoice::find($id);
-        FormulirHelper::isAllowedToUpdate('update.point.purchasing.invoice', date_format_db($request->input('form_date'), $request->input('time')), $invoice->formulir);
+        FormulirHelper::isAllowedToUpdate('update.point.purchasing.service.invoice', date_format_db($request->input('form_date'), $request->input('time')), $invoice->formulir);
 
         $formulir_old = FormulirHelper::archive($request->input(), $invoice->formulir_id);
         $formulir = FormulirHelper::update($request->input(), $formulir_old->archived, $formulir_old->form_raw_number);

@@ -51,11 +51,23 @@ class PaymentOrderController extends Controller
      */
     public function index()
     {
+        access_is_allowed('read.point.purchasing.payment.order');
+
         $view = view('point-purchasing::app.purchasing.point.inventory.payment-order.index');
         $list_payment_order = PaymentOrder::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
         $list_payment_order = PaymentOrderHelper::searchList($list_payment_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_payment_order = $list_payment_order->paginate(100);
         return $view;
+    }
+
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.purchasing.payment.order');
+
+        $list_payment_order = PaymentOrder::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
+        $list_payment_order = PaymentOrderHelper::searchList($list_payment_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.inventory.payment-order.index-pdf', ['list_payment_order' => $list_payment_order]);
+        return $pdf->stream();
     }
 
     /**

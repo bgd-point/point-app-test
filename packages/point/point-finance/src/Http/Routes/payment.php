@@ -3,6 +3,7 @@
 Route::group(['middleware' => 'auth', 'prefix' => 'finance/point', 'namespace' => 'Point\PointFinance\Http\Controllers'], function () {
 
     // Report cash or bank
+    Route::get('report/export/pdf', 'ReportController@exportPDF');
     Route::get('report/export', 'ReportController@export');
     Route::post('report/view', 'ReportController@_view');
     Route::get('report/{type}', 'ReportController@index');

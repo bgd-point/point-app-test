@@ -13,7 +13,7 @@
             <div class="panel-body">
                 <form action="{{ url('expedition/point/expedition-order') }}" method="get" class="form-horizontal">
                     <div class="form-group">
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <select class="selectize" name="status" id="status" onchange="selectData('form_date', 'desc')">
                                 <option value="0" @if(\Input::get('status') == 0) selected @endif>open</option>
                                 <option value="1" @if(\Input::get('status') == 1) selected @endif>closed</option>
@@ -28,17 +28,20 @@
                                 <input type="text" name="date_to" id="date-to" class="form-control date input-datepicker" placeholder="To" value="{{\Input::get('date_to') ? \Input::get('date_to') : ''}}">
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <input type="text" name="search" id="search" class="form-control" placeholder="Search..."
                                    value="{{\Input::get('search')}}"
                                    value="{{\Input::get('search') ? \Input::get('search') : ''}}">
                         </div>
-                        <div class="col-sm-1">
+                        <div class="col-sm-12">
                             <input type="hidden" name="order_by" id="order-by" value="{{\Input::get('order_by') ? \Input::get('order_by') : 'form_date'}}">
                             <input type="hidden" name="order_type" id="order-type" value="{{\Input::get('order_type') ? \Input::get('order_type') : 'desc'}}">
                             <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary">
                                 <i class="fa fa-search"></i> Search
                             </button>
+                            @if(auth()->user()->may('read.point.expedition.order'))
+                                <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" href="{{url('expedition/point/expedition-order/pdf?date_from='.\Input::get('date_from').'&date_to='.\Input::get('date_to').'&search='.\Input::get('search').'&order_by='.\Input::get('order_by').'&order_type='.\Input::get('order_type').'&status='.\Input::get('status'))}}"> export to PDF</a>
+                            @endif
                         </div>
                     </div>
                 </form>
@@ -82,7 +85,7 @@
                                 <td>
                                     {!! get_url_person($expedition_order->expedition->id) !!}
                                 </td>
-                                <td>{{ number_format_quantity($expedition_order->expedition_fee, 3) }}</td>
+                                <td>{{ number_format_quantity($expedition_order->expedition_fee, 2) }}</td>
                                 <td><a href="{{get_class($expedition_order->reference())::showUrl($expedition_order->reference()->id)}}"> {{ $expedition_order->reference()->formulir->form_number }}</a></td>
                                 <td class="text-center">{{ $expedition_order->group }}</td>
                                 <td>{{ $expedition_order->formulir->notes ? $expedition_order->formulir->notes : '-'}}</td>

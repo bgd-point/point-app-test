@@ -14,6 +14,8 @@ use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\Permission;
 use Point\Framework\Models\Master\Person;
+use Point\Framework\Models\Master\PersonGroup;
+use Point\Framework\Models\Master\PersonType;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
 use Point\PointSales\Helpers\ServiceInvoiceHelper;
@@ -26,18 +28,35 @@ class InvoiceController extends Controller
     
     public function index()
     {
+        access_is_allowed('read.point.sales.service.invoice');
+
         $view = view('point-sales::app.sales.point.service.invoice.index');
         $list_invoice = Invoice::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         $list_invoice = ServiceInvoiceHelper::searchList($list_invoice, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_invoice = $list_invoice->paginate(100);
         return $view;
     }
+
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.sales.service.invoice');
+        $list_invoice = Invoice::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
+        $list_invoice = ServiceInvoiceHelper::searchList($list_invoice, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-sales::app.sales.point.service.invoice.index-pdf', ['list_invoice' => $list_invoice]);
+        
+        return $pdf->stream();
+    }
+
     public function create()
     {
         $view = view('point-sales::app.sales.point.service.invoice.create');
         $view->list_person = PersonHelper::getByType(['customer']);
         $view->list_item = Item::active()->get();
         $view->list_allocation = Allocation::active()->get();
+        $person_type = PersonType::where('slug', 'customer')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
+        
         return $view;
     }
 

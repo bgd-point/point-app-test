@@ -46,6 +46,7 @@ class PointPurchasingPermissionSeeder extends Seeder
         PermissionHelper::create('POINT PURCHASING ORDER', ['create', 'read', 'update', 'delete'], $group);
         PermissionHelper::create('POINT PURCHASING INVOICE', ['create', 'read', 'update', 'delete'], $group);
         PermissionHelper::create('POINT PURCHASING RETURN', ['create', 'read', 'update', 'delete', 'approval'], $group);
+        PermissionHelper::create('POINT PURCHASING REPORT', ['read', 'export'], $group);
         PermissionHelper::create('POINT PURCHASING CASH ADVANCE', ['create', 'read', 'update', 'delete', 'approval'], $group);
     }
 
@@ -57,6 +58,7 @@ class PointPurchasingPermissionSeeder extends Seeder
         PermissionHelper::create('POINT PURCHASING SERVICE INVOICE', ['create', 'read', 'update', 'delete', 'approval'], $group);
         PermissionHelper::create('POINT PURCHASING SERVICE DOWNPAYMENT', ['create', 'read', 'update', 'delete', 'approval'], $group);
         PermissionHelper::create('POINT PURCHASING SERVICE PAYMENT ORDER', ['create', 'read', 'update', 'delete', 'approval'], $group);
+        PermissionHelper::create('POINT PURCHASING SERVICE REPORT', ['read', 'export'], $group);
     }
 
     private function fixedAssetsPurchasing()

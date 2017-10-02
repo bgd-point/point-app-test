@@ -227,7 +227,7 @@
 
                 'enable-cookies'                                enables cookies for remembering active color theme when changed from the sidebar links (You can add it along with any other class)
             -->
-            <div id="page-container" class="header-fixed-top sidebar-visible-lg-full enable-cookies">
+            <div id="page-container" class="header-fixed-top sidebar-visible-lg-mini enable-cookies">
                 <!-- Alternative Sidebar -->
                 @include('core::app.include.sidebar-alt')
                 <!-- END Alternative Sidebar -->
@@ -383,6 +383,26 @@
             });
 
             $(function(){ UiTables.init(); });
+        </script>
+        <script>
+            var userIsEditingSomething = false; // set this if something crazy happens
+            oldOnBeforeUnload = window.onbeforeunload;
+
+            window.onbeforeunload = function () {
+                // attempt to handle a previous onbeforeunload
+                if ('function' === typeof oldOnBeforeUnload) {
+                    var message = oldOnBeforeUnload();
+                    if ('undefined' !== typeof message) {
+                        if (confirm('string' === typeof message ? message : 'Are you sure you want to leave this page?')) {
+                            return; // allow user to exit without further annoying pop-ups
+                        }
+                    }
+                }
+                // handle our own
+                if (userIsEditingSomething) {
+                    return 'Are you sure you want to exit?';
+                }
+            };
         </script>
     </body>
 </html>

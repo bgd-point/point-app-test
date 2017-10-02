@@ -103,5 +103,22 @@
                 </div>
             @endif
         </div>
+
+        <h2 class="sub-header">
+            Report
+        </h2>
+
+        <div class="row">
+            @if(auth()->user()->may('read.point.purchasing.report'))
+                <div class="col-md-4 col-lg-3">
+                    <a href="{{url('purchasing/point/report')}}" class="widget widget-button">
+                        <div class="widget-content text-right clearfix">
+                            <i class="fa fa-4x fa-file-text push-bit pull-left"></i>
+                            <h4 class="widget-heading"><strong>Report</strong></h4>
+                            <span class="text-muted"></span>
+                        </div>
+                    </a>
+                </div>
+            @endif
     </div>
 @stop

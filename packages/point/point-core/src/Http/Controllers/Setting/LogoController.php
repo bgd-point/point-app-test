@@ -18,15 +18,20 @@ class LogoController extends Controller
         {
             $image = $request->file('logo');
             $filename = 'logo.png';
-            $path = $request->project->url.'/logo/'.$filename;
+            if (! is_dir(public_path('app/'.$request->project->url))) {
+                mkdir(public_path('app/'.$request->project->url), 0777);
+            }
 
+            if (! is_dir(public_path('app/'.$request->project->url.'/logo'))) {
+                mkdir(public_path('app/'.$request->project->url.'/logo'), 0777);
+            }
+
+            $path = public_path('app/'.$request->project->url.'/logo/');
             $img = \Image::make($image->getRealPath());
             $img->resize(200, null, function ($constraint) {
                 $constraint->aspectRatio();                 
             });
-            $img->stream();
-
-            \Storage::disk('local')->put($path, $img, 'public');
+            $img->save($path.'/'.$filename);
 
         	gritter_success('Success upload company logo');
             return redirect()->back();

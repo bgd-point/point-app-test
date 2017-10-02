@@ -25,8 +25,12 @@ class ServiceInvoiceHelper
         } else {
             $list_invoice = $list_invoice->orderByStandard();
         }
+        
+        if ($status == 'report') {
+            $list_invoice = $list_invoice->whereIn('formulir.form_status', [0, 1]);
+        }
 
-        if ($status != 'all') {
+        if (($status != 'all') && ($status != 'report')) {
             $list_invoice = $list_invoice->where('formulir.form_status', '=', $status ?: 0);
         }
 

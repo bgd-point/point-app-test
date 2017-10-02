@@ -53,6 +53,16 @@ class PosController extends Controller
         return $view;
     }
 
+    public function indexPDF()
+    {
+        access_is_allowed('read.point.sales.pos');
+
+        $list_sales = Pos::joinDependencies();
+        $list_sales = PosHelper::searchList($list_sales, \Input::get('order_by'),  \Input::get('order_type'),  \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'), \Input::get('status'))->get();
+        $pdf = \PDF::loadView('point-sales::app.sales.point.pos.index-pdf', ['list_sales' => $list_sales]);
+        return $pdf->stream();
+    }
+
     public function create()
     {
         access_is_allowed('create.point.sales.pos');

@@ -9,6 +9,8 @@ use Point\Core\Helpers\UserHelper;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\PersonHelper;
+use Point\Framework\Models\Master\PersonGroup;
+use Point\Framework\Models\Master\PersonType;
 use Point\PointFinance\Models\PaymentReference;
 use Point\PointPurchasing\Helpers\DownpaymentHelper;
 use Point\PointPurchasing\Models\Inventory\Downpayment;
@@ -29,11 +31,19 @@ class DownpaymentController extends Controller
 
         $list_downpayment = Downpayment::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
         $list_downpayment = DownpaymentHelper::searchList($list_downpayment, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
-
         $view = view('point-purchasing::app.purchasing.point.inventory.downpayment.index');
-
         $view->list_downpayment = $list_downpayment->paginate(100);
         return $view;
+    }
+
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.purchasing.downpayment');
+
+        $list_downpayment = Downpayment::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
+        $list_downpayment = DownpaymentHelper::searchList($list_downpayment, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.inventory.downpayment.index-pdf', ['list_downpayment' => $list_downpayment]);
+        return $pdf->stream();
     }
 
     /**
@@ -50,6 +60,10 @@ class DownpaymentController extends Controller
         $view->purchase_order = PurchaseOrder::find($id) ? : "";
         $view->list_supplier = PersonHelper::getByType(['supplier']);
         $view->list_user_approval = UserHelper::getAllUser();
+        $person_type = PersonType::where('slug', 'supplier')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
+
         return $view;
     }
 
@@ -128,6 +142,9 @@ class DownpaymentController extends Controller
         $view->payment_reference = PaymentReference::where('payment_reference_id', '=', $view->downpayment->formulir_id)->first();
         $view->list_supplier = PersonHelper::getByType(['supplier']);
         $view->list_user_approval = UserHelper::getAllUser();
+        $person_type = PersonType::where('slug', 'supplier')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
         return $view;
     }
 

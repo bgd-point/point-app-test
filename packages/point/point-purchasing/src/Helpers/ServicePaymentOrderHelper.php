@@ -83,7 +83,7 @@ class ServicePaymentOrderHelper
                 $references_type[$i],
                 $references_id[$i],
                 $references_amount_original[$i],
-                $references_amount_edit ? $references_amount_edit[$i] : 0
+                0
             );
 
             formulir_lock($reference->formulir_id, $payment_order->formulir_id);
