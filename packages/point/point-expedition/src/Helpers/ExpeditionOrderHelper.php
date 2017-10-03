@@ -227,7 +227,7 @@ class ExpeditionOrderHelper
             $tax_base = $expedition_order->tax_base;
             $total = $expedition_order->total;
 
-            $total_fee += $total;
+            $total_fee += $tax_base;
 
             // Journal Account Payable Expedition
             $account_payable_expedition = JournalHelper::getAccount('point expedition', 'account payable - expedition');
@@ -259,7 +259,7 @@ class ExpeditionOrderHelper
                 $journal->subledger_type;
                 $journal->save();
 
-                \Log::info('tax '. $position.' '. $expedition_order->tax);
+                \Log::info('tax expedition_order '. $position.' '. $expedition_order->tax);
             }
         }
 
@@ -273,14 +273,32 @@ class ExpeditionOrderHelper
 
         $continue = false;
         $total_quantity_expedition = ExpeditionOrderItem::where('point_expedition_order_id', $list_expedition_order->first()->id)->selectRaw('sum(quantity) as quantity')->first()->quantity; 
-        $total_quantity = $list_expedition_order->first()->items->count();
 
         foreach ($list_expedition_order->first()->items as $expedition_order_item) {
             // Journal Inventory
             $total_value = $expedition_order_item->quantity * $expedition_order_item->price;
             $expedition_fee_per_item = $total_fee * $expedition_order_item->quantity / $total_quantity_expedition;
-            \Log::info('fee expedisi ' . $expedition_fee_per_item);
+            if ($reference->discount) {
+                $discounty = $expedition_fee_per_item * $reference->discount / 100;
+                $expedition_fee_per_item = $expedition_fee_per_item - $discounty;
+            }
 
+            if ($reference->type_of_tax == 'include') {
+                $expedition_fee_per_item = $expedition_fee_per_item * 100 / 110;
+            }
+
+            foreach ($list_expedition_order->get() as $expedition_order) {
+                if ($expedition_order->discount) {
+                    $discounty = $expedition_fee_per_item * $expedition_order->discount / 100;
+                    $expedition_fee_per_item = $expedition_fee_per_item - $discounty;
+                }
+
+                if ($expedition_order->type_of_tax == 'include') {
+                    $expedition_fee_per_item = $expedition_fee_per_item * 100 / 110;
+                }
+            }
+
+            \Log::info($expedition_fee_per_item);
             $position = JournalHelper::position($expedition_order_item->item->account_asset_id);
             $journal = new Journal();
             $journal->form_date = $group->formulir->form_date;
@@ -332,8 +350,26 @@ class ExpeditionOrderHelper
         $journal->subledger_id = $reference->person_id;
         $journal->subledger_type = get_class(new Person);
         $journal->save();
-
         \Log::info('purchasing '. $position. ' ' .$journal->$position);
+
+        if ($reference->tax > 0) {
+            $income_tax_receiveable = JournalHelper::getAccount('point purchasing', 'income tax receivable');
+            $position = JournalHelper::position($income_tax_receiveable);
+            $journal = new Journal;
+            $journal->form_date = $reference->formulir->form_date;
+            $journal->coa_id = $income_tax_receiveable;
+            $journal->description = 'expedition order [' . $reference->formulir->form_number.']';
+            $journal->$position = $reference->tax;
+            $journal->form_journal_id = $group->formulir_id;
+            $journal->form_reference_id;
+            $journal->subledger_id;
+            $journal->subledger_type;
+            $journal->save();
+
+            \Log::info('tax purchase '. $position.' ' .$journal->$position);
+
+        }
+
         JournalHelper::checkJournalBalance($group->formulir_id);
 
         // update expedition reference 
