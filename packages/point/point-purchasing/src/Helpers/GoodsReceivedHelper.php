@@ -237,7 +237,6 @@ class GoodsReceivedHelper
         $journal->save();
         \Log::info('hutang '. $position.' ' .$journal->$position);
 
-
         // 2. Journal income tax receiveable
         if ($goods_received->tax > 0) {
             $income_tax_receiveable = JournalHelper::getAccount('point purchasing', 'income tax receivable');
@@ -254,7 +253,6 @@ class GoodsReceivedHelper
             $journal->save();
 
             \Log::info('tax '. $position.' ' .$journal->$position);
-
         }
     }
 

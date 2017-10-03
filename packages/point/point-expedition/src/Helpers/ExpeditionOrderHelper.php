@@ -422,9 +422,9 @@ class ExpeditionOrderHelper
         }
 
         foreach ($expedition_order_group_item->group->details as $group_detail) {
-            $expedition_order = ExpeditionOrder::find($group_detail->point_expedition_order_id);
-            $expedition_order->is_finish = 0;
-            $expedition_order->save();
+            $expedition_order_group = ExpeditionOrder::find($group_detail->point_expedition_order_id);
+            $expedition_order_group->is_finish = 0;
+            $expedition_order_group->save();
         }
 
         Journal::where('form_journal_id', $expedition_order_group_item->group->formulir_id)->delete();
@@ -432,6 +432,10 @@ class ExpeditionOrderHelper
         Inventory::where('formulir_id', $expedition_order_group_item->group->formulir_id)->delete();
         ExpeditionOrderGroup::where('formulir_id', $expedition_order_group_item->group->formulir_id)->delete();
 
+        $reference = $expedition_order->reference();
+        $expedition_reference = ExpeditionOrderReference::where('expedition_reference_id', $reference->formulir_id)->first();
+        $expedition_reference->finish = 0;
+        $expedition_reference->save();
         return true;
     }
 }
