@@ -51,6 +51,7 @@ class FrameworkCoaTableSeeder extends Seeder
 
         $coa_category = CoaCategory::insert(1, $coa_group_category->id, 'Petty Cash');
         Coa::insert($coa_category->id, 'Petty Cash');
+        Coa::insert($coa_category->id, 'Advance to Employees'); 
 
         $coa_category = CoaCategory::insert(1, $coa_group_category->id, 'Bank Account');
         Coa::insert($coa_category->id, 'Bank Account');

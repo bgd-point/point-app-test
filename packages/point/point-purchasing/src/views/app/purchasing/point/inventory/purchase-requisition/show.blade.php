@@ -199,6 +199,10 @@
                                        onclick="secureReopenForm({{$purchase_requisition->formulir_id}},'{{url('formulir/reopen')}}')">Reopen
                                         Form</a>
                                 @endif
+                                @if($purchase_requisition->formulir->approval_status && $purchase_requisition->include_cash_advance)
+                                    <a href="{{url('purchasing/point/cash-advance/create/'.$purchase_requisition->id)}}"
+                                       class="btn btn-effect-ripple btn-info"><i class="fa fa-plus"></i> Create cash advance</a>
+                                @endif
                                 @if(formulir_view_email_vendor($purchase_requisition->formulir, 'create.point.purchasing.requisition'))
                                     <form action="{{url('purchasing/point/purchase-requisition/send-email-requisition')}}" method="post">
                                         {!! csrf_field() !!}
@@ -206,6 +210,7 @@
                                         <input type="submit" class="btn btn-primary" value="Send Email Requisition">
                                     </form>
                                 @endif
+                                
                             </div>
                         </div>
                     </fieldset>
