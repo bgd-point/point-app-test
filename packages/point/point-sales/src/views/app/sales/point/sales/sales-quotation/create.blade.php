@@ -290,7 +290,7 @@
             
             initSelectize('#item-id-' + counter);
             initSelectize('#allocation-id-' + counter);
-            reloadItemHavingQuantity('#item-id-' + counter);
+            reloadItem('#item-id-' + counter);
             initFormatNumber();
 
             $("textarea").on("click", function () {
@@ -438,7 +438,7 @@
             reloadPerson('#contact_id', 'customer');
             for(var i=0; i< counter; i++) {
                 if($('#item-id-'+i).length != 0){
-                    reloadItemHavingQuantity('#item-id-' + i, false);
+                    reloadItem('#item-id-' + i, false);
                 }
             }    
         }
