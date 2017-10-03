@@ -175,7 +175,7 @@ class ExpeditionOrderController extends Controller
         access_is_allowed('update.point.expedition.order');
 
         $view = view('point-expedition::app.expedition.point.expedition-order.edit');
-
+        
         $view->expedition_order = ExpeditionOrder::find($id);
         $view->expedition_order_detail = ExpeditionOrderItem::where('point_expedition_order_id', $id)->get();
         $view->list_expedition = PersonHelper::getByType(['expedition']);
@@ -212,6 +212,7 @@ class ExpeditionOrderController extends Controller
 
         $formulir_old = FormulirHelper::archive($request->input(), $expedition_order->formulir_id);
         $formulir = FormulirHelper::update($request->input(), $formulir_old->archived, $formulir_old->form_raw_number);
+        ExpeditionOrderHelper::removeJournal($expedition_order);
         $expedition_order = ExpeditionOrderHelper::create($request, $formulir);
         timeline_publish('update.expedition.order', 'update expedition order ' . $expedition_order->formulir->form_number);
 
@@ -275,5 +276,27 @@ class ExpeditionOrderController extends Controller
 
         gritter_success('Expedition order transaction success', 'false');
         return redirect(url('expedition/point/expedition-order'));
+    }
+
+    public function cancel(Request $request)
+    {
+        \DB::beginTransaction();
+
+        $expedition_order = ExpeditionOrder::where('formulir_id', $request->input('formulir_id'))->first();
+        $formulir = Formulir::find($request->input('formulir_id'));
+        FormulirHelper::isAllowedToCancel($request->input('permission_slug'), $formulir);
+
+        $formulir->form_status = -1;
+        $formulir->canceled_at = date('Y-m-d H:i:s');
+        $formulir->canceled_by = auth()->user()->id;
+        $formulir->save();
+
+        FormulirHelper::clearRelation($formulir);
+        ExpeditionOrderHelper::removeJournal($expedition_order);
+
+        \DB::commit();
+
+        timeline_publish('cancel form', 'cancel form ' . $formulir->form_number . ' success');
+        return response()->json(array('status' => 'success'));
     }
 }

@@ -19,6 +19,7 @@
                     <input name="_method" type="hidden" value="PUT">
                     <input name="reference_type" type="hidden" value="{{get_class($reference)}}">
                     <input name="reference_id" type="hidden" value="{{$reference->id}}">
+                    <input type="hidden" name="group" value="{{ $expedition_order->group }}"/>
 
                     <div class="form-group">
                         <label class="col-md-3 control-label">Reason edit *</label>
@@ -114,20 +115,20 @@
                                         </tr>
                                         </thead>
                                         <tbody class="manipulate-row">
-                                            @foreach($expedition_reference->items as $expedition_reference_item)
+                                            @foreach($expedition_order->items as $expedition_order_item)
                                             <tr>
                                                 <td>
-                                                    {{ $expedition_reference_item->item->codeName }}
-                                                    <input type="hidden" name="item_id[]" value="{{$expedition_reference_item->item_id}}"/>
+                                                    {{ $expedition_order_item->item->codeName }}
+                                                    <input type="hidden" name="item_id[]" value="{{$expedition_order_item->item_id}}"/>
                                                 </td>
                                                 <td>
-                                                    {{ $expedition_reference_item->quantity }}
-                                                    <input type="hidden" class="form-control" name="item_quantity[]" readonly="" value="{{ $expedition_reference_item->quantity }}">
-                                                    <input type="hidden" name="price[]" value="{{$expedition_reference_item->price}}"/>
+                                                    {{ $expedition_order_item->quantity }}
+                                                    <input type="hidden" class="form-control" name="item_quantity[]" readonly="" value="{{ $expedition_order_item->quantity }}">
+                                                    <input type="hidden" name="price[]" value="{{$expedition_order_item->price}}"/>
                                                 </td>
                                                 <td>
-                                                    {{ $expedition_reference_item->unit }}
-                                                    <input type="hidden" name="item_unit_name[]" value="{{$expedition_reference_item->unit}}"/>
+                                                    {{ $expedition_order_item->unit }}
+                                                    <input type="hidden" name="item_unit_name[]" value="{{$expedition_order_item->unit}}"/>
                                                 </td>
                                             </tr>
                                             @endforeach

@@ -10,6 +10,7 @@ use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\ReferHelper;
 use Point\Framework\Helpers\WarehouseHelper;
+use Point\Framework\Models\AccountPayableAndReceivable;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
@@ -109,18 +110,6 @@ class ExpeditionOrderHelper
             $expedition_order_item->item_fee = 0;
             $expedition_order_item->converter = 1;
             $expedition_order_item->save();
-
-            if ($reference != null) {
-                ReferHelper::create(
-                    $request->input('reference_item_type')[$i],
-                    $request->input('reference_item_id')[$i],
-                    get_class($expedition_order_item),
-                    $expedition_order_item->id,
-                    get_class($expedition_order),
-                    $expedition_order->id,
-                    $expedition_order_item->quantity
-                );
-            }
         }
 
         formulir_lock($reference->formulir_id, $expedition_order->formulir_id);
@@ -163,7 +152,7 @@ class ExpeditionOrderHelper
         /**
          * get quantity expedition order item
          */
-        $array_expedition_order_id = ExpeditionOrder::joinFormulir()->notArchived()->approvalApproved()->where('form_reference_id', $form_reference_id)->groupBy('group')->select('point_expedition_order.id')->get()->toArray();
+        $array_expedition_order_id = ExpeditionOrder::joinFormulir()->notArchived()->notCanceled()->approvalApproved()->where('form_reference_id', $form_reference_id)->groupBy('group')->select('point_expedition_order.id')->get()->toArray();
         $quantity_expedition_order_item = ExpeditionOrderItem::whereIn('point_expedition_order_id', $array_expedition_order_id)->where('item_id', $item_id)->groupBy('item_id')->sum('quantity');
 
         return $quantity_expedition_order_item;
@@ -214,6 +203,7 @@ class ExpeditionOrderHelper
         $formulir = new Formulir;
         $formulir->form_date = $form_date;
         $formulir->form_number = $form_number['form_number'];
+        $formulir->form_raw_number = $form_number['raw'];
         $formulir->approval_to = 1;
         $formulir->approval_status = 1;
         $formulir->form_status = 1;
@@ -330,7 +320,7 @@ class ExpeditionOrderHelper
             if (! $continue) {
                 $inventory = new Inventory();
                 $inventory->formulir_id = $group->formulir->id;
-                $inventory->item_id = $expedition_order_item->id;
+                $inventory->item_id = $expedition_order_item->item_id;
                 $inventory->quantity = $expedition_order_item->quantity * $expedition_order_item->converter;
                 $inventory->price = $expedition_order_item->price / $expedition_order_item->converter;
                 $inventory->form_date = $group->formulir->form_date;
@@ -416,5 +406,32 @@ class ExpeditionOrderHelper
         $warehouse->save();
 
         return $warehouse;
+    }
+
+    /**
+     * Remove Journal form expedition
+     * - table journal
+     * - table account_payable_and_receivable
+     * - table inventory
+     */
+    public static function removeJournal($expedition_order)
+    {
+        $expedition_order_group_item = ExpeditionOrderGroupDetail::where('point_expedition_order_id', $expedition_order->id)->first();
+        if (!$expedition_order_group_item) {
+            return true;
+        }
+
+        foreach ($expedition_order_group_item->group->details as $group_detail) {
+            $expedition_order = ExpeditionOrder::find($group_detail->point_expedition_order_id);
+            $expedition_order->is_finish = 0;
+            $expedition_order->save();
+        }
+
+        Journal::where('form_journal_id', $expedition_order_group_item->group->formulir_id)->delete();
+        AccountPayableAndReceivable::where('formulir_reference_id', $expedition_order_group_item->group->formulir_id)->delete();
+        Inventory::where('formulir_id', $expedition_order_group_item->group->formulir_id)->delete();
+        ExpeditionOrderGroup::where('formulir_id', $expedition_order_group_item->group->formulir_id)->delete();
+
+        return true;
     }
 }

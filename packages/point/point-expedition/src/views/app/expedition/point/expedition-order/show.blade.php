@@ -195,7 +195,7 @@
                                 @endif
                                 @if(formulir_view_cancel($expedition_order->formulir, 'delete.point.expedition.order'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCancelForm('{{url('formulir/cancel')}}',
+                                       onclick="cancelForm('{{url('expedition/point/expedition-order/cancel')}}',
                                                '{{ $expedition_order->formulir_id }}',
                                                'delete.point.expedition.order')">
                                         <i class="fa fa-times"></i>
@@ -322,5 +322,45 @@
 @section('scripts')
     <script>
         var item_table = initDatatable('#item-datatable');
+        function cancelForm(url, formulir_id, permission_slug) {
+            swal({   
+                title: "CANCEL YOUR FORM",
+                text: "If you are sure, type in your password:", 
+                type: "input",
+                inputType: "password",
+                allowEscapeKey: true,
+                showCancelButton: true,   
+                closeOnConfirm: true,   
+                animation: "slide-from-top",   
+                inputPlaceholder: "Please input your password"
+            }, 
+
+            function(inputValue) {   
+                if (inputValue === false) return false;      
+                if (inputValue === "") {     
+                    notification('Error','Please insert your password correctly');
+                    return false   
+                }
+                $.ajax({
+                    url: url,
+                    type: 'post',
+                    data: {
+                        formulir_id: formulir_id,
+                        permission_slug: permission_slug,
+                        password: inputValue
+                    },
+                    success: function(data) {
+                        if (data['status'] == 'success') {
+                            window.location.reload();
+                        } else {
+                            swal('Failed', 'Something went wrong');
+                        }
+                    }, error: function(data) { 
+                        console.log(data);
+                        notification('Failed', 'Something went wrong');
+                    }
+                }); 
+            });
+        }
     </script>
 @stop

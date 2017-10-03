@@ -11,4 +11,9 @@ class ExpeditionOrderGroup extends Model
     protected $table = 'point_expedition_order_group';
 
     use FormulirTrait;
+
+    public function details()
+    {
+        return $this->hasMany('\Point\PointExpedition\Models\ExpeditionOrderGroupDetail', 'point_expedition_order_group_id');
+    }
 }
