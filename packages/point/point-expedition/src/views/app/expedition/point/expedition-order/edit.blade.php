@@ -116,9 +116,19 @@
                                         <tbody class="manipulate-row">
                                             @foreach($expedition_reference->items as $expedition_reference_item)
                                             <tr>
-                                                <td>{{ $expedition_reference_item->item->codeName }}</td>
-                                                <td>{{ $expedition_reference_item->quantity }}</td>
-                                                <td>{{ $expedition_reference_item->unit }}</td>
+                                                <td>
+                                                    {{ $expedition_reference_item->item->codeName }}
+                                                    <input type="hidden" name="item_id[]" value="{{$expedition_reference_item->item_id}}"/>
+                                                </td>
+                                                <td>
+                                                    {{ $expedition_reference_item->quantity }}
+                                                    <input type="hidden" class="form-control" name="item_quantity[]" readonly="" value="{{ $expedition_reference_item->quantity }}">
+                                                    <input type="hidden" name="price[]" value="{{$expedition_reference_item->price}}"/>
+                                                </td>
+                                                <td>
+                                                    {{ $expedition_reference_item->unit }}
+                                                    <input type="hidden" name="item_unit_name[]" value="{{$expedition_reference_item->unit}}"/>
+                                                </td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -134,43 +144,44 @@
                                         <tr>
                                             <td colspan="2" class="text-right">Discount</td>
                                             <td>
-                                                <input type="text" id="discount" name="discount" onkeyup="calculate()" 
-                                                       class="form-control text-right"
-                                                       value="{{ number_format_quantity($expedition_order->discount) }}"/>
+                                                <div class="input-group">
+                                                    <input type="text" onkeyup="calculate()" maxlength="3"
+                                                           id="discount" name="discount"
+                                                           class="form-control format-quantity text-right"
+                                                           value="{{ $expedition_order->discount }}"/>
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td colspan="2" class="text-right">Tax Base</td>
                                             <td>
                                                 <input type="text" readonly id="tax_base" name="tax_base"
-                                                       class="form-control text-right"
-                                                       value="{{ number_format_quantity($expedition_order->tax_base) }}"/>
+                                                       class="form-control text-right format-quantity"
+                                                       value="{{ $expedition_order->tax_base }}"/>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td colspan="2" class="text-right">Tax</td>
                                             <td><input type="text" readonly id="tax" name="tax"
-                                                       class="form-control text-right"
-                                                       value="{{ number_format_quantity($expedition_order->tax) }}"/>
+                                                       class="form-control format-quantity text-right"
+                                                       value="{{ $expedition_order->tax }}"/>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td colspan="2"></td>
                                             <td>
-                                                <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
-                                                       {{ $expedition_order->type_of_tax == 'include' ? 'checked'  : '' }}  value="include"
-                                                       onclick="calculate()"> Include Tax <br/>
-                                                <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
-                                                       {{ $expedition_order->type_of_tax == 'exclude' ? 'checked'  : '' }}  value="exclude"
-                                                       onclick="calculate()"> Exlude Tax <br/>
+                                                <input type="checkbox" id="tax-choice-include-tax" class="tax" name="type_of_tax" {{ $expedition_order->type_of_tax == 'include' ? 'checked'  : '' }} onchange="calculate()" value="include"> Tax Included <br/>
+                                                <input type="checkbox" id="tax-choice-exclude-tax" class="tax" name="type_of_tax" {{ $expedition_order->type_of_tax == 'exclude' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
+                                                <input type="checkbox" id="tax-choice-non-tax" class="tax" name="type_of_tax" {{ $expedition_order->type_of_tax == 'non' ? 'checked'  : '' }} onchange="calculate()" value="non" style="display:none">
                                             </td>
                                         </tr>
                                         <tr>
                                             <td colspan="2" class="text-right">Total</td>
                                             <td>
                                                 <input type="text" id="total" name="total" readonly
-                                                       class="form-control text-right"
-                                                       value="{{ number_format_quantity($expedition_order->total) }}"/>
+                                                       class="form-control format-quantity text-right"
+                                                       value="{{ $expedition_order->total }}"/>
                                             </td>
                                         </tr>
                                         </tfoot>
@@ -207,9 +218,6 @@
                     </fieldset>
 
                     <div class="form-group">
-                        <div class="col-sm-6" style="visibility: hidden;">
-                            <input type="radio" id="tax-choice-non-tax" name="type_of_tax" {{ $expedition_order->type_of_tax == 'non' ? 'checked'  : '' }}  value="non" onclick="calculate()"> Non Tax
-                        </div>
                         <div class="col-md-6 col-md-offset-3">
                             <button type="submit" class="btn btn-effect-ripple btn-primary">Submit</button>
                         </div>
@@ -219,11 +227,21 @@
         </div>
     </div>
     @include('framework::app.master.contact.__create', ['person_type' => 'expedition'])
-
 @stop
 
 @section('scripts')
     <script>
+        $(".tax").change(function() {
+            var checked = $(this).is(':checked');
+            $(".tax").prop('checked',false);
+            if(checked) {
+                $(this).prop('checked',true);
+            } else {
+                $('#tax-choice-non-tax').prop('checked', true);
+            }
+            calculate();
+        });
+
         var item_table = initDatatable('#item-datatable');
         function calculate() {
             if (dbNum($('#discount').val()) >= 100) {
@@ -231,13 +249,6 @@
             }
 
             var discount = dbNum($('#discount').val());
-            if($('#tax-choice-include-tax').prop('checked')) {
-                $('#discount').val(0);
-                $('#discount').prop('readonly', true);
-                var discount = 0;
-            } else {
-                $('#discount').prop('readonly', false);
-            }
             var subtotal = dbNum($('#subtotal').val());
             var tax_base = subtotal - (subtotal / 100 * discount);
             var tax = 0;
@@ -254,13 +265,6 @@
             $('#tax_base').val(appNum(tax_base));
             $('#tax').val(appNum(tax));
             $('#total').val(appNum(tax_base + tax));
-        }
-
-        function setToNontax() {
-            $("#tax-choice-include-tax").attr("checked", false);
-            $("#tax-choice-exclude-tax").attr("checked", false);
-            $("#tax-choice-non-tax").trigger("click");
-            calculate();
         }
     </script>
 @stop
