@@ -305,7 +305,7 @@
             initSelectize('#item-id-' + counter);
             initSelectize('#allocation-id-' + counter);
             initSelectize('#unit-id-' + counter);
-            reloadItemHavingQuantity('#item-id-' + counter);
+            reloadItem('#item-id-' + counter);
             initFormatNumber('.format-quantity');
 
             $("textarea").on("click", function () {
@@ -455,7 +455,7 @@
         if (counter > 0) {
             for(var i=0; i< counter; i++) {
                 if($('#item-id-'+i).length != 0){
-                    reloadItemHavingQuantity('#item-id-' + i, false);
+                    reloadItem('#item-id-' + i, false);
                 }
             }    
         }
