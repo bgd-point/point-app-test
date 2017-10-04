@@ -62,7 +62,7 @@ Route::group(['prefix' => 'expedition/point', 'namespace' => 'Point\PointExpedit
         Route::get('/invoice/{id}/export', 'InvoiceController@exportPDF');
         Route::get('/invoice/{id}/archived', 'InvoiceController@archived');
         Route::get('/invoice/create-step-1', 'InvoiceController@createStep1');
-        Route::get('/invoice/create-step-2/{person_supplier_id}', 'InvoiceController@createStep2');
+        Route::get('/invoice/create-step-2/{id}', 'InvoiceController@createStep2');
         Route::get('/invoice/pdf', 'InvoiceController@indexPDF');
         Route::post('/invoice/create-step-3', 'InvoiceController@createStep3');
         Route::post('/invoice/send-email', 'InvoiceController@sendEmail');

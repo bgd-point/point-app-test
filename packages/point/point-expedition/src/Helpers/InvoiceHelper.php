@@ -9,6 +9,7 @@ use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\Person;
+use Point\PointExpedition\Helpers\ExpeditionOrderHelper;
 use Point\PointExpedition\Models\ExpeditionOrder;
 use Point\PointExpedition\Models\ExpeditionOrderGroupDetail;
 use Point\PointExpedition\Models\Invoice;
@@ -46,7 +47,7 @@ class InvoiceHelper
         return $list_invoice;
     }
 
-    public static function create(Request $request, $formulir, $references)
+    public static function create(Request $request, $formulir, $reference)
     {
         $expedition = new Person;
 
@@ -57,39 +58,23 @@ class InvoiceHelper
         $invoice->type_of_tax = $request->input('type_of_tax');
         $invoice->save();
 
-        $expedition_order_id = $request->input('expedition_order_id');
-        $original_fee = $request->input('original_fee');
-        $expedition_fee = $request->input('expedition_fee');
-        $reference_item_id = $request->input('reference_item_id');
-        $reference_item_quantity = $request->input('reference_item_quantity');
-        $reference_item_unit = $request->input('reference_item_unit');
-
         $subtotal = 0;
-        for ($i = 0; $i < count($reference_item_id); $i++) {
+        for ($i = 0; $i < count($request->input('item_id')); $i++) {
             $invoice_item = new InvoiceItem;
             $invoice_item->point_expedition_invoice_id = $invoice->id;
-            $invoice_item->item_id = $reference_item_id[$i];
-            $invoice_item->quantity = number_format_db($reference_item_quantity[$i]);
+            $invoice_item->item_id = $request->input('item_id')[$i];
+            $invoice_item->quantity = number_format_db($request->input('quantity')[$i]);
+            $invoice_item->discount = number_format_db($request->input('item_discount')[$i]);
             $invoice_item->item_fee = 0;
-            $invoice_item->unit = $reference_item_unit[$i];
+            $invoice_item->unit = $request->input('unit')[$i];
             $invoice_item->save();
 
-            ReferHelper::create(
-                get_class(new Item),
-                $invoice_item->item_id,
-                get_class($invoice_item),
-                $invoice_item->id,
-                get_class($invoice),
-                $invoice->id,
-                $invoice_item->quantity
-            );
+            $subtotal += ($invoice_item->quantity * $invoice_item->price) - ($invoice_item->quantity * $invoice_item->price * $invoice_item->discount / 100);
         }
 
-        foreach ($references as $reference) {
-            formulir_lock($reference->formulir_id, $invoice->formulir_id);
-            $reference->formulir->form_status = 1;
-            $reference->formulir->save();
-        }
+        formulir_lock($reference->formulir_id, $invoice->formulir_id);
+        $reference->formulir->form_status = 1;
+        $reference->formulir->save();
 
         $discount = $request->input('discount') ? number_format_db($request->input('discount')) : 0;
         $discount_value = $subtotal * $discount / 100;
@@ -104,10 +89,6 @@ class InvoiceHelper
             $tax = $tax_base * 10 / 100;
         }
 
-        for ($i = 0; $i < count($expedition_fee); $i++) {
-            $subtotal += number_format_db($expedition_fee[$i]);
-        }
-
         $invoice->subtotal = $subtotal;
         $invoice->discount = $discount;
         $invoice->tax_base = $tax_base;
@@ -116,14 +97,11 @@ class InvoiceHelper
         $invoice->save();
 
         /**
-         * If in the invoice there is a price change, then the journal again difference
+         * If discount or tax was modified, journal again
          * 
          */
-        for ($i = 0; $i < count($expedition_fee); $i++) {
-            $subtotal += number_format_db($expedition_fee[$i]);
-            if (number_format_db($expedition_fee[$i]) != number_format_db($original_fee[$i])) {
-                self::journalDifferences($invoice, $expedition_order_id[$i], number_format_db($original_fee[$i]), number_format_db($expedition_fee[$i]));
-            }
+        if (($request->input('original_discount') != $invoice->discount) || ($request->input('original_type_of_tax') != $invoice->type_of_tax)) {
+            self::rejournal($invoice, $reference);
         }
 
         $formulir->approval_status = 1;
@@ -131,6 +109,20 @@ class InvoiceHelper
 
         JournalHelper::checkJournalBalance($formulir->id);
         return $invoice;
+    }
+
+    public static function rejournal($invoice, $reference)
+    {
+        /**
+         * Reference = Expedition order
+         * Process :
+         * Remove journal Expedition order
+         * Remove journal Goods received
+         * Remove journal Invoice purchasing
+         */
+        
+        ExpeditionOrderHelper::removeJournal($reference);
+        
     }
 
     public static function journalDifferences($invoice, $expedition_order_id, $original_fee, $expedition_fee)

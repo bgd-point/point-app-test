@@ -27,6 +27,13 @@ class AddColumnIsFinishExpeditionOrder extends Migration
             });
         }
 
+        if (!Schema::hasColumn('point_expedition_invoice_item', 'discount')) {
+            Schema::table('point_expedition_invoice_item', function ($table) {
+                $table->decimal('discount', 16, 4);
+                $table->decimal('price', 16, 4);
+            });
+        }
+
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
@@ -46,6 +53,13 @@ class AddColumnIsFinishExpeditionOrder extends Migration
         if (Schema::hasColumn('point_expedition_order_item', 'discount')) {
             Schema::table('point_expedition_order_item', function ($table) {
                 $table->dropColumn(['discount']);
+            });
+        }
+
+        if (Schema::hasColumn('point_expedition_invoice_item', 'discount')) {
+            Schema::table('point_expedition_invoice_item', function ($table) {
+                $table->dropColumn(['discount']);
+                $table->dropColumn(['price']);
             });
         }
     }

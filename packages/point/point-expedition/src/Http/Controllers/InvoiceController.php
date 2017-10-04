@@ -57,35 +57,20 @@ class InvoiceController extends Controller
     {
         $view = view('point-expedition::app.expedition.point.invoice.create-step-1');
         $view->list_expedition_order = ExpeditionOrder::joinFormulir()
-            ->availableToInvoiceGroupExpedition()// group by expedition
+            ->open()
+            ->approvalApproved()
+            ->orderByStandard()
+            ->notArchived()
             ->selectOriginal()
             ->paginate(100);
         return $view;
     }
 
-    public function createStep2($expedition_id)
+    public function createStep2($id)
     {
         $view = view('point-expedition::app.expedition.point.invoice.create-step-2');
-        $view->expedition_id = $expedition_id;
-        $expedition_collection = ExpeditionOrder::joinFormulir()
-            ->where('expedition_id', $expedition_id)
-            ->open()
-            ->approvalApproved()
-            ->notArchived()
-            ->selectOriginal()
-            ->get();
-        $list_invoice_sales = [];
-        $list_invoice_purchase = [];
-
-        foreach ($expedition_collection as $expedition_order) {
-            if (FormulirHelper::getLocked($expedition_order->formulir_id)->formulirable_type == "Point\PointSales\Models\Sales\SalesOrder") {
-                array_push($list_invoice_sales, $expedition_order);
-            } else {
-                array_push($list_invoice_purchase, $expedition_order);
-            }
-        }
-        $view->list_invoice_purchase = $list_invoice_purchase;
-        $view->list_invoice_sales = $list_invoice_sales;
+        $view->expedition_order = ExpeditionOrder::find($id);
+        $view->reference = $view->expedition_order->reference();
 
         return $view;
     }
@@ -124,18 +109,12 @@ class InvoiceController extends Controller
 
         $references_type = $request->input('reference_type_expedition');
         $references_id = $request->input('reference_id_expedition');
-        $formulir_id = [];
-        $references = [];
-
-        for ($i = 0; $i < count($references_type); $i++) {
-            $reference = $references_type[$i]::find($references_id[$i]);
-            array_push($references, $reference);
-            array_push($formulir_id, $reference->formulir_id);
-        }
+        $reference = $reference_type::find($reference_id);
+        $formulir_id = [$reference->formulir_id];
 
         FormulirHelper::isAllowedToCreate('create.point.expedition.invoice', date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
         $formulir = FormulirHelper::create($request->input(), 'point-expedition-invoice');
-        $invoice = InvoiceHelper::create($request, $formulir, $references);
+        $invoice = InvoiceHelper::create($request, $formulir, $reference);
         timeline_publish('create.invoice', 'added new invoice ' . $invoice->formulir->form_number);
 
         DB::commit();

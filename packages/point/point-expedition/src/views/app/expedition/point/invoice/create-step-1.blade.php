@@ -31,14 +31,19 @@
                         @foreach($list_expedition_order as $expedition_order)
                             <tr id="list-{{$expedition_order->formulir_id}}">
                                 <td class="text-center">
-                                    <a href="{{ url('expedition/point/invoice/create-step-2/'.$expedition_order->expedition_id) }}"
+                                    <a href="{{ url('expedition/point/invoice/create-step-2/'.$expedition_order->id) }}"
                                        class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-external-link"></i>
                                         Create Invoice</a>
                                 </td>
                                 <td>
                                     <a href="{{ url('master/contact/expedition/'.$expedition_order->expedition_id) }}">{{ $expedition_order->expedition->codeName }}</a>
                                 </td>
-                                <td><ol> <?php $expedition_order->getListExpeditionOrder(); ?></ol></td>
+                                <td>
+                                    <a href="{{url('expedition/point/expedition-order/'.$expedition_order->id)}}"> {{ $expedition_order->formulir->form_number }}</a><br>
+                                    Value : {{ number_format_quantity($expedition_order->total) }} <br>
+                                    Notes : {{ $expedition_order->formulir->notes }}
+
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>

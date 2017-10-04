@@ -165,12 +165,14 @@ class InvoiceHelper
         if (! $request->input('include_expedition')) {
             if (($request->input('original_tax_type') != $invoice->type_of_tax) || ($request->input('original_discount') != $invoice->discount)) {
                 $goods_received = $request->input('reference_type')::find($request->input('reference_id'));
-                self::removeJournalExpeditionOrder($invoice, $request, $goods_received);
+                $data = self::removeJournalExpeditionOrder($goods_received);
+
+                self::fixSeederExpedition($invoice, $goods_received, $data['list_expedition_order'], $data['purchase_order']);
+                self::rejournalExpeditionOrder($invoice, $goods_received, $data['list_expedition_order'], $data['purchase_order']);
             }
         }
 
         JournalHelper::checkJournalBalance($invoice->formulir_id);
-        dd($invoice);
         return $invoice;
     }
 
@@ -304,7 +306,7 @@ class InvoiceHelper
     /**
      * Rejournal if exclude expedition
      */
-    public static function removeJournalExpeditionOrder($invoice, $request, $goods_received)
+    public static function removeJournalExpeditionOrder($goods_received)
     {
         /**
          * Information :
@@ -336,12 +338,13 @@ class InvoiceHelper
         Inventory::where('formulir_id', $expedition_order_group_item->group->formulir_id)->delete();
         ExpeditionOrderGroup::where('formulir_id', $expedition_order_group_item->group->formulir_id)->delete();
 
-        self::fixSeederExpedition($invoice, $goods_received, $request, $list_expedition_order, $purchase_order);
-        self::rejournalExpeditionOrder($invoice, $request, $goods_received, $list_expedition_order, $purchase_order);
-
+        return [
+            'list_expedition_order' => $list_expedition_order,
+            'purchase_order' => $purchase_order
+        ];
     }
 
-    public static function fixSeederExpedition($invoice, $goods_received, $request, $list_expedition_order, $purchase_order)
+    public static function fixSeederExpedition($invoice, $goods_received, $list_expedition_order, $purchase_order)
     {
         /**
          * Fix seeder
@@ -400,7 +403,7 @@ class InvoiceHelper
         }
     }
 
-    public static function rejournalExpeditionOrder($invoice, $request, $goods_received, $list_expedition_order, $purchase_order)
+    public static function rejournalExpeditionOrder($invoice, $goods_received, $list_expedition_order, $purchase_order)
     {
         $expedition_order_first = $list_expedition_order->first();
 
