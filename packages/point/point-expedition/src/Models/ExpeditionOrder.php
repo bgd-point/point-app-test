@@ -45,12 +45,14 @@ class ExpeditionOrder extends Model
         $q->open()
             ->approvalApproved()
             ->orderByStandard()
+            ->notArchived()
             ->groupBy('point_expedition_order.expedition_id');
     }
 
     public function scopeAvailableToInvoice($q, $expedition_id)
     {
         $q->open()
+            ->notArchived()
             ->approvalApproved()
             ->where('point_expedition_order.expedition_id', '=', $expedition_id)
             ->orderByStandard();
@@ -90,6 +92,7 @@ class ExpeditionOrder extends Model
         $list_invoice_order_single = $this->joinFormulir()
             ->availableToInvoice($this->expedition_id)
             ->selectOriginal()
+            ->notArchived()
             ->get();
             
         foreach ($list_invoice_order_single as $invoice_order_single) {

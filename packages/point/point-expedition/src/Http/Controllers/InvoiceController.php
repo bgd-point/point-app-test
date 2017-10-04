@@ -70,6 +70,7 @@ class InvoiceController extends Controller
         $expedition_collection = ExpeditionOrder::joinFormulir()
             ->where('expedition_id', $expedition_id)
             ->open()
+            ->approvalApproved()
             ->notArchived()
             ->selectOriginal()
             ->get();

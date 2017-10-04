@@ -85,7 +85,7 @@
                                 <td>
                                     {!! get_url_person($expedition_order->expedition->id) !!}
                                 </td>
-                                <td>{{ number_format_quantity($expedition_order->expedition_fee, 2) }}</td>
+                                <td>{{ number_format_quantity($expedition_order->total, 2) }}</td>
                                 <td><a href="{{get_class($expedition_order->reference())::showUrl($expedition_order->reference()->id)}}"> {{ $expedition_order->reference()->formulir->form_number }}</a></td>
                                 <td class="text-center">{{ $expedition_order->group }}</td>
                                 <td>{{ $expedition_order->formulir->notes ? $expedition_order->formulir->notes : '-'}}</td>
