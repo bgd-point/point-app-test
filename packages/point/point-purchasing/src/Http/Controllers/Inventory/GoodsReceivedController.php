@@ -105,7 +105,6 @@ class GoodsReceivedController extends Controller
         $reference_purchase_order = $request->input('reference_purchase_order');
         $reference_purchase_id = $request->input('reference_purchase_order_id');
         $reference_purchase = $reference_purchase_order::find($reference_purchase_id);
-
         DB::beginTransaction();
 
         FormulirHelper::isAllowedToCreate('create.point.purchasing.goods.received', date_format_db($request->input('form_date'), $request->input('time')), [$reference_purchase->formulir_id]);

@@ -229,7 +229,6 @@
                                                 <div class="input-group">
                                                     <input id="item-quantity-delivery_order-{{$counter}}" type="text"
                                                        name="item_quantity[]"
-                                                       readonly="" 
                                                        class="form-control format-quantity text-right"
                                                        onKeyup="calculate()" value="{{ $reference_item->quantity }}"/>
                                                     <span class="input-group-addon"> {{ $reference_item->unit }}</span>   

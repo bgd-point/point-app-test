@@ -78,19 +78,28 @@ class GoodsReceivedHelper
         $goods_received->discount = $reference->discount;
         $goods_received->save();
 
-        $goods_received->formulir->save();
         $subtotal = 0;
         for ($i=0 ; $i<count($request->input('item_id')) ; $i++) {
             if (number_format_db($request->input('item_quantity')[$i]) > number_format_db($request->input('item_quantity_reference')[$i])) {
                 throw new PointException('Your Goods Received quantity not matched');
             }
 
+            $value_item = number_format_db($request->input('item_quantity')[$i]) * number_format_db($request->input('item_price')[$i]);
+            $value_item_reference = number_format_db($request->input('item_quantity_reference')[$i]) * number_format_db($request->input('item_price')[$i]);
+            $value_differences = $value_item_reference - $value_item;
+
+            if (! $reference->include_expedition) {
+                if (number_format_db($request->input('item_quantity_reference')[$i]) != number_format_db($request->input('item_quantity')[$i])) {
+                    self::journalDifferences($goods_received, $value_differences, $request->input('item_id')[$i]);
+                }
+            }
+            
             $goods_received_item = new GoodsReceivedItem;
             $goods_received_item->point_purchasing_goods_received_id = $goods_received->id;
             $goods_received_item->item_id = $request->input('item_id')[$i];
             $goods_received_item->quantity = number_format_db($request->input('item_quantity')[$i]);
             $goods_received_item->price = number_format_db($request->input('item_price')[$i]);
-            $goods_received_item->discount = number_format_db($request->input('item_discount')[$i]);
+            $goods_received_item->discount = $request->input('item_discount')[$i] ? number_format_db($request->input('item_discount')[$i]) : 0;
             $goods_received_item->unit = $request->input('item_unit_name')[$i];
             $goods_received_item->converter = number_format_db($request->input('item_unit_converter')[$i]);
             $goods_received_item->allocation_id = 1;
@@ -104,7 +113,6 @@ class GoodsReceivedHelper
                 $goods_received->id,
                 $goods_received_item->quantity
             );
-
             $subtotal += $goods_received_item->quantity * $goods_received_item->price - $goods_received_item->quantity * $goods_received_item->price * $goods_received_item->discount / 100;
         }
 
@@ -254,6 +262,35 @@ class GoodsReceivedHelper
 
             \Log::info('tax '. $position.' ' .$journal->$position);
         }
+    }
+
+    public static function journalDifferences($goods_received, $item_value, $item_id)
+    {
+        $item = Item::find($item_id);
+        $position = JournalHelper::position($item->account_asset_id);
+        $journal = new Journal();
+        $journal->form_date = $goods_received->formulir->form_date;
+        $journal->coa_id = $item->account_asset_id;
+        $journal->description = 'Invoice Purchasing [' . $goods_received->formulir->form_number.']';
+        $journal->$position = $item_value * -1;
+        $journal->form_journal_id = $goods_received->formulir_id;
+        $journal->form_reference_id;
+        $journal->subledger_id = $item_id;
+        $journal->subledger_type = get_class($item);
+        $journal->save();
+
+        $differences = JournalHelper::getAccount('point purchasing', 'inventory differences');
+        $position = JournalHelper::position($differences);
+        $journal = new Journal;
+        $journal->form_date = $goods_received->formulir->form_date;
+        $journal->coa_id = $differences;
+        $journal->description = 'Invoice Purchasing [' . $goods_received->formulir->form_number.']';
+        $journal->$position = $item_value;
+        $journal->form_journal_id = $goods_received->formulir->id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
     }
 
     public static function updateStatusReference($request, $reference)
