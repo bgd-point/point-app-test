@@ -261,7 +261,6 @@
                                             <td><input id="item-quantity-goods-received-{{$counter}}" type="text"
                                                        name="item_quantity[]"
                                                        class="form-control format-quantity text-right"
-                                                       readonly="" 
                                                        onKeyup="calculate()" value="{{ $refer_to->quantity }}"/></td>
                                             <td>
                                                 <input type="hidden" name="item_unit_name[]"

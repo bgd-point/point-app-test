@@ -271,7 +271,7 @@ class GoodsReceivedHelper
         $journal = new Journal();
         $journal->form_date = $goods_received->formulir->form_date;
         $journal->coa_id = $item->account_asset_id;
-        $journal->description = 'Invoice Purchasing [' . $goods_received->formulir->form_number.']';
+        $journal->description = 'goods received [' . $goods_received->formulir->form_number.']';
         $journal->$position = $item_value * -1;
         $journal->form_journal_id = $goods_received->formulir_id;
         $journal->form_reference_id;
@@ -284,7 +284,7 @@ class GoodsReceivedHelper
         $journal = new Journal;
         $journal->form_date = $goods_received->formulir->form_date;
         $journal->coa_id = $differences;
-        $journal->description = 'Invoice Purchasing [' . $goods_received->formulir->form_number.']';
+        $journal->description = 'goods received [' . $goods_received->formulir->form_number.']';
         $journal->$position = $item_value;
         $journal->form_journal_id = $goods_received->formulir->id;
         $journal->form_reference_id;

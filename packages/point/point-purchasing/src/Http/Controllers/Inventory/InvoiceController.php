@@ -14,6 +14,7 @@ use Point\Framework\Models\Master\Permission;
 use Point\Framework\Models\Master\Person;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
+use Point\PointExpedition\Models\ExpeditionOrder;
 use Point\PointPurchasing\Helpers\InvoiceHelper;
 use Point\PointPurchasing\Models\Inventory\GoodsReceived;
 use Point\PointPurchasing\Models\Inventory\Invoice;
@@ -63,7 +64,10 @@ class InvoiceController extends Controller
     {
         $view = view('point-purchasing::app.purchasing.point.inventory.invoice.create-step-2');
         $view->goods_received = GoodsReceived::find($goods_received_id);
-
+        $view->reference = $view->goods_received->checkReference();
+        $view->reference_expedition_order = get_class($view->reference) == get_class(new ExpeditionOrder) ? $view->reference : null;
+        $view->reference_purchase_order = get_class($view->reference) == get_class(new PurchaseOrder) ? $view->reference : $view->reference->reference();
+        
         return $view;
     }
 

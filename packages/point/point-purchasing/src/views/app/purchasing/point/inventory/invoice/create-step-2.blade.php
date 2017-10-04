@@ -76,7 +76,7 @@
                                 <table id="item-datatable" class="table table-striped">
                                     <thead>
                                     <tr>
-                                        <th>Goods Delivered NUMBER</th>
+                                        <th>FORM REFERENCE</th>
                                         <th>ITEM</th>
                                         <th class="text-right">QUANTITY</th>
                                         <th class="text-right">PRICE</th>
@@ -188,10 +188,13 @@
                                     <tr>
                                         <td colspan="6" class="text-right">EXPEDITION FEE</td>
                                         <td>
+                                            @if($reference_purchase_order->include_expedition)
                                             <input type="hidden" name="original_expedition_fee" value="{{$goods_received->expedition_fee}}">
                                             <input type="text" id="expedition-fee" name="expedition_fee"
                                                    class="form-control format-price calculate text-right"
                                                    value="{{$goods_received->expedition_fee}}"/>
+                                            @endif
+                                            <input type="hidden" name="include_expedition" value="{{$reference_purchase_order->include_expedition}}">
                                         </td>
                                     </tr>
                                     <tr>
