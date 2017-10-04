@@ -107,8 +107,8 @@ class InvoiceController extends Controller
 
         DB::beginTransaction();
 
-        $references_type = $request->input('reference_type_expedition');
-        $references_id = $request->input('reference_id_expedition');
+        $reference_type = $request->input('reference_type');
+        $reference_id = $request->input('reference_id');
         $reference = $reference_type::find($reference_id);
         $formulir_id = [$reference->formulir_id];
 

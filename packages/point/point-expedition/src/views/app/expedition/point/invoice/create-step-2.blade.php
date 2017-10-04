@@ -120,6 +120,7 @@
                         <div class="form-group">
                             <label class="col-md-9 control-label text-right">SUB TOTAL</label>
                             <div class="col-md-3 content-show">
+                                <input type="hidden" name="original_subtotal" value="{{$expedition_order->expedition_fee}}"/>
                                 <input type="text" id="subtotal" name="subtotal" onkeyup="calculate()" class="form-control format-quantity text-right" value="{{$expedition_order->expedition_fee}}"/>
                             </div>
                         </div>

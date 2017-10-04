@@ -325,6 +325,12 @@ class InvoiceHelper
             ->select('point_expedition_order.*');
 
         $expedition_order = $list_expedition_order->first();
+        if (!$expedition_order) {
+            return false;
+        }
+
+        // $expedition_order = ExpeditionOrder::find($expedition_order->id);
+        // ExpeditionOrderHelper::removeJournal($expedition_order);
         $formulir_reference = Formulir::find($expedition_order->form_reference_id);
         $purchase_order = $formulir_reference->formulirable_type::find($formulir_reference->formulirable_id);
 
@@ -413,6 +419,10 @@ class InvoiceHelper
 
         $total_fee = 0;
         foreach ($list_expedition_order->get() as $expedition_order) {
+            // $expedition_order = ExpeditionOrder::find($expedition_orders->id);
+            // $expedition_order->is_finish = 1;
+            // $expedition_order->save();
+
             $group_detail = new ExpeditionOrderGroupDetail;
             $group_detail->point_expedition_order_group_id = $group->id;
             $group_detail->point_expedition_order_id = $expedition_order->id;

@@ -48,7 +48,7 @@ class FormulirHelper
             }
 
             // check if formulir references not canceled
-            if ($formulir->canceled_at != null) {
+            if ($formulir->form_status == -1) {
                 throw new PointException('RESTRICTED FORM ACCESS');
             }
 
