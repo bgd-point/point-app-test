@@ -11,7 +11,6 @@ use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Master\CoaCategory;
 use Point\Framework\Models\Master\CoaPosition;
-use Point\Framework\Models\Master\MasterBank;
 use Point\Framework\Models\Master\Person;
 use Point\PointAccounting\Models\AssetsRefer;
 use Point\PointFinance\Helpers\PaymentHelper;
@@ -33,7 +32,6 @@ class ChequeInController extends Controller
         $view->payment_reference = $payment_reference;
         $view->pay_to = $payment_reference->person_id;
         $view->list_coa = Coa::where('coa_category_id', 3)->active()->get();
-        $view->list_bank = MasterBank::all();
 
         return $view;
     }
@@ -79,7 +77,6 @@ class ChequeInController extends Controller
         $view->list_allocation = Allocation::active()->get();
         $view->list_cheque_account = Coa::where('coa_category_id', 3)->active()->get();
         $view->list_coa = Coa::active()->hasNotSubledger()->get();
-        $view->list_bank = MasterBank::all();
         $view->coa_revenue = CoaPosition::where("name", "Revenue")->first();
         $view->list_coa_category_revenue = CoaCategory::where('coa_position_id', $view->coa_revenue->id)->get();
 

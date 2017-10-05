@@ -9,7 +9,6 @@ use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Http\Controllers\Controller;
 use Point\Framework\Models\Master\Coa;
-use Point\Framework\Models\Master\MasterBank;
 use Point\Framework\Models\Master\Person;
 use Point\PointAccounting\Models\AssetsRefer;
 use Point\PointFinance\Helpers\PaymentHelper;
@@ -31,7 +30,6 @@ class ChequeOutController extends Controller
         $view->payment_reference = $payment_reference;
         $view->pay_to = $payment_reference->person_id;
         $view->list_coa = Coa::joinCategory()->where('coa_category.name', 'Current Liability')->active()->select('coa.*')->get();
-        $view->list_bank = MasterBank::all();
 
         return $view;
     }
