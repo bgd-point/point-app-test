@@ -403,6 +403,7 @@ class ExpeditionOrderHelper
         $warehouse->code = WarehouseHelper::getLastCode();
         $warehouse->name = 'in transit';
         $warehouse->created_by = auth()->user()->id;
+        $warehouse->disabled = 1;
         $warehouse->save();
 
         return $warehouse;

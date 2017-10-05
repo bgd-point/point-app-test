@@ -157,15 +157,9 @@ class InvoiceController extends Controller
         $invoice = Invoice::find($id);
         $formulir_locks = FormulirLock::where('locking_id', $invoice->formulir_id)->get();
         $view = view('point-expedition::app.expedition.point.invoice.edit');
-        $array_expedition_order_id = FormulirHelper::getLockedModelIds($invoice->formulir_id);
-        $view->list_expedition_order = ExpeditionOrder::joinFormulir()
-            ->whereIn('point_expedition_order.id', $array_expedition_order_id)
-            ->selectOriginal()
-            ->get();
-        $view->list_invoice_item = InvoiceItem::joinItem()->where('point_expedition_invoice_id', $invoice->id)->get();
-        $view->expedition = Person::find($invoice->expedition_id);
+        $view->expedition_order = FormulirHelper::getLockedModel($invoice->formulir_id);
+        $view->reference = $view->expedition_order->reference();
         $view->invoice = $invoice;
-        $view->list_user_approval = UserHelper::getAllUser();
         return $view;
     }
 
@@ -185,24 +179,18 @@ class InvoiceController extends Controller
 
         DB::beginTransaction();
 
-        $references_type = $request->input('reference_type');
-        $references_id = $request->input('reference_id');
-        $formulir_id = [];
-        $references = [];
+        $reference_type = $request->input('reference_type');
+        $reference_id = $request->input('reference_id');
+        $reference = $reference_type::find($reference_id);
+        $formulir_id = [$reference->formulir_id];
 
-        for ($i = 0; $i < count($references_type); $i++) {
-            $reference = $references_type[$i]::find($references_id[$i]);
-            array_push($references, $reference);
-            array_push($formulir_id, $reference->formulir_id);
-        }
 
         $invoice = Invoice::find($id);
-        access_is_allowed('update.point.expedition.invoice',
-            date_format_db($request->input('form_date'), $request->input('time')), $invoice->formulir);
+        access_is_allowed('update.point.expedition.invoice', date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
 
         $formulir_old = FormulirHelper::archive($request->input(), $invoice->formulir_id);
         $formulir = FormulirHelper::update($request->input(), $formulir_old->archived, $formulir_old->form_raw_number);
-        $invoice = InvoiceHelper::create($request, $formulir, $references);
+        $invoice = InvoiceHelper::create($request, $formulir, $reference);
         timeline_publish('update.invoice', 'update invoice ' . $invoice->formulir->form_number);
 
         DB::commit();

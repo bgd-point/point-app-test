@@ -10,14 +10,15 @@
         @include('point-expedition::app.expedition.point.invoice._menu')
 
         @include('core::app.error._alert')
-
         <div class="panel panel-default">
             <div class="panel-body">
                 <form action="{{url('expedition/point/invoice/'.$invoice->id)}}" method="post"
                       class="form-horizontal form-bordered">
                     {!! csrf_field() !!}
                     <input type="hidden" name="_method" value="PUT">
-                    <input type="hidden" name="expedition_id" value="{{$expedition->id}}">
+                    <input type="hidden" name="reference_type" value="{{get_class($expedition_order)}}">
+                    <input type="hidden" name="reference_id" value="{{$expedition_order->id}}">
+                    <input type="hidden" name="expedition_id" value="{{$expedition_order->expedition_id}}">
 
                     <fieldset>
                         <div class="form-group">
@@ -29,8 +30,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Reason edit *</label>
                         <div class="col-md-6">
-                            <input type="text" name="edit_notes" class="form-control"
-                                   value="{{$invoice->formulir->approval_message}}" autofocus>
+                            <input type="text" name="edit_notes" class="form-control" value="{{$invoice->formulir->approval_message}}" autofocus>
                         </div>
                     </div>
                     <div class="form-group">
@@ -54,8 +54,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Expedition</label>
                         <div class="col-md-6 content-show">
-                            <input type="hidden" name="expedition_id" value="{{$expedition->id}}">
-                            {{$expedition->codeName}}
+                            {!! get_url_person($expedition_order->expedition_id) !!}
                         </div>
                     </div>
                     <div class="form-group">
@@ -74,44 +73,26 @@
                             <div class="col-md-12">
                                 <div class="table-responsive">
                                     <table id="item-datatable" class="table table-striped">
-                                        @foreach($list_expedition_order as $expedition_order)
-                                            <?php
-                                            $formulir_reference = Point\Framework\Helpers\FormulirHelper::getLocked($expedition_order->formulir_id);
-                                            ?>
-                                            <input type="hidden" name="collection_reference_type[]"
-                                                   value="{{$formulir_reference->formulirable_type}}">
-                                            <input type="hidden" name="collection_reference_id[]"
-                                                   value="{{$formulir_reference->id}}">
-                                        @endforeach
                                         <thead>
                                         <tr>
-                                            <th>EXPEDITION ORDER NUMBER</th>
                                             <th>ITEM</th>
                                             <th>QUANTITY</th>
+                                            <th>UNIT</th>
                                         </tr>
                                         </thead>
                                         <?php $counter = 1; $expedition_fee = 0; ?>
                                         <tbody class="manipulate-row">
-                                        @foreach($list_expedition_order as $expedition_order)
-                                            @foreach($expedition_order->items as $expedition_order_item)
-                                                <tr>
-                                                    <td>
-                                                        <a href="{{url('expedition/point/invoice/'.$expedition_order->id)}}">{{$expedition_order->formulir->form_number}} </a>
-                                                        <br> {{ date_format_view($expedition_order->formulir->form_date)}}
-                                                        <input type="hidden" name="reference_item_type[]" value="{{get_class($expedition_order_item)}}">
-                                                        <input type="hidden" name="reference_item_id[]" value="{{$expedition_order_item->id}}">
-                                                        <input type="hidden" name="reference_type[]" value="{{get_class($expedition_order)}}">
-                                                        <input type="hidden" name="reference_id[]" value="{{$expedition_order->id}}">
-                                                    </td>
-                                                    <td> {{ $expedition_order_item->item->codeName }} </td>
-                                                    <td>
-                                                        <input type="hidden" id="item-quantity-{{$counter}}" name="item_quantity[]" readonly class="format-quantity" value="{{ $expedition_order_item->quantity}}"/>
-                                                        {{ number_format_quantity($expedition_order_item->quantity)}}
-                                                    </td>
-                                                    </td>
-                                                    <?php $counter++;?>
-                                                </tr>
-                                            @endforeach
+                                        @foreach($expedition_order->items as $expedition_order_item)
+                                            <tr>
+                                            <input type="hidden" name="item_id[]" value="{{$expedition_order_item->item_id}}">
+                                            <input type="hidden" name="quantity[]" value="{{$expedition_order_item->quantity}}">
+                                            <input type="hidden" name="price[]" value="{{$expedition_order_item->price}}">
+                                            <input type="hidden" name="item_discount[]" value="{{$expedition_order_item->discount}}">
+                                            <input type="hidden" name="unit[]" value="{{$expedition_order_item->unit}}">
+                                                <td>{{$expedition_order_item->item->codeName}}</td>
+                                                <td>{{number_format_quantity($expedition_order_item->quantity, 0)}}</td>
+                                                <td>{{$expedition_order_item->unit}}</td>
+                                            </tr>
                                         @endforeach
                                         </tbody>
                                     </table>
@@ -124,15 +105,15 @@
                         <div class="form-group">
                             <label class="col-md-9 control-label text-right">SUB TOTAL</label>
                             <div class="col-md-3 content-show">
-                                <input type="text" id="subtotal" name="subtotal" onclick="setToNontax()" onkeyup="calculate()" 
-                                       class="form-control format-quantity text-right"
-                                       value="{{ $invoice->subtotal}}"/>
+                                <input type="hidden" name="original_subtotal" value="{{$expedition_order->expedition_fee}}"/>
+                                <input type="text" id="subtotal" name="subtotal" onkeyup="calculate()" class="form-control format-quantity text-right" value="{{ $invoice->subtotal}}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-9 control-label text-right">DISCOUNT</label>
                             <div class="col-md-3 content-show">
                                 <div class="input-group">
+                                    <input type="hidden" name="original_discount" value="{{$expedition_order->discount}}">
                                     <input type="text" id="discount" onkeypress="isDiscount(this.value)" maxlength="2"
                                            name="discount"
                                            class="form-control format-quantity text-right"
@@ -145,8 +126,7 @@
                         <div class="form-group">
                             <label class="col-md-9 control-label text-right">TAX BASE</label>
                             <div class="col-md-3 content-show">
-                                <input type="text" readonly id="tax_base" name="tax_base"
-                                       class="form-control format-quantity text-right" value="{{ $invoice->tax_base}}"/>
+                                <input type="text" readonly id="tax_base" name="tax_base" class="form-control format-quantity text-right" value="{{ $invoice->tax_base}}"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -158,12 +138,10 @@
                         <div class="form-group">
                             <label class="col-md-9 control-label text-right"></label>
                             <div class="col-md-3 content-show">
-                                <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
-                                       {{ $invoice->type_of_tax == 'include' ? 'checked'  : '' }} onchange="calculate()"
-                                       value="include"> Include Tax <br/>
-                                <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
-                                       {{ $invoice->type_of_tax == 'exclude' ? 'checked'  : '' }} onchange="calculate()"
-                                       value="exclude"> Exlude Tax <br/>
+                                <input type="hidden" name="original_type_of_tax" value="{{$expedition_order->type_of_tax}}">
+                                <input type="checkbox" id="tax-choice-include-tax" class="tax" name="type_of_tax" {{ $invoice->type_of_tax == 'include' ? 'checked'  : '' }} onchange="calculate()" value="include"> Tax Included <br/>
+                                <input type="checkbox" id="tax-choice-exclude-tax" class="tax" name="type_of_tax" {{ $invoice->type_of_tax == 'exclude' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
+                                <input type="checkbox" id="tax-choice-non-tax" class="tax" name="type_of_tax" {{ $invoice->type_of_tax == 'non' ? 'checked'  : '' }} onchange="calculate()" value="non" style="display:none">
                             </div>
                         </div>
 
@@ -206,18 +184,18 @@
 
 @section('scripts')
     <script>
-        initDatatable('#item-datatable');
-        function individualFee() {
-            $(".fee").attr("readonly", false);
-            $(".fee:last-child").focus();
-            $("#subtotal").attr("readonly", true);
-        }
+        $(".tax").change(function() {
+            var checked = $(this).is(':checked');
+            $(".tax").prop('checked',false);
+            if(checked) {
+                $(this).prop('checked',true);
+            } else {
+                $('#tax-choice-non-tax').prop('checked', true);
+            }
+            calculate();
+        });
 
-        function averageFee() {
-            $(".fee").attr("readonly", true);
-            $("#subtotal").attr("readonly", false);
-            $("#subtotal").focus();
-        }
+        initDatatable('#item-datatable');
 
         function isDiscount(val) {
             if (val.length >= 2) {
@@ -226,14 +204,11 @@
             calculate();
         }
 
-        function setToNontax() {
-            $("#tax-choice-include-tax").attr("checked", false);
-            $("#tax-choice-exclude-tax").attr("checked", false);
-            $("#tax-choice-non-tax").trigger("click");
-            calculate();
-        }
-
         function calculate() {
+            if (dbNum($('#discount').val()) >= 100) {
+                dbNum($('#discount').val(99))
+            }
+
             var total_fee = dbNum($("#subtotal").val());
             var discount = dbNum($('#discount').val());
             var tax_base = total_fee - total_fee * discount / 100;
@@ -245,9 +220,6 @@
             if ($('#tax-choice-include-tax').prop('checked')) {
                 tax_base = tax_base * 100 / 110;
                 tax = tax_base * 10 / 100;
-                $('#discount').val(0);
-                $('#discount').prop('readonly', true);
-                var discount = 0;
             } else {
                 $('#discount').prop('readonly', false);
             }

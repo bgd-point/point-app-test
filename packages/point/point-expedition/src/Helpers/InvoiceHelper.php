@@ -3,16 +3,23 @@
 namespace Point\PointExpedition\Helpers;
 
 use Illuminate\Http\Request;
+use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Models\Formulir;
 use Point\Framework\Models\FormulirLock;
+use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\Person;
+use Point\Framework\Models\Master\Warehouse;
 use Point\PointExpedition\Helpers\ExpeditionOrderHelper;
 use Point\PointExpedition\Models\ExpeditionOrder;
+use Point\PointExpedition\Models\ExpeditionOrderGroup;
 use Point\PointExpedition\Models\ExpeditionOrderGroupDetail;
+use Point\PointExpedition\Models\ExpeditionOrderItem;
+use Point\PointExpedition\Models\ExpeditionOrderReference;
 use Point\PointExpedition\Models\Invoice;
 use Point\PointExpedition\Models\InvoiceItem;
 use Point\PointPurchasing\Helpers\InvoiceHelper as PurchasingInvoiceHelper;
@@ -61,19 +68,19 @@ class InvoiceHelper
         $invoice->type_of_tax = $request->input('type_of_tax');
         $invoice->save();
 
-        $subtotal = 0;
         for ($i = 0; $i < count($request->input('item_id')); $i++) {
             $invoice_item = new InvoiceItem;
             $invoice_item->point_expedition_invoice_id = $invoice->id;
             $invoice_item->item_id = $request->input('item_id')[$i];
             $invoice_item->quantity = number_format_db($request->input('quantity')[$i]);
             $invoice_item->discount = number_format_db($request->input('item_discount')[$i]);
+            $invoice_item->price = number_format_db($request->input('price')[$i]);
             $invoice_item->item_fee = 0;
             $invoice_item->unit = $request->input('unit')[$i];
             $invoice_item->save();
-
-            $subtotal += ($invoice_item->quantity * $invoice_item->price) - ($invoice_item->quantity * $invoice_item->price * $invoice_item->discount / 100);
         }
+
+        $subtotal = number_format_db($request->input('subtotal'));
 
         formulir_lock($reference->formulir_id, $invoice->formulir_id);
         $reference->formulir->form_status = 1;
@@ -98,7 +105,6 @@ class InvoiceHelper
         $invoice->tax = $tax;
         $invoice->total = $tax_base + $tax;
         $invoice->save();
-
         /**
          * If discount or tax was modified, journal again
          * 
@@ -111,7 +117,6 @@ class InvoiceHelper
         $formulir->save();
 
         JournalHelper::checkJournalBalance($formulir->id);
-        dd($invoice);
         return $invoice;
     }
 
@@ -123,6 +128,9 @@ class InvoiceHelper
          * Remove journal Expedition order
          * Remove journal Invoice purchasing
          */
+        $expedition_order_group_item = ExpeditionOrderGroupDetail::where('point_expedition_order_id', $expedition_order->id)->first();
+        $list_expedition_order = ExpeditionOrderGroupDetail::where('point_expedition_order_group_id', $expedition_order_group_item->point_expedition_order_group_id)->select('point_expedition_order_id')->get()->toArray();
+        
         ExpeditionOrderHelper::removeJournal($expedition_order);
         $list_goods_received = FormulirLock::join('formulir', 'formulir.id', '=', 'formulir_lock.locking_id')
             ->where('locked_id', $expedition_order->formulir_id)
@@ -132,36 +140,38 @@ class InvoiceHelper
             ->whereNotNull('formulir.form_number')
             ->select('formulir.*');
         $formulir = $list_goods_received->first();
-        $goods_received = $formulir->formulirable_type::find($formulir->formulirable_id);
-        PurchasingInvoiceHelper::removeJournalExpeditionOrder($goods_received);
-
-        self::journalInvoice($invoice, $expedition_order, $goods_received);
+        $goods_received = '';
+        if ($formulir) {
+            $goods_received = $formulir->formulirable_type::find($formulir->formulirable_id);
+            PurchasingInvoiceHelper::removeJournalExpeditionOrder($goods_received);    
+        }
+        
+        self::journalInvoice($invoice, $expedition_order, $goods_received, $list_expedition_order);
     }
 
-    public static function journalInvoice($invoice, $expedition_order, $goods_received)
+    public static function journalInvoice($invoice, $expedition_order_ref, $goods_received, $list_expedition_order)
     {
-        // $expedition_order_group_item = ExpeditionOrderGroupDetail::where('point_expedition_order_id', $expedition_order->id)->first();
-        // dd($expedition_order_group_item);
-
-        $expedition_order_first = $list_expedition_order->first();
+        $list_expedition_order = ExpeditionOrder::whereIn('id', $list_expedition_order)->get();
 
         $group = new ExpeditionOrderGroup;
         $group->formulir_id = $invoice->formulir->id;
         $group->save();
 
         $total_fee = 0;
-        foreach ($list_expedition_order->get() as $expedition_order) {
-            // $expedition_order = ExpeditionOrder::find($expedition_orders->id);
-            // $expedition_order->is_finish = 1;
-            // $expedition_order->save();
+        foreach ($list_expedition_order as $expedition_order) {
+            $expedition_order->is_finish = 1;
+            $expedition_order->save();
+            $ref = $expedition_order;
+            if ($expedition_order->id == $expedition_order_ref->id) {
+                $ref = $invoice;
+            }
 
             $group_detail = new ExpeditionOrderGroupDetail;
             $group_detail->point_expedition_order_group_id = $group->id;
             $group_detail->point_expedition_order_id = $expedition_order->id;
             $group_detail->save();
-
-            $tax_base = $expedition_order->tax_base;
-            $total = $expedition_order->total;
+            $tax_base = $ref->tax_base;
+            $total = $ref->total;
 
             $total_fee += $tax_base;
 
@@ -181,48 +191,62 @@ class InvoiceHelper
             \Log::info('utang exp '. $position.' '. $total);
 
             // Journal Income Tax Expedition
-            if ($expedition_order->tax != 0) {
+            if ($ref->tax != 0) {
                 $income_tax_payable = JournalHelper::getAccount('point expedition', 'income tax receivable');
                 $position = JournalHelper::position($income_tax_payable);
                 $journal = new Journal();
                 $journal->form_date = $group->formulir->form_date;
                 $journal->coa_id = $income_tax_payable;
                 $journal->description = 'purchase invoice "' . $group->formulir->form_number . '"';
-                $journal->$position = $expedition_order->tax;
+                $journal->$position = $ref->tax;
                 $journal->form_journal_id = $group->formulir_id;
                 $journal->form_reference_id;
                 $journal->subledger_id;
                 $journal->subledger_type;
                 $journal->save();
 
-                \Log::info('tax expedition_order '. $position.' '. $expedition_order->tax);
+                \Log::info('tax expedition_order '. $position.' '. $ref->tax);
             }
+        }
+
+        $form_reference = Formulir::find($expedition_order->form_reference_id);
+        $reference = $form_reference->formulirable_type::find($form_reference->formulirable_id);
+        if (! $reference->supplier_id) {
+            $reference->person_id = $reference->person_id;
+        } else{
+            $reference->person_id = $reference->supplier_id;
         }
 
         $continue = false;
         // $total_quantity_expedition = ExpeditionOrderItem::where('point_expedition_order_id', $list_expedition_order->first()->id)->selectRaw('sum(quantity) as quantity')->first()->quantity; 
         $subtotal_reference = 0;
-        $list_expedition_order_tmp = $list_expedition_order->get();
-        $expedition_order = ExpeditionOrder::find($list_expedition_order->first()->id);
+        $list_expedition_order_tmp = $list_expedition_order;
         foreach ($expedition_order->items as $expedition_order_item) {
             // Journal Inventory
             $item_purchase_per_row = 0;
             $item_expedition_per_row = 0;
 
             $item_purchase_per_row = $expedition_order_item->quantity * $expedition_order_item->price - $expedition_order_item->quantity * $expedition_order_item->price * $expedition_order_item->discount / 100;
-            if ($invoice->discount) {
-                $discounty = $item_purchase_per_row * $invoice->discount / 100;
+            if ($reference->discount) {
+                $discounty = $item_purchase_per_row * $reference->discount / 100;
                 $item_purchase_per_row = $item_purchase_per_row - $discounty;
             }
 
-            if ($invoice->type_of_tax == 'include') {
+            if ($reference->type_of_tax == 'include') {
                 $item_purchase_per_row = $item_purchase_per_row * 100 / 110;
             }
+            
             \Log::info('purchase per row ' .$item_purchase_per_row);
             $subtotal_reference += $expedition_order_item->quantity * $expedition_order_item->price - $expedition_order_item->quantity * $expedition_order_item->price * $expedition_order_item->discount / 100;
             foreach ($list_expedition_order_tmp as $expedition_order) {
+                $ref = $expedition_order;
+                if ($expedition_order->id == $expedition_order_ref->id) {
+                    $ref = $invoice;
+                }
+                
+                
                 $total_quantity_expedition = ExpeditionOrderItem::where('point_expedition_order_id', $expedition_order->id)->selectRaw('sum(quantity) as quantity')->first()->quantity; 
-                $item_expedition_per_row += $expedition_order_item->quantity * $expedition_order->tax_base / $total_quantity_expedition;
+                $item_expedition_per_row += $expedition_order_item->quantity * $ref->tax_base / $total_quantity_expedition;
                 \Log::info('exp per row ' .$item_expedition_per_row);
             }
 
@@ -244,6 +268,10 @@ class InvoiceHelper
             if (!$warehouse) {
                 $warehouse = ExpeditionOrderHelper::createWarehouse();
             }
+            if ($goods_received) {
+                $warehouse = $goods_received->warehouse;
+            }
+
             if (! $continue) {
                 $inventory = new Inventory();
                 $inventory->formulir_id = $group->formulir->id;
@@ -265,17 +293,18 @@ class InvoiceHelper
          * ACCOUNT PAYABLE REFERENCE
          */ 
         
-        $reference_discount_value = $subtotal_reference * $invoice->discount / 100;
+        $reference_discount_value = $subtotal_reference * $reference->discount / 100;
         $reference_tax_base = $subtotal_reference - $reference_discount_value;
         $reference_tax = 0;
 
-        if ($invoice->type_of_tax == 'exclude') {
+        if ($reference->type_of_tax == 'exclude') {
             $reference_tax = $reference_tax_base * 10 / 100;
         }
-        if ($invoice->type_of_tax == 'include') {
+        if ($reference->type_of_tax == 'include') {
             $reference_tax_base = $reference_tax_base * 100 / 110;
             $reference_tax = $reference_tax_base * 10 / 100;
         }
+
 
         $reference_total = $reference_tax + $reference_tax_base;
         // Journal Account Payable Purchasing
@@ -288,18 +317,18 @@ class InvoiceHelper
         $journal->$position = $reference_total;
         $journal->form_journal_id = $group->formulir_id;
         $journal->form_reference_id;
-        $journal->subledger_id = $invoice->supplier_id;
+        $journal->subledger_id = $reference->person_id;
         $journal->subledger_type = get_class(new Person);
         $journal->save();
-        \Log::info('utang purchasing '. $position. ' ' .$journal->$position);
 
-        if ($invoice->tax > 0) {
+        \Log::info('utang purchasing '. $position. ' ' .$journal->$position);
+        if ($reference->tax > 0) {
             $income_tax_receiveable = JournalHelper::getAccount('point purchasing', 'income tax receivable');
             $position = JournalHelper::position($income_tax_receiveable);
             $journal = new Journal;
-            $journal->form_date = $invoice->formulir->form_date;
+            $journal->form_date = $reference->formulir->form_date;
             $journal->coa_id = $income_tax_receiveable;
-            $journal->description = 'purchase invoice [' . $invoice->formulir->form_number.']';
+            $journal->description = 'purchase invoice [' . $group->formulir->form_number.']';
             $journal->$position = $reference_tax;
             $journal->form_journal_id = $group->formulir_id;
             $journal->form_reference_id;
@@ -315,12 +344,13 @@ class InvoiceHelper
 
         // update expedition reference 
         if ($is_finish) {
-            $expedition_reference = ExpeditionOrderReference::where('expedition_reference_id', $expedition_order_first->form_reference_id)->first();
+            $expedition_reference = ExpeditionOrderReference::where('expedition_reference_id', $expedition_order->form_reference_id)->first();
             $expedition_reference->finish = 1;
             $expedition_reference->save();
         }
 
         $journal = Journal::where('form_journal_id', $group->formulir_id)->get();
+        
     }
 
     public static function journalDifferences($invoice, $expedition_order_id, $original_fee, $expedition_fee)
