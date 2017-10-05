@@ -85,16 +85,16 @@
 @stop
 
 @section('signature')
-    <td>
-        Disetujui,
+    <td style="padding-left:100px">
+        Tanda terima,
         <div class="signature-date">{{ \DateHelper::formatView($invoice->formulir->approval_at) }}</div>
         <div class="signature">____________________</div>
-        <div class="signature-person">({{strtoupper($invoice->formulir->approvalTo->name)}})</div>
+        <div class="signature-person"></div>
     </td>
     <td>
-        Peminta,
+        Hormat kami,
         <div class="signature-date">{{ \DateHelper::formatView($invoice->formulir->form_date) }}</div>
         <div class="signature">____________________</div>
-        <div class="signature-person">({{strtoupper($invoice->person->name)}})</div>
+        <div class="signature-person"></div>
     </td>
 @stop
