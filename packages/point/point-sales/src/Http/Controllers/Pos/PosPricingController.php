@@ -38,6 +38,16 @@ class PosPricingController extends Controller
         return $view;
     }
 
+    public function indexPDF()
+    {
+        access_is_allowed('read.point.sales.pos.pricing');
+
+        $list_pricing = PosPricing::joinDependencies()->notCancelled();
+        $list_pricing = PosPricingHelper::searchList($list_pricing, app('request')->input('order_by'), app('request')->input('order_type'), app('request')->input('status'), app('request')->input('date_from'), app('request')->input('date_to'), app('request')->input('search'))->get();
+        $pdf = \PDF::loadView('point-sales::app.sales.point.pos.pricing.index-pdf', ['list_pricing' => $list_pricing]);
+        return $pdf->stream();
+    }
+
     /**
      * Show the form for creating a new resource.
      *

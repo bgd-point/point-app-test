@@ -28,11 +28,23 @@ class InvoiceController extends Controller
      */
     public function index()
     {
+        access_is_allowed('read.point.sales.invoice');
+
         $view = view('point-sales::app.sales.point.sales.invoice.index');
         $list_invoice = Invoice::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         $list_invoice = InvoiceHelper::searchList($list_invoice, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_invoice = $list_invoice->paginate(100);
         return $view;
+    }
+
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.sales.invoice');
+        $list_invoice = Invoice::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
+        $list_invoice = InvoiceHelper::searchList($list_invoice, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-sales::app.sales.point.sales.invoice.index-pdf', ['list_invoice' => $list_invoice]);
+        
+        return $pdf->stream();
     }
 
     /**
@@ -255,15 +267,17 @@ class InvoiceController extends Controller
         $invoice = Invoice::find($id);
         $warehouse = '';
         $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
+
         if ($warehouse_id > 0) {
             $warehouse = Warehouse::find($warehouse_id);
         }
+
         $data = array(
             'invoice' => $invoice, 
             'warehouse' => $warehouse
         );
 
         $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.invoice-pdf', $data);
-        return $pdf->download($invoice->formulir->form_number.'.pdf');
+        return $pdf->stream($invoice->formulir->form_number.'.pdf');
     }
 }

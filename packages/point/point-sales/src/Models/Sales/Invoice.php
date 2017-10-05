@@ -49,7 +49,7 @@ class Invoice extends Model
         $q->open()
             ->approvalApproved()
             ->notArchived()
-            ->whereNotIn('point_sales_invoice.id', $invoice_locked)
+            ->whereNotIn('point_sales_invoice.formulir_id', $invoice_locked)
             ->orderByStandard();
     }
 
@@ -59,7 +59,7 @@ class Invoice extends Model
         
         $q->open()
             ->approvalApproved()
-            ->whereNotIn('point_sales_invoice.id', $invoice_locked)
+            ->whereNotIn('point_sales_invoice.formulir_id', $invoice_locked)
             ->where('person.id', '=', $person_id)
             ->orderByStandard();
     }
@@ -100,11 +100,8 @@ class Invoice extends Model
      * @return array
      */
     public static function getLockedInvoice() {
-        $locking_id = PaymentCollection::joinFormulir()->whereIn('form_status', [1, 0])->select('formulir_id')->get();
-        if($locking_id->count()) {
-            $locking_id = array_flatten(array_values($locking_id->toArray()));
-        }
-
+        $locking_id = PaymentCollection::joinFormulir()->whereIn('form_status', [1, 0])->select('formulir_id')->get()->toArray();
+        
         return FormulirLock::join('formulir', 'formulir.id', '=','formulir_lock.locked_id')
             ->whereIn('locking_id', $locking_id)
             ->where('locked', true)

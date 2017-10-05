@@ -75,7 +75,7 @@
                                                 <tr>
                                                     <th></th>
                                                     <th style="min-width: 115px">Account *</th>
-                                                    <th style="min-width: 115px">Notes</th>
+                                                    <th style="min-width: 115px">Notes*</th>
                                                     <th style="min-width: 115px" class="text-right">Amount *</th>
                                                     <th style="min-width: 150px" class="text-center">Allocation *</th>
                                                 </tr>
@@ -149,7 +149,7 @@ var counter = $("#item-datatabl").dataTable().fnGetNodes().length;
 $('#addItemRow').on( 'click', function () {
     item_table.row.add( [
         '<a href="javascript:void(0)" class="remove-row btn btn-danger"><i class="fa fa-trash"></i></a>',
-        '<div class="@if(access_is_allowed_to_view("create.coa")) input-group @endif"><select id="coa-id-'+counter+'" name="coa_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
+        '<div class="@if(access_is_allowed_to_view("create.coa")) input-group @endif"><select id="coa-id-'+counter+'" name="coa_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one.." required="">'
             +'<option ></option>'
             @foreach($list_coa as $coa)
             +'<option value="{{$coa->id}}">{{ $coa->account }}</option>'
@@ -163,9 +163,9 @@ $('#addItemRow').on( 'click', function () {
         +'</span>'
         @endif
         +'</div>',
-        '<input type="text" name="detail_notes[]" class="form-control" value="" />',
-        '<input type="text" id="amount-'+counter+'" name="amount[]" class="form-control format-quantity row-total text-right calculate" value="0" class="amountId" />',
-        '<div class="@if(access_is_allowed_to_view("create.allocation")) input-group @endif"><select id="allocation-id-'+counter+'" name="allocation_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
+        '<input type="text" name="detail_notes[]" required="" class="form-control" value="" />',
+        '<input type="text" id="amount-'+counter+'" required="" name="amount[]" class="form-control format-quantity row-total text-right calculate" value="0" class="amountId" />',
+        '<div class="@if(access_is_allowed_to_view("create.allocation")) input-group @endif"><select required="" id="allocation-id-'+counter+'" name="allocation_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
             @foreach($list_allocation as $allocation)
             +'<option value="{{$allocation->id}}">{{$allocation->name}}</option>'
             @endforeach

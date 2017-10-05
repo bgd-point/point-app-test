@@ -33,6 +33,9 @@
                             @if(access_is_allowed_to_view('export.point.sales.report'))
                             <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" onclick="exportExcel()">Export to excel</a>
                             @endif
+                            @if(auth()->user()->may('read.point.sales.report'))
+                                <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" href="{{url('sales/point/indirect/report/pdf?date_from='.\Input::get('date_from').'&date_to='.\Input::get('date_to').'&search='.\Input::get('search').'&order_by='.\Input::get('order_by').'&order_type='.\Input::get('order_type').'&status='.\Input::get('status'))}}"> export to PDF</a>
+                            @endif
                         </div>
                     </div>
                 </form>

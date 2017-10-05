@@ -47,10 +47,19 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Customer *</label>
                         <div class="col-md-6">
-                            <?php $customer = Point\Framework\Models\Master\Person::find(old('person_id')); ?>                        
-                            <select id="customer-id" name="person_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
-                                <option value="{{ old('person_id') }}">{{ $customer ? $customer->codeName : ''}}</option>
-                            </select>
+                            <div class="@if(access_is_allowed_to_view('create.customer')) input-group @endif">
+                                <?php $customer = Point\Framework\Models\Master\Person::find(old('person_id')); ?>                        
+                                <select id="contact_id" name="person_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                                    <option value="{{ old('person_id') }}">{{ $customer ? $customer->codeName : ''}}</option>
+                                </select>
+                                @if(access_is_allowed_to_view('create.customer'))
+                                <span class="input-group-btn">
+                                    <a href="#modal-contact" class="btn btn-effect-ripple btn-primary" data-toggle="modal">
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                </span>
+                                @endif
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -251,12 +260,13 @@
             </div>
         </div>
     </div>
+@include('framework::app.master.contact.__create', ['person_type' => 'customer'])
 @stop
 @include('framework::scripts.item')
 @include('framework::scripts.person')
 @section('scripts')
     <script>
-        reloadPerson('#customer-id', 'customer');
+        reloadPerson('#contact_id', 'customer');
         var item_table = initDatatable('#item-datatable');
         var counter = {{$counter}} ?  {{$counter}} : 0;
         $('#addItemRow').on('click', function () {
@@ -280,7 +290,7 @@
             
             initSelectize('#item-id-' + counter);
             initSelectize('#allocation-id-' + counter);
-            reloadItemHavingQuantity('#item-id-' + counter);
+            reloadItem('#item-id-' + counter);
             initFormatNumber();
 
             $("textarea").on("click", function () {
@@ -425,10 +435,10 @@
 
         // reload data item with ajax
         if (counter > 0) {
-            reloadPerson('#customer-id', 'customer');
+            reloadPerson('#contact_id', 'customer');
             for(var i=0; i< counter; i++) {
                 if($('#item-id-'+i).length != 0){
-                    reloadItemHavingQuantity('#item-id-' + i, false);
+                    reloadItem('#item-id-' + i, false);
                 }
             }    
         }

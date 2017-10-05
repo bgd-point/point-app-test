@@ -16,6 +16,7 @@ Route::group(['prefix' => 'sales/point/indirect', 'namespace' => 'Point\PointSal
         Route::get('/downpayment/request-approval', 'DownpaymentApprovalController@requestApproval');
         Route::post('/downpayment/send-request-approval', 'DownpaymentApprovalController@sendRequestApproval');
         Route::get('/downpayment/{id}/archived', 'DownpaymentController@archived');
+        Route::get('/downpayment/pdf', 'DownpaymentController@indexPDF');
         Route::get('/downpayment/insert/{id}', 'DownpaymentController@insert');
         Route::resource('/downpayment', 'DownpaymentController');
     });

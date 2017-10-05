@@ -85,14 +85,21 @@
                         <label class="col-md-3 control-label">Customer</label>
 
                         <div class="col-md-6">
-                            <select id="person-id" name="person_id" class="selectize" style="width: 100%;"
-                                    data-placeholder="Choose one..">
-                                <option></option>
-                                @foreach($list_person as $person)
-                                    <option value="{{$person->id}}"
-                                            @if($sales_order->person_id == $person->id) selected @endif>{{$person->codeName}}</option>
-                                @endforeach
-                            </select>
+                            <div class="@if(access_is_allowed_to_view('create.customer')) input-group @endif">
+                                <select id="contact_id" name="person_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                                    <option></option>
+                                    @foreach($list_person as $person)
+                                        <option value="{{$person->id}}" @if($sales_order->person_id == $person->id) selected @endif>{{$person->codeName}}</option>
+                                    @endforeach
+                                </select>
+                                @if(access_is_allowed_to_view('create.customer'))
+                                <span class="input-group-btn">
+                                    <a href="#modal-contact" class="btn btn-effect-ripple btn-primary" data-toggle="modal">
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                </span>
+                                @endif
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -112,7 +119,7 @@
                             @else
                                 <input type="checkbox" id="cash-selling" name="is_cash" value="false">
                             @endif
-                                <span class="help-block">If checked, you need to make a downpayment before deliver the order</span>
+                                <span class="help-block">If checked, you need to make a downpayment before delivering the order</span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -288,6 +295,8 @@
             </div>
         </div>
     </div>
+@include('framework::app.master.contact.__create', ['person_type' => 'customer'])
+
 @stop
 
 @section('scripts')

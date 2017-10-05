@@ -15,6 +15,7 @@ class PointPurchasingFormulirNumberSeeder extends Seeder
         FormulirNumberHelper::create('point-purchasing-invoice', 'BP/INVOICE/');
         FormulirNumberHelper::create('point-purchasing-retur', 'BP/RETUR/');
         FormulirNumberHelper::create('point-purchasing-payment-order', 'BP/PAYMENT/');
+        FormulirNumberHelper::create('point-purchasing-cash-advance', 'BP/CASH-ADVANCE/');
         
         // Service Purchasing
         FormulirNumberHelper::create('point-purchasing-service-invoice', 'PURCHASING-SERVICE/INVOICE/');

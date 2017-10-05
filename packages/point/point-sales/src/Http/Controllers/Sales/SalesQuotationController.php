@@ -12,6 +12,8 @@ use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\PersonHelper;
 use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\Item;
+use Point\Framework\Models\Master\PersonGroup;
+use Point\Framework\Models\Master\PersonType;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
 use Point\PointSales\Helpers\SalesQuotationHelper;
@@ -40,6 +42,16 @@ class SalesQuotationController extends Controller
         return $view;
     }
 
+    public function indexPDF(Request $request)
+    {
+        access_is_allowed('read.point.sales.quotation');
+        $sales_quotation = SalesQuotation::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
+        $list_sales_quotation = SalesQuotationHelper::searchList($sales_quotation, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $pdf = \PDF::loadView('point-sales::app.sales.point.sales.sales-quotation.index-pdf', ['list_sales_quotation' => $list_sales_quotation]);
+        
+        return $pdf->stream();
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -54,6 +66,10 @@ class SalesQuotationController extends Controller
         $view->list_customer = PersonHelper::getByType(['customer']);
         $view->list_allocation = Allocation::active()->get();
         $view->list_user_approval = UserHelper::getAllUser();
+        $person_type = PersonType::where('slug', 'customer')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
+
         return $view;
     }
 
@@ -131,6 +147,9 @@ class SalesQuotationController extends Controller
         $view->list_customer = PersonHelper::getByType(['customer']);
         $view->list_allocation = Allocation::active()->get();
         $view->list_user_approval = UserHelper::getAllUser();
+        $person_type = PersonType::where('slug', 'customer')->first();
+        $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
+        $view->code_contact = PersonHelper::getCode($person_type);
         return $view;
     }
 

@@ -5,6 +5,7 @@ Route::group(['prefix' => 'purchasing/point/service', 'namespace' => 'Point\Poin
         return view('point-purchasing::app.purchasing.point.service.menu');
     });
 
+    Route::get('/report/export', 'ServiceReportController@export');
     Route::get('/report', 'ServiceReportController@index');
 
     // INVOICE
@@ -13,6 +14,7 @@ Route::group(['prefix' => 'purchasing/point/service', 'namespace' => 'Point\Poin
         Route::get('/invoice/vesa-rejected', 'ServiceInvoiceVesaController@create');
         Route::get('/invoice/{id}/export', 'InvoiceController@exportPDF');
         Route::get('/invoice/{id}/archived', 'InvoiceController@archived');
+        Route::get('/invoice/pdf', 'InvoiceController@indexPDF');
         Route::post('/invoice/send-email', 'InvoiceController@sendEmail');
         Route::resource('/invoice', 'InvoiceController');
     });
@@ -29,6 +31,7 @@ Route::group(['prefix' => 'purchasing/point/service', 'namespace' => 'Point\Poin
         Route::get('/downpayment/request-approval', 'DownpaymentApprovalController@requestApproval');
         Route::post('/downpayment/send-request-approval', 'DownpaymentApprovalController@sendRequestApproval');
         Route::get('/downpayment/{id}/archived', 'DownpaymentController@archived');
+        Route::get('/downpayment/pdf', 'DownpaymentController@indexPDF');
         Route::get('/downpayment/create', 'DownpaymentController@create');
         Route::resource('/downpayment', 'DownpaymentController');
     });
@@ -49,6 +52,7 @@ Route::group(['prefix' => 'purchasing/point/service', 'namespace' => 'Point\Poin
         Route::get('/payment-order/{id}/archived', 'PaymentOrderController@archived');
         Route::get('/payment-order/create-step-1', 'PaymentOrderController@createStep1');
         Route::get('/payment-order/create-step-2/{person_person_id}', 'PaymentOrderController@createStep2');
+        Route::get('/payment-order/pdf', 'PaymentOrderController@indexPDF');
         Route::post('/payment-order/create-step-3', 'PaymentOrderController@createStep3');
         Route::post('/payment-order/{id}/edit-review', 'PaymentOrderController@editReview');
         Route::post('/payment-order/{id}/store', 'PaymentOrderController@storePb');
