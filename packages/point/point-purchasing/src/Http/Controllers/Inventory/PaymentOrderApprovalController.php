@@ -168,7 +168,7 @@ class PaymentOrderApprovalController extends Controller
             $payment_reference_detail->notes_detail = $payment_order_detail->detail_notes;
             $payment_reference_detail->amount = $payment_order_detail->amount;
             $payment_reference_detail->form_reference_id = $payment_order_detail->form_reference_id;
-            $payment_reference_detail->subledger_id = $payment_order->person_id;
+            $payment_reference_detail->subledger_id = $payment_order->supplier_id;
             $payment_reference_detail->subledger_type = get_class(new Person);
             $payment_reference_detail->reference_id = $payment_order_detail->reference_id;
             $payment_reference_detail->reference_type = $payment_order_detail->reference_type;
