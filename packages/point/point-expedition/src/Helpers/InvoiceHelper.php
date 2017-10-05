@@ -65,7 +65,7 @@ class InvoiceHelper
         $invoice->formulir_id = $formulir->id;
         $invoice->expedition_id = $request->input('expedition_id');
         $invoice->type_of_fee = '';
-        $invoice->type_of_tax = $request->input('type_of_tax');
+        $invoice->type_of_tax = $request->input('type_of_tax') ? : 'non';
         $invoice->save();
 
         for ($i = 0; $i < count($request->input('item_id')); $i++) {
@@ -235,7 +235,7 @@ class InvoiceHelper
             if ($reference->type_of_tax == 'include') {
                 $item_purchase_per_row = $item_purchase_per_row * 100 / 110;
             }
-            
+
             \Log::info('purchase per row ' .$item_purchase_per_row);
             $subtotal_reference += $expedition_order_item->quantity * $expedition_order_item->price - $expedition_order_item->quantity * $expedition_order_item->price * $expedition_order_item->discount / 100;
             foreach ($list_expedition_order_tmp as $expedition_order) {

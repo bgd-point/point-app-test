@@ -90,7 +90,7 @@ class PurchaseOrderHelper
         $purchase_order = new PurchaseOrder;
         $purchase_order->formulir_id = $formulir->id;
         $purchase_order->supplier_id = $request->input('supplier_id');
-        $purchase_order->type_of_tax = $request->input('type_of_tax');
+        $purchase_order->type_of_tax = $request->input('type_of_tax') ? : 'non';
         $purchase_order->include_expedition = self::getIncludeExpedition($request);
         $purchase_order->expedition_fee = self::getExpeditionFee($request);
         $purchase_order->is_cash = self::getCashStatus($request);

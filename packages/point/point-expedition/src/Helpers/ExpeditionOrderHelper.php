@@ -72,7 +72,7 @@ class ExpeditionOrderHelper
         $expedition_order->type_of_fee = '';
         $expedition_order->expedition_fee = number_format_db($request->input('subtotal'));
         $expedition_order->delivery_date = date_format_db($request->input('form_date'), $request->input('time'));
-        $expedition_order->type_of_tax = $request->input('type_of_tax');
+        $expedition_order->type_of_tax = $request->input('type_of_tax') ? : 'non';
         $expedition_order->discount = number_format_db($request->input('discount'));
         
         $discount_value = $expedition_order->expedition_fee * $expedition_order->discount / 100;

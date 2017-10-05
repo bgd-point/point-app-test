@@ -67,7 +67,7 @@ class InvoiceHelper
         $invoice->formulir_id = $formulir->id;
         $invoice->supplier_id = $request->input('supplier_id');
         $invoice->due_date = date_format_db($request->input('due_date'), $request->input('time'));
-        $invoice->type_of_tax = $request->input('type_of_tax');
+        $invoice->type_of_tax = $request->input('type_of_tax') ? : 'non';
         $invoice->expedition_fee = $request->input('expedition_fee') ? number_format_db($request->input('expedition_fee')) : 0;
         $invoice->discount = $request->input('discount');
         $invoice->save();
