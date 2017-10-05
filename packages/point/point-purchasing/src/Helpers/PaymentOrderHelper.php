@@ -15,6 +15,7 @@ use Point\PointFinance\Models\PaymentReferenceDetail;
 use Point\PointPurchasing\Models\Inventory\PaymentOrder;
 use Point\PointPurchasing\Models\Inventory\PaymentOrderDetail;
 use Point\PointPurchasing\Models\Inventory\PaymentOrderOther;
+use Point\PointPurchasing\Models\Inventory\PurchaseOrder;
 
 class PaymentOrderHelper
 {
@@ -76,6 +77,11 @@ class PaymentOrderHelper
                 $reference->formulir_id = $reference->cutoffPayable->formulir_id;
             }
 
+            $reference_invoice = '';
+            if (get_class($reference) == get_class(new PurchaseOrder())) {
+                $reference_invoice = $reference->getPurchaseInvoice();
+            }
+
             if ($references_amount[$i] > $references_amount_original[$i]) {
                 throw new PointException("AMOUNT FROM ".$reference->formulir->form_number." CAN NOT BE MORE THAN ". number_format_price($references_amount_original[$i]));
             }
@@ -109,11 +115,19 @@ class PaymentOrderHelper
             );
 
             formulir_lock($reference->formulir_id, $payment_order->formulir_id);
+            if ($reference_invoice) {
+                formulir_lock($reference_invoice->formulir_id, $payment_order->formulir_id);
+            }
 
             if ($close_status) {
                 if (get_class($reference) != get_class(new CutOffPayableDetail())) {
                     $reference->formulir->form_status = 1;
                     $reference->formulir->save();
+                }
+
+                if ($reference_invoice) {
+                    $reference_invoice->formulir->form_status = 1;
+                    $reference_invoice->formulir->save();
                 }
             }
         }

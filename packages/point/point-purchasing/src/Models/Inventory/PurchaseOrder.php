@@ -11,6 +11,7 @@ use Point\Framework\Traits\FormulirTrait;
 use Point\PointExpedition\Models\ExpeditionOrder;
 use Point\PointPurchasing\Models\Inventory\Downpayment;
 use Point\PointPurchasing\Models\Inventory\GoodsReceived;
+use Point\PointPurchasing\Models\Inventory\Invoice;
 use Point\PointPurchasing\Models\Inventory\PurchaseRequisition;
 use Point\PointPurchasing\Vesa\Inventory\PurchaseOrderVesa;
 
@@ -271,6 +272,26 @@ class PurchaseOrder extends Model
         }
 
         return $array_expedition_order_is_locked_by_purchase;
+    }
+
+    /**
+     * For get invoice data when create payment order in purchasing and this function using in payment order purchasing.
+     */
+
+    public function getPurchaseInvoice()
+    {
+        $formulir_lock = FormulirLock::join('formulir', 'formulir.id', '=', 'formulir_lock.locking_id')
+            ->where('formulir_lock.locked', 1)
+            ->where('formulir.form_status', '!=', -1)
+            ->where('formulir.formulirable_type', '=', get_class(new Invoice))
+            ->select('formulir.*')
+            ->first();
+        if (!$formulir_lock) {
+            return null;
+        }
+
+        return $formulir_lock->formulirable_type::find($formulir_lock->formulirable_id);
+
     }
 
     public static function bladeEmail()

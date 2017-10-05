@@ -100,18 +100,18 @@
                                                 <tbody>
                                                 @foreach($list_invoice as $invoice)
                                                     <?php
-                                                    $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice),
-                                                            $invoice->id, $invoice->total);
+                                                    $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice), $invoice->id, $invoice->total);
+                                                    $purchase_order = $invoice->getPurchaseOrderReference();
                                                     ?>
                                                     <tr>
                                                         <td class="text-center">
-                                                            <input type="hidden" name="invoice_reference_id[]" value="{{$invoice->id}}">
-                                                            <input type="hidden" name="invoice_reference_type[]" value="{{get_class($invoice)}}">
-                                                            <input type="hidden" name="invoice_rid[]" value="{{$invoice->formulir_id}}">
+                                                            <input type="hidden" name="invoice_reference_id[]" value="{{$invoice->is_reset_journal ? $invoice->id : $purchase_order->id}}">
+                                                            <input type="hidden" name="invoice_reference_type[]" value="{{$invoice->is_reset_journal ? get_class($invoice) : get_class($purchase_order)}}">
+                                                            <input type="hidden" name="invoice_rid[]" value="{{$invoice->is_reset_journal ? $invoice->formulir_id : $purchase_order->formulir_id}}">
                                                             <input type="checkbox"
                                                                    id="id-invoice-{{$invoice->formulir_id}}"
                                                                    class="row-id" name="invoice_id[]"
-                                                                   value="{{$invoice->formulir_id}}"
+                                                                   value="{{$invoice->is_reset_journal ? $invoice->formulir_id : $purchase_order->formulir_id}}"
                                                                    onclick="updateInvoice()">
                                                         </td>
                                                         <td>{{ date_Format_view($invoice->formulir->form_date) }}</td>

@@ -69,30 +69,31 @@
                                         <tbody>
                                         <?php $total_payment = 0;?>
                                         <!-- INVOICE -->
-                                        @foreach($list_invoice as $invoice)
+                                        @foreach($list_formulir as $formulir)
                                             <?php
-                                            $i = array_search($invoice->formulir_id, $invoice_rid);
+                                            $i = array_search($formulir->id, $invoice_rid);
                                             $total_payment += $amount_invoice[$i];
+                                            $formulir_ref = $formulir->formulirable_type::find($formulir->formulirable_id);
                                             ?>
                                             <tr>
                                                 <td>
-                                                    {{ date_Format_view($invoice->formulir->form_date) }}
-                                                    <input type="hidden" name="invoice_id[]" value="{{$invoice->id}}"/>
+                                                    {{ date_format_view($formulir_ref->formulir->form_date) }}
+                                                    <input type="hidden" name="invoice_id[]" value="{{$formulir_ref->id}}"/>
                                                     <input type="hidden" name="invoice_notes[]"
-                                                           value="{{$invoice->formulir->notes}}"/>
+                                                           value="{{$formulir_ref->formulir->notes}}"/>
                                                     <input type="hidden" name="invoice_amount[]"
                                                            value="{{$amount_invoice[$i]}}"/>
                                                     <input type="hidden" name="invoice_amount_original[]"
-                                                           value="{{$invoice->total}}"/>
+                                                           value="{{$formulir_ref->total}}"/>
                                                     <input type="hidden" name="invoice_available[]"
                                                            value="{{$available_invoice[$i]}}"/>
-                                                    <input type="hidden" name="invoice_reference_id[]" value="{{$invoice->id}}">
-                                                    <input type="hidden" name="invoice_reference_type[]" value="{{get_class($invoice)}}">
+                                                    <input type="hidden" name="invoice_reference_id[]" value="{{$formulir_ref->id}}">
+                                                    <input type="hidden" name="invoice_reference_type[]" value="{{get_class($formulir_ref)}}">
                                                 </td>
                                                 <td>
-                                                    <a href="{{ url('purchasing/point/invoice/'.$invoice->id) }}">{{ $invoice->formulir->form_number}}</a>
+                                                    {{ $formulir_ref->formulir->form_number}}
                                                 </td>
-                                                <td>{{ $invoice->formulir->notes }}</td>
+                                                <td>{{ $formulir_ref->formulir->notes }}</td>
                                                 <td class="text-right">{{ number_format_quantity($amount_invoice[$i]) }}</td>
                                             </tr>
                                         @endforeach

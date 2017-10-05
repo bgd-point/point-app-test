@@ -4,11 +4,15 @@ namespace Point\PointPurchasing\Models\Inventory;
 
 use Illuminate\Database\Eloquent\Model;
 use Point\Core\Traits\ByTrait;
+use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\FormulirLock;
 use Point\Framework\Traits\FormulirTrait;
+use Point\PointExpedition\Models\ExpeditionOrder;
+use Point\PointPurchasing\Models\Inventory\GoodsReceived;
 use Point\PointPurchasing\Models\Inventory\Invoice;
 use Point\PointPurchasing\Models\Inventory\PaymentOrder;
+use Point\PointPurchasing\Models\Inventory\PurchaseOrder;
 use Point\PointPurchasing\Vesa\Inventory\InvoiceVesa;
 
 class Invoice extends Model
@@ -124,5 +128,34 @@ class Invoice extends Model
             ->select('formulir.id')
             ->get()
             ->toArray();
+    }
+
+    public function getPurchaseOrderReference()
+    {
+        $reference = FormulirHelper::getLocked($this->formulir_id);
+        $goods_received = '';
+        $expedition_order = '';
+        $purchase_order = '';
+        if ($reference->formulirable_type == get_class(new GoodsReceived)) {
+            $goods_received = $reference->formulirable_type::find($reference->formulirable_id);
+        }
+
+        if ($reference->formulirable_type == get_class(new ExpeditionOrder)) {
+            $expedition_order = $reference->formulirable_type::find($reference->formulirable_id);
+        }
+
+        if ($expedition_order) {
+            $purchase_order = PurchaseOrder::where('formulir_id', $expedition_order->form_reference_id)->first();
+        }
+
+        if ($goods_received) {
+            $purchase_order = PurchaseOrder::find($goods_received->point_purchasing_order_id);
+        }
+
+        if (!$purchase_order) {
+            return null;
+        }
+
+        return $purchase_order;
     }
 }

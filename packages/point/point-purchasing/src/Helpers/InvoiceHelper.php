@@ -166,9 +166,10 @@ class InvoiceHelper
             if (($request->input('original_tax_type') != $invoice->type_of_tax) || ($request->input('original_discount') != $invoice->discount)) {
                 $goods_received = $request->input('reference_type')::find($request->input('reference_id'));
                 $data = self::removeJournalExpeditionOrder($goods_received);
-
                 self::fixSeederExpedition($invoice, $goods_received, $data['list_expedition_order'], $data['purchase_order']);
                 self::rejournalExpeditionOrder($invoice, $goods_received, $data['list_expedition_order'], $data['purchase_order']);
+                $invoice->is_reset_journal = true;
+                $invoice->save();
             }
         }
 
