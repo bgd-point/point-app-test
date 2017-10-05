@@ -2,15 +2,11 @@
 
 namespace Point\PointAccounting\Helpers;
 
-use Point\PointAccounting\Models\AssetsRefer;
+use Point\Framework\Helpers\JournalHelper;
+use Point\Framework\Models\Journal;
 use Point\PointAccounting\Models\MemoJournal;
 use Point\PointAccounting\Models\MemoJournalDetail;
 use Point\PointFinance\Models\PaymentOrder\PaymentOrderDetail;
-use Point\Framework\Helpers\FormulirHelper;
-use Point\Framework\Http\Controllers\Accounting\MemoJournalController;
-use Point\Framework\Models\Formulir;
-use Point\Framework\Models\Journal;
-use Point\Framework\Models\Master\CoaCategory;
 
 class MemoJournalHelper 
 {
