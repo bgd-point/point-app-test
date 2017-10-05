@@ -44,22 +44,16 @@ class Invoice extends Model
 
     public function scopeAvailableToPaymentCollection($q)
     {
-        $invoice_locked = Invoice::getLockedInvoice();
-
         $q->open()
             ->approvalApproved()
             ->notArchived()
-            ->whereNotIn('point_sales_invoice.formulir_id', $invoice_locked)
             ->orderByStandard();
     }
 
     public function scopeAvailableToCreatePaymentCollection($q, $person_id)
     {
-        $invoice_locked = Invoice::getLockedInvoice();
-        
         $q->open()
             ->approvalApproved()
-            ->whereNotIn('point_sales_invoice.formulir_id', $invoice_locked)
             ->where('person.id', '=', $person_id)
             ->orderByStandard();
     }
@@ -92,22 +86,5 @@ class Invoice extends Model
         } else {
             return '/sales/point/indirect/invoice/'.$class->id.'/archived';
         }
-    }
-
-    /**
-     * @param $locking_id
-     *
-     * @return array
-     */
-    public static function getLockedInvoice() {
-        $locking_id = PaymentCollection::joinFormulir()->whereIn('form_status', [1, 0])->select('formulir_id')->get()->toArray();
-        
-        return FormulirLock::join('formulir', 'formulir.id', '=','formulir_lock.locked_id')
-            ->whereIn('locking_id', $locking_id)
-            ->where('locked', true)
-            ->where('formulir.formulirable_type', '=', get_class(new Invoice()))
-            ->select('formulir.id')
-            ->get()
-            ->toArray();
     }
 }
