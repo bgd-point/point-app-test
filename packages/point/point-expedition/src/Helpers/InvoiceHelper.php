@@ -111,6 +111,8 @@ class InvoiceHelper
          */
         if (($request->input('original_subtotal') != $invoice->subtotal) || ($request->input('original_discount') != $invoice->discount) || ($request->input('original_type_of_tax') != $invoice->type_of_tax)) {
             self::rejournal($invoice, $reference);
+            $invoice->is_reset_journal = 1;
+            $invoice->save();
         }
 
         $formulir->approval_status = 1;
@@ -187,7 +189,7 @@ class InvoiceHelper
             $journal->form_reference_id;
             $journal->subledger_id = $expedition_order->expedition_id;
             $journal->subledger_type = get_class(new Person);
-            $journal->save();
+            $journal->save(['reference_type' => get_class($expedition_order), 'reference_id' => $expedition_order->id]);
             \Log::info('utang exp '. $position.' '. $total);
 
             // Journal Income Tax Expedition
@@ -319,7 +321,7 @@ class InvoiceHelper
         $journal->form_reference_id;
         $journal->subledger_id = $reference->person_id;
         $journal->subledger_type = get_class(new Person);
-        $journal->save();
+        $journal->save(['reference_type' => get_class($reference), 'reference_id' => $reference->id]);
 
         \Log::info('utang purchasing '. $position. ' ' .$journal->$position);
         if ($reference->tax > 0) {

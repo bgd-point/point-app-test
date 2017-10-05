@@ -445,7 +445,7 @@ class InvoiceHelper
             $journal->form_reference_id;
             $journal->subledger_id = $expedition_order->expedition_id;
             $journal->subledger_type = get_class(new Person);
-            $journal->save();
+            $journal->save(['reference_type' => get_class($expedition_order), 'reference_id' => $expedition_order->id]);
             \Log::info('utang exp '. $position.' '. $total);
 
             // Journal Income Tax Expedition
@@ -558,7 +558,7 @@ class InvoiceHelper
         $journal->form_reference_id;
         $journal->subledger_id = $invoice->supplier_id;
         $journal->subledger_type = get_class(new Person);
-        $journal->save();
+        $journal->save(['reference_type' => get_class($invoice), 'reference_id' => $invoice->id]);
         \Log::info('utang purchasing '. $position. ' ' .$journal->$position);
 
         if ($invoice->tax > 0) {
@@ -576,7 +576,6 @@ class InvoiceHelper
             $journal->save();
 
             \Log::info('tax purchase '. $position.' ' .$journal->$position);
-
         }
 
         JournalHelper::checkJournalBalance($group->formulir_id);

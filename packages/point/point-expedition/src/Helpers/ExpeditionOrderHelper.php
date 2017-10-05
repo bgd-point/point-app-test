@@ -242,7 +242,7 @@ class ExpeditionOrderHelper
             $journal->form_reference_id;
             $journal->subledger_id = $expedition_order->expedition_id;
             $journal->subledger_type = get_class(new Person);
-            $journal->save();
+            $journal->save(['reference_type' => get_class($expedition_order), 'reference_id' => $expedition_order->id]);
             \Log::info('utang exp '. $position.' '. $total);
 
             // Journal Income Tax Expedition
@@ -364,7 +364,7 @@ class ExpeditionOrderHelper
         $journal->form_reference_id;
         $journal->subledger_id = $reference->person_id;
         $journal->subledger_type = get_class(new Person);
-        $journal->save();
+        $journal->save(['reference_type' => get_class($reference), 'reference_id' => $reference->id]);
         \Log::info('utang purchasing '. $position. ' ' .$journal->$position);
 
         if ($reference->tax > 0) {

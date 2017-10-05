@@ -34,6 +34,12 @@ class AddColumnIsFinishExpeditionOrder extends Migration
             });
         }
 
+        if (!Schema::hasColumn('point_expedition_invoice', 'is_reset_journal')) {
+            Schema::table('point_expedition_invoice', function ($table) {
+                $table->boolean('is_reset_journal')->nullable()->default(false); // reset journal for tracking if invoice rejournal from expedition order, 1 = yes, 0 = no
+            });
+        }
+
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
@@ -53,6 +59,12 @@ class AddColumnIsFinishExpeditionOrder extends Migration
         if (Schema::hasColumn('point_expedition_order_item', 'discount')) {
             Schema::table('point_expedition_order_item', function ($table) {
                 $table->dropColumn(['discount']);
+            });
+        }
+
+        if (Schema::hasColumn('point_expedition_invoice', 'is_reset_journal')) {
+            Schema::table('point_expedition_invoice', function ($table) {
+                $table->dropColumn(['is_reset_journal']);
             });
         }
 

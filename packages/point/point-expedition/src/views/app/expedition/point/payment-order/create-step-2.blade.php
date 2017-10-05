@@ -100,18 +100,17 @@
                                                     <?php $i = 0;?>
                                                     @foreach($list_invoice as $invoice)
                                                     <?php
-                                                    $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice),
-                                                            $invoice->id, $invoice->total);
+                                                    $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice), $invoice->id, $invoice->total);
                                                     ?>
                                                         <tr>
                                                             <td class="text-center" rowspan="2">
-                                                                <input type="hidden" name="invoice_reference_id[]" value="{{$invoice->id}}">
-                                                                <input type="hidden" name="invoice_reference_type[]" value="{{get_class($invoice)}}">
+                                                                <input type="hidden" name="invoice_reference_id[]" value="{{$invoice->is_reset_journal ? $invoice->id : $invoice->getExpeditionOrder()->id }}">
+                                                                <input type="hidden" name="invoice_reference_type[]" value="{{$invoice->is_reset_journal ? get_class($invoice) : get_class($invoice->getExpeditionOrder())}}">
                                                                 <input type="hidden" name="invoice_rid[]"
-                                                                       value="{{$invoice->formulir_id}}">
+                                                                       value="{{$invoice->is_reset_journal ? $invoice->formulir_id : $invoice->getExpeditionOrder()->formulir_id}}">
                                                                 <input type="checkbox" id="id-invoice-{{$i}}"
                                                                        class="row-id" name="invoice_id[]"
-                                                                       value="{{$invoice->formulir_id}}"
+                                                                       value="{{$invoice->is_reset_journal ? $invoice->formulir_id : $invoice->getExpeditionOrder()->formulir_id}}"
                                                                        onclick="calculateInvoice()">
                                                             </td>
                                                             <td>{{ date_Format_view($invoice->formulir->form_date) }}</td>

@@ -178,8 +178,8 @@ class PaymentOrderApprovalController extends Controller
         $payment_reference->payment_flow = 'out';
         $payment_reference->payment_type = $payment_order->payment_type;
         $payment_reference->save();
-
         $total = 0;
+
         foreach ($payment_order->details as $payment_order_detail) {
             $payment_reference_detail = new PaymentReferenceDetail;
             $payment_reference_detail->point_finance_payment_reference_id = $payment_reference->id;
@@ -188,12 +188,11 @@ class PaymentOrderApprovalController extends Controller
             $payment_reference_detail->notes_detail = $payment_order_detail->detail_notes;
             $payment_reference_detail->amount = $payment_order_detail->amount;
             $payment_reference_detail->form_reference_id = $payment_order_detail->form_reference_id;
-            $payment_reference_detail->subledger_id = $payment_order->person_id;
+            $payment_reference_detail->subledger_id = $payment_order->expedition_id;
             $payment_reference_detail->subledger_type = get_class(new Person);
             $payment_reference_detail->reference_id = $payment_order_detail->reference_id;
             $payment_reference_detail->reference_type = $payment_order_detail->reference_type;
             $payment_reference_detail->save();
-
             $total += $payment_order_detail->amount;
         }
 

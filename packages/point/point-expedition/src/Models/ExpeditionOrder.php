@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Point\Core\Traits\ByTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Models\FormulirLock;
 use Point\Framework\Traits\FormulirTrait;
 use Point\PointExpedition\Models\ExpeditionOrderReference;
+use Point\PointExpedition\Models\Invoice;
 use Point\PointExpedition\Vesa\ExpeditionOrderVesa;
 
 class ExpeditionOrder extends Model
@@ -143,5 +145,21 @@ class ExpeditionOrder extends Model
     public function reference()
     {
         return FormulirHelper::getLockedModel($this->formulir_id);
+    }
+
+    public function getExpeditionInvoice()
+    {
+        $formulir_lock = FormulirLock::join('formulir', 'formulir.id', '=', 'formulir_lock.locking_id')
+            ->where('formulir_lock.locked', 1)
+            ->where('formulir.form_status', '!=', -1)
+            ->where('formulir.formulirable_type', '=', get_class(new Invoice))
+            ->select('formulir.*')
+            ->first();
+        if (!$formulir_lock) {
+            return null;
+        }
+
+        return $formulir_lock->formulirable_type::find($formulir_lock->formulirable_id);
+
     }
 }

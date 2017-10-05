@@ -7,6 +7,7 @@ use Point\Core\Exceptions\PointException;
 use Point\Framework\Helpers\ReferHelper;
 use Point\Framework\Models\Master\Person;
 use Point\PointAccounting\Models\CutOffPayableDetail;
+use Point\PointExpedition\Models\ExpeditionOrder;
 use Point\PointExpedition\Models\PaymentOrder;
 use Point\PointExpedition\Models\PaymentOrderDetail;
 use Point\PointExpedition\Models\PaymentOrderOther;
@@ -66,13 +67,16 @@ class PaymentOrderHelper
         $payment_order->expedition_id = $request->input('expedition_id');
         $payment_order->payment_type = $request->input('payment_type');
         $payment_order->save();
-
         $total = 0;
-        
         for ($i = 0; $i < count($references); $i++) {
             $reference = $references[$i];
             if (get_class($reference) == get_class(new CutOffPayableDetail())) {
                 $reference->formulir_id = $reference->cutoffPayable->formulir_id;
+            }
+            
+            $reference_invoice = '';
+            if (get_class($reference) == get_class(new ExpeditionOrder())) {
+                $reference_invoice = $reference->getExpeditionInvoice();
             }
             
             if ($references_amount[$i] > $references_amount_original[$i]) {
@@ -108,11 +112,18 @@ class PaymentOrderHelper
             );
 
             formulir_lock($reference->formulir_id, $payment_order->formulir_id);
+            if ($reference_invoice) {
+                formulir_lock($reference_invoice->formulir_id, $payment_order->formulir_id);
+            }
 
             if ($close_status) {
                 if (get_class($reference) != get_class(new CutOffPayableDetail())) {
                     $reference->formulir->form_status = 1;
                     $reference->formulir->save();
+                }
+                if ($reference_invoice) {
+                    $reference_invoice->formulir->form_status = 1;
+                    $reference_invoice->formulir->save();
                 }
             }
         }

@@ -4,6 +4,7 @@ namespace Point\PointExpedition\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Point\Core\Traits\ByTrait;
+use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Traits\FormulirTrait;
 use Point\PointExpedition\Vesa\InvoiceVesa;
 
@@ -120,6 +121,12 @@ class Invoice extends Model
             echo "<a href='".$invoice_by_expedition->getLinkInvoice()."'> ".$invoice_by_expedition->formulir->form_number."</a>";
             echo "<br/>";
         }
+    }
+
+    public function getExpeditionOrder()
+    {
+        return FormulirHelper::getLockedModel($this->formulir_id);
+
     }
 
     public static function showUrl($id)

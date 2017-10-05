@@ -121,7 +121,8 @@ class PaymentOrderController extends Controller
         }
 
         $view = view('point-expedition::app.expedition.point.payment-order.create-step-3');
-        $view->list_invoice = Invoice::whereIn('formulir_id', \Input::get('invoice_id'))->get();
+        // $view->list_invoice = Invoice::whereIn('formulir_id', \Input::get('invoice_id'))->get();
+        $view->list_formulir = Formulir::whereIn('id', \Input::get('invoice_id'))->get();
         $view->invoice_rid = \Input::get('invoice_rid');
         $view->invoice_id = \Input::get('invoice_id');
         $view->invoice_reference_id = \Input::get('invoice_reference_id');
@@ -185,8 +186,8 @@ class PaymentOrderController extends Controller
         $formulir_id = [];
         $invoice_id = $request->input('invoice_id');
         for ($i = 0; $i < count($invoice_id); $i++) {
-            $reference_type = get_class(new Invoice);
-            array_push($formulir_id, Invoice::find($invoice_id[$i])->formulir_id);
+            $reference_type = $request->input('invoice_reference_type')[$i];
+            array_push($formulir_id, $reference_type::find($invoice_id[$i])->formulir_id);
             array_push($references_id, $invoice_id[$i]);
             array_push($references_type, $reference_type);
             array_push($references_detail_id, $request->input('invoice_reference_id')[$i]);
@@ -229,10 +230,7 @@ class PaymentOrderController extends Controller
         }
 
         $request['form_date'] = date('Y-m-d', strtotime($request->input('payment_date')));
-
-        access_is_allowed('create.point.expedition.payment.order',
-            date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
-
+        access_is_allowed('create.point.expedition.payment.order', date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
         $formulir = FormulirHelper::create($request->input(), 'point-expedition-payment-order');
         $payment_order = PaymentOrderHelper::create($request, $formulir, $references, $references_type, $references_id,
             $references_account, $references_amount, $references_amount_original, $references_notes, $references_detail_id, $references_detail_type);
