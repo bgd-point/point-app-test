@@ -177,6 +177,10 @@ class GoodsReceivedHelper
     public static function transferItem($request)
     {
         $expedition_order_group_detail = ExpeditionOrderGroupDetail::where('point_expedition_order_id', $request->input('reference_expedition_order_id'))->first();
+        if (!$expedition_order_group_detail) {
+            throw new PointException("SHIPPING YET NOT IN JOURNAL, PLEASE FIRST JOURNAL EXPEDITION");
+            
+        }
         $form_journal_inventory = $expedition_order_group_detail->group->formulir;
         $inventories = Inventory::where('formulir_id', $form_journal_inventory->id)->get();
         foreach ($inventories as $inventory) {

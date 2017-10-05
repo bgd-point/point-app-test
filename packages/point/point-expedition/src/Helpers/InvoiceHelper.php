@@ -109,7 +109,7 @@ class InvoiceHelper
          * If discount or tax was modified, journal again
          * 
          */
-        if (($request->input('original_subtotal') != $invoice->expedition_fee) || ($request->input('original_discount') != $invoice->discount) || ($request->input('original_type_of_tax') != $invoice->type_of_tax)) {
+        if (($request->input('original_subtotal') != $invoice->subtotal) || ($request->input('original_discount') != $invoice->discount) || ($request->input('original_type_of_tax') != $invoice->type_of_tax)) {
             self::rejournal($invoice, $reference);
         }
 
