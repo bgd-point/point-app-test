@@ -32,7 +32,7 @@ trait ChequeVesa
             array_push($array, [
                 'url' => url('finance/point/cheque/vesa-reject'),
                 'deadline' => $list_cheque_detail->orderBy('id', 'DESC')->first()->due_date,
-                'message' => 'disbursement cheque from cheque pending list',
+                'message' => 'clearing cheque from cheque pending list',
                 'permission_slug' => 'create.point.finance.cashier.cheque',
                 'due_date' => true
             ]);
@@ -43,9 +43,9 @@ trait ChequeVesa
         // Push all
         foreach ($list_cheque_detail->get() as $cheque_detail) {
             array_push($array, [
-                'url' => url('finance/point/cheque/disbursement?id=' . $cheque_detail->id),
+                'url' => url('finance/point/cheque/clearing?id=' . $cheque_detail->id),
                 'deadline' => $cheque_detail->due_date,
-                'message' => 'disbursement cheque from number ' . $cheque_detail->number,
+                'message' => 'clearing cheque from number ' . $cheque_detail->number,
                 'permission_slug' => 'create.point.finance.cashier.cheque',
                 'due_date' => true
             ]);
@@ -62,7 +62,7 @@ trait ChequeVesa
             array_push($array, [
                 'url' => url('finance/point/cheque/vesa-reject'),
                 'deadline' => $list_cheque_detail->orderBy('id', 'DESC')->first()->due_date,
-                'message' => 'Cheque have been rejected, disbursement cheque or create new from rejected list',
+                'message' => 'Cheque have been rejected, clearing cheque or create new from rejected list',
                 'permission_slug' => 'create.point.finance.cashier.cheque',
                 'due_date' => true
             ]);
@@ -75,7 +75,7 @@ trait ChequeVesa
             array_push($array, [
                 'url' => url('finance/point/cheque/reject/action/' . $cheque_detail->id),
                 'deadline' => $cheque_detail->due_date,
-                'message' => 'Cheque have been rejected, disbursement cheque or create new payment from cheque ' . $cheque_detail->number,
+                'message' => 'Cheque have been rejected, clearing cheque or create new payment from cheque ' . $cheque_detail->number,
                 'permission_slug' => 'create.point.finance.cashier.cheque',
                 'due_date' => true
             ]);

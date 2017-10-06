@@ -58,7 +58,7 @@
                 <div class="form-group">
                     <label class="col-md-2 control-label"></label>
                     <div class="col-md-10">
-                        <a href="{{url('finance/point/cheque/disbursement?id='.$cheque_detail->id)}}" class="btn btn-effect-ripple btn-primary">Disbursement</a>
+                        <a href="{{url('finance/point/cheque/clearing?id='.$cheque_detail->id)}}" class="btn btn-effect-ripple btn-primary">Disbursement</a>
                         <a data-toggle="modal" data-target="#modal-cheque-action" class="btn btn-effect-ripple btn-info">Create New</a>
                     </div>
                 </div>

@@ -17,7 +17,7 @@ class FixChequeCoaSeeder extends Seeder
         $coa_category = CoaCategory::where('name', '=',  'Account Receivable')->first();
         Coa::insert($coa_category->id, 'Cheque Receivable', true, 'Point\Framework\Models\Master\Person');
 
-        $coa_category = CoaCategory::where('name', '=',  'Account Payable')->first();
+        $coa_category = CoaCategory::where('name', '=',  'Current Liability')->first();
         Coa::insert($coa_category->id, 'Cheque Payable', true, 'Point\Framework\Models\Master\Person');
     }
 }

@@ -12,13 +12,13 @@
         <div class="panel panel-default">
 
             <div class="panel-body">
-                <form action="{{url('finance/point/cheque/disbursement')}}" method="post" class="form-horizontal form-bordered">
+                <form action="{{url('finance/point/cheque/clearing')}}" method="post" class="form-horizontal form-bordered">
                     {!! csrf_field() !!}
                     <input type="hidden" name="id" value="{{\Input::get('id')}}">
                     <div class="form-group">
                         <label class="col-md-3 control-label">Disbursement Date *</label>
                         <div class="col-md-3">
-                            <input type="text" name="disbursement_at" class="form-control date input-datepicker"
+                            <input type="text" name="clearing_at" class="form-control date input-datepicker"
                                    data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}"
                                    value="{{date(date_format_get(), strtotime(\Carbon::now()))}}">
                         </div>

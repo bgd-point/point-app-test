@@ -32,6 +32,16 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-md-3 control-label">Bank Account</label>
+                        <div class="col-md-6">
+                            <select class="selectize" name="coa_id" placeholder="choose one ...">
+                                @foreach($list_coa as $coa)
+                                <option value="{{$coa->id}}">{{$coa->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-md-3 control-label">Reason reject *</label>
                         <div class="col-md-6">
                             <input type="text" name="reject_notes" class="form-control" value="" required autofocus>

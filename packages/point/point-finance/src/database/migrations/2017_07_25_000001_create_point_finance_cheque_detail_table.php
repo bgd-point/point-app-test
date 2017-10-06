@@ -22,10 +22,10 @@ class CreatePointFinanceChequeDetailTable extends Migration
                 ->onDelete('cascade');
             $table->timestamp('form_date')->useCurrent();
             $table->timestamp('due_date')->useCurrent();
-            $table->timestamp('disbursement_at')->nullable();
+            $table->timestamp('clearing_at')->nullable();
             $table->timestamp('rejected_at')->nullable();
-            $table->integer('disbursement_coa_id')->unsigned()->nullable()->index('disbursement_coa_id_index');
-            $table->foreign('disbursement_coa_id', 'disbursement_coa_id_foreign')
+            $table->integer('clearing_coa_id')->unsigned()->nullable()->index('clearing_coa_id_index');
+            $table->foreign('clearing_coa_id', 'clearing_coa_id_foreign')
                 ->references('id')->on('coa')
                 ->onUpdate('restrict')
                 ->onDelete('restrict');
@@ -41,7 +41,7 @@ class CreatePointFinanceChequeDetailTable extends Migration
             $table->integer('rejected_counter')->unsigned();
             $table->decimal('amount', 16, 4);
             $table->text('notes');
-            $table->boolean('status')->default(false); // 1 = disbursement, -1 = rejected, 0 = pending, 2 = close permanent
+            $table->boolean('status')->default(false); // 1 = clearing, -1 = rejected, 0 = pending, 2 = close permanent
         });
     }
 

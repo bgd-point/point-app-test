@@ -95,9 +95,9 @@ class ChequeController extends Controller
         return $view;
     }
 
-    public function disbursement()
+    public function clearing()
     {
-        $view = view('point-finance::app.finance.point.cheque.disbursement');
+        $view = view('point-finance::app.finance.point.cheque.clearing');
         $id = explode(',', \Input::get('id'));
 
         $view->list_cheque_detail = ChequeDetail::whereIn('id', $id)->get();
@@ -115,6 +115,7 @@ class ChequeController extends Controller
     {
         $view = view('point-finance::app.finance.point.cheque.reject');
         $id = explode(',', \Input::get('id'));
+        $view->list_coa = Coa::where('coa_category_id', 2)->active()->get();
         $view->list_cheque_detail = ChequeDetail::whereIn('id', $id)->get();
 
         return $view;
@@ -132,7 +133,6 @@ class ChequeController extends Controller
     {
         $view = view('point-finance::app.finance.point.cheque.create-new-cheque');
         $view->cheque_detail = ChequeDetail::find($id);
-        $view->list_bank = MasterBank::all();
         if ($view->cheque_detail->status == 2) {
             gritter_error('Failed! You can not make payment with this transaction because it is already in process, please check your vesa.');
             return redirect('finance/point/cheque/list');
@@ -234,21 +234,21 @@ class ChequeController extends Controller
         return redirect('finance/point/cheque/list');
     }
 
-    public function disbursementProcess(Request $request)
+    public function clearingProcess(Request $request)
     {
         $id_cheque = explode(',', \Input::get('id'));
 
         \DB::beginTransaction();
         foreach ($id_cheque as $id) {
             $cheque_detail = ChequeDetail::find($id);
-            $cheque_detail->disbursement_at = date_format_db(\Input::get('disbursement_at'), \Input::get('time'));
+            $cheque_detail->clearing_at = date_format_db(\Input::get('clearing_at'), \Input::get('time'));
             $cheque_detail->rejected_at = null;
             $cheque_detail->notes = \Input::get('cheque_notes');
             $cheque_detail->status = 1;
             $cheque_detail->save();
 
             $cheque = $cheque_detail->cheque;
-            $form_number = FormulirHelper::number('point-finance-cheque-disbursement', $cheque->formulir->form_date);
+            $form_number = FormulirHelper::number('point-finance-cheque-clearing', $cheque->formulir->form_date);
             $formulir = new Formulir;
             $formulir->form_date = $cheque->formulir->form_date;
             $formulir->form_number = $form_number['form_number'];
@@ -275,7 +275,7 @@ class ChequeController extends Controller
         \DB::beginTransaction();
         foreach ($id_cheque as $id) {
             $cheque_detail = ChequeDetail::find($id);
-            $cheque_detail->disbursement_at = null;
+            $cheque_detail->clearing_at = null;
             $cheque_detail->rejected_at = date_format_db(\Input::get('rejected_at'), \Input::get('time'));
             $cheque_detail->notes = \Input::get('reject_notes');
             $cheque_detail->rejected_counter = $cheque_detail->rejected_counter + 1;
@@ -300,16 +300,21 @@ class ChequeController extends Controller
             $formulir->save();
 
             ChequeHelper::open($cheque->formulir_id);
-            if ($cheque_detail->disbursement_coa_id) {
+            if ($cheque_detail->clearing_coa_id) {
+                self::rejectJournal($cheque_detail, $request, $formulir);
+            } else {
+                self::journal($cheque_detail, $request, $formulir);
                 self::rejectJournal($cheque_detail, $request, $formulir);
             }
 
             $cheque_detail->rejected_formulir_id = $formulir->id;
-            $cheque_detail->disbursement_coa_id = null;
+            $cheque_detail->clearing_coa_id = null;
             $cheque_detail->status = -1;
             $cheque_detail->save();
 
         }
+
+        JournalHelper::checkJournalBalance($cheque->formulir_id);
         \DB::commit();
 
         return redirect('finance/point/cheque/list');
@@ -352,7 +357,7 @@ class ChequeController extends Controller
         $journal->subledger_type;
         $journal->save();
 
-        $cheque_detail->disbursement_coa_id = $journal->coa_id;
+        $cheque_detail->clearing_coa_id = $journal->coa_id;
         $cheque_detail->save();
     }
 
@@ -379,7 +384,7 @@ class ChequeController extends Controller
         // BANK
         $journal = new Journal();
         $journal->form_date = $cheque->formulir->form_date;
-        $journal->coa_id = $cheque_detail->disbursement_coa_id;
+        $journal->coa_id = $cheque_detail->clearing_coa_id;
         $journal->description = $cheque_detail->notes ?: '';
         $journal->$position = $cheque_detail->amount * -1;
         $journal->form_journal_id = $formulir->id;

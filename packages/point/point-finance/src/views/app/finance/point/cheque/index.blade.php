@@ -59,7 +59,7 @@
                             <th style="cursor:pointer" onclick="selectData('person.name', @if($order_by == 'person.name' && $order_type == 'asc') 'desc' @elseif($order_by == 'person.name' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Person <span class="pull-right"><i class="fa @if($order_by == 'person.name' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'person.name' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
                             <th>Notes</th>
                             <th class="text-right">Received</th>
-                            <th class="text-right">Disbursed</th>
+                            <th class="text-right">Clearing</th>
                         </tr>
                     </thead>
                     <tbody>

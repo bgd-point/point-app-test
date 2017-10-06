@@ -54,7 +54,7 @@
                     <label class="col-md-3 control-label">Payment To</label>
                     <div class="col-md-6 content-show">
                         <input type="hidden" name="person_id" value="{{$person->id}}">
-                        {{$person->codeName}}
+                        {!! get_url_person($person->id) !!}
                     </div>
                 </div>
                 <div class="form-group">

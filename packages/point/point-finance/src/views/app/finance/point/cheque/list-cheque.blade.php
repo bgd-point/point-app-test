@@ -46,7 +46,7 @@
                             <th>Number</th>
                             <th>Notes</th>
                             <th>Amount</th>
-                            <th>Disbursement At</th>
+                            <th>Clearing At</th>
                             <th>Rejected Counter</th>
                             <th>Rejected At</th>
                             <th>Status</th>
@@ -81,7 +81,7 @@
                                     {{ number_format_price($cheque_detail->amount)}}
                                 </td>
                                 <td>
-                                    {{ $cheque_detail->disbursement_at ? date_format_view($cheque_detail->disbursement_at) : '-'}}
+                                    {{ $cheque_detail->clearing_at ? date_format_view($cheque_detail->clearing_at) : '-'}}
                                 </td>
                                 <td>
                                     {{ $cheque_detail->rejected_counter ? $cheque_detail->rejected_counter .'x' : '-'}}
@@ -100,7 +100,7 @@
                 <div class="form-group">
                     <div class="col-md-12">
                         @if((\Input::get('status') == 0 || \Input::get('status') == -1) && \Input::get('status') != 'all')
-                        <button onclick="select('disbursement')" class="btn btn-effect-ripple btn-primary">Disbursement</button>
+                        <button onclick="select('clearing')" class="btn btn-effect-ripple btn-primary">Clearing</button>
                         @endif
                         @if((\Input::get('status') == 0 || \Input::get('status') == 1) && \Input::get('status') != 'all')
                         <button onclick="select('reject')" class="btn btn-effect-ripple btn-danger">Reject</button>
@@ -126,8 +126,8 @@
 
         var flow = $("#flow option:selected").val();
         url = '{{url()}}/finance/point/cheque/reject/?id='+cheque_detail_id+'&flow='+flow;
-        if (key == 'disbursement') {
-            url = '{{url()}}/finance/point/cheque/disbursement/?id='+cheque_detail_id+'&flow='+flow;
+        if (key == 'clearing') {
+            url = '{{url()}}/finance/point/cheque/clearing/?id='+cheque_detail_id+'&flow='+flow;
         }
 
         location.href = url;
