@@ -208,8 +208,11 @@
                                         <input type="hidden" readonly="" name="invoice_id" value="{{$invoice->id}}">
                                         <input type="submit" class="btn btn-primary" value="Send Email To Customer">
                                     </form>
-                                    <a class="btn btn-effect-ripple btn-info"
-                                    href="{{url('sales/point/indirect/invoice/'.$invoice->id.'/export')}}">Export PDF</a>
+                                    @if(($invoice->print_count < 1) || ($invoice->approval_print_status == 1))
+                                    <a class="btn btn-effect-ripple btn-info" href="{{url('sales/point/indirect/invoice/'.$invoice->id.'/export')}}">Export PDF</a>
+                                    @else
+                                    <a class="btn btn-effect-ripple btn-info" href="{{url('sales/point/indirect/invoice/request-approval-print/'.$invoice->id)}}">Send Request Approval to Export PDF</a>
+                                    @endif
                                 @endif
                             </div>
                         </div>
