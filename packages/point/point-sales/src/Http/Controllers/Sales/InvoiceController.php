@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Point\Core\Helpers\QueueHelper;
 use Point\Core\Helpers\UserHelper;
+use Point\Core\Models\User;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Models\Master\Permission;
@@ -265,13 +266,16 @@ class InvoiceController extends Controller
     public function exportPDF($id)
     {
         $invoice = Invoice::find($id);
-        $warehouse = '';
-        $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
-
-        if ($warehouse_id > 0) {
-            $warehouse = Warehouse::find($warehouse_id);
+        if ($invoice->approval_print_status == 0 || $invoice->approval_print_status == -1) {
+            gritter_error('failed, please send request approval to administrator');
+            return redirect('sales/point/indirect/invoice/'.$invoice->id);
         }
 
+        $invoice->print_count = $invoice->print_count + 1;
+        $invoice->approval_print_status = 0;
+        $invoice->save();
+        $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
+        $warehouse = $warehouse_id ? Warehouse::find($warehouse_id) : '';
         $data = array(
             'invoice' => $invoice, 
             'warehouse' => $warehouse

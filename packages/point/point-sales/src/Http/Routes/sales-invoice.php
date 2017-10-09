@@ -17,6 +17,10 @@ Route::group(['prefix' => 'sales/point/indirect', 'namespace' => 'Point\PointSal
         Route::get('/invoice/basic/{id}/edit', 'Basic\InvoiceController@edit');
         Route::put('/invoice/basic/{id}', 'Basic\InvoiceController@update');
 
+        Route::get('/invoice/{id}/reject', 'InvoiceApprovalPrintController@reject');
+        Route::get('/invoice/{id}/approve', 'InvoiceApprovalPrintController@approve');
+        Route::get('/invoice/request-approval-print/{id}', 'InvoiceApprovalPrintController@requestApproval');
+        Route::post('/invoice/send-request-approval', 'InvoiceApprovalPrintController@sendRequestApproval');
         Route::get('/invoice/create-step-1', 'InvoiceController@createStep1');
         Route::get('/invoice/create-step-2/{person_person_id}', 'InvoiceController@createStep2');
         Route::get('/invoice/create-step-3', 'InvoiceController@createStep3');
