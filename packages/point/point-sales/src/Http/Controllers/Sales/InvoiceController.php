@@ -266,12 +266,12 @@ class InvoiceController extends Controller
     public function exportPDF($id)
     {
         $invoice = Invoice::find($id);
-        if ($invoice->approval_print_status == 0 || $invoice->approval_print_status == -1) {
+        if ($invoice->approval_print_status < 1) {
             gritter_error('failed, please send request approval to administrator');
             return redirect('sales/point/indirect/invoice/'.$invoice->id);
         }
 
-        $invoice->print_count = $invoice->print_count + 1;
+        $invoice->print_count += 1;
         $invoice->approval_print_status = 0;
         $invoice->save();
         $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
