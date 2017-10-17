@@ -112,6 +112,7 @@
                                 @endfor
                             </tr>
                         @endforeach
+
                         <tr>
                             <td><h4>Total Expense</h4></td>
                             @for($i = 0; $i <= $total_month; $i++)
@@ -122,7 +123,7 @@
                         <tr>
                             <td><h4><b>Total Profit or Loss</b></h4></td>
                             @for($i = 0; $i <= $total_month; $i++)
-                            <td class="text-right">{{number_format_accounting($total_revenue[$i] - $total_expense[$i])}}</td>
+                            <td class="text-right">{{number_format_accounting($total_revenue[$i] + $total_expense[$i])}}</td>
                             @endfor
                         </tr>
 
