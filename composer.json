@@ -7,6 +7,7 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
+        "point/tenant-database": "0.*",
         "predis/predis": "^1.0",
         "guzzlehttp/guzzle": "~5.3|~6.0",
         "maatwebsite/excel": "~2.0.0",
@@ -28,13 +29,15 @@
         "phpunit/phpunit": "~4.0",
         "phpspec/phpspec": "~2.1"
     },
+    "repositories": [
+        { "type" : "git", "url" : "git@gitlab.com:bgd-point/tenant-database.git" }
+    ],
     "autoload": {
         "classmap": [
             "database"
         ],
         "psr-4": {
             "App\\": "app/",
-            "Point\\TenantDatabase\\": "packages/point/tenant-database/src",
             "Point\\Core\\": "packages/point/point-core/src",
             "Point\\Framework\\": "packages/point/point-framework/src",
             "Point\\PointInventory\\": "packages/point/point-inventory/src",
