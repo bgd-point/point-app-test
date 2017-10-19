@@ -69,7 +69,7 @@ trait SalesOrderVesa
         if ($merge_into_group && $list_sales_order->get()->count() > 5) {
             array_push($array, [
                 'url' => url('sales/point/indirect/sales-order/vesa-approval'),
-                'deadline' => $list_sales_order->orderBy('required_date')->first()->required_date,
+                'deadline' => $list_sales_order->orderBy('form_date')->first()->required_date,
                 'message' => 'please approve sales order',
                 'permission_slug' => 'approval.point.sales.order'
             ]);
