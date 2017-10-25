@@ -12,6 +12,7 @@ use Point\Core\Models\User;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\PersonHelper;
+use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\PersonGroup;
 use Point\Framework\Models\Master\UserWarehouse;
@@ -153,6 +154,8 @@ class ExpeditionOrderController extends Controller
         if (!$view->expedition_order->formulir->form_number) {
             return redirect(ExpeditionOrder::showUrl($id));
         }
+
+        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->expedition_order->formulir_id)->get();
 
         return $view;
     }

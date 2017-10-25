@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Point\Core\Helpers\UserHelper;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
+use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\Master\Warehouse;
 use Point\PointExpedition\Models\ExpeditionOrder;
 use Point\PointExpedition\Models\ExpeditionOrderItem;
@@ -132,6 +133,9 @@ class GoodsReceivedController extends Controller
         $view->reference = FormulirHelper::getLockedModel($view->goods_received->formulir_id);
         $view->list_goods_received_archived = GoodsReceived::joinFormulir()->archived($view->goods_received->formulir->form_number)->get();
         $view->revision = $view->list_goods_received_archived->count();
+
+        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->goods_received->formulir_id)->get();
+
         return $view;
     }
 
