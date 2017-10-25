@@ -54,7 +54,6 @@ class AddColumnPurchasingPaymentOrderTable extends Migration
                     ->references('id')->on('coa')
                     ->onUpdate('restrict')
                     ->onDelete('restrict');
-
             });
         }
 
@@ -66,12 +65,11 @@ class AddColumnPurchasingPaymentOrderTable extends Migration
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             });
-        }        
+        }
     }
 
     public function dropColumnPurchaseInventory()
     {
-        
         if (Schema::hasColumn('point_purchasing_payment_order', 'payment_type')) {
             Schema::table('point_purchasing_payment_order', function ($table) {
                 $table->dropColumn(['payment_type']);
@@ -83,7 +81,6 @@ class AddColumnPurchasingPaymentOrderTable extends Migration
                 $table->dropForeign('purchase_po_detail_coa_foreign');
                 $table->dropIndex('purchase_po_detail_coa_index');
                 $table->dropColumn(['coa_id']);
-
             });
         }
 
@@ -93,7 +90,7 @@ class AddColumnPurchasingPaymentOrderTable extends Migration
                 $table->dropIndex('purchase_po_detail_form_reference_index');
                 $table->dropColumn(['form_reference_id']);
             });
-        } 
+        }
     }
 
     public function addColumnPurchaseService()
@@ -121,7 +118,6 @@ class AddColumnPurchasingPaymentOrderTable extends Migration
                     ->references('id')->on('coa')
                     ->onUpdate('restrict')
                     ->onDelete('restrict');
-
             });
         }
 
@@ -133,12 +129,11 @@ class AddColumnPurchasingPaymentOrderTable extends Migration
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             });
-        }        
+        }
     }
 
     public function dropColumnPurchaseService()
     {
-        
         if (Schema::hasColumn('point_purchasing_service_payment_order', 'payment_type')) {
             Schema::table('point_purchasing_service_payment_order', function ($table) {
                 $table->dropColumn(['payment_type']);
@@ -150,7 +145,6 @@ class AddColumnPurchasingPaymentOrderTable extends Migration
                 $table->dropForeign('purchase_po_service_detail_coa_foreign');
                 $table->dropIndex('purchase_po_service_detail_coa_index');
                 $table->dropColumn(['coa_id']);
-
             });
         }
 
@@ -160,6 +154,6 @@ class AddColumnPurchasingPaymentOrderTable extends Migration
                 $table->dropIndex('purchase_po_service_detail_form_reference_index');
                 $table->dropColumn(['form_reference_id']);
             });
-        } 
+        }
     }
 }

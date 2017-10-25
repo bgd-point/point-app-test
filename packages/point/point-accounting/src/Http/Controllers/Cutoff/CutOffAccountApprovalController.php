@@ -28,28 +28,28 @@ class CutOffAccountApprovalController extends Controller
     }
 
     public function sendRequestApproval(Request $request)
-    {	
+    {
         access_is_allowed('create.point.accounting.cut.off.account');
 
-        if($this->isFormulirNull($request)) {
+        if ($this->isFormulirNull($request)) {
             return redirect()->back();
         }
 
         $list_approver = CutOffAccount::selectApproverList(app('request')->input('formulir_id'));
         $request = $request->input();
-        foreach($list_approver as $data_approver) {
+        foreach ($list_approver as $data_approver) {
             $list_cut_off = CutOffAccount::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
             $approver = User::find($data_approver->approval_to);
             $token = md5(date('ymdhis'));
             $data = [
                 'list_data' => $list_cut_off,
-                'token' => $token, 
-                'username' => auth()->user()->name, 
+                'token' => $token,
+                'username' => auth()->user()->name,
                 'url' => url('/'),
                 'approver' => $approver
                 ];
 
-            \Queue::push(function($job) use ($approver, $data, $request) {
+            \Queue::push(function ($job) use ($approver, $data, $request) {
                 QueueHelper::reconnectAppDatabase($request['database_name']);
                 \Mail::send('point-accounting::emails.accounting.point.approval.cut-off', $data, function ($message) use ($approver) {
                     $message->to($approver->email)->subject('Request Approval Cut Off #' . date('ymdHi'));

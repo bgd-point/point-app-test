@@ -28,8 +28,8 @@ use Point\PointAccounting\Models\CutOffReceivable;
 use Point\PointFinance\Models\PaymentReference;
 use Point\PointFinance\Models\PaymentReferenceDetail;
 
-class CutOffHelper {
-
+class CutOffHelper
+{
     public static function journal($cut_off)
     {
         $cut_off_account = CutOffAccount::joinFormulir()
@@ -65,11 +65,11 @@ class CutOffHelper {
     private static function checkFixedAssets($cut_off_account)
     {
         foreach ($cut_off_account->cutOffAccountDetail as $cut_off_account_detail) {
-            if($cut_off_account_detail->coa->subledger_type == get_class(new FixedAsset())) {
+            if ($cut_off_account_detail->coa->subledger_type == get_class(new FixedAsset())) {
                 $amount = CutOffFixedAssets::getSubledgerAmount($cut_off_account->formulir->form_date, $cut_off_account_detail->coa_id);
                 $position = JournalHelper::position($cut_off_account_detail->coa_id);
                 
-                if(trim($cut_off_account_detail->$position) != trim($amount)) {
+                if (trim($cut_off_account_detail->$position) != trim($amount)) {
                     return false;
                 }
             }
@@ -81,7 +81,7 @@ class CutOffHelper {
     private static function checkInventory($cut_off_account)
     {
         foreach ($cut_off_account->cutOffAccountDetail as $cut_off_account_detail) {
-            if($cut_off_account_detail->coa->subledger_type == get_class(new Item())) {
+            if ($cut_off_account_detail->coa->subledger_type == get_class(new Item())) {
                 $amount = CutOffInventory::getSubledgerAmount($cut_off_account->formulir->form_date, $cut_off_account_detail->coa_id);
                 $position = JournalHelper::position($cut_off_account_detail->coa_id);
                 $cut_off_amount = $cut_off_account_detail->$position;
@@ -191,7 +191,7 @@ class CutOffHelper {
             }
         }
 
-        // ACCOUNT FIXED ASSETS 
+        // ACCOUNT FIXED ASSETS
         $cut_off_fixed_assets = CutOffFixedAssets::joinFormulir()
             ->approvalApproved()
             ->open()
@@ -223,9 +223,8 @@ class CutOffHelper {
                         }
                     }
                 }
-            }    
+            }
         }
-        
     }
 
     private static function accountInventory($cut_off_account, $cut_off_account_detail)
@@ -238,13 +237,12 @@ class CutOffHelper {
             ->orderby('id', 'desc')
             ->first();
 
-        if(! $cut_off_inventory) {
+        if (! $cut_off_inventory) {
             return;
         }
 
         // CUTOFF INVENTORY SUBLEDGER
-        foreach($cut_off_inventory->cutOffInventoryDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_inventory_detail) {
-
+        foreach ($cut_off_inventory->cutOffInventoryDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_inventory_detail) {
             if ($cut_off_inventory_detail->stock > 0 && $cut_off_inventory_detail->amount > 0) {
                 $position = JournalHelper::position($cut_off_inventory_detail->coa_id);
 
@@ -291,7 +289,7 @@ class CutOffHelper {
             ->first();
 
         if ($cut_off_payable) {
-            foreach($cut_off_payable->cutOffPayableDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_payable_detail) {
+            foreach ($cut_off_payable->cutOffPayableDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_payable_detail) {
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
                 $journal->coa_id = $cut_off_account_detail->coa_id;
@@ -323,7 +321,7 @@ class CutOffHelper {
             ->first();
 
         if ($cut_off_receivable) {
-            foreach($cut_off_receivable->cutOffReceivableDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_receivable_detail) {
+            foreach ($cut_off_receivable->cutOffReceivableDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_receivable_detail) {
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
                 $journal->coa_id = $cut_off_account_detail->coa_id;
@@ -364,7 +362,7 @@ class CutOffHelper {
                 $journal->form_journal_id = $cut_off_account->formulir_id;
                 $journal->form_reference_id;
                 $journal->subledger_id = $cut_off_fixed_assets_detail->subledger_id;
-                $journal->subledger_type = get_class( new FixedAsset());
+                $journal->subledger_type = get_class(new FixedAsset());
                 $journal->save();
             }
 
@@ -372,12 +370,11 @@ class CutOffHelper {
                 FormulirHelper::close($cut_off_fixed_assets->formulir_id);
             }
         }
-        
     }
 
     private static function accountNonSubledger($cut_off_account, $cut_off_account_detail)
     {
-        if($cut_off_account_detail->debit > 0 || $cut_off_account_detail->credit > 0) {
+        if ($cut_off_account_detail->debit > 0 || $cut_off_account_detail->credit > 0) {
             $journal = new Journal();
             $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
             $journal->coa_id = $cut_off_account_detail->coa_id;
@@ -476,21 +473,20 @@ class CutOffHelper {
 
         if ($formulir_relation) {
             foreach ($formulir_relation as $form_relation) {
-                if ($form_relation->formulirable_type != $formulir->formulirable_type) { 
-                    $form_relation->form_status = 0; 
-                    $form_relation->save(); 
+                if ($form_relation->formulirable_type != $formulir->formulirable_type) {
+                    $form_relation->form_status = 0;
+                    $form_relation->save();
                      
-                    FormulirHelper::unlock($form_relation->id); 
-                    ReferHelper::cancel($form_relation->formulirable_type, $form_relation->formulirable_id); 
-                    InventoryHelper::remove($form_relation->id); 
-                    JournalHelper::remove($form_relation->id); 
-                    AccountPayableAndReceivableHelper::remove($form_relation->id); 
-                } 
+                    FormulirHelper::unlock($form_relation->id);
+                    ReferHelper::cancel($form_relation->formulirable_type, $form_relation->formulirable_id);
+                    InventoryHelper::remove($form_relation->id);
+                    JournalHelper::remove($form_relation->id);
+                    AccountPayableAndReceivableHelper::remove($form_relation->id);
+                }
             }
-            
         }
 
-        $formulir->form_status = -1; 
-        $formulir->save(); 
+        $formulir->form_status = -1;
+        $formulir->save();
     }
 }

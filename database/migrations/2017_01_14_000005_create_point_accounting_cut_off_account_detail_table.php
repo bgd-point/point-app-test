@@ -29,7 +29,6 @@ class CreatePointAccountingCutOffAccountDetailTable extends Migration
 
             $table->double('debit', 16, 4);
             $table->double('credit', 16, 4);
-
         });
     }
 

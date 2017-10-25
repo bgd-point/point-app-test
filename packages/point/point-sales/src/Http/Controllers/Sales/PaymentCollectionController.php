@@ -247,7 +247,7 @@ class PaymentCollectionController extends Controller
         $request['form_date'] = date('Y-m-d', strtotime($request->input('payment_date')));
         access_is_allowed('create.point.sales.payment.collection', date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
         $formulir = FormulirHelper::create($request->input(), 'point-sales-payment-collection');
-        $payment_collection = PaymentCollectionHelper::create($request, $formulir, $references, $references_account, $references_type, 
+        $payment_collection = PaymentCollectionHelper::create($request, $formulir, $references, $references_account, $references_type,
         $references_id, $references_amount, $references_amount_original, $references_notes, $references_detail_id, $references_detail_type);
         timeline_publish('create.payment.collection', 'added new payment collection '  . $payment_collection->formulir->form_number);
 
@@ -483,7 +483,7 @@ class PaymentCollectionController extends Controller
 
         $formulir_old = self::archive($request->input(), $payment_collection->formulir_id);
         $formulir = FormulirHelper::update($request->input(), $formulir_old->archived, $formulir_old->form_raw_number);
-        $payment_collection = PaymentCollectionHelper::create($request, $formulir, $references, $references_account, $references_type, 
+        $payment_collection = PaymentCollectionHelper::create($request, $formulir, $references, $references_account, $references_type,
         $references_id, $references_amount, $references_amount_original, $references_notes, $references_detail_id, $references_detail_type, $references_amount_edit);
         timeline_publish('update.payment.collection', 'added new payment collection '  . $payment_collection->formulir->form_number);
 

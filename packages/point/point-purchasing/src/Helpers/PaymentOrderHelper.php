@@ -18,7 +18,7 @@ use Point\PointPurchasing\Models\Inventory\PaymentOrderOther;
 
 class PaymentOrderHelper
 {
-    public static function searchList($list_payment_order,$order_by, $order_type, $status = 0, $date_from, $date_to, $search)
+    public static function searchList($list_payment_order, $order_by, $order_type, $status = 0, $date_from, $date_to, $search)
     {
         if ($order_by) {
             $list_payment_order = $list_payment_order->orderBy($order_by, $order_type);
@@ -50,17 +50,17 @@ class PaymentOrderHelper
     }
 
     public static function create(
-        Request $request, 
-        $formulir, 
-        $references, 
-        $references_account, 
-        $references_type, 
-        $references_id, 
-        $references_amount, 
-        $references_amount_original, 
-        $references_notes, 
+        Request $request,
+        $formulir,
+        $references,
+        $references_account,
+        $references_type,
+        $references_id,
+        $references_amount,
+        $references_amount_original,
+        $references_notes,
         $references_detail_id,
-        $references_detail_type, 
+        $references_detail_type,
         $references_amount_edit = []
     ) {
         $payment_order = new PaymentOrder;

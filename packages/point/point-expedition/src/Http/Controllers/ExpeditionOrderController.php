@@ -41,7 +41,7 @@ class ExpeditionOrderController extends Controller
 
         $list_expedition_order = ExpeditionOrderHelper::searchList(
             $list_expedition_order,
-            app('request')->input('status'), 
+            app('request')->input('status'),
             app('request')->input('order_by'),
             app('request')->input('status'),
             app('request')->input('date_from'),
@@ -61,7 +61,7 @@ class ExpeditionOrderController extends Controller
         $list_expedition_order = ExpeditionOrder::joinFormulir()->joinExpedition()->notArchived()->selectOriginal();
         $list_expedition_order = ExpeditionOrderHelper::searchList(
             $list_expedition_order,
-            app('request')->input('status'), 
+            app('request')->input('status'),
             app('request')->input('order_by'),
             app('request')->input('status'),
             app('request')->input('date_from'),
@@ -243,7 +243,7 @@ class ExpeditionOrderController extends Controller
         }
 
         $data = array(
-            'expedition_order' => $expedition_order, 
+            'expedition_order' => $expedition_order,
             'token' => $token,
             'warehouse' => $warehouse
         );

@@ -52,7 +52,6 @@ class AddColumnExpeditionPaymentOrderTable extends Migration
                     ->references('id')->on('coa')
                     ->onUpdate('restrict')
                     ->onDelete('restrict');
-
             });
         }
 
@@ -64,12 +63,11 @@ class AddColumnExpeditionPaymentOrderTable extends Migration
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             });
-        }        
+        }
     }
 
     public function dropColumnExpedition()
     {
-        
         if (Schema::hasColumn('point_expedition_payment_order', 'payment_type')) {
             Schema::table('point_expedition_payment_order', function ($table) {
                 $table->dropColumn(['payment_type']);
@@ -81,7 +79,6 @@ class AddColumnExpeditionPaymentOrderTable extends Migration
                 $table->dropForeign('expedition_po_detail_coa_foreign');
                 $table->dropIndex('expedition_po_detail_coa_index');
                 $table->dropColumn(['coa_id']);
-
             });
         }
 
@@ -91,6 +88,6 @@ class AddColumnExpeditionPaymentOrderTable extends Migration
                 $table->dropIndex('expedition_po_detail_form_reference_index');
                 $table->dropColumn(['form_reference_id']);
             });
-        } 
+        }
     }
 }

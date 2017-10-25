@@ -8,7 +8,6 @@ use Point\PointAccounting\Vesa\CutOffPayableVesa;
 
 class CutOffPayable extends Model
 {
-
     protected $table = 'point_accounting_cut_off_payable';
     public $timestamps = false;
 
@@ -34,7 +33,7 @@ class CutOffPayable extends Model
 
     public function cutOffPayableDetail()
     {
-        return $this->hasMany('Point\PointAccounting\Models\CutOffPayableDetail','cut_off_payable_id', 'id');
+        return $this->hasMany('Point\PointAccounting\Models\CutOffPayableDetail', 'cut_off_payable_id', 'id');
     }
 
     public static function getSubledgerAmount($form_date, $coa_id)
@@ -48,7 +47,7 @@ class CutOffPayable extends Model
             ->orderBy('formulir.id', 'desc')
             ->first();
 
-        if(! $cut_off_payable) {
+        if (! $cut_off_payable) {
             return 0;
         }
 

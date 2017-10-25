@@ -12,24 +12,23 @@ class MemoJournalDetail extends Model
 
     use ByTrait;
 
-    public function memoJournal() 
+    public function memoJournal()
     {
-        return $this->belongsTo('\Point\PointAccounting\Models\MemoJournal','memo_journal_id');
+        return $this->belongsTo('\Point\PointAccounting\Models\MemoJournal', 'memo_journal_id');
     }
 
-    public function coa() 
+    public function coa()
     {
-        return $this->belongsTo('\Point\Framework\Models\Master\Coa','coa_id');
+        return $this->belongsTo('\Point\Framework\Models\Master\Coa', 'coa_id');
     }
 
-    public function formulir() 
+    public function formulir()
     {
-        return $this->belongsTo('Point\Framework\Models\Formulir','form_journal_id');
+        return $this->belongsTo('Point\Framework\Models\Formulir', 'form_journal_id');
     }
 
-    public function reference() 
+    public function reference()
     {
-        return $this->belongsTo('Point\Framework\Models\Formulir','form_reference_id');
+        return $this->belongsTo('Point\Framework\Models\Formulir', 'form_reference_id');
     }
-
 }

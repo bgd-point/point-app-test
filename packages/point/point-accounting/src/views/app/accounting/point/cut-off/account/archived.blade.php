@@ -79,13 +79,12 @@
                                     @foreach($list_coa as $coa)
                                     <?php
                                     $cut_off_account_detail = Point\PointAccounting\Models\CutOffAccountDetail::where('coa_id', $coa->id)
-                                    ->where('cut_off_account_id',$cut_off_account->id)
+                                    ->where('cut_off_account_id', $cut_off_account->id)
                                     ->first();
                                     
-                                    if($cut_off_account_detail){
+                                    if ($cut_off_account_detail) {
                                         $foot_debit += $cut_off_account_detail->debit;
-                                        $foot_credit += $cut_off_account_detail->credit;    
-                                        
+                                        $foot_credit += $cut_off_account_detail->credit;
                                     }
                                     ?>
                                     <tr>

@@ -46,9 +46,9 @@ class StockOpnameApprovalController extends Controller
             $array_formulir_id = implode(',', $array_formulir_id);
             $approver = User::find($data_approver->approval_to);
             $data = [
-                'list_data' => $list_stock_opname, 
-                'token' => $token, 
-                'username' => auth()->user()->name, 
+                'list_data' => $list_stock_opname,
+                'token' => $token,
+                'username' => auth()->user()->name,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id

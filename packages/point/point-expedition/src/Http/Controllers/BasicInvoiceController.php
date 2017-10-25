@@ -151,7 +151,7 @@ class BasicInvoiceController extends Controller
         }
 
         $data = array(
-            'invoice' => $invoice, 
+            'invoice' => $invoice,
             'token' => $token,
             'warehouse' => $warehouse
         );

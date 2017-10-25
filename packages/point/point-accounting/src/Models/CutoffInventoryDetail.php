@@ -11,17 +11,17 @@ class CutOffInventoryDetail extends Model
 
     public function item()
     {
-        return $this->belongsTo('Point\Framework\Models\Master\Item','subledger_id');
+        return $this->belongsTo('Point\Framework\Models\Master\Item', 'subledger_id');
     }
 
     public function coa()
     {
-        return $this->belongsTo('Point\Framework\Models\Master\Coa','coa_id');
+        return $this->belongsTo('Point\Framework\Models\Master\Coa', 'coa_id');
     }
 
     public function warehouse()
     {
-        return $this->belongsTo('Point\Framework\Models\Master\Warehouse','warehouse_id');
+        return $this->belongsTo('Point\Framework\Models\Master\Warehouse', 'warehouse_id');
     }
 
     public function scopeJoinInventory($q)

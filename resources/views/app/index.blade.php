@@ -21,19 +21,19 @@
                         $title = '';
 
                         // VESA ORDER BY DEADLINE
-                        $array_vesa = array_values(array_sort($array_vesa, function($value) {
+                        $array_vesa = array_values(array_sort($array_vesa, function ($value) {
                             return $value['deadline'];
                         }));
 
                         // VESA DUE DATE
-                        $due_date = array_where($array_vesa, function($value, $key) use ($array_vesa) {
+                        $due_date = array_where($array_vesa, function ($value, $key) use ($array_vesa) {
                             if (array_key_exists('due_date', $key)) {
                                 return $key['due_date'] == true;
                             }
                         });
 
                         // VESA TODO
-                        $todo = array_where($array_vesa, function($value, $key) use ($array_vesa) {
+                        $todo = array_where($array_vesa, function ($value, $key) use ($array_vesa) {
                             if (! array_key_exists('due_date', $key)) {
                                 return $key['deadline'] != '';
                             } else {

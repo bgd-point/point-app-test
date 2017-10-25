@@ -67,7 +67,7 @@ trait FixedAssetsGoodsReceivedVesa
                         'message' => 'Make an purchasing goods received from purchasing order' . $purchasing_order->formulir->form_number,
                         'permission_slug' => 'create.point.purchasing.goods.received.fixed.assets'
                     ]);
-                }    
+                }
             } else {
                 array_push($array, [
                     'url' => url('purchasing/point/fixed-assets/goods-received/create-step-2/'.$purchasing_order->id),
@@ -76,7 +76,6 @@ trait FixedAssetsGoodsReceivedVesa
                     'permission_slug' => 'create.point.purchasing.goods.received.fixed.assets'
                 ]);
             }
-            
         }
 
         return $array;

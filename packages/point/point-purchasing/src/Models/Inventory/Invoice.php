@@ -111,13 +111,14 @@ class Invoice extends Model
         return '/purchasing/point/invoice/'.$id.'/archived';
     }
 
-    public static function getLockedInvoice() {
+    public static function getLockedInvoice()
+    {
         $locking_id = PaymentOrder::joinFormulir()->whereIn('form_status', [1, 0])->select('formulir_id')->get();
-        if($locking_id->count()) {
+        if ($locking_id->count()) {
             $locking_id = array_flatten(array_values($locking_id->toArray()));
         }
 
-        return FormulirLock::join('formulir', 'formulir.id', '=','formulir_lock.locked_id')
+        return FormulirLock::join('formulir', 'formulir.id', '=', 'formulir_lock.locked_id')
             ->whereIn('locking_id', $locking_id)
             ->where('locked', true)
             ->where('formulir.formulirable_type', '=', get_class(new Invoice()))

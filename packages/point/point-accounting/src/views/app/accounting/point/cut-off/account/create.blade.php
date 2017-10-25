@@ -84,8 +84,8 @@
                                             $position = \Point\Framework\Helpers\JournalHelper::position($coa->id);
 
                                             // Get the last value of account
-                                            $debit_value_of_account = Point\Framework\Models\Journal::where('coa_id', $coa->id)->where('form_date','<=',date_format_db($form_date, 'end'))->sum('debit') ? : 0;
-                                            $credit_value_of_account = Point\Framework\Models\Journal::where('coa_id', $coa->id)->where('form_date','<=',date_format_db($form_date, 'end'))->sum('credit') ? : 0;
+                                            $debit_value_of_account = Point\Framework\Models\Journal::where('coa_id', $coa->id)->where('form_date', '<=', date_format_db($form_date, 'end'))->sum('debit') ? : 0;
+                                            $credit_value_of_account = Point\Framework\Models\Journal::where('coa_id', $coa->id)->where('form_date', '<=', date_format_db($form_date, 'end'))->sum('credit') ? : 0;
 
                                             if ($debit_value_of_account >= $credit_value_of_account) {
                                                 $total = $debit_value_of_account - $credit_value_of_account;

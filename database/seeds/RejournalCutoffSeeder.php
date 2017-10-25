@@ -28,35 +28,34 @@ class RejournalCutoffSeeder extends Seeder
         foreach ($list_cutoff_account as $cutoff_account) {
             // $cutoff_account->formulir->form_date = '2017-03-31 16:59:59';
             // $cutoff_account->formulir->save();
-            $journal = Journal::where('form_journal_id', $cutoff_account->formulir_id )->selectRaw('sum(debit) as debit, sum(credit) as credit')->first();
+            $journal = Journal::where('form_journal_id', $cutoff_account->formulir_id)->selectRaw('sum(debit) as debit, sum(credit) as credit')->first();
             \Log::info('before :: debit = ' . $journal->debit. ' credit = '.$journal->credit);
             $journal = Journal::where('form_journal_id', $cutoff_account->formulir_id)->delete();
             $account_payable_receivable = AccountPayableAndReceivable::where('formulir_reference_id', $cutoff_account->formulir_id)->delete();
             $inventory = Inventory::where('formulir_id', $cutoff_account->formulir_id)->delete();
-        	foreach ($cutoff_account->cutOffAccountDetail as $cut_off_account_detail) {
-        		if ($cut_off_account_detail->coa->has_subledger) {
+            foreach ($cutoff_account->cutOffAccountDetail as $cut_off_account_detail) {
+                if ($cut_off_account_detail->coa->has_subledger) {
                     // insert inventory
-	                if ($cut_off_account_detail->coa->subledger_type == get_class(new Item())) {
-	                    self::accountInventory($cutoff_account, $cut_off_account_detail);
-	                }
+                    if ($cut_off_account_detail->coa->subledger_type == get_class(new Item())) {
+                        self::accountInventory($cutoff_account, $cut_off_account_detail);
+                    }
 
-	                // insert account payable and receivable
-	                if ($cut_off_account_detail->coa->subledger_type == get_class(new Person())) {
-	                    self::accountPayable($cutoff_account, $cut_off_account_detail);
-	                    self::accountReceivable($cutoff_account, $cut_off_account_detail);
-	                }
+                    // insert account payable and receivable
+                    if ($cut_off_account_detail->coa->subledger_type == get_class(new Person())) {
+                        self::accountPayable($cutoff_account, $cut_off_account_detail);
+                        self::accountReceivable($cutoff_account, $cut_off_account_detail);
+                    }
 
                     // insert fixed assets
                     if ($cut_off_account_detail->coa->subledger_type == get_class(new FixedAsset())) {
                         self::accountFixedAsset($cutoff_account, $cut_off_account_detail);
                     }
-	            } else {
+                } else {
                     self::accountNonSubledger($cutoff_account, $cut_off_account_detail);
                 }
-        	}
+            }
 
             JournalHelper::checkJournalBalance($cutoff_account->formulir_id);
-
         }
         \DB::commit();
         \Log::info('============ Rejournal Cutoff finished ============');
@@ -146,7 +145,7 @@ class RejournalCutoffSeeder extends Seeder
             }
         }
 
-        // ACCOUNT FIXED ASSETS 
+        // ACCOUNT FIXED ASSETS
         $cut_off_fixed_assets = CutOffFixedAssets::joinFormulir()
             ->approvalApproved()
             ->open()
@@ -178,9 +177,8 @@ class RejournalCutoffSeeder extends Seeder
                         }
                     }
                 }
-            }    
+            }
         }
-        
     }
 
     private static function accountNonSubledger($cut_off_account, $cut_off_account_detail)
@@ -214,9 +212,9 @@ class RejournalCutoffSeeder extends Seeder
 
         $total = 0;
         if ($cut_off_payable) {
-            foreach($cut_off_payable->cutOffPayableDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_payable_detail) {
+            foreach ($cut_off_payable->cutOffPayableDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_payable_detail) {
                 $position = $cut_off_account_detail->debit ? 'debit' : 'credit';
-            	
+                
                 \Log::info('journal account payable started - ' . $cut_off_account_detail->coa->account . ' '. $position. ' '. $cut_off_payable_detail->amount);
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
@@ -249,8 +247,8 @@ class RejournalCutoffSeeder extends Seeder
 
         $total = 0;
         if ($cut_off_receivable) {
-            foreach($cut_off_receivable->cutOffReceivableDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_receivable_detail) {
-            	$position = $cut_off_account_detail->debit ? 'debit' : 'credit';
+            foreach ($cut_off_receivable->cutOffReceivableDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_receivable_detail) {
+                $position = $cut_off_account_detail->debit ? 'debit' : 'credit';
                 \Log::info('journal account receivable started  - ' . $cut_off_account_detail->coa->account . ' ' . $position. ' '. $cut_off_receivable_detail->amount);
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
@@ -282,13 +280,13 @@ class RejournalCutoffSeeder extends Seeder
         // remove inventory with formulir Cut Off Inventory
         $inventory = Inventory::where('formulir_id', $cut_off_inventory->formulir_id)->delete();
 
-        if(! $cut_off_inventory) {
+        if (! $cut_off_inventory) {
             return;
         }
 
         $total = 0;
         // CUTOFF INVENTORY SUBLEDGER
-        foreach($cut_off_inventory->cutOffInventoryDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_inventory_detail) {
+        foreach ($cut_off_inventory->cutOffInventoryDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_inventory_detail) {
             // EMPTY JOURNAL
             $coa_value = JournalHelper::getTotalValueBySubledger($cut_off_inventory_detail->coa_id, $cut_off_account->formulir->form_date, $cut_off_inventory_detail->subledger_type, $cut_off_inventory_detail->subledger_id);
             if ($cut_off_inventory_detail->stock > 0 && $cut_off_inventory_detail->amount > 0) {
@@ -351,7 +349,7 @@ class RejournalCutoffSeeder extends Seeder
                 $journal->form_journal_id = $cut_off_account->formulir_id;
                 $journal->form_reference_id;
                 $journal->subledger_id = $cut_off_fixed_assets_detail->subledger_id;
-                $journal->subledger_type = get_class( new FixedAsset());
+                $journal->subledger_type = get_class(new FixedAsset());
                 $journal->save();
             }
         }

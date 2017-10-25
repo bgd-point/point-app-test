@@ -11,12 +11,12 @@ class CutOffFixedAssetsDetail extends Model
 
     public function suplier()
     {
-        return $this->belongsTo('Point\Framework\Models\Master\Person','supplier_id');
+        return $this->belongsTo('Point\Framework\Models\Master\Person', 'supplier_id');
     }
 
     public function coa()
     {
-        return $this->belongsTo('Point\Framework\Models\Master\Coa','coa_id');
+        return $this->belongsTo('Point\Framework\Models\Master\Coa', 'coa_id');
     }
 
     public function scopeJoinFixedAssets($q)
@@ -31,8 +31,7 @@ class CutOffFixedAssetsDetail extends Model
 
     public static function getTotalPrice($coa_id, $fixed_assets_id)
     {
-        $amount = CutOffFixedAssetsDetail::where('coa_id', $coa_id)->where('fixed_assets_id' , $fixed_assets_id)->sum('total_price');
+        $amount = CutOffFixedAssetsDetail::where('coa_id', $coa_id)->where('fixed_assets_id', $fixed_assets_id)->sum('total_price');
         return $amount;
     }
-
 }

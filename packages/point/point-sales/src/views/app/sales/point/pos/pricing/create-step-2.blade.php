@@ -105,7 +105,6 @@
                                                                 continue;
                                                             }
                                                         }
-    
                                                     }
                                                     
                                                     $data = \Point\Core\Helpers\TempDataHelper::searchKeyValue('pos.pricing.create', auth()->user()->id, ['item_id', 'person_group_id'], [$item->id, $person_group->id]);

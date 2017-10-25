@@ -99,7 +99,7 @@ class MasterVesa
 
     public static function vesaSetUserWarehouse($array = [])
     {
-        if (User::where('users.id', '>', 1)->where('users.disabled', 0)->whereNotExists(function($query) {
+        if (User::where('users.id', '>', 1)->where('users.disabled', 0)->whereNotExists(function ($query) {
             $query->from('user_warehouse')->whereRaw('users.id = user_warehouse.user_id');
         })->count()) {
             array_push($array, [
@@ -112,5 +112,4 @@ class MasterVesa
 
         return $array;
     }
-
 }

@@ -8,7 +8,6 @@ use Point\PointAccounting\Vesa\CutOffFixedAssetsVesa;
 
 class CutOffFixedAssets extends Model
 {
-
     protected $table = 'point_accounting_cut_off_fixed_assets';
     public $timestamps = false;
 
@@ -34,7 +33,7 @@ class CutOffFixedAssets extends Model
 
     public function cutOffFixedAssetsDetail()
     {
-        return $this->hasMany('Point\PointAccounting\Models\CutOffFixedAssetsDetail','fixed_assets_id', 'id');
+        return $this->hasMany('Point\PointAccounting\Models\CutOffFixedAssetsDetail', 'fixed_assets_id', 'id');
     }
 
     public static function getSubledgerAmount($form_date, $coa_id)

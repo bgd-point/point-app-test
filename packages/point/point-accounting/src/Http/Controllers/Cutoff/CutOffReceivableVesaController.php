@@ -22,6 +22,6 @@ class CutOffReceivableVesaController extends Controller
 
         $view = view('app.index');
         $view->array_vesa = CutOffReceivable::getVesaReject();
-        return $view;   
+        return $view;
     }
 }

@@ -19,7 +19,6 @@ use Point\PointAccounting\Models\MemoJournalDetail;
 
 class MemoJournalController extends Controller
 {
-
     use ValidationTrait;
 
     /**
@@ -52,7 +51,7 @@ class MemoJournalController extends Controller
         $view->list_user_approval = UserHelper::getAllUser();
         $view->details = TempDataHelper::get('memo.journal', auth()->user()->id);
         return $view;
-    } 
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -60,9 +59,8 @@ class MemoJournalController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) 
+    public function store(Request $request)
     {
-        
         self::storeTemp($request);
         $this->validate($request, [
             'coa_id'=>'required',
@@ -97,7 +95,7 @@ class MemoJournalController extends Controller
     {
         $coa_id = $request->input('coa_id');
         for ($i=0; $i<count($coa_id); $i++) {
-            if($coa_id[$i] == '') {
+            if ($coa_id[$i] == '') {
                 return false;
             }
 
@@ -125,7 +123,7 @@ class MemoJournalController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {        
+    {
         access_is_allowed('read.point.accounting.memo.journal');
 
         $view = view('point-accounting::app.accounting.point.memo-journal.show');
@@ -163,7 +161,7 @@ class MemoJournalController extends Controller
         access_is_allowed('update.point.accounting.memo.journal');
         $memo_journal = MemoJournal::find($id);
         
-        if(!$memo_journal && !$memo_journal->formulir->form_number==null){
+        if (!$memo_journal && !$memo_journal->formulir->form_number==null) {
             gritter_error('Memo Journal not found', 'false');
             return redirect('accounting/point/memo-journal');
         }
@@ -173,7 +171,7 @@ class MemoJournalController extends Controller
         $view->list_coa = $list_coa;
         $view->memo_journal = $memo_journal;
 
-        $memo_journal_detail = MemoJournalDetail::where('memo_journal_id',$id )->get();
+        $memo_journal_detail = MemoJournalDetail::where('memo_journal_id', $id)->get();
         self::storeTempEdit($memo_journal_detail);
         $view->details = TempDataHelper::get('memo.journal', auth()->user()->id);
         $view->list_user_approval = UserHelper::getAllUser();
@@ -188,7 +186,7 @@ class MemoJournalController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) 
+    public function update(Request $request, $id)
     {
         $this->validate($request, [
             'coa_id'=>'required',
@@ -222,7 +220,7 @@ class MemoJournalController extends Controller
         return redirect('accounting/point/memo-journal/'.$memo_journal->id);
     }
 
-    public function _masterReference() 
+    public function _masterReference()
     {
         if (!$this->validateCSRF()) {
             return response()->json($this->restrictionAccessMessage());
@@ -232,9 +230,9 @@ class MemoJournalController extends Controller
         $list_journal = Journal::joinCoa()->coaHasSubleger()->where('coa.id', $coa_id)->get();
         $result = [];
 
-        if($list_journal){
-            foreach($list_journal as $journal) {
-                if($journal->subledger_id && $journal->subledger_type){
+        if ($list_journal) {
+            foreach ($list_journal as $journal) {
+                if ($journal->subledger_id && $journal->subledger_type) {
                     $subledger = $journal->subledger_type::find($journal->subledger_id);
                     $temp = array(
                         'value' => $journal->subledger_id.'#'.$journal->subledger_type,
@@ -252,7 +250,7 @@ class MemoJournalController extends Controller
         return response()->json($response);
     }
 
-    public function _formReference() 
+    public function _formReference()
     {
         if (!$this->validateCSRF()) {
             return response()->json($this->restrictionAccessMessage());
@@ -267,9 +265,9 @@ class MemoJournalController extends Controller
             ->get();
         $result = [];
 
-        if($list_journal) {
-            foreach($list_journal as $journal) {
-                if($journal->subledger_id && $journal->subledger_type){
+        if ($list_journal) {
+            foreach ($list_journal as $journal) {
+                if ($journal->subledger_id && $journal->subledger_type) {
                     $formulir = Formulir::find($journal->form_journal_id);
                     $temp = array(
                         'value' => $formulir->id,
@@ -292,13 +290,12 @@ class MemoJournalController extends Controller
         TempDataHelper::clear('memo.journal', auth()->user()->id);
 
         for ($i=0; $i < count($request->input('coa_id')); $i++) {
-
             $subledger = $request->input('master')[$i];
             $master_id = explode('#', $subledger);
             $subledger_id = '';
             $subledger_type = '';
 
-            if($subledger) {
+            if ($subledger) {
                 $subledger_id = $master_id[0];
                 $subledger_type = $master_id[1];
             }
@@ -339,13 +336,12 @@ class MemoJournalController extends Controller
                 'credit'=>$detail->credit,
             ]);
             $temp->save();
-   
         }
         
         return true;
     }
 
-    public function _removeTemp() 
+    public function _removeTemp()
     {
         if (!$this->validateCSRF()) {
             return response()->json($this->restrictionAccessMessage());
@@ -371,5 +367,3 @@ class MemoJournalController extends Controller
         return redirect('accounting/point/memo-journal/'.$id);
     }
 }
-
-

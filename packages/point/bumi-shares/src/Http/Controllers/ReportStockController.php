@@ -176,8 +176,8 @@ class ReportStockController extends Controller
     public function detailExport($formulir_id, $shares_id)
     {
         $file_name = 'Shares Mutation '.auth()->user()->id . '' . date('Y-m-d_His');
-        \Excel::create($file_name, function($excel) use ($formulir_id, $shares_id) {
-            $excel->sheet('Shares Stock Report', function($sheet) use ($formulir_id, $shares_id) {
+        \Excel::create($file_name, function ($excel) use ($formulir_id, $shares_id) {
+            $excel->sheet('Shares Stock Report', function ($sheet) use ($formulir_id, $shares_id) {
                 $data = array(
                     'list_stock_fifo' => StockFifo::joinFormulirSell()->where('shares_in_id', $formulir_id)->where('quantity', '>', 0)->get(),
                     'buy' => Buy::where('formulir_id', $formulir_id)->first(),
@@ -186,7 +186,6 @@ class ReportStockController extends Controller
                 
                 $sheet->loadView('bumi-shares::app.facility.bumi-shares.report.stock._data-detail', $data);
             });
-
         })->export('xls');
     }
 }

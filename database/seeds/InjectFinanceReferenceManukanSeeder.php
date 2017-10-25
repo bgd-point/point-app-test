@@ -10,17 +10,17 @@ class InjectFinanceReferenceManukanSeeder extends Seeder
     public function run()
     {
         $list_payment_order = PaymentOrder::joinFormulir()
-        	->approvalApproved()
-        	->notArchived()
-        	->open()
-        	->selectOriginal()
-        	->get();
+            ->approvalApproved()
+            ->notArchived()
+            ->open()
+            ->selectOriginal()
+            ->get();
         foreach ($list_payment_order as $payment_order) {
-        	$payment_reference = PaymentReference::where('payment_reference_id', $payment_order->formulir_id)->first();
-        	if (! $payment_reference) {
-				self::insertPaymentReference($payment_order);
-        	}
-    	}	
+            $payment_reference = PaymentReference::where('payment_reference_id', $payment_order->formulir_id)->first();
+            if (! $payment_reference) {
+                self::insertPaymentReference($payment_order);
+            }
+        }
     }
 
     public function insertPaymentReference($payment_order)
@@ -52,5 +52,4 @@ class InjectFinanceReferenceManukanSeeder extends Seeder
 
         DB::commit();
     }
-
 }

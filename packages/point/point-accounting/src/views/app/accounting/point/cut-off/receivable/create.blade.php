@@ -79,7 +79,7 @@
                                             }
 
                                             $position = Point\Framework\Helpers\JournalHelper::position($coa->id);
-                                            $value_of_account = Point\Framework\Models\Journal::where('coa_id', $coa->id)->where('form_date','<=',date_format_db($form_date, 'end'))->sum($position) ? : 0;
+                                            $value_of_account = Point\Framework\Models\Journal::where('coa_id', $coa->id)->where('form_date', '<=', date_format_db($form_date, 'end'))->sum($position) ? : 0;
                                         ?>
 
                                         <tr>

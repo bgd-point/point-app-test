@@ -72,13 +72,13 @@
                                 </thead>
                                 <tbody class="manipulate-row">
                                     <?php 
-                                        $i = 0; 
-                                        $total_amount = 0; 
+                                        $i = 0;
+                                        $total_amount = 0;
                                     ?>
 
                                     @foreach($list_coa as $coa)
                                     <?php
-                                        $amount = Point\PointAccounting\Models\CutOffReceivableDetail::where('coa_id', $coa->id)->where('cut_off_receivable_id',$cut_off_receivable_archived->id)->sum('amount');
+                                        $amount = Point\PointAccounting\Models\CutOffReceivableDetail::where('coa_id', $coa->id)->where('cut_off_receivable_id', $cut_off_receivable_archived->id)->sum('amount');
                                         $total_amount += $amount;
                                     ?>
                                     

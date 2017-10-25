@@ -44,7 +44,6 @@ Route::group(['namespace' => 'Point\Core\Http\Controllers'], function () {
         // password reset routes
         Route::get('password/reset/{token}', 'PasswordController@getReset');
         Route::post('password/reset', 'PasswordController@postReset');
-
     });
 
     // setting routes
@@ -82,10 +81,10 @@ Route::group(['namespace' => 'Point\Core\Http\Controllers'], function () {
         Route::post('/reset-database/to-default', 'Setting\ResetDatabaseController@toDefault');
     });
     
-    Route::group(['middleware' => 'auth'], function () { 
-        Route::get('logo/{url}/{name}', function($url, $name) {
+    Route::group(['middleware' => 'auth'], function () {
+        Route::get('logo/{url}/{name}', function ($url, $name) {
             $path = storage_path().'/app/'.$url.'/logo/' . $name;
-            if (file_exists($path)) { 
+            if (file_exists($path)) {
                 return \Response::download($path);
             }
         });

@@ -169,11 +169,11 @@
                 @foreach($list_coa as $coa)
                 <?php
 
-                    $cut_off_account_detail = Point\PointAccounting\Models\CutOffAccountDetail::where('coa_id', $coa->id)->where('cut_off_account_id',$cut_off->id)->first();
+                    $cut_off_account_detail = Point\PointAccounting\Models\CutOffAccountDetail::where('coa_id', $coa->id)->where('cut_off_account_id', $cut_off->id)->first();
                     
-                    if($cut_off_account_detail){
+                    if ($cut_off_account_detail) {
                         $total_debit += $cut_off_account_detail->debit;
-                        $total_credit += $cut_off_account_detail->credit;    
+                        $total_credit += $cut_off_account_detail->credit;
                     }
                 ?>
                     <tr class="item">

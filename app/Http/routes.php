@@ -11,11 +11,11 @@
 |
 */
 
-Route::group(['middleware' => 'auth'], function(){
+Route::group(['middleware' => 'auth'], function () {
     Route::get('/', 'DashboardController@index');
 });
 
 
-Route::get('barcode', function() {
+Route::get('barcode', function () {
     return view('barcode');
 });

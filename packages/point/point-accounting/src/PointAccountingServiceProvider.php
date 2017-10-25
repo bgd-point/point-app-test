@@ -58,6 +58,5 @@ class PointAccountingServiceProvider extends ServiceProvider
      */
     public function register()
     {
-       
     }
 }

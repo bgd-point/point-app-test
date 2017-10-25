@@ -202,14 +202,14 @@ class ReportController extends Controller
                 for ($i=0; $i < $total_data; $i++) {
                     $received = '0.00';
                     if ($data_report['report'][$i]->payment_flow == 'in') {
-                       $received = number_format_price($data_report['report'][$i]->total); 
-                       $total_received += $data_report['report'][$i]->total;
+                        $received = number_format_price($data_report['report'][$i]->total);
+                        $total_received += $data_report['report'][$i]->total;
                     }
                     
                     $disbursed = '0.00';
                     if ($data_report['report'][$i]->payment_flow == 'out') {
-                       $disbursed = number_format_price($data_report['report'][$i]->total); 
-                       $total_disbursed += $data_report['report'][$i]->total;
+                        $disbursed = number_format_price($data_report['report'][$i]->total);
+                        $total_disbursed += $data_report['report'][$i]->total;
                     }
                     
 
@@ -272,7 +272,6 @@ class ReportController extends Controller
                 $sheet->cell('F'.$next_row, function ($cell) use ($data_report, $total_received, $total_disbursed) {
                     $cell->setValue(number_format_quantity(($data_report['journal_debit'] - $data_report['journal_credit']) + $total_disbursed + $total_received));
                 });
-
             });
         })->export('xls');
     }

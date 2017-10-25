@@ -100,17 +100,17 @@
                                         ?>
                                             <select id="master-{{$i}}" name="master[]" class="selectize" style="width:100%;" data-placeholder="Choose one.." onchange="selectMaster(this.value, {{$i}} )">
                                                 <?php
-                                                    if($list_journal){
-                                                        foreach($list_journal as $journal) {
-                                                            if($journal->subledger_id && $journal->subledger_type){
+                                                    if ($list_journal) {
+                                                        foreach ($list_journal as $journal) {
+                                                            if ($journal->subledger_id && $journal->subledger_type) {
                                                                 $subledger = $journal->subledger_type::find($journal->subledger_id);
                                                                 $value = $journal->subledger_id.'#'.$journal->subledger_type;
                                                                 $name = $subledger->name;
 
                                                                 $subleger_id_temp = $details[$i]['subledger_id'].'#'.$details[$i]['subledger_type'];
-                                                                if($value == $subleger_id_temp){
+                                                                if ($value == $subleger_id_temp) {
                                                                     echo "<option value='".$value."' selected>$name</option>";
-                                                                }else{
+                                                                } else {
                                                                     echo "<option value='".$value."'>".$name."</option>";
                                                                 }
                                                             }
@@ -123,14 +123,14 @@
                                             <select id="invoice-{{$i}}" name="invoice[]" class="selectize" style="width:100%;" data-placeholder="Choose one..">
                                                 <?php
                                                     $list_journal = Point\Framework\Models\Journal::where('coa_id', $details[$i]['coa_id'])->where('subledger_id', $details[$i]['subledger_id'])->get();
-                                                    if($list_journal) {
-                                                        foreach($list_journal as $journal) {
-                                                            if($journal->subledger_id && $journal->subledger_type){
+                                                    if ($list_journal) {
+                                                        foreach ($list_journal as $journal) {
+                                                            if ($journal->subledger_id && $journal->subledger_type) {
                                                                 $value = $journal->formulir->id;
                                                                 $text = $journal->formulir->form_number.' #'.$journal->formulir->notes;
-                                                                if($details[$i]['form_reference_id'] == $value){
+                                                                if ($details[$i]['form_reference_id'] == $value) {
                                                                     echo "<option value='".$value."' selected>".$text."</option>";
-                                                                }else{
+                                                                } else {
                                                                     echo "<option value='".$value."'>".$text."</option>";
                                                                 }
                                                             }

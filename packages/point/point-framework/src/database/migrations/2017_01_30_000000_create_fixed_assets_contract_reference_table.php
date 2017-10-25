@@ -10,10 +10,9 @@ class CreateFixedAssetsContractReferenceTable extends Migration
      *
      * @return void
      */
-    public function up() 
+    public function up()
     {
-        Schema::create('fixed_assets_contract_reference', function($table)
-        {
+        Schema::create('fixed_assets_contract_reference', function ($table) {
             $table->increments('id');
 
             $table->integer('fixed_assets_contract_id')->nullable()->unsigned();
@@ -46,15 +45,14 @@ class CreateFixedAssetsContractReferenceTable extends Migration
             $table->string('unit');
             $table->string('country');
 
-            $table->decimal('total_paid',16,4);
-            $table->decimal('depreciation',16,4);
-            $table->decimal('quantity',16,4);
+            $table->decimal('total_paid', 16, 4);
+            $table->decimal('depreciation', 16, 4);
+            $table->decimal('quantity', 16, 4);
             $table->decimal('discount', 16, 4);
-            $table->decimal('price',16,4);
-            $table->decimal('total_price',16,4);
-            $table->decimal('useful_life',16,4);
-            $table->decimal('salvage_value',16,4);
-
+            $table->decimal('price', 16, 4);
+            $table->decimal('total_price', 16, 4);
+            $table->decimal('useful_life', 16, 4);
+            $table->decimal('salvage_value', 16, 4);
         });
     }
 

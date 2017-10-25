@@ -12,7 +12,7 @@ class CreateBumiDepositPphTable extends Migration
      */
     public function up()
     {
-        Schema::create('bumi_deposit_pph', function($table) {
+        Schema::create('bumi_deposit_pph', function ($table) {
             $table->increments('id');
 
             $table->integer('bumi_deposit_id')->unsigned()->index('bumi_deposit_pph_deposit_index');

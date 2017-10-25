@@ -266,7 +266,7 @@ class SalesOrderController extends Controller
         }
 
         $data = array(
-            'sales_order' => $sales_order, 
+            'sales_order' => $sales_order,
             'token' => $token,
             'warehouse' => $warehouse
         );

@@ -48,9 +48,9 @@ class FixedAssetsPaymentOrderApprovalController extends Controller
             $array_formulir_id = implode(',', $array_formulir_id);
             $approver = User::find($data_approver->approval_to);
             $data = [
-                'list_data' => $list_payment_order, 
-                'token' => $token, 
-                'username' => auth()->user()->name, 
+                'list_data' => $list_payment_order,
+                'token' => $token,
+                'username' => auth()->user()->name,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
@@ -184,7 +184,5 @@ class FixedAssetsPaymentOrderApprovalController extends Controller
 
             AllocationHelper::save($payment_order->formulir_id, $payment_order_other->allocation_id, $payment_order_other->amount);
         }
-
     }
-    
 }

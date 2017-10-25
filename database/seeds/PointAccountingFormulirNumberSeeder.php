@@ -5,7 +5,7 @@ use Point\Framework\Helpers\FormulirNumberHelper;
 
 class PointAccountingFormulirNumberSeeder extends Seeder
 {
-    public function run() 
+    public function run()
     {
         FormulirNumberHelper::create('point-accounting-memo-journal', 'AJE/');
         FormulirNumberHelper::create('point-accounting-cut-off-account', 'COA/');
@@ -15,4 +15,3 @@ class PointAccountingFormulirNumberSeeder extends Seeder
         FormulirNumberHelper::create('point-accounting-cut-off-fixed-assets', 'COFA/');
     }
 }
-

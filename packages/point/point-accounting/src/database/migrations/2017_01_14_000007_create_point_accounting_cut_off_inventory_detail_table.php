@@ -34,7 +34,6 @@ class CreatePointAccountingCutOffInventoryDetailTable extends Migration
             $table->double('stock', 16, 4);
             $table->double('amount', 16, 4);
             $table->string('notes', 255);
-           
         });
     }
 

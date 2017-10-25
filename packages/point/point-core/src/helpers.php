@@ -267,4 +267,3 @@ if (! function_exists('permission_check_all')) {
         return PermissionHelper::checkAll($role_id, $permission_type);
     }
 }
-

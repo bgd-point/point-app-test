@@ -116,7 +116,7 @@ class ServiceReportController extends Controller
                             strtoupper($service->name),
                             strtoupper(number_format_quantity($data->quantity, 0)),
                             strtoupper(number_format_quantity($data->price))
-                        ]);                    
+                        ]);
                     }
 
                     $total_data = $total_data+3;

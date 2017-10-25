@@ -33,7 +33,6 @@ class CreatePointPurchasingRequisitionFixedAssetsTable extends Migration
                 ->references('id')->on('person')
                 ->onUpdate('restrict')
                 ->onDelete('restrict');
-            
         });
     }
 

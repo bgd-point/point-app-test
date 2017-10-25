@@ -9,9 +9,8 @@ use Point\PointAccounting\Helpers\CutOffHelper;
 
 class CutOffSubledgerRequest extends Request
 {
-    
-    public function response(array $errors){
-
+    public function response(array $errors)
+    {
         return redirect()->back()->withErrors($errors)->withInput(\Input::all());
     }
 
@@ -38,10 +37,9 @@ class CutOffSubledgerRequest extends Request
             'approval_to'=>'required'
         ];
         
-        if(\Input::get('foot_amount') < 1){
+        if (\Input::get('foot_amount') < 1) {
             $rules['Failed_foot_credit_less_then_one'] = 'accepted';
             $rules['Failed_foot_debit_less_then_one'] = 'accepted';
-
         }
 
         return $rules;
@@ -53,5 +51,4 @@ class CutOffSubledgerRequest extends Request
             'accepted' => ':attribute',
         ];
     }
-
 }

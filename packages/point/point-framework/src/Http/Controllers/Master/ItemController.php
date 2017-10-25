@@ -864,7 +864,7 @@ class ItemController extends Controller
                             strtoupper('['.$list_item[$i]['code'].'] ' . $list_item[$i]['name']),
                             strtoupper(Item::defaultUnit($list_item[$i]['id'])->name),
                             strtoupper($list_item[$i]['notes'])
-                        ]);                    
+                        ]);
                     }
 
                     $total_data = $total_data+2;

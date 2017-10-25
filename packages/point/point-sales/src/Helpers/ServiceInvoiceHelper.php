@@ -116,7 +116,6 @@ class ServiceInvoiceHelper
 
         if ($request->input('type_of_tax') == 'exclude') {
             $tax = $tax_base * 10 / 100;
-
         }
 
         $total = $tax_base + $tax;
@@ -198,7 +197,7 @@ class ServiceInvoiceHelper
         }
 
         // 3. Journal Sales of Goods
-        if($data['value_of_sale_of_goods'] > 0) {
+        if ($data['value_of_sale_of_goods'] > 0) {
             $sales_of_goods = JournalHelper::getAccount('point sales service', 'sale of goods');
             $position = JournalHelper::position($sales_of_goods);
             $journal = new Journal;
@@ -242,7 +241,7 @@ class ServiceInvoiceHelper
         $journal->subledger_type;
         $journal->save();
 
-        if($data['value_of_sale_of_goods'] > 0) {
+        if ($data['value_of_sale_of_goods'] > 0) {
             self::journalInventory($data);
         }
     }

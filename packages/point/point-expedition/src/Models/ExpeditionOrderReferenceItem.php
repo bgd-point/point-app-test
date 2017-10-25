@@ -24,6 +24,6 @@ class ExpeditionOrderReferenceItem extends Model
 
     public function expeditionReference()
     {
-        return $this->belongsTo('Point\PointExpedition\Models\ExpeditionOrderReference','point_expedition_order_reference_id');
+        return $this->belongsTo('Point\PointExpedition\Models\ExpeditionOrderReference', 'point_expedition_order_reference_id');
     }
 }

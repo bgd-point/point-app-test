@@ -65,7 +65,7 @@ class PurchaseOrder extends Model
         }
 
         $purchase_order = $purchase_order->get()->toArray();
-        $formulir_lock = FormulirLock::join('formulir', 'formulir_lock.locking_id', '=', 'formulir.id' )
+        $formulir_lock = FormulirLock::join('formulir', 'formulir_lock.locking_id', '=', 'formulir.id')
             ->whereIn('locked_id', $purchase_order)
             ->where('formulirable_type', get_class(new ExpeditionOrder()))
             ->whereNotNull('form_number')
@@ -180,7 +180,7 @@ class PurchaseOrder extends Model
         if ($this->is_cash) {
             if (! self::getTotalRemainingDownpayment($this->id) > 0) {
                 return false;
-            }    
+            }
         }
         
         if ($this->include_expedition) {

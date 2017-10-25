@@ -54,7 +54,6 @@ class AddColumnSalesPaymentCollectionTable extends Migration
                     ->references('id')->on('coa')
                     ->onUpdate('restrict')
                     ->onDelete('restrict');
-
             });
         }
 
@@ -66,12 +65,11 @@ class AddColumnSalesPaymentCollectionTable extends Migration
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             });
-        }        
+        }
     }
 
     public function dropColumnSalesInventory()
     {
-        
         if (Schema::hasColumn('point_sales_payment_collection', 'payment_type')) {
             Schema::table('point_sales_payment_collection', function ($table) {
                 $table->dropColumn(['payment_type']);
@@ -83,7 +81,6 @@ class AddColumnSalesPaymentCollectionTable extends Migration
                 $table->dropForeign('sales_pc_detail_coa_foreign');
                 $table->dropIndex('sales_pc_detail_coa_index');
                 $table->dropColumn(['coa_id']);
-
             });
         }
 
@@ -93,7 +90,7 @@ class AddColumnSalesPaymentCollectionTable extends Migration
                 $table->dropIndex('sales_pc_detail_form_reference_index');
                 $table->dropColumn(['form_reference_id']);
             });
-        } 
+        }
     }
 
     public function addColumnSalesService()
@@ -121,7 +118,6 @@ class AddColumnSalesPaymentCollectionTable extends Migration
                     ->references('id')->on('coa')
                     ->onUpdate('restrict')
                     ->onDelete('restrict');
-
             });
         }
 
@@ -133,12 +129,11 @@ class AddColumnSalesPaymentCollectionTable extends Migration
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             });
-        }        
+        }
     }
 
     public function dropColumnSalesService()
     {
-        
         if (Schema::hasColumn('point_sales_service_payment_collection', 'payment_type')) {
             Schema::table('point_sales_service_payment_collection', function ($table) {
                 $table->dropColumn(['payment_type']);
@@ -150,7 +145,6 @@ class AddColumnSalesPaymentCollectionTable extends Migration
                 $table->dropForeign('sales_pc_service_detail_coa_foreign');
                 $table->dropIndex('sales_pc_service_detail_coa_index');
                 $table->dropColumn(['coa_id']);
-
             });
         }
 
@@ -160,6 +154,6 @@ class AddColumnSalesPaymentCollectionTable extends Migration
                 $table->dropIndex('sales_pc_service_detail_form_reference_index');
                 $table->dropColumn(['form_reference_id']);
             });
-        } 
+        }
     }
 }

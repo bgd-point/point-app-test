@@ -91,17 +91,17 @@
                                                 <option></option>
                                                 <?php
                                                     $list_journal = Point\Framework\Models\Journal::joinCoa()->coaHasSubleger()->where('coa.id', $details[$i]['coa_id'])->get();
-                                                    if($list_journal){
-                                                        foreach($list_journal as $journal) {
-                                                            if($journal->subledger_id && $journal->subledger_type){
+                                                    if ($list_journal) {
+                                                        foreach ($list_journal as $journal) {
+                                                            if ($journal->subledger_id && $journal->subledger_type) {
                                                                 $subledger = $journal->subledger_type::find($journal->subledger_id);
                                                                 $value = $journal->subledger_id.'#'.$journal->subledger_type;
                                                                 $name = $subledger->name;
 
                                                                 $subleger_temp = $details[$i]['subledger_id'].'#'.$details[$i]['subledger_type'];
-                                                                if($subleger_temp == $value){
+                                                                if ($subleger_temp == $value) {
                                                                     echo "<option value='".$value."' selected>$name</option>";
-                                                                }else{
+                                                                } else {
                                                                     echo "<option value='".$value."'>$name</option>";
                                                                 }
                                                             }
@@ -116,16 +116,16 @@
                                                 <option ></option>
                                                 <?php
                                                     $list_journal = Point\Framework\Models\Journal::where('coa_id', $details[$i]['coa_id'])->where('subledger_id', $details[$i]['subledger_id'])->get();
-                                                    if($list_journal) {
-                                                        foreach($list_journal as $journal) {
-                                                            if($journal->subledger_id && $journal->subledger_type){
+                                                    if ($list_journal) {
+                                                        foreach ($list_journal as $journal) {
+                                                            if ($journal->subledger_id && $journal->subledger_type) {
                                                                 $formulir = Point\Framework\Models\Formulir::find($journal->form_journal_id);
                                                                 $value= $formulir->id;
                                                                 $text= $formulir->form_number.' #'.$formulir->notes;
 
-                                                                if($details[$i]['form_reference_id'] == $value){
+                                                                if ($details[$i]['form_reference_id'] == $value) {
                                                                     echo "<option value='".$value."' selected>$text</option>";
-                                                                }else{
+                                                                } else {
                                                                     echo "<option value='".$value."'>$text</option>";
                                                                 }
                                                             }

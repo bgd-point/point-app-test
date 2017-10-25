@@ -45,9 +45,8 @@ class SubLedgerController extends Controller
         $subledger_id = \Input::get('subledger_id') ?: 0;
         $journals = AccountingHelper::querySubledger($date_from, $date_to, $subledger_id, $coa_id);
         
-        \Excel::create($file_name, function($excel) use ($date_from, $date_to, $coa_id, $subledger_id, $journals) {
-
-            $excel->sheet('Subledger', function($sheet) use ($date_from, $date_to, $coa_id, $subledger_id, $journals) {
+        \Excel::create($file_name, function ($excel) use ($date_from, $date_to, $coa_id, $subledger_id, $journals) {
+            $excel->sheet('Subledger', function ($sheet) use ($date_from, $date_to, $coa_id, $subledger_id, $journals) {
                 $data = array(
                     'list_coa' => Coa::active()->whereNotNull('subledger_type')->get(),
                     'coa_id' => $coa_id,
@@ -59,7 +58,6 @@ class SubLedgerController extends Controller
                 
                 $sheet->loadView('framework::app.accounting.sub-ledger._data', $data);
             });
-
         })->export('xls');
     }
 

@@ -234,7 +234,7 @@ class PurchaseOrderController extends Controller
         }
 
         $data = array(
-            'purchase_order' => $purchase_order, 
+            'purchase_order' => $purchase_order,
             'token' => $token,
             'warehouse' => $warehouse
         );

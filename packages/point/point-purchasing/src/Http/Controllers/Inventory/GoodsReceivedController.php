@@ -96,7 +96,7 @@ class GoodsReceivedController extends Controller
             'warehouse_id' => 'required',
         ]);
 
-        for ($i=0; $i < count(\Input::get('item_quantity')); $i++) { 
+        for ($i=0; $i < count(\Input::get('item_quantity')); $i++) {
             if (! \Input::get('item_quantity')[$i] > 0) {
                 gritter_error('Failed, quantity delivery must be more than zero', false);
                 return redirect()->back();
@@ -183,7 +183,7 @@ class GoodsReceivedController extends Controller
             ]);
         }
         
-        for ($i=0; $i < count(\Input::get('item_quantity')); $i++) { 
+        for ($i=0; $i < count(\Input::get('item_quantity')); $i++) {
             if (! \Input::get('item_quantity')[$i] > 0) {
                 gritter_error('Failed, quantity delivery must be more than zero', false);
                 return redirect()->back();

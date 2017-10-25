@@ -17,7 +17,7 @@ use Point\PointSales\Models\Sales\InvoiceItem;
 
 class InvoiceHelper
 {
-    public static function searchList($list_invoice,  $order_by, $order_type, $status = 0, $date_from, $date_to, $search)
+    public static function searchList($list_invoice, $order_by, $order_type, $status = 0, $date_from, $date_to, $search)
     {
         if ($status != 'all') {
             $list_invoice = $list_invoice->where('formulir.form_status', '=', $status ?: 0);

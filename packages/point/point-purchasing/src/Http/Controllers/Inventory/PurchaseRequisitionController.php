@@ -203,7 +203,7 @@ class PurchaseRequisitionController extends Controller
         }
 
         $data = array(
-            'purchase_requisition' => $purchase_requisition, 
+            'purchase_requisition' => $purchase_requisition,
             'token' => $token,
             'warehouse' => $warehouse
         );

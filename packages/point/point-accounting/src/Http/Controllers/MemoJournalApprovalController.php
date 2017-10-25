@@ -30,14 +30,14 @@ class MemoJournalApprovalController extends Controller
     {
         access_is_allowed('create.point.accounting.memo.journal');
 
-        if($this->isFormulirNull($request)) {
+        if ($this->isFormulirNull($request)) {
             return redirect()->back();
         }
 
         $list_approver = MemoJournal::selectApproverList(app('request')->input('formulir_id'));
         $request = $request->input();
         $token = md5(date('ymdhis'));
-        foreach($list_approver as $data_approver) {
+        foreach ($list_approver as $data_approver) {
             $list_memo_journal = MemoJournal::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_memo_journal as $memo_journal) {
@@ -47,15 +47,15 @@ class MemoJournalApprovalController extends Controller
             $array_formulir_id = implode(',', $array_formulir_id);
             $approver = User::find($data_approver->approval_to);
             $data = [
-                'list_data' => $list_memo_journal, 
-                'token' => $token, 
-                'username' => auth()->user()->name, 
+                'list_data' => $list_memo_journal,
+                'token' => $token,
+                'username' => auth()->user()->name,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
                 ];
 
-            \Queue::push(function($job) use ($approver, $data, $request) {
+            \Queue::push(function ($job) use ($approver, $data, $request) {
                 QueueHelper::reconnectAppDatabase($request['database_name']);
                 \Mail::send('point-accounting::emails.accounting.point.approval.memo-journal', $data, function ($message) use ($approver) {
                     $message->to($approver->email)->subject('request approval Memo Journal #' . date('ymdHi'));

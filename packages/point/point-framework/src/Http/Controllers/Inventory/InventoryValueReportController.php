@@ -29,14 +29,14 @@ class InventoryValueReportController extends Controller
             ->where('item.name', 'like', '%' . $item_search . '%')
             ->groupBy('inventory.item_id')
             ->where('inventory.total_quantity', '>', 0)
-            ->where(function ($query) use ($view){
+            ->where(function ($query) use ($view) {
                 if ($view->search_warehouse) {
                     $query->where('inventory.warehouse_id', $view->search_warehouse->id);
                 }
             })
-            ->where(function ($query) use ($view){
+            ->where(function ($query) use ($view) {
                 $query->whereBetween('inventory.form_date', [$view->date_from, $view->date_to])
-                    ->orWhere('inventory.form_date','<' , $view->date_from);
+                    ->orWhere('inventory.form_date', '<', $view->date_from);
             })->paginate(100);
         return $view;
     }
@@ -59,7 +59,7 @@ class InventoryValueReportController extends Controller
 
         $view->list_inventory = Inventory::where('item_id', '=', $item_id)
             ->where('item_id', '=', $item_id)
-            ->where(function($query) use ($warehouse_id){
+            ->where(function ($query) use ($warehouse_id) {
                 if ($warehouse_id) {
                     $query->where('warehouse_id', '=', $warehouse_id);
                 }

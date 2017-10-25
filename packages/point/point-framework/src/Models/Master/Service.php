@@ -16,11 +16,11 @@ class Service extends Model
     public function scopeSearch($q, $disabled, $search)
     {
         return $q->where('disabled', $disabled ? : 0)
-        		->where(function($query) use ($disabled, $search) {
-        			$query->where('disabled', $disabled ? : 0);
-        			if ($search) {
-        				$query->where('name', 'like', '%'.$search.'%');
-        			}
-        		});
+                ->where(function ($query) use ($disabled, $search) {
+                    $query->where('disabled', $disabled ? : 0);
+                    if ($search) {
+                        $query->where('name', 'like', '%'.$search.'%');
+                    }
+                });
     }
 }

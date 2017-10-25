@@ -75,6 +75,5 @@ class PointPurchasingPermissionSeeder extends Seeder
         PermissionHelper::create('POINT PURCHASING INVOICE FIXED ASSETS', ['create', 'read', 'update', 'delete'], $group);
         PermissionHelper::create('POINT PURCHASING RETURN FIXED ASSETS', ['create', 'read', 'update', 'delete', 'approval'], $group);
         PermissionHelper::create('POINT PURCHASING CONTRACT', ['create', 'read', 'update', 'delete', 'approval'], $group);
-
     }
 }

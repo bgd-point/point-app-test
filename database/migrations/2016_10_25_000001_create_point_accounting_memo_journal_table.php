@@ -10,10 +10,9 @@ class CreatePointAccountingMemoJournalTable extends Migration
      *
      * @return void
      */
-    public function up() 
+    public function up()
     {
-        Schema::create('point_accounting_memo_journal', function($table)
-        {
+        Schema::create('point_accounting_memo_journal', function ($table) {
             $table->increments('id');
             
             $table->integer('formulir_id')->unsigned()->index();

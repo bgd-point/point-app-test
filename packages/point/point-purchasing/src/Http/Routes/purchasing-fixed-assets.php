@@ -1,9 +1,9 @@
 <?php
 
 Route::group(['prefix' => 'purchasing/point/fixed-assets', 'namespace' => 'Point\PointPurchasing\Http\Controllers\FixedAssets'], function () {
-    Route::get('/', function() {
+    Route::get('/', function () {
         return view('point-purchasing::app.purchasing.point.fixed-assets.menu');
-    }); 
+    });
 
     // PURCHASE REQUISITION
     Route::get('/purchase-requisition/reject-all', 'FixedAssetsPurchaseRequisitionApprovalController@rejectAll');

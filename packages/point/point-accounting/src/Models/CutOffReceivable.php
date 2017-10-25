@@ -33,7 +33,7 @@ class CutOffReceivable extends Model
 
     public function cutOffReceivableDetail()
     {
-        return $this->hasMany('Point\PointAccounting\Models\CutOffReceivableDetail','cut_off_receivable_id', 'id');
+        return $this->hasMany('Point\PointAccounting\Models\CutOffReceivableDetail', 'cut_off_receivable_id', 'id');
     }
 
     public static function getSubledgerAmount($form_date, $coa_id)
@@ -47,7 +47,7 @@ class CutOffReceivable extends Model
             ->orderBy('formulir.id', 'desc')
             ->first();
 
-        if(! $cut_off_receivable) {
+        if (! $cut_off_receivable) {
             return 0;
         }
 

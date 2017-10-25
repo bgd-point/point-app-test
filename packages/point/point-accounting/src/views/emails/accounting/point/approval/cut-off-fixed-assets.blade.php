@@ -161,11 +161,11 @@
                 ?>
                 @foreach($list_coa as $coa)
                     <?php
-                        $cut_off_receivable_detail = Point\PointAccounting\Models\CutOffFixedAssetsDetail::where('coa_id', $coa->id)->where('fixed_assets_id',$cut_off->id)->get();
+                        $cut_off_receivable_detail = Point\PointAccounting\Models\CutOffFixedAssetsDetail::where('coa_id', $coa->id)->where('fixed_assets_id', $cut_off->id)->get();
                         $amount = Point\PointAccounting\Models\CutOffFixedAssetsDetail::getAmountDepreciation($coa->id, $cut_off->id);
                         $total_amount += $amount;
 
-                        if(!$cut_off_receivable_detail->count()){
+                        if (!$cut_off_receivable_detail->count()) {
                             continue;
                         }
                     ?>

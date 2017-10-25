@@ -58,8 +58,8 @@ class DownpaymentApprovalController extends Controller
             \Queue::push(function ($job) use ($approver, $data, $request) {
                 QueueHelper::reconnectAppDatabase($request['database_name']);
                 \Mail::send('point-expedition::emails.expedition.point.approval.downpayment', $data, function ($message) use ($approver) {
-                        $message->to($approver->email)->subject('request approval downpayment #' . date('ymdHi'));
-                    });
+                    $message->to($approver->email)->subject('request approval downpayment #' . date('ymdHi'));
+                });
                 $job->delete();
             });
 

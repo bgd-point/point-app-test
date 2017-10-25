@@ -10,13 +10,13 @@ use Point\Framework\Models\Master\Allocation;
 
 class AllocationReportController extends Controller
 {
-	public function report()
+    public function report()
     {
         if (!auth()->user()->may('read.allocation.report')) {
             return view('core::errors.restricted');
         }
 
-        $list_allocation_report = AllocationHelper::searchList(\Input::get('date_from'), \Input::get('date_to'), \Input::get('search'), FALSE, TRUE);
+        $list_allocation_report = AllocationHelper::searchList(\Input::get('date_from'), \Input::get('date_to'), \Input::get('search'), false, true);
         
         $view = view('framework::app.master.allocation.report');
         $view->list_allocation_report = $list_allocation_report->paginate(100);
@@ -30,7 +30,7 @@ class AllocationReportController extends Controller
             return view('core::errors.restricted');
         }
 
-        $list_allocation_report = AllocationHelper::searchList(\Input::get('date_from'), \Input::get('date_to'), FALSE, $id, FALSE);
+        $list_allocation_report = AllocationHelper::searchList(\Input::get('date_from'), \Input::get('date_to'), false, $id, false);
         
         $view = view('framework::app.master.allocation.report-detail');
         $view->list_allocation_report = $list_allocation_report->paginate(100);
@@ -43,7 +43,7 @@ class AllocationReportController extends Controller
         $date_from =\Input::get('date_from');
         $date_to =\Input::get('date_to');
         $search =\Input::get('date_search');
-        $list_allocation_report = AllocationHelper::searchList($date_from, $date_to, $search, FALSE, TRUE)->get()->toArray();
+        $list_allocation_report = AllocationHelper::searchList($date_from, $date_to, $search, false, true)->get()->toArray();
         $request = $request->input();
         
         $fileName = 'ALLOCATION REPORT '.date('YmdHis');
@@ -118,7 +118,7 @@ class AllocationReportController extends Controller
                         array_push($header, [$i + 1,
                             strtoupper(Allocation::find($list_allocation_report[$i]['allocation_id'])->name),
                             number_format_price($list_allocation_report[$i]['amount'])
-                        ]);                    
+                        ]);
                     }
 
                     $total_data = $total_data+6;
@@ -144,11 +144,11 @@ class AllocationReportController extends Controller
                 });
 
                 # Sheet Detail Allocation
-                for ($i=0; $i < count($list_allocation_report); $i++) { 
+                for ($i=0; $i < count($list_allocation_report); $i++) {
                     $allocation = Allocation::find($list_allocation_report[$i]['allocation_id']);
 
                     $excel->sheet(strtoupper($allocation->name), function ($sheet) use ($allocation, $date_from, $date_to) {
-                        $list_allocation_detail = AllocationHelper::searchList($date_from, $date_to, FALSE, $allocation->id, FALSE)->get();
+                        $list_allocation_detail = AllocationHelper::searchList($date_from, $date_to, false, $allocation->id, false)->get();
                         $sheet->setWidth(array(
                             'A' => 10,
                             'B' => 25,
@@ -161,7 +161,7 @@ class AllocationReportController extends Controller
                         $title = strtoupper("ALLOCATION REPORT ".$allocation->name." FROM " . $date_from . " - " . $date_to);
                         $sheet->mergeCells('A1:E1', 'center');
                         $sheet->cell('A1:E2', function ($cell) {
-                        // Set font
+                            // Set font
                             $cell->setFont(array(
                                 'family'     => 'Times New Roman',
                                 'size'       => '12',
@@ -187,8 +187,8 @@ class AllocationReportController extends Controller
                                 $allocation_detail->formulir->form_number,
                                 strtoupper($allocation_detail->allocation->name),
                                 number_format_quantity($allocation_detail->amount)
-                            ]); 
-                            $i++;                   
+                            ]);
+                            $i++;
                         }
 
                         $total_data = $total_data+2;
@@ -237,6 +237,4 @@ class AllocationReportController extends Controller
 
         return response()->json($response);
     }
-
-
 }

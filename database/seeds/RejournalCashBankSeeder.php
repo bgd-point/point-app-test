@@ -17,7 +17,7 @@ class RejournalCashBankSeeder extends Seeder
          * Fix journal cash or bank where it have not reference
          */
         
-    	\DB::beginTransaction();
+        \DB::beginTransaction();
         \Log::info('---- Seeder bank starting ----');
         self::bank();
         \Log::info('---- Seeder bank finished ----');
@@ -32,7 +32,7 @@ class RejournalCashBankSeeder extends Seeder
         // $bank_id = BankDetail::whereNull('form_reference_id')->groupBy('point_finance_bank_id')->select('point_finance_bank_id')->get()->toArray();
         $bank_formulir = Bank::joinFormulir()->close()->notArchived()->select('formulir_id')->get()->toArray();
         $journal_emptying = Journal::whereIn('form_journal_id', $bank_formulir)->delete();
-        $account_receivable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $bank_formulir)->delete(); 
+        $account_receivable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $bank_formulir)->delete();
         $list_bank = Bank::whereIn('formulir_id', $bank_formulir)->get();
         foreach ($list_bank as $bank) {
             $total = 0;
@@ -114,5 +114,4 @@ class RejournalCashBankSeeder extends Seeder
             ]);
         }
     }
-
 }

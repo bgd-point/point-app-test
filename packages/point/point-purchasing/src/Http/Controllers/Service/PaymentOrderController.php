@@ -44,7 +44,7 @@ class PaymentOrderController extends Controller
     {
         $view = view('point-purchasing::app.purchasing.point.service.payment-order.index');
         $list_payment_order = PaymentOrder::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
-        $list_payment_order = ServicePaymentOrderHelper::searchList($list_payment_order, \Input::get('order_by'),  \Input::get('order_type'),  \Input::get('status'),  \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
+        $list_payment_order = ServicePaymentOrderHelper::searchList($list_payment_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_payment_order = $list_payment_order->paginate(100);
         return $view;
     }
@@ -54,7 +54,7 @@ class PaymentOrderController extends Controller
         access_is_allowed('read.point.purchasing.service.payment.order');
 
         $list_payment_order = PaymentOrder::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
-        $list_payment_order = ServicePaymentOrderHelper::searchList($list_payment_order, \Input::get('order_by'),  \Input::get('order_type'),  \Input::get('status'),  \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $list_payment_order = ServicePaymentOrderHelper::searchList($list_payment_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
         $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.service.payment-order.index-pdf', ['list_payment_order' => $list_payment_order]);
         return $pdf->stream();
     }
@@ -377,7 +377,7 @@ class PaymentOrderController extends Controller
             $locked_form = Formulir::find($formulir_lock->locked_id);
             if ($locked_form->formulirable_type != get_class(new Downpayment)) {
                 $locked_form->form_status = 0;
-                $locked_form->save();    
+                $locked_form->save();
             }
             
             $formulir_lock->locked = false;
@@ -410,7 +410,7 @@ class PaymentOrderController extends Controller
         }
 
         $data = array(
-            'payment_order' => $payment_order, 
+            'payment_order' => $payment_order,
             'token' => $token,
             'warehouse' => $warehouse
         );

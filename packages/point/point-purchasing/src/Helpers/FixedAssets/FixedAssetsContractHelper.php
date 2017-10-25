@@ -34,14 +34,14 @@ class FixedAssetsContractHelper
         return $list_contract;
     }
 
-	public static function create(Request $request, $formulir)
-	{
+    public static function create(Request $request, $formulir)
+    {
         $journal = Journal::find($request->input('journal_id'));
         if (!$journal) {
             throw new PointException("JOURNAL NOT FOUND");
         }
 
-		$contract = new FixedAssetsContract();
+        $contract = new FixedAssetsContract();
         $contract->formulir_id = $formulir->id;
         $contract->journal_id = $request->input('journal_id');
         $contract->coa_id = $request->input('coa_id');
@@ -58,7 +58,7 @@ class FixedAssetsContractHelper
         $contract->price = number_format_db($request->input('price'));
         $contract->total_price = number_format_db($request->input('total_price'));
         $contract->save();
-        for ($i=0; $i < count($request->input('fixed_assets_contract_reference_id')); $i++) { 
+        for ($i=0; $i < count($request->input('fixed_assets_contract_reference_id')); $i++) {
             $contract_detail = new FixedAssetsContractDetail();
             $contract_detail->contract_id = $contract->id;
             $contract_detail->fixed_assets_contract_reference_id = $request->input('fixed_assets_contract_reference_id')[$i];
@@ -71,9 +71,9 @@ class FixedAssetsContractHelper
         
 
         return $contract;
-	}
+    }
 
-	public static function getLastCode()
+    public static function getLastCode()
     {
         $last_fixed_assets = FixedAssetsContract::orderBy('id', 'desc')->first();
         $new_code = 1;

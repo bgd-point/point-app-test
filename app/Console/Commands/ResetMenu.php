@@ -41,6 +41,5 @@ class ResetMenu extends Command
         Artisan::call('vendor:publish', ['--provider' => 'Point\\PointAccounting\\PointAccountingServiceProvider', '--tag' => ['menus'], '--force' => true]);
         Artisan::call('vendor:publish', ['--provider' => 'Point\\BumiDeposit\\BumiDepositServiceProvider', '--tag' => ['menus'], '--force' => true]);
         Artisan::call('vendor:publish', ['--provider' => 'Point\\BumiShares\\BumiSharesServiceProvider', '--tag' => ['menus'], '--force' => true]);
-
     }
 }

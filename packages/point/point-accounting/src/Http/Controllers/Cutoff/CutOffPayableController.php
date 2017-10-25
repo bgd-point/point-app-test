@@ -21,44 +21,44 @@ use Point\PointAccounting\Models\CutOffPayable;
 use Point\PointAccounting\Models\CutOffPayableDetail;
 
 class CutOffPayableController extends Controller
-{	
-	use ValidationTrait;
+{
+    use ValidationTrait;
 
-	public function index()
-	{
-		access_is_allowed('read.point.accounting.cut.off.payable');
+    public function index()
+    {
+        access_is_allowed('read.point.accounting.cut.off.payable');
 
-		$view = view('point-accounting::app.accounting.point.cut-off.payable.index');
-       	$view->list_cut_off = CutOffPayable::joinFormulir()
+        $view = view('point-accounting::app.accounting.point.cut-off.payable.index');
+        $view->list_cut_off = CutOffPayable::joinFormulir()
             ->notArchived()
             ->selectOriginal()
             ->orderByStandard()
             ->groupBy('formulir_id')
             ->paginate(100);
         return $view;
-	}
+    }
 
-	public function create()
-	{
-		access_is_allowed('create.point.accounting.cut.off.payable');
-		
-		$view = view('point-accounting::app.accounting.point.cut-off.payable.create');
+    public function create()
+    {
+        access_is_allowed('create.point.accounting.cut.off.payable');
+        
+        $view = view('point-accounting::app.accounting.point.cut-off.payable.create');
         $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Current Liability')->selectOriginal()->orderBy('coa_number')->orderBy('name')->get(); // get all coa where category payable "current liabilty"
         $view->list_user_approval = UserHelper::getAllUser();
 
         return $view;
-	}
+    }
 
-	public function store(CutOffSubledgerRequest $request)
-	{
-		formulir_is_allowed_to_create('create.point.accounting.cut.off.payable', date_format_db($request->input('form_date')), []);
-		
-		\DB::beginTransaction();
+    public function store(CutOffSubledgerRequest $request)
+    {
+        formulir_is_allowed_to_create('create.point.accounting.cut.off.payable', date_format_db($request->input('form_date')), []);
+        
+        \DB::beginTransaction();
 
         CutOffHelper::checkingDailyCutOff($request, get_class(new CutOffPayable()));
         $formulir = formulir_create($request->input(), 'point-accounting-cut-off-payable');
         $cut_off_payable = CutOffPayableHelper::create($formulir);
-        timeline_publish('create.point.accounting.cut.off.payable','user '.\Auth::user()->name.' successfully create cut off payable ' . $formulir->form_number);
+        timeline_publish('create.point.accounting.cut.off.payable', 'user '.\Auth::user()->name.' successfully create cut off payable ' . $formulir->form_number);
 
         \DB::commit();
 
@@ -67,20 +67,20 @@ class CutOffPayableController extends Controller
         return redirect('accounting/point/cut-off/payable/'.$cut_off_payable->id);
     }
 
-	public function show($id)
-	{
-		access_is_allowed('read.point.accounting.cut.off.payable');
-		$view = view('point-accounting::app.accounting.point.cut-off.payable.show');
+    public function show($id)
+    {
+        access_is_allowed('read.point.accounting.cut.off.payable');
+        $view = view('point-accounting::app.accounting.point.cut-off.payable.show');
         $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Current Liability')->selectOriginal()->orderBy('coa_number')->orderBy('name')->get();
         $view->cut_off_payable = CutOffPayable::find($id);
         $view->list_cut_off_payable_archived = CutOffPayable::joinFormulir()->archived($view->cut_off_payable->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_cut_off_payable_archived->count();
         return $view;
-	}
+    }
 
-	public function archived($id)
-	{
-		access_is_allowed('read.point.accounting.cut.off.payable');
+    public function archived($id)
+    {
+        access_is_allowed('read.point.accounting.cut.off.payable');
         $view = view('point-accounting::app.accounting.point.cut-off.payable.archived');
         $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Current Liability')->selectOriginal()->orderBy('coa_number')->orderBy('name')->get();
         $view->cut_off_payable_archived = CutOffPayable::find($id);
@@ -88,21 +88,21 @@ class CutOffPayableController extends Controller
         return $view;
     }
 
-	public function edit($id)
-	{
-		access_is_allowed('update.point.accounting.cut.off.payable');
+    public function edit($id)
+    {
+        access_is_allowed('update.point.accounting.cut.off.payable');
 
-		$view = view('point-accounting::app.accounting.point.cut-off.payable.edit');
-		$view->cut_off_payable = CutOffPayable::find($id);
+        $view = view('point-accounting::app.accounting.point.cut-off.payable.edit');
+        $view->cut_off_payable = CutOffPayable::find($id);
         self::restoreToTemp($view->cut_off_payable);
         $view->list_coa = Coa::active()->joinCategory()->where('coa_category.name', 'Current Liability')->selectOriginal()->orderBy('coa_number')->orderBy('name')->get();
         $view->list_user_approval = UserHelper::getAllUser();
 
         return $view;
-	}
+    }
 
-	public function update(CutOffSubledgerRequest $request, $id)
-	{  
+    public function update(CutOffSubledgerRequest $request, $id)
+    {
         $formulir_check = Formulir::find($id);
         formulir_is_allowed_to_update('update.point.accounting.cut.off.payable', $formulir_check->form_date, $formulir_check);
 
@@ -118,14 +118,14 @@ class CutOffPayableController extends Controller
         $formulir_old = FormulirHelper::archive($request->input(), $id);
         $formulir = FormulirHelper::update($request->input(), $formulir_old->archived, $formulir_old->form_raw_number);
         $cut_off = CutOffPayableHelper::create($formulir);
-        timeline_publish('update.point.accounting.cut.off.payable','user '.\Auth::user()->name.' successfully update cut off payable' . $formulir->form_number);
+        timeline_publish('update.point.accounting.cut.off.payable', 'user '.\Auth::user()->name.' successfully update cut off payable' . $formulir->form_number);
 
         \DB::commit();
 
         TempDataHelper::clear('cut.off.payable', auth()->user()->id);
         gritter_success('Form cut off payable "'. $formulir->form_number .'" Success to update');
         return redirect('accounting/point/cut-off/payable/'.$cut_off->id);
-	}
+    }
 
     public function cancel()
     {
@@ -142,9 +142,9 @@ class CutOffPayableController extends Controller
         return array('status' => 'success');
     }
     
-	public function _loadDetails()
-	{
-		if (!$this->validateCSRF()) {
+    public function _loadDetails()
+    {
+        if (!$this->validateCSRF()) {
             return response()->json($this->restrictionAccessMessage());
         }
 
@@ -153,35 +153,33 @@ class CutOffPayableController extends Controller
 
         $view->class = $coa->subledger_type;
         $view->list_master = $coa->subledger_type::active()->get();
-       	$view->coa_id = $coa->id;
+        $view->coa_id = $coa->id;
         $view->list_warehouse = Warehouse::all();
-       	$view->temp = TempDataHelper::getAllRowHaveKeyValue('cut.off.payable', auth()->user()->id, 'coa_id', $coa->id);
+        $view->temp = TempDataHelper::getAllRowHaveKeyValue('cut.off.payable', auth()->user()->id, 'coa_id', $coa->id);
         if (!$view->temp) {
             self::restoreTempDefault($coa->id);
         }
         $view->details = TempDataHelper::getAllRowHaveKeyValue('cut.off.payable', auth()->user()->id, 'coa_id', $coa->id);
         return $view;
+    }
 
-	}
-
-	public function _loadDetailsAccountPayable()
-	{
-		if (!$this->validateCSRF()) {
+    public function _loadDetailsAccountPayable()
+    {
+        if (!$this->validateCSRF()) {
             return response()->json($this->restrictionAccessMessage());
         }
 
         $coa = Coa::find(\Input::get('coa_id'));
         $view = view('point-accounting::app.accounting.point.cut-off.payable._details-account-payable');
-        $view->details = CutOffPayableDetail::where('cut_off_payable_id',\Input::get('cut_off_id'))->where('coa_id',\Input::get('coa_id'))->get();
+        $view->details = CutOffPayableDetail::where('cut_off_payable_id', \Input::get('cut_off_id'))->where('coa_id', \Input::get('coa_id'))->get();
         $view->coa = $coa;
         
-       	return $view;
+        return $view;
+    }
 
-	}
-
-	public function _storeTmp()
-	{
-		if (!$this->validateCSRF()) {
+    public function _storeTmp()
+    {
+        if (!$this->validateCSRF()) {
             return response()->json($this->restrictionAccessMessage());
         }
 
@@ -190,8 +188,7 @@ class CutOffPayableController extends Controller
         // remove temp axist
         TempDataHelper::removeRowHaveKeyValue('cut.off.payable', auth()->user()->id, 'coa_id', $coa_id);
 
-        for ($i=0; $i < count(\Input::get('subledger_id')); $i++) { 
-        	
+        for ($i=0; $i < count(\Input::get('subledger_id')); $i++) {
             $keys = [
                 'coa_id'=> $coa_id,
                 'type'=> 'Point\Framework\Models\Master\Person',
@@ -200,24 +197,23 @@ class CutOffPayableController extends Controller
                 'amount'=> number_format_db(\Input::get('amount')[$i])
             ];
 
-	        self::storeTempPayable($keys);	
+            self::storeTempPayable($keys);
             $total += number_format_db(\Input::get('amount')[$i]);
         }
         
         $response = array('status' => 'success', 'total' => $total);
         return response()->json($response);
-	}
+    }
 
     public function restoreToTemp($cut_off_payable)
-	{
+    {
         $check_coa = TempDataHelper::get('cut.off.payable', auth()->user()->id);
-        if(count($check_coa) != null){
+        if (count($check_coa) != null) {
             return false;
         }
 
         TempDataHelper::clear('cut.off.payable', auth()->user()->id);
-		foreach ($cut_off_payable->cutOffPayableDetail as $payable) {
-            
+        foreach ($cut_off_payable->cutOffPayableDetail as $payable) {
             $keys = [
                 'coa_id'=> $payable->coa_id,
                 'type'=> 'Point\Framework\Models\Master\Person',
@@ -227,16 +223,15 @@ class CutOffPayableController extends Controller
             ];
 
             if ($payable->subledger_id) {
-                self::storeTempPayable($keys);    
+                self::storeTempPayable($keys);
             }
         }
-
-	}
+    }
 
     public function restoreTempDefault($coa_id)
     {
         $check_coa = TempDataHelper::get('cut.off.payable', auth()->user()->id);
-        if(count($check_coa) != null){
+        if (count($check_coa) != null) {
             return false;
         }
 
@@ -255,7 +250,6 @@ class CutOffPayableController extends Controller
         $journal = Journal::where('coa_id', $coa_id)->whereIn('form_journal_id', $formulir_reference_id)->get();
             
         foreach ($journal as $account) {
-            
             $keys = [
                 'coa_id'=> $account->coa_id,
                 'type'=> $account->subledger_type,
@@ -266,7 +260,6 @@ class CutOffPayableController extends Controller
 
             self::storeTempPayable($keys);
         }
-
     }
     
     public function storeTempPayable($keys)
@@ -278,14 +271,14 @@ class CutOffPayableController extends Controller
         $temp->save();
     }
 
-	public function _deleteTmp()
+    public function _deleteTmp()
     {
         if (!$this->validateCSRF()) {
             return response()->json($this->restrictionAccessMessage());
         }
         TempDataHelper::remove(\Input::get('id'));
         $response = array('status' => 'success');
-        return response()->json($response); 
+        return response()->json($response);
     }
 
     public function _clearTmpDetail()
@@ -295,13 +288,13 @@ class CutOffPayableController extends Controller
         }
         TempDataHelper::removeRowHaveKeyValue('cut.off.payable', auth()->user()->id, 'coa_id', \Input::get('modal_coa_id'));
         $response = array('status' => 'success');
-        return response()->json($response); 
+        return response()->json($response);
     }
 
     public function clearTmp()
     {
         TempDataHelper::clear('cut.off.payable', auth()->user()->id);
         gritter_success('Temporary cleared');
-        return redirect('accounting/point/cut-off/payable/create');    
+        return redirect('accounting/point/cut-off/payable/create');
     }
 }

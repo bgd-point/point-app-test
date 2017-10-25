@@ -175,6 +175,5 @@ class GoodsReceivedHelper
                 $expedition_order->save();
             }
         }
-
     }
 }

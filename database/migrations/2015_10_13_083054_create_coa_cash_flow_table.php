@@ -12,8 +12,7 @@ class CreateCoaCashFlowTable extends Migration
      */
     public function up()
     {
-        Schema::create('coa_cash_flow', function($table)
-        {
+        Schema::create('coa_cash_flow', function ($table) {
             $table->increments('id');
             $table->string('name', 100)->unique();
             $table->nullableTimestamps();
