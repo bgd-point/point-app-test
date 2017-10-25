@@ -31,9 +31,8 @@ class TrialBalanceController extends Controller
         $file_name = 'Trial Balance '.auth()->user()->id . '' . date('Y-m-d_His');
         $date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : date('Y-m-01 00:00:00');
         $date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : date('Y-m-d 23:59:59');
-        \Excel::create($file_name, function($excel) use ($date_from, $date_to) {
-
-            $excel->sheet('Trial Balance', function($sheet) use ($date_from, $date_to) {
+        \Excel::create($file_name, function ($excel) use ($date_from, $date_to) {
+            $excel->sheet('Trial Balance', function ($sheet) use ($date_from, $date_to) {
                 $data = array(
                     'list_coa' => Coa::active()->orderBy('coa_number')->orderBy('name')->get(),
                     'date_to' => $date_to,
@@ -42,9 +41,7 @@ class TrialBalanceController extends Controller
                  );
                 
                 $sheet->loadView('framework::app.accounting.trial-balance._data', $data);
-
             });
-
         })->export('xls');
     }
 }

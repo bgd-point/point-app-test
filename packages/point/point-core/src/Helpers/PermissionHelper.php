@@ -29,7 +29,7 @@ class PermissionHelper
 
     public static function checkAll($role_id, $permission_type)
     {
-        foreach(permission_get_by_type($permission_type) as $permission) {
+        foreach (permission_get_by_type($permission_type) as $permission) {
             if (permission_check($role_id, $permission->id) === false) {
                 return false;
             }

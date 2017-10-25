@@ -70,7 +70,7 @@ class PosPricingController extends Controller
         $view->notes = app('request')->input('notes');
         $view->search = app('request')->input('search');
         $view->list_group = PersonGroup::where('person_type_id', 2)->get();
-        $view->list_item = Item::search(0 ,\Input::get('search'))->orderBy('name', 'asc')->paginate(100);
+        $view->list_item = Item::search(0, \Input::get('search'))->orderBy('name', 'asc')->paginate(100);
 
         return $view;
     }

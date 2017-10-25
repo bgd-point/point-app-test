@@ -15,28 +15,31 @@ use Point\PointAccounting\Models\CutOffAccountSubledger;
 use Point\PointAccounting\Models\CutOffReceivable;
 use Point\PointAccounting\Models\CutOffReceivableDetail;
 
-class CutOffReceivableHelper {
-	
-    public static function searchList($list_cut_off, $date_from, $date_to, $search){
+class CutOffReceivableHelper
+{
+    public static function searchList($list_cut_off, $date_from, $date_to, $search)
+    {
+        if ($date_from) {
+            $list_cut_off = $list_cut_off->where('form_date', '>=', date_format_db($date_from, 'start'));
+        }
 
-        if($date_from)
-            $list_cut_off = $list_cut_off->where('form_date','>=',date_format_db($date_from, 'start'));
+        if ($date_to) {
+            $list_cut_off = $list_cut_off->where('form_date', '<=', date_format_db($date_to, 'end'));
+        }
 
-        if($date_to)
-            $list_cut_off = $list_cut_off->where('form_date','<=',date_format_db($date_to, 'end'));
-
-        if($search) {
+        if ($search) {
             // search input to database
-            $list_cut_off = $list_cut_off->where(function($q) use($search) {
-                $q->where('person.name','like','%'.$search.'%')
-                  ->orWhere('formulir.form_number','like','%'.$search.'%');
+            $list_cut_off = $list_cut_off->where(function ($q) use ($search) {
+                $q->where('person.name', 'like', '%'.$search.'%')
+                  ->orWhere('formulir.form_number', 'like', '%'.$search.'%');
             });
         }
 
         return $list_cut_off;
     }
 
-    public static function create($formulir) {
+    public static function create($formulir)
+    {
         $cut_off_receivable = new CutOffReceivable;
         $cut_off_receivable->formulir_id = $formulir->id;
         $cut_off_receivable->save();
@@ -57,7 +60,7 @@ class CutOffReceivableHelper {
         }
 
         $coa = \Input::get('coa_id');
-        for ($i=0; $i < count($coa); $i++) { 
+        for ($i=0; $i < count($coa); $i++) {
             if (in_array($coa[$i], $coa_temp)) {
                 continue;
             }
@@ -71,10 +74,10 @@ class CutOffReceivableHelper {
                 $cut_off_receivable_detail->amount = number_format_db(\Input::get('amount')[$i]);
                 $cut_off_receivable_detail->notes = '';
 
-                $cut_off_receivable_detail->save();    
+                $cut_off_receivable_detail->save();
             }
         }
         
-		return $cut_off_receivable;
+        return $cut_off_receivable;
     }
 }

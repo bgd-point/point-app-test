@@ -30,7 +30,7 @@ class ResetDatabase extends Command
     public function handle()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        foreach(DB::select('SHOW TABLES') as $table) {
+        foreach (DB::select('SHOW TABLES') as $table) {
             $table_array = get_object_vars($table);
             \Schema::drop($table_array[key($table_array)]);
         }

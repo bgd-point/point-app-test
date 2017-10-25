@@ -4,8 +4,8 @@ namespace Point\PointAccounting\Vesa;
 
 use Point\PointAccounting\Models\CutOffInventory;
 
-trait CutOffInventoryVesa {
-
+trait CutOffInventoryVesa
+{
     public static function getVesa()
     {
         $array = self::vesaApproval();
@@ -80,5 +80,4 @@ trait CutOffInventoryVesa {
 
         return $array;
     }
-
 }

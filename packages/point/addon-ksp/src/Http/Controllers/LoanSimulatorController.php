@@ -15,7 +15,7 @@ class LoanSimulatorController extends Controller
      */
     public function index()
     {
-//        access_is_allowed('read.bumi.shares.buy');
+        //        access_is_allowed('read.bumi.shares.buy');
 
         $view = view('ksp::app.facility.ksp.loan-simulator.index');
 

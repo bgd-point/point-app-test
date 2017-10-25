@@ -13,7 +13,7 @@ use Point\PointInventory\Models\StockOpname\StockOpnameItem;
 
 class StockOpnameHelper
 {
-    public static function searchList($list_stock_opname,  $order_by, $order_type, $status = 0, $date_from, $date_to, $search)
+    public static function searchList($list_stock_opname, $order_by, $order_type, $status = 0, $date_from, $date_to, $search)
     {
         if ($status != 'all') {
             $list_stock_opname = $list_stock_opname->where('formulir.form_status', '=', $status ?: 0);

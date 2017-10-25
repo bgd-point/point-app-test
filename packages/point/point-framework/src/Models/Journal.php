@@ -62,7 +62,7 @@ class Journal extends Model
                     if ($account_payable_and_receivable_reference) {
                         $account_payable_and_receivable_id = $account_payable_and_receivable_reference->id;
                     }
-                }    
+                }
             }
 
             if (! $account_payable_and_receivable_id) {
@@ -122,7 +122,7 @@ class Journal extends Model
                     if ($account_payable_and_receivable_reference) {
                         $account_payable_and_receivable_id = $account_payable_and_receivable_reference->id;
                     }
-                }    
+                }
             }
 
             if (! $account_payable_and_receivable_id) {

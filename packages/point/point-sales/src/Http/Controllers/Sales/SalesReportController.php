@@ -9,15 +9,15 @@ use Point\PointSales\Helpers\SalesReportHelper;
 
 class SalesReportController extends Controller
 {
-	public function index()
-	{
-		access_is_allowed('read.point.sales.report');
+    public function index()
+    {
+        access_is_allowed('read.point.sales.report');
 
         $view = view('point-sales::app.sales.point.sales.report.index');
         $view->list_report = SalesReportHelper::searchList(\Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->paginate(100);
 
         return $view;
-	}
+    }
 
     public function indexPDF(Request $request)
     {
@@ -28,10 +28,10 @@ class SalesReportController extends Controller
         return $pdf->stream();
     }
 
-	public function export(Request $request)
-	{
-		access_is_allowed('export.point.sales.report');
-		$storage = storage_path('app/'.$request->project->url.'/sales-report/');
+    public function export(Request $request)
+    {
+        access_is_allowed('export.point.sales.report');
+        $storage = storage_path('app/'.$request->project->url.'/sales-report/');
         $fileName = 'sale report '.date('YmdHis');
         $cRequest = $request;
         $request = $request->input();
@@ -70,25 +70,25 @@ class SalesReportController extends Controller
                     $content = array(array('FORM DATE', 'FORM NUMBER', 'CUSTOMER', 'ITEM', 'QUANTITY', 'UNIT', 'PRICE', 'TOTAL'));
                     $total_value = 0;
                     foreach ($list_report as $report) {
-                    	$total = $report->quantity * $report->price;
-                    	$total_value += $total;
-                    	array_push($content, [
-                    		date_format_view($report->invoice->formulir->form_date),
-                    		$report->invoice->formulir->form_number,
-                    		$report->invoice->person->codeName,
-                    		$report->item->codeName,
-                    		number_format_quantity($report->quantity, 0),
-                    		$report->unit,
-                    		number_format_quantity($report->price),
-                    		number_format_quantity($total)
-                		]);
+                        $total = $report->quantity * $report->price;
+                        $total_value += $total;
+                        array_push($content, [
+                            date_format_view($report->invoice->formulir->form_date),
+                            $report->invoice->formulir->form_number,
+                            $report->invoice->person->codeName,
+                            $report->item->codeName,
+                            number_format_quantity($report->quantity, 0),
+                            $report->unit,
+                            number_format_quantity($report->price),
+                            number_format_quantity($total)
+                        ]);
                     }
                     $total_data = $list_report->count()+2;
                     $sheet->fromArray($content, null, 'A2', false, false);
                     $sheet->setBorder('A2:H'.$total_data, 'thin');
                     $next_row = $total_data + 1;
                     $sheet->cell('H'.$next_row, function ($cell) use ($total_value) {
-                    	$cell->setFont(array(
+                        $cell->setFont(array(
                             'family'     => 'Times New Roman',
                             'size'       => '14',
                             'bold'       =>  true
@@ -120,5 +120,5 @@ class SalesReportController extends Controller
         );
 
         return response()->json($response);
-	}
+    }
 }

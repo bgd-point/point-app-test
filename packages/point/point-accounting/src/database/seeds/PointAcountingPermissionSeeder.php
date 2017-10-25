@@ -4,7 +4,7 @@ use Symfony\Component\Console\Output\ConsoleOutput as Output;
 use Illuminate\Database\Seeder;
 use Point\Core\Helpers\PermissionHelper;
 
-class PointAccountingPermissionSeeder extends Seeder 
+class PointAccountingPermissionSeeder extends Seeder
 {
     /**
      * @var Output
@@ -26,7 +26,8 @@ class PointAccountingPermissionSeeder extends Seeder
     {
         $this->output->writeln('<info>--- Permission Seeder Started ---</info>');
 
-        $this->accounting(); $this->output->writeln('<info>updated accounting permission</info>');
+        $this->accounting();
+        $this->output->writeln('<info>updated accounting permission</info>');
 
         $this->output->writeln('<info>--- Permission Seeder Finished ---</info>');
     }

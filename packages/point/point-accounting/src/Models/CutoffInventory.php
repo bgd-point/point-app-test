@@ -33,7 +33,7 @@ class CutOffInventory extends Model
 
     public function cutOffInventoryDetail()
     {
-        return $this->hasMany('Point\PointAccounting\Models\CutOffInventoryDetail','cut_off_inventory_id');
+        return $this->hasMany('Point\PointAccounting\Models\CutOffInventoryDetail', 'cut_off_inventory_id');
     }
 
     public static function getSubledgerAmount($form_date, $coa_id)

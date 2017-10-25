@@ -59,7 +59,6 @@
                                     $stock_out = inventory_get_stock_out($date_from, $date_to, $item->item_id, $search_warehouse->id);
                                     $closing_stock = inventory_get_closing_stock($date_from, $date_to, $item->item_id, $search_warehouse->id);
                                     $warehouse_id = $search_warehouse->id;
-
                                 } else {
                                     $opening_stock = inventory_get_opening_stock_all($date_from, $item->item_id);
                                     $stock_in = inventory_get_stock_in_all($date_from, $date_to, $item->item_id);

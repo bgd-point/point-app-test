@@ -7,7 +7,7 @@ use Point\Framework\Vesa\MasterVesa;
 
 class MasterVesaController extends Controller
 {
-	public function settingJournal()
+    public function settingJournal()
     {
         access_is_allowed('create.coa');
 
@@ -18,7 +18,7 @@ class MasterVesaController extends Controller
 
     public function stockReminder()
     {
-    	access_is_allowed('create.point.purchasing.requisition');
+        access_is_allowed('create.point.purchasing.requisition');
 
         $view = view('app.index');
         $view->array_vesa = MasterVesa::getVesaStockreminder();

@@ -72,7 +72,6 @@ class AddColumnDoneExpeditionOrderTable extends Migration
                 $table->dropForeign('point_expedition_order_form_ref_id_foreign');
                 $table->dropIndex('point_expedition_order_form_ref_id_index');
                 $table->dropColumn(['form_reference_id']);
-
             });
         }
 

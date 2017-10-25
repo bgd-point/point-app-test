@@ -11,17 +11,17 @@ class CutOffPayableDetail extends Model
 
     public function person()
     {
-        return $this->belongsTo('Point\Framework\Models\Master\Person','subledger_id');
+        return $this->belongsTo('Point\Framework\Models\Master\Person', 'subledger_id');
     }
 
     public function coa()
     {
-        return $this->belongsTo('Point\Framework\Models\Master\Coa','coa_id');
+        return $this->belongsTo('Point\Framework\Models\Master\Coa', 'coa_id');
     }
 
     public function cutoffPayable()
     {
-        return $this->belongsTo('Point\PointAccounting\Models\CutOffPayable','cut_off_payable_id');
+        return $this->belongsTo('Point\PointAccounting\Models\CutOffPayable', 'cut_off_payable_id');
     }
 
     public function scopeJoinPayable($q)
@@ -33,5 +33,4 @@ class CutOffPayableDetail extends Model
     {
         $q->join('formulir', 'formulir.id', '=', 'point_accounting_cut_off_payable.formulir_id');
     }
-
 }

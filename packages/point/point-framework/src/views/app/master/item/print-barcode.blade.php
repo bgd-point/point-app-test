@@ -38,8 +38,9 @@ $barcode = new DNS1D;
         
         $t = $t;
         $mt = $mt;
-        if ($h == 1)  {
-            $t = 1; $mt = '';
+        if ($h == 1) {
+            $t = 1;
+            $mt = '';
         }
         ?>
         @for($y=0; $y < $number_of_print; $y++)

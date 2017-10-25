@@ -33,7 +33,7 @@ class CutOffAccount extends Model
 
     public function cutOffAccountDetail()
     {
-        return $this->hasMany('Point\PointAccounting\Models\CutOffAccountDetail','cut_off_account_id', 'id');
+        return $this->hasMany('Point\PointAccounting\Models\CutOffAccountDetail', 'cut_off_account_id', 'id');
     }
 
     public static function bladeEmail()

@@ -62,7 +62,10 @@
         @yield('style')
 
         <style>
-        * {margin: 0; padding: 0;}
+        * {
+            margin: 0; padding: 0;
+            font-family: sans-serif;
+        }
 
         .tree ul {
             padding-top: 20px; position: relative;

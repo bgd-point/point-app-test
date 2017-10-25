@@ -47,10 +47,10 @@ class ReturApprovalController extends Controller
             $array_formulir_id = implode(',', $array_formulir_id);
             $approver = User::find($data_approver->approval_to);
             $data = [
-                'list_retur' => $list_retur, 
-                'token' => $token, 
-                'username' => auth()->user()->name, 
-                'url' => url('/'), 
+                'list_retur' => $list_retur,
+                'token' => $token,
+                'username' => auth()->user()->name,
+                'url' => url('/'),
                  'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];

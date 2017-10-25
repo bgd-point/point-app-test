@@ -38,7 +38,7 @@
                         <?php
                         $opening_inventory = \Point\Framework\Models\Inventory::where('item_id', '=', $item->id)
                                 ->where('form_date', '<', $date_from)
-                                ->where(function($query) use ($warehouse) {
+                                ->where(function ($query) use ($warehouse) {
                                     if ($warehouse) {
                                         $query->where('warehouse_id', '=', $warehouse->id);
                                     }

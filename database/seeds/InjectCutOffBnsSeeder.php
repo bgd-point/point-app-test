@@ -12,7 +12,7 @@ class InjectCutOffBnsSeeder extends Seeder
 {
     public function run()
     {
-    	\DB::beginTransaction();
+        \DB::beginTransaction();
         \Log::info('---- inject cutoff seeder started ----');
         self::utangDireksi();
         \Log::info('---- inject cutoff seeder finished ----');
@@ -66,16 +66,16 @@ class InjectCutOffBnsSeeder extends Seeder
             return $person;
         }
 
-    	$person = new Person;
-    	$person->person_type_id = $type;
-    	$person->person_group_id = $group;
-    	$person->created_by = 2;
-    	$person->updated_by = 2;
-    	$person->save();
-    	$person->code = 'EMP-'.$person->id;
-    	$person->name = $person_name;
-    	$person->save();
+        $person = new Person;
+        $person->person_type_id = $type;
+        $person->person_group_id = $group;
+        $person->created_by = 2;
+        $person->updated_by = 2;
+        $person->save();
+        $person->code = 'EMP-'.$person->id;
+        $person->name = $person_name;
+        $person->save();
 
-    	return $person;
+        return $person;
     }
 }

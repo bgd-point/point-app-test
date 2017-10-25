@@ -348,7 +348,7 @@ class CoaController extends Controller
         $coa->coa_number = \Input::get('number_coa_edit') ? \Input::get('number_coa_edit') : null;
         $coa->coa_group_id = $request->input('group_id') ? \Input::get('group_id') : null;
         $coa->has_subledger = \Input::get('has_subledger') ? true : false;
-        $coa->subledger_type = \Input::get('has_subledger') ? $this->getClassSubledgerType(\Input::get('subledger_type')) : ''; 
+        $coa->subledger_type = \Input::get('has_subledger') ? $this->getClassSubledgerType(\Input::get('subledger_type')) : '';
         $check = Coa::where('name', \Input::get('name_coa_edit'))->whereNotIn('id', [\Input::get('coa_id')])->get()->count();
         if ($check) {
             return response()->json($response);

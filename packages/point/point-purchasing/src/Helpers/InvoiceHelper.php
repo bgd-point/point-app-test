@@ -114,10 +114,10 @@ class InvoiceHelper
 
         foreach ($invoice->items as $invoice_detail) {
             $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
-            $goods_received_item = ReferHelper::getReferBy(get_class($invoice_detail), $invoice_detail->id, get_class($invoice), $invoice->id); 
+            $goods_received_item = ReferHelper::getReferBy(get_class($invoice_detail), $invoice_detail->id, get_class($invoice), $invoice->id);
             if ($goods_received_item) {
-                $goods_received = GoodsReceived::find($goods_received_item->point_purchasing_goods_received_id); 
-                $warehouse_id = $goods_received->warehouse_id; 
+                $goods_received = GoodsReceived::find($goods_received_item->point_purchasing_goods_received_id);
+                $warehouse_id = $goods_received->warehouse_id;
             }
  
             // Journal inventory

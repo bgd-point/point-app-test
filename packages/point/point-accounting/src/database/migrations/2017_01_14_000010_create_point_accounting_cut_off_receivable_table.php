@@ -20,7 +20,6 @@ class CreatePointAccountingCutOffReceivableTable extends Migration
                 ->references('id')->on('formulir')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-
         });
     }
 

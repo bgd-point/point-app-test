@@ -36,7 +36,6 @@ use Point\PointSales\Models\Service\PaymentCollection as ServicePaymentCollectio
 
 class DashboardController extends Controller
 {
-
     public function index()
     {
         $view = view('app.index');
@@ -103,5 +102,4 @@ class DashboardController extends Controller
 
         return $view;
     }
-
 }

@@ -5,7 +5,6 @@ namespace Point\PointSales\Http\Controllers\Sales;
 use App\Http\Controllers\Controller;
 use Point\PointSales\Models\Sales\DeliveryOrder;
 
-
 class DeliveryOrderVesaController extends Controller
 {
     /**

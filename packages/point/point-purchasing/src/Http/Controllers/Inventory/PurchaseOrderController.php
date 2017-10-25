@@ -217,7 +217,7 @@ class PurchaseOrderController extends Controller
             return redirect()->back();
         }
         $data = array(
-            'purchase_order' => $purchase_order, 
+            'purchase_order' => $purchase_order,
             'token' => $token,
             'warehouse' => $warehouse
         );

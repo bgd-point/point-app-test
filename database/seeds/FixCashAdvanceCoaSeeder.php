@@ -14,7 +14,7 @@ class FixCashAdvanceCoaSeeder extends Seeder
     public function run()
     {
         // Assets account
-        $coa_category = CoaCategory::where('name', '=',  'Petty Cash')->first();
+        $coa_category = CoaCategory::where('name', '=', 'Petty Cash')->first();
         Coa::insert($coa_category->id, 'Advance to Employees');
     }
 }

@@ -8,9 +8,9 @@ use Point\PointAccounting\Models\MemoJournal;
 use Point\PointAccounting\Models\MemoJournalDetail;
 use Point\PointFinance\Models\PaymentOrder\PaymentOrderDetail;
 
-class MemoJournalHelper 
+class MemoJournalHelper
 {
-    public static function searchList($list_memo_journal, $order_by, $order_type, $status = 0, $date_from, $date_to, $search) 
+    public static function searchList($list_memo_journal, $order_by, $order_type, $status = 0, $date_from, $date_to, $search)
     {
         if ($status != 'all') {
             $list_memo_journal = $list_memo_journal->where('formulir.form_status', '=', $status ?: 0);
@@ -22,23 +22,25 @@ class MemoJournalHelper
             $list_memo_journal = $list_memo_journal->orderByStandard();
         }
 
-        if($date_from)
-            $list_memo_journal = $list_memo_journal->where('formulir.form_date','>=',date_format_db($date_from, 'start'));
+        if ($date_from) {
+            $list_memo_journal = $list_memo_journal->where('formulir.form_date', '>=', date_format_db($date_from, 'start'));
+        }
 
-        if($date_to)
-            $list_memo_journal = $list_memo_journal->where('formulir.form_date','<=',date_format_db($date_to, 'end'));
+        if ($date_to) {
+            $list_memo_journal = $list_memo_journal->where('formulir.form_date', '<=', date_format_db($date_to, 'end'));
+        }
 
-        if($search) {
-            $list_memo_journal = $list_memo_journal->where(function($q) use($search) {
-                $q->where('formulir.form_number','like','%'.$search.'%')
-                    ->orWhere('formulir.notes','like','%'.$search.'%');
+        if ($search) {
+            $list_memo_journal = $list_memo_journal->where(function ($q) use ($search) {
+                $q->where('formulir.form_number', 'like', '%'.$search.'%')
+                    ->orWhere('formulir.notes', 'like', '%'.$search.'%');
             });
         }
 
         return $list_memo_journal;
     }
 
-    public static function create($formulir_id, $request) 
+    public static function create($formulir_id, $request)
     {
         $memo_journal = new MemoJournal;
         $memo_journal->formulir_id = $formulir_id;
@@ -60,10 +62,10 @@ class MemoJournalHelper
         return $memo_journal;
     }
 
-    public static function addDetails($memo_journal, $items) 
+    public static function addDetails($memo_journal, $items)
     {
         extract($items);
-        for($i=0; $i<count($coa_id); $i++) {
+        for ($i=0; $i<count($coa_id); $i++) {
             $memo_journal_detail = new MemoJournalDetail;
             $memo_journal_detail->memo_journal_id = $memo_journal->id;
             $memo_journal_detail->coa_id = $coa_id[$i];
@@ -72,7 +74,7 @@ class MemoJournalHelper
             $subledger_id = '';
             $subledger_type = '';
 
-            if($subledger[$i]) {
+            if ($subledger[$i]) {
                 $subledger_id = $master_id[0];
                 $subledger_type = $master_id[1];
             }
@@ -83,13 +85,15 @@ class MemoJournalHelper
 
             $memo_journal_detail->form_journal_id = $memo_journal->formulir_id;
             $memo_journal_detail->form_reference_id = $memo_journal_detail->coa->has_subledger ? $form_reference_id[$i] : null;
-            if($debit[$i])
+            if ($debit[$i]) {
                 $memo_journal_detail->debit = number_format_db($debit[$i]);
+            }
 
-            if($credit[$i])
+            if ($credit[$i]) {
                 $memo_journal_detail->credit = number_format_db($credit[$i]);
+            }
 
-            if($subledger[$i]) {
+            if ($subledger[$i]) {
                 $memo_journal_detail->subledger_id = $subledger_id;
                 $memo_journal_detail->subledger_type = $subledger_type;
             }
@@ -98,14 +102,15 @@ class MemoJournalHelper
         }
     }
 
-    public static function isAjeBalance($debit, $credit) 
+    public static function isAjeBalance($debit, $credit)
     {
         $debit = number_format_db($debit);
         $credit = number_format_db($credit);
-        if($debit == $credit)
+        if ($debit == $credit) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     public static function addToJournal($memo_journal)

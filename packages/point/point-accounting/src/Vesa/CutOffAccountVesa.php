@@ -4,8 +4,8 @@ namespace Point\PointAccounting\Vesa;
 
 use Point\PointAccounting\Models\CutOffAccount;
 
-trait CutOffAccountVesa {
-
+trait CutOffAccountVesa
+{
     public static function getVesa()
     {
         $array = self::vesaApproval();
@@ -80,5 +80,4 @@ trait CutOffAccountVesa {
 
         return $array;
     }
-
 }

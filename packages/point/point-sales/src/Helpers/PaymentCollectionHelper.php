@@ -13,7 +13,7 @@ use Point\PointSales\Models\Sales\PaymentCollectionOther;
 
 class PaymentCollectionHelper
 {
-    public static function searchList($list_payment_collection,  $order_by, $order_type, $status = 0, $date_from, $date_to, $search)
+    public static function searchList($list_payment_collection, $order_by, $order_type, $status = 0, $date_from, $date_to, $search)
     {
         if ($status != 'all') {
             $list_payment_collection = $list_payment_collection->where('formulir.form_status', '=', $status ?: 0);
@@ -45,15 +45,15 @@ class PaymentCollectionHelper
     }
 
     public static function create(
-        Request $request, 
-        $formulir, 
-        $references, 
-        $references_account, 
-        $references_type, 
-        $references_id, 
-        $references_amount, 
-        $references_amount_original, 
-        $references_notes, 
+        Request $request,
+        $formulir,
+        $references,
+        $references_account,
+        $references_type,
+        $references_id,
+        $references_amount,
+        $references_amount_original,
+        $references_notes,
         $references_detail_id,
         $references_detail_type,
         $references_amount_edit = []

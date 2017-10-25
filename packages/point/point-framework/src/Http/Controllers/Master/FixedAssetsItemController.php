@@ -86,7 +86,6 @@ class FixedAssetsItemController extends Controller
 
         gritter_success('Success create new fixed assets item');
         return redirect()->back();
-
     }
 
     /**

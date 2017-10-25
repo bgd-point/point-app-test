@@ -161,11 +161,11 @@
                 ?>
                 @foreach($list_coa as $coa)
                     <?php
-                        $cut_off_inventory_detail = Point\PointAccounting\Models\CutOffInventoryDetail::where('coa_id', $coa->id)->where('cut_off_inventory_id',$cut_off->id)->get();
-                        $amount = Point\PointAccounting\Models\CutOffInventoryDetail::where('coa_id', $coa->id)->where('cut_off_inventory_id',$cut_off->id)->sum('amount');
+                        $cut_off_inventory_detail = Point\PointAccounting\Models\CutOffInventoryDetail::where('coa_id', $coa->id)->where('cut_off_inventory_id', $cut_off->id)->get();
+                        $amount = Point\PointAccounting\Models\CutOffInventoryDetail::where('coa_id', $coa->id)->where('cut_off_inventory_id', $cut_off->id)->sum('amount');
                         $total_amount += $amount;
 
-                        if(!$cut_off_inventory_detail->count()){
+                        if (!$cut_off_inventory_detail->count()) {
                             continue;
                         }
                     ?>

@@ -79,7 +79,7 @@ class PaymentOrderController extends Controller
     {
         $view = view('point-purchasing::app.purchasing.point.inventory.payment-order.create-step-1');
 
-        if(app('request')->get('search_supplier')) {
+        if (app('request')->get('search_supplier')) {
             $view->list_invoice = Invoice::joinFormulir()
                 ->joinSupplier()
                 ->where('person.name', 'like', '%' . app('request')->get('search_supplier') . '%')
@@ -283,7 +283,7 @@ class PaymentOrderController extends Controller
         $request['form_date'] = date('Y-m-d', strtotime($request->input('payment_date')));
         access_is_allowed('create.point.purchasing.payment.order', date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
         $formulir = FormulirHelper::create($request->input(), 'point-purchasing-payment-order');
-        $payment_order = PaymentOrderHelper::create($request, $formulir, $references, $references_account, $references_type, $references_id, 
+        $payment_order = PaymentOrderHelper::create($request, $formulir, $references, $references_account, $references_type, $references_id,
         $references_amount, $references_amount_original, $references_notes, $references_detail_id, $references_detail_type);
         timeline_publish('create.payment.order', 'added new payment order '  . $payment_order->formulir->form_number);
 
@@ -549,7 +549,7 @@ class PaymentOrderController extends Controller
 
         $formulir_old = self::archive($request->input(), $payment_order->formulir_id);
         $formulir = FormulirHelper::update($request->input(), $formulir_old->archived, $formulir_old->form_raw_number);
-        $payment_order = PaymentOrderHelper::create($request, $formulir, $references, $references_account, $references_type, $references_id, $references_amount, 
+        $payment_order = PaymentOrderHelper::create($request, $formulir, $references, $references_account, $references_type, $references_id, $references_amount,
         $references_amount_original, $references_notes, $references_detail_id, $references_detail_type, $references_amount_edit);
         timeline_publish('update.payment.order', 'added new payment order '  . $payment_order->formulir->form_number);
 
@@ -618,7 +618,7 @@ class PaymentOrderController extends Controller
                 && $locked_form->formulirable_type != get_class(new CutOffPayable)
                 && $locked_form->formulirable_type != get_class(new CashAdvance)) {
                 $locked_form->form_status = 0;
-                $locked_form->save();    
+                $locked_form->save();
             }
             
             $formulir_lock->locked = false;
@@ -652,7 +652,7 @@ class PaymentOrderController extends Controller
         }
 
         $data = array(
-            'payment_order' => $payment_order, 
+            'payment_order' => $payment_order,
             'token' => $token,
             'warehouse' => $warehouse
         );

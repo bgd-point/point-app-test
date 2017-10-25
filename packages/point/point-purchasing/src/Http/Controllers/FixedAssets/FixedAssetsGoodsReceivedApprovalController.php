@@ -28,7 +28,7 @@ class FixedAssetsGoodsReceivedApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.purchasing.goods.received.fixed.assets');
-        if($this->isFormulirNull($request)) {
+        if ($this->isFormulirNull($request)) {
             return redirect()->back();
         }
 
@@ -36,7 +36,7 @@ class FixedAssetsGoodsReceivedApprovalController extends Controller
         $request = $request->input();
         $token = md5(date('ymdhis'));
 
-        foreach($list_approver as $data_approver) {
+        foreach ($list_approver as $data_approver) {
             $list_goods_received = FixedAssetsGoodsReceived::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_goods_received as $goods_received) {
@@ -46,17 +46,17 @@ class FixedAssetsGoodsReceivedApprovalController extends Controller
             $array_formulir_id = implode(',', $array_formulir_id);
             $approver = User::find($data_approver->approval_to);
             $data = [
-                'list_goods_received' => $list_goods_received, 
-                'token' => $token, 
-                'username' => auth()->user()->name, 
-                'url' => url('/'), 
+                'list_goods_received' => $list_goods_received,
+                'token' => $token,
+                'username' => auth()->user()->name,
+                'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
                 ];
             
-            \Queue::push(function($job) use ($approver, $data, $request) {
+            \Queue::push(function ($job) use ($approver, $data, $request) {
                 QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-purchasing::emails.purchasing.point.approval.fixed-assets.goods-received', $data, function ($message) use($approver) {
+                \Mail::send('point-purchasing::emails.purchasing.point.approval.fixed-assets.goods-received', $data, function ($message) use ($approver) {
                     $message->to($approver->email)->subject('request approval goods received #' . date('ymdHi'));
                 });
                 $job->delete();
@@ -79,7 +79,7 @@ class FixedAssetsGoodsReceivedApprovalController extends Controller
 
         DB::beginTransaction();
 
-        FormulirHelper::approve($delivery_order->formulir, $approval_message, 'approval.point.purchasing.goods.received.fixed.assets',$token);
+        FormulirHelper::approve($delivery_order->formulir, $approval_message, 'approval.point.purchasing.goods.received.fixed.assets', $token);
         timeline_publish('approve', 'goods received ' . $delivery_order->formulir->form_number . ' approved', $this->getUserForTimeline($request, $delivery_order->formulir->approval_to));
 
         DB::commit();

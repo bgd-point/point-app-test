@@ -13,28 +13,31 @@ use Point\PointAccounting\Models\CutOffAccountSubledger;
 use Point\PointAccounting\Models\CutOffInventory;
 use Point\PointAccounting\Models\CutOffInventoryDetail;
 
-class CutOffInventoryHelper {
-	
-    public static function searchList($list_cut_off, $date_from, $date_to, $search){
+class CutOffInventoryHelper
+{
+    public static function searchList($list_cut_off, $date_from, $date_to, $search)
+    {
+        if ($date_from) {
+            $list_cut_off = $list_cut_off->where('form_date', '>=', date_format_db($date_from, 'start'));
+        }
 
-        if($date_from)
-            $list_cut_off = $list_cut_off->where('form_date','>=',date_format_db($date_from, 'start'));
+        if ($date_to) {
+            $list_cut_off = $list_cut_off->where('form_date', '<=', date_format_db($date_to, 'end'));
+        }
 
-        if($date_to)
-            $list_cut_off = $list_cut_off->where('form_date','<=',date_format_db($date_to, 'end'));
-
-        if($search) {
+        if ($search) {
             // search input to database
-            $list_cut_off = $list_cut_off->where(function($q) use($search) {
-                $q->where('person.name','like','%'.$search.'%')
-                  ->orWhere('formulir.form_number','like','%'.$search.'%');
+            $list_cut_off = $list_cut_off->where(function ($q) use ($search) {
+                $q->where('person.name', 'like', '%'.$search.'%')
+                  ->orWhere('formulir.form_number', 'like', '%'.$search.'%');
             });
         }
 
         return $list_cut_off;
     }
 
-    public static function create($formulir) {
+    public static function create($formulir)
+    {
         $cut_off_inventory = new CutOffInventory;
         $cut_off_inventory->formulir_id = $formulir->id;
         $cut_off_inventory->save();
@@ -58,7 +61,7 @@ class CutOffInventoryHelper {
         }
 
         $coa = \Input::get('coa_id');
-        for ($i=0; $i < count($coa); $i++) { 
+        for ($i=0; $i < count($coa); $i++) {
             if (in_array($coa[$i], $coa_temp)) {
                 continue;
             }
@@ -72,10 +75,10 @@ class CutOffInventoryHelper {
                 $cut_off_inventory_detail->amount = number_format_db(\Input::get('amount')[$i]);
                 $cut_off_inventory_detail->notes = '';
 
-                $cut_off_inventory_detail->save();    
+                $cut_off_inventory_detail->save();
             }
         }
         
-		return $cut_off_inventory;
+        return $cut_off_inventory;
     }
 }

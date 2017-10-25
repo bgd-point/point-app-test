@@ -20,7 +20,7 @@ class ServiceReportController extends Controller
             ->notArchived()
             ->groupBy('point_purchasing_service_invoice.id');
 
-        $list_invoice = ServiceInvoiceHelper::searchList($list_invoice, FALSE, FALSE, 'report', \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
+        $list_invoice = ServiceInvoiceHelper::searchList($list_invoice, false, false, 'report', \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_invoice = $list_invoice->paginate(100);
 
         return $view;
@@ -92,7 +92,7 @@ class ServiceReportController extends Controller
                     $date_to = $date_to ? date_format_db($date_to, 'end') : '';
                     
                     $list_invoice = Invoice::joinFormulir()->joinPerson()->notArchived()->groupBy('point_purchasing_service_invoice.id');
-                    $list_invoice = ServiceInvoiceHelper::searchList($list_invoice, FALSE, FALSE, 'report', $date_from, $date_to, $search)->get();
+                    $list_invoice = ServiceInvoiceHelper::searchList($list_invoice, false, false, 'report', $date_from, $date_to, $search)->get();
                     $content = array(array('NO', 'DATE', 'FORM NUMBER', 'SUPPLIER', 'TOTAL'));
                     $total_data = $list_invoice->count();
                     $total_price = 0;
@@ -104,7 +104,7 @@ class ServiceReportController extends Controller
                             strtoupper($invoice->formulir->form_number),
                             strtoupper($invoice->person->codeName),
                             strtoupper(number_format_quantity($invoice->total))
-                        ]);                    
+                        ]);
                     }
 
                     $total_data = $total_data+3;

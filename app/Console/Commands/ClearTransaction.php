@@ -105,9 +105,8 @@ class ClearTransaction extends Command
 
         // REMOVE PURCHASE TRANSACTION
         if ($this->argument('type') == 'purchasing') {
-            self::removePurchasing();            
+            self::removePurchasing();
         }
-
     }
 
     public function removeAll()
@@ -174,7 +173,7 @@ class ClearTransaction extends Command
             get_class(new ServicePaymentCollection()),
             get_class(new SalesServiceInvoice()),
             get_class(new SalesServiceDownpayment()),
-            get_class(new SalesServiceDownpayment()),              
+            get_class(new SalesServiceDownpayment()),
             get_class(new Pos()),
             get_class(new PosPricing()),
         );

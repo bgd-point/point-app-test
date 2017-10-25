@@ -32,7 +32,7 @@ class InvoiceController extends Controller
     {
         $view = view('point-purchasing::app.purchasing.point.inventory.invoice.index');
         $list_invoice = Invoice::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
-        $list_invoice = InvoiceHelper::searchList($list_invoice, \Input::get('order_by'),\Input::get('order_type'),\Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
+        $list_invoice = InvoiceHelper::searchList($list_invoice, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_invoice = $list_invoice->paginate(100);
         return $view;
     }
@@ -42,7 +42,7 @@ class InvoiceController extends Controller
         access_is_allowed('read.point.purchasing.invoice');
 
         $list_invoice = Invoice::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
-        $list_invoice = InvoiceHelper::searchList($list_invoice, \Input::get('order_by'),\Input::get('order_type'),\Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $list_invoice = InvoiceHelper::searchList($list_invoice, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
         $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.inventory.invoice.index-pdf', ['list_invoice' => $list_invoice]);
         return $pdf->stream();
     }
@@ -242,7 +242,7 @@ class InvoiceController extends Controller
         }
 
         $data = array(
-            'invoice' => $invoice, 
+            'invoice' => $invoice,
             'token' => $token,
             'warehouse' => $warehouse
         );
@@ -272,7 +272,7 @@ class InvoiceController extends Controller
             $warehouse = Warehouse::find($warehouse_id);
         }
         $data = array(
-            'invoice' => $invoice, 
+            'invoice' => $invoice,
             'warehouse' => $warehouse
         );
 

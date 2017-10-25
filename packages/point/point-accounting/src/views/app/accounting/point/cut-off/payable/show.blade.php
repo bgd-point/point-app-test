@@ -94,7 +94,7 @@
                                             ?>
                                             @foreach($list_coa as $coa)
                                             <?php
-                                                $amount = Point\PointAccounting\Models\CutOffPayableDetail::where('coa_id', $coa->id)->where('cut_off_payable_id',$cut_off_payable->id)->sum('amount');
+                                                $amount = Point\PointAccounting\Models\CutOffPayableDetail::where('coa_id', $coa->id)->where('cut_off_payable_id', $cut_off_payable->id)->sum('amount');
                                                 $total_amount += $amount;
                                             ?>
                                             <tr>

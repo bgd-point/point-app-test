@@ -14,28 +14,31 @@ use Point\PointAccounting\Models\CutOffAccountSubledger;
 use Point\PointAccounting\Models\CutOffFixedAssets;
 use Point\PointAccounting\Models\CutOffFixedAssetsDetail;
 
-class CutOffFixedAssetsHelper {
-	
-    public static function searchList($list_cut_off, $date_from, $date_to, $search){
+class CutOffFixedAssetsHelper
+{
+    public static function searchList($list_cut_off, $date_from, $date_to, $search)
+    {
+        if ($date_from) {
+            $list_cut_off = $list_cut_off->where('form_date', '>=', date_format_db($date_from, 'start'));
+        }
 
-        if($date_from)
-            $list_cut_off = $list_cut_off->where('form_date','>=',date_format_db($date_from, 'start'));
+        if ($date_to) {
+            $list_cut_off = $list_cut_off->where('form_date', '<=', date_format_db($date_to, 'end'));
+        }
 
-        if($date_to)
-            $list_cut_off = $list_cut_off->where('form_date','<=',date_format_db($date_to, 'end'));
-
-        if($search) {
+        if ($search) {
             // search input to database
-            $list_cut_off = $list_cut_off->where(function($q) use($search) {
-                $q->where('person.name','like','%'.$search.'%')
-                  ->orWhere('formulir.form_number','like','%'.$search.'%');
+            $list_cut_off = $list_cut_off->where(function ($q) use ($search) {
+                $q->where('person.name', 'like', '%'.$search.'%')
+                  ->orWhere('formulir.form_number', 'like', '%'.$search.'%');
             });
         }
 
         return $list_cut_off;
     }
 
-    public static function create($formulir) {
+    public static function create($formulir)
+    {
         $cut_off_fixed_assets = new CutOffFixedAssets;
         $cut_off_fixed_assets->formulir_id = $formulir->id;
         $cut_off_fixed_assets->save();
@@ -56,6 +59,6 @@ class CutOffFixedAssetsHelper {
             $cut_off_fixed_assets_detail->save();
         }
         
-		return $cut_off_fixed_assets;
+        return $cut_off_fixed_assets;
     }
 }

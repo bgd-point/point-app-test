@@ -40,7 +40,7 @@ class InvoiceController extends Controller
         access_is_allowed('read.point.purchasing.service.invoice');
 
         $list_invoice = Invoice::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
-        $list_invoice = ServiceInvoiceHelper::searchList($list_invoice, \Input::get('order_by'),\Input::get('order_type'),\Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
+        $list_invoice = ServiceInvoiceHelper::searchList($list_invoice, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
         $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.service.invoice.index-pdf', ['list_invoice' => $list_invoice]);
         return $pdf->stream();
     }
@@ -140,7 +140,7 @@ class InvoiceController extends Controller
         }
 
         $data = array(
-            'invoice' => $invoice, 
+            'invoice' => $invoice,
             'token' => $token,
             'warehouse' => $warehouse
         );

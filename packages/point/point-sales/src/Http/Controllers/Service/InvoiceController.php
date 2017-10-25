@@ -146,7 +146,7 @@ class InvoiceController extends Controller
         }
 
         $data = array(
-            'invoice' => $invoice, 
+            'invoice' => $invoice,
             'token' => $token,
             'warehouse' => $warehouse
         );
@@ -176,7 +176,7 @@ class InvoiceController extends Controller
             $warehouse = Warehouse::find($warehouse_id);
         }
         $data = array(
-            'invoice' => $invoice, 
+            'invoice' => $invoice,
             'warehouse' => $warehouse
         );
 

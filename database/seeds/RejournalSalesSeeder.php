@@ -19,7 +19,7 @@ class RejournalSalesSeeder extends Seeder
 {
     public function run()
     {
-    	\DB::beginTransaction();
+        \DB::beginTransaction();
         \Log::info('---- Seeder Sales invoice starting ----');
         self::invoice();
         \Log::info('---- Seeder Sales invoice finished ----');
@@ -71,7 +71,7 @@ class RejournalSalesSeeder extends Seeder
             if ($invoice->type_of_tax == 'include') {
                 $tax_base = $subtotal * 100 / 110;
                 $tax = $subtotal * 10 / 100;
-            } else if ($invoice->type_of_tax == 'exclude') {
+            } elseif ($invoice->type_of_tax == 'exclude') {
                 $tax = $subtotal * 10 / 100;
             }
 
@@ -225,7 +225,7 @@ class RejournalSalesSeeder extends Seeder
             if ($invoice->type_of_tax == 'include') {
                 $tax_base = $subtotal * 100 / 110;
                 $tax = $subtotal * 10 / 100;
-            } else if ($invoice->type_of_tax == 'exclude') {
+            } elseif ($invoice->type_of_tax == 'exclude') {
                 $tax = $subtotal * 10 / 100;
             }
 
@@ -303,7 +303,7 @@ class RejournalSalesSeeder extends Seeder
         }
 
         // 3. Journal Sales of Goods
-        if($data['value_of_sale_of_goods'] > 0) {
+        if ($data['value_of_sale_of_goods'] > 0) {
             \Log::info('Journal Sales of Goods');
             $sales_of_goods = JournalHelper::getAccount('point sales service', 'sale of goods');
             $position = JournalHelper::position($sales_of_goods);
@@ -350,7 +350,7 @@ class RejournalSalesSeeder extends Seeder
         $journal->subledger_type;
         $journal->save();
 
-        if($data['value_of_sale_of_goods'] > 0) {
+        if ($data['value_of_sale_of_goods'] > 0) {
             self::journalInventory($data);
         }
     }

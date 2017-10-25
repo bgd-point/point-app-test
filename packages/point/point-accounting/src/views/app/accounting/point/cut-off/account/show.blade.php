@@ -128,7 +128,7 @@
 
                                             if ($cut_off_account_detail) {
                                                 $foot_debit += $cut_off_account_detail->debit;
-                                                $foot_credit += $cut_off_account_detail->credit;    
+                                                $foot_credit += $cut_off_account_detail->credit;
                                             }
                                             
                                             # check data from cut off account inventory
@@ -137,13 +137,13 @@
                                             ->where('formulir.form_date', $cut_off_account->formulir->form_date)
                                             ->where('formulir.formulirable_type', 'Point\PointAccounting\Models\CutOffInventory')
                                             ->where('formulir.form_number', 'like', '%' . 'COI' . '%')
-                                            ->whereIn('formulir.form_status',[0, 1])
+                                            ->whereIn('formulir.form_status', [0, 1])
                                             ->where('point_accounting_cut_off_inventory_detail.coa_id', $coa->id)
                                             ->orderBy('formulir.id', 'desc')
                                             ->first();
 
                                             if ($cut_off_inventory) {
-                                                $amount_inventory = Point\PointAccounting\Models\CutOffInventoryDetail::where('coa_id', $coa->id)->where('cut_off_inventory_id',$cut_off_inventory->cut_off_inventory_id)->sum('amount');
+                                                $amount_inventory = Point\PointAccounting\Models\CutOffInventoryDetail::where('coa_id', $coa->id)->where('cut_off_inventory_id', $cut_off_inventory->cut_off_inventory_id)->sum('amount');
                                             }
 
                                             # check data from cut off account payable
@@ -158,7 +158,7 @@
                                             ->first();
 
                                             if ($cut_off_payable) {
-                                                $amount_payable = Point\PointAccounting\Models\CutOffPayableDetail::where('coa_id', $coa->id)->where('cut_off_payable_id',$cut_off_payable->cut_off_payable_id)->sum('amount');
+                                                $amount_payable = Point\PointAccounting\Models\CutOffPayableDetail::where('coa_id', $coa->id)->where('cut_off_payable_id', $cut_off_payable->cut_off_payable_id)->sum('amount');
                                             }
 
                                             # check data from cut off account receivable
@@ -167,13 +167,13 @@
                                             ->where('formulir.form_date', $cut_off_account->formulir->form_date)
                                             ->where('formulir.formulirable_type', 'Point\PointAccounting\Models\CutOffReceivable')
                                             ->where('formulir.form_number', 'like', '%' . 'COR' . '%')
-                                            ->whereIn('formulir.form_status',[0, 1])
+                                            ->whereIn('formulir.form_status', [0, 1])
                                             ->where('point_accounting_cut_off_receivable_detail.coa_id', $coa->id)
                                             ->orderBy('formulir.id', 'desc')
                                             ->first();
 
                                             if ($cut_off_receivable) {
-                                                $amount_receivable = Point\PointAccounting\Models\CutOffReceivableDetail::where('coa_id', $coa->id)->where('cut_off_receivable_id',$cut_off_receivable->cut_off_receivable_id)->sum('amount');
+                                                $amount_receivable = Point\PointAccounting\Models\CutOffReceivableDetail::where('coa_id', $coa->id)->where('cut_off_receivable_id', $cut_off_receivable->cut_off_receivable_id)->sum('amount');
                                             }
 
                                             # check data from cut off account receivable
@@ -182,7 +182,7 @@
                                             ->where('formulir.form_date', $cut_off_account->formulir->form_date)
                                             ->where('formulir.formulirable_type', 'Point\PointAccounting\Models\CutOffFixedAssets')
                                             ->where('formulir.form_number', 'like', '%' . 'COFA' . '%')
-                                            ->whereIn('formulir.form_status',[0, 1])
+                                            ->whereIn('formulir.form_status', [0, 1])
                                             ->where('point_accounting_cut_off_fixed_assets_detail.coa_id', $coa->id)
                                             ->orderBy('formulir.id', 'desc')
                                             ->first();

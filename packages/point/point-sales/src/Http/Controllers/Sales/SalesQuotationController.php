@@ -224,7 +224,7 @@ class SalesQuotationController extends Controller
         }
 
         $data = array(
-            'sales_quotation' => $sales_quotation, 
+            'sales_quotation' => $sales_quotation,
             'token' => $token,
             'warehouse' => $warehouse
         );

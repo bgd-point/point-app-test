@@ -379,7 +379,7 @@ class PaymentCollectionController extends Controller
             $locked_form = Formulir::find($formulir_lock->locked_id);
             if ($locked_form->formulirable_type != get_class(new Downpayment)) {
                 $locked_form->form_status = 0;
-                $locked_form->save();    
+                $locked_form->save();
             }
             
             $formulir_lock->locked = false;
@@ -412,7 +412,7 @@ class PaymentCollectionController extends Controller
         }
 
         $data = array(
-            'payment_collection' => $payment_collection, 
+            'payment_collection' => $payment_collection,
             'token' => $token,
             'warehouse' => $warehouse
         );

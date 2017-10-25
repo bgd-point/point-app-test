@@ -41,8 +41,8 @@ class InvoiceApprovalPrintController extends Controller
         \Queue::push(function ($job) use ($approver, $data, $request) {
             QueueHelper::reconnectAppDatabase($request['database_name']);
             \Mail::send('point-sales::app.emails.sales.point.approval.sales-invoice-request-approval-print', $data, function ($message) use ($approver) {
-                    $message->to($approver->email)->subject('request approval to print sales invoice #' . date('ymdHi'));
-                });
+                $message->to($approver->email)->subject('request approval to print sales invoice #' . date('ymdHi'));
+            });
             $job->delete();
         });
 
@@ -71,7 +71,7 @@ class InvoiceApprovalPrintController extends Controller
         \DB::beginTransaction();
         $invoice->approval_print_status = 1;
         $invoice->approval_print_at = date('Y-m-d H:i:s');
-		$invoice->save();
+        $invoice->save();
 
         \DB::commit();
 
@@ -94,7 +94,7 @@ class InvoiceApprovalPrintController extends Controller
 
         \DB::beginTransaction();
         $invoice->approval_print_status = -1;
-		$invoice->save();
+        $invoice->save();
 
         \DB::commit();
 

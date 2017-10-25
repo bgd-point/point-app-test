@@ -26,7 +26,6 @@ class CreateFixedAssetsContractDetailTable extends Migration
                 ->references('id')->on('fixed_assets_contract_reference')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-
         });
     }
 

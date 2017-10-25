@@ -32,7 +32,8 @@ class Setting extends Model
         return $q->where('name', '=', 'user-change-password-allowed')->first()->value;
     }
 
-    public static function getFontSize() {
+    public static function getFontSize()
+    {
         return Setting::where('name', 'pos-print-font-size')->first() ? Setting::where('name', 'pos-print-font-size')->first()->value : 14;
     }
 }

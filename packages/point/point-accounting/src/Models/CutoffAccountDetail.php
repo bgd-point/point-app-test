@@ -11,6 +11,6 @@ class CutOffAccountDetail extends Model
 
     public function coa()
     {
-        return $this->belongsTo('Point\Framework\Models\Master\Coa','coa_id');
+        return $this->belongsTo('Point\Framework\Models\Master\Coa', 'coa_id');
     }
 }

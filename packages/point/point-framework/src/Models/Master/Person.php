@@ -49,10 +49,10 @@ class Person extends Model
                 $query->where('disabled', '=', $disabled ? : 0);
                 if ($search) {
                     $query->where('name', 'like', '%'.$search.'%')
-                    ->orWhere('code', 'like', '%'.$search.'%');   
+                    ->orWhere('code', 'like', '%'.$search.'%');
                 }
                 
-                $query->orWhere(function($que) use ($group, $disabled, $search) {
+                $query->orWhere(function ($que) use ($group, $disabled, $search) {
                     if ($group) {
                         $que->where('disabled', '=', $disabled ? : 0)
                             ->where('person_group_id', $group->id);

@@ -242,7 +242,7 @@ class InvoiceController extends Controller
         }
 
         $data = array(
-            'invoice' => $invoice, 
+            'invoice' => $invoice,
             'token' => $token,
             'warehouse' => $warehouse
         );
@@ -277,7 +277,7 @@ class InvoiceController extends Controller
         $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
         $warehouse = $warehouse_id ? Warehouse::find($warehouse_id) : '';
         $data = array(
-            'invoice' => $invoice, 
+            'invoice' => $invoice,
             'warehouse' => $warehouse
         );
 

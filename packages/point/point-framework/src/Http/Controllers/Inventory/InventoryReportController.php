@@ -32,14 +32,14 @@ class InventoryReportController extends Controller
             ->where('item.name', 'like', '%' . $item_search . '%')
             ->groupBy('inventory.item_id')
             ->where('inventory.total_quantity', '>', 0)
-            ->where(function ($query) use ($view){
+            ->where(function ($query) use ($view) {
                 if ($view->search_warehouse) {
                     $query->where('inventory.warehouse_id', $view->search_warehouse->id);
                 }
             })
-            ->where(function ($query) use ($view){
+            ->where(function ($query) use ($view) {
                 $query->whereBetween('inventory.form_date', [$view->date_from, $view->date_to])
-                    ->orWhere('inventory.form_date','<' , $view->date_from);
+                    ->orWhere('inventory.form_date', '<', $view->date_from);
             })->paginate(100);
 
         return $view;
@@ -62,7 +62,7 @@ class InventoryReportController extends Controller
         $view->item = Item::find($item_id);
         $view->list_inventory = Inventory::where('item_id', '=', $item_id)
             ->where('item_id', '=', $item_id)
-            ->where(function($query) use ($warehouse_id){
+            ->where(function ($query) use ($warehouse_id) {
                 if ($warehouse_id) {
                     $query->where('warehouse_id', '=', $warehouse_id);
                 }
@@ -85,14 +85,14 @@ class InventoryReportController extends Controller
             ->where('item.name', 'like', '%' . $item_search . '%')
             ->groupBy('inventory.item_id')
             ->where('inventory.total_quantity', '>', 0)
-            ->where(function ($query) use ($search_warehouse){
+            ->where(function ($query) use ($search_warehouse) {
                 if ($search_warehouse) {
                     $query->where('inventory.warehouse_id', $search_warehouse->id);
                 }
             })
-            ->where(function ($query) use ($date_from, $date_to){
+            ->where(function ($query) use ($date_from, $date_to) {
                 $query->whereBetween('inventory.form_date', [$date_from, $date_to])
-                    ->orWhere('inventory.form_date','<' , $date_from);
+                    ->orWhere('inventory.form_date', '<', $date_from);
             })->get()->toArray();
 
         $data = array(
@@ -114,7 +114,7 @@ class InventoryReportController extends Controller
         $item_id = \Input::get('item_id');
         $list_inventory = Inventory::where('item_id', '=', $item_id)
             ->where('item_id', '=', $item_id)
-            ->where(function($query) use ($warehouse_id){
+            ->where(function ($query) use ($warehouse_id) {
                 if ($warehouse_id) {
                     $query->where('warehouse_id', '=', $warehouse_id);
                 }
@@ -153,7 +153,7 @@ class InventoryReportController extends Controller
                         'F' => 25
                     ));
 
-                    $warehouse = $data['warehouse'] ? Warehouse::find($data['warehouse'])->name : 'ALL'; 
+                    $warehouse = $data['warehouse'] ? Warehouse::find($data['warehouse'])->name : 'ALL';
                     // MERGER COLUMN
                     $sheet->mergeCells('A1:F1', 'center');
                     $sheet->cell('A1', function ($cell) use ($warehouse) {
@@ -225,7 +225,6 @@ class InventoryReportController extends Controller
                             $stock_out = inventory_get_stock_out($data['date_from'], $data['date_to'], $item->id, $data['warehouse']);
                             $closing_stock = inventory_get_closing_stock($data['date_from'], $data['date_to'], $item->id, $data['warehouse']);
                             $warehouse = $data['warehouse'];
-
                         } else {
                             $opening_stock = inventory_get_opening_stock_all($data['date_from'], $item->id);
                             $stock_in = inventory_get_stock_in_all($data['date_from'], $data['date_to'], $item->id);
@@ -241,7 +240,7 @@ class InventoryReportController extends Controller
                             strtoupper(number_format_quantity($stock_in)),
                             strtoupper(number_format_quantity($stock_out)),
                             strtoupper(number_format_quantity($closing_stock))
-                        ]);                    
+                        ]);
                     }
 
                     $total_data = $total_data+3;
@@ -293,7 +292,7 @@ class InventoryReportController extends Controller
                         'F' => 25
                     ));
 
-                    $warehouse = $data['warehouse'] ? Warehouse::find($data['warehouse'])->name : 'ALL'; 
+                    $warehouse = $data['warehouse'] ? Warehouse::find($data['warehouse'])->name : 'ALL';
                     $item = Item::find($data['item_id']);
                     // MERGER COLUMN
                     $sheet->mergeCells('A1:F1', 'center');
@@ -351,7 +350,7 @@ class InventoryReportController extends Controller
 
                     $opening_inventory = Inventory::where('item_id', '=', $item->id)
                             ->where('form_date', '<', $data['date_from'])
-                            ->where(function($query) use ($data) {
+                            ->where(function ($query) use ($data) {
                                 if ($data['warehouse']) {
                                     $query->where('warehouse_id', '=', $data['warehouse']);
                                 }
@@ -373,13 +372,12 @@ class InventoryReportController extends Controller
                             strtoupper(date_format_view($data['list_inventory'][$i]['form_date'])),
                             strtoupper(number_format_quantity($data['list_inventory'][$i]['quantity'], 0)),
                             strtoupper(number_format_quantity($data['list_inventory'][$i]['total_quantity'], 0))
-                        ]);                    
+                        ]);
                     }
                     array_push($content, [$total_data + 2, '-', 'END STOCK', date_format_view($data['date_to']), '-', number_format_quantity($total_quantity, 0)]);
                     $total_data = $total_data+5;
                     $sheet->fromArray($content, null, 'A4', false, false);
                     $sheet->setBorder('A2:F'.$total_data, 'thin');
-
                 });
             })->store('xls', $storage);
 

@@ -4,8 +4,8 @@ namespace Point\PointAccounting\Vesa;
 
 use Point\PointAccounting\Models\CutOffFixedAssets;
 
-trait CutOffFixedAssetsVesa {
-
+trait CutOffFixedAssetsVesa
+{
     public static function getVesa()
     {
         $array = self::vesaApproval();
@@ -80,5 +80,4 @@ trait CutOffFixedAssetsVesa {
 
         return $array;
     }
-
 }

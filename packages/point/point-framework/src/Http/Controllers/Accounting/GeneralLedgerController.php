@@ -35,8 +35,8 @@ class GeneralLedgerController extends Controller
         $date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : date('Y-m-d 23:59:59');
         $coa_id = unserialize(urldecode(\Input::get('coa_filter'))) ? : 0;
         $journals = AccountingHelper::queryGeneralLedger($date_from, $date_to, $coa_id);
-        \Excel::create($file_name, function($excel) use ($date_from, $date_to, $coa_id, $journals) {
-            $excel->sheet('General Ledger', function($sheet) use ($date_from, $date_to, $coa_id, $journals) {
+        \Excel::create($file_name, function ($excel) use ($date_from, $date_to, $coa_id, $journals) {
+            $excel->sheet('General Ledger', function ($sheet) use ($date_from, $date_to, $coa_id, $journals) {
                 $data = array(
                     'list_coa' => Coa::active()->orderBy('coa_number')->orderBy('name')->get(),
                     'coa_id' => $coa_id,
@@ -46,9 +46,7 @@ class GeneralLedgerController extends Controller
                  );
                 
                 $sheet->loadView('framework::app.accounting.general-ledger._data', $data);
-
             });
-
         })->export('xls');
     }
 }

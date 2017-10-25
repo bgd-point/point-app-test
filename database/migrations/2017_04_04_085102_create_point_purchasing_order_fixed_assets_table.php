@@ -37,7 +37,6 @@ class CreatePointPurchasingOrderFixedAssetsTable extends Migration
             $table->decimal('tax_base', 16, 4);
             $table->decimal('tax', 16, 4);
             $table->decimal('total', 16, 4);
-            
         });
     }
 

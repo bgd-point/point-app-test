@@ -513,7 +513,7 @@ class PaymentOrderController extends Controller
             if ($locked_form->formulirable_type != get_class(new Downpayment)
                 && $locked_form->formulirable_type != get_class(new CutOffPayable)) {
                 $locked_form->form_status = 0;
-                $locked_form->save();    
+                $locked_form->save();
             }
             
             $formulir_lock->locked = false;
@@ -546,7 +546,7 @@ class PaymentOrderController extends Controller
         }
 
         $data = array(
-            'payment_order' => $payment_order, 
+            'payment_order' => $payment_order,
             'token' => $token,
             'warehouse' => $warehouse
         );

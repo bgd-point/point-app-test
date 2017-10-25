@@ -86,7 +86,6 @@ class ExpeditionOrderHelper
             $expedition_order_item->item_fee = 0;
             $expedition_order_item->converter = 1;
             $expedition_order_item->save();
-
         }
 
         formulir_lock($reference->formulir_id, $expedition_order->formulir_id);

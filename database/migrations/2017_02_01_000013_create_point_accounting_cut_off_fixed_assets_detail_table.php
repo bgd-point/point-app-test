@@ -10,10 +10,9 @@ class CreatePointAccountingCutOffFixedAssetsDetailTable extends Migration
      *
      * @return void
      */
-    public function up() 
+    public function up()
     {
-        Schema::create('point_accounting_cut_off_fixed_assets_detail', function($table)
-        {
+        Schema::create('point_accounting_cut_off_fixed_assets_detail', function ($table) {
             $table->increments('id');
             
             $table->integer('fixed_assets_id')->unsigned()->index('point_accounting_fixed_assets_id_index');
@@ -39,13 +38,13 @@ class CreatePointAccountingCutOffFixedAssetsDetailTable extends Migration
             $table->string('name');
             $table->string('country');
 
-            $table->decimal('total_paid',16,4);
-            $table->decimal('depreciation',16,4);
-            $table->decimal('quantity',16,4);
-            $table->decimal('price',16,4);
-            $table->decimal('total_price',16,4);
-            $table->decimal('period',16,4);
-            $table->decimal('salvage_value',16,4);
+            $table->decimal('total_paid', 16, 4);
+            $table->decimal('depreciation', 16, 4);
+            $table->decimal('quantity', 16, 4);
+            $table->decimal('price', 16, 4);
+            $table->decimal('total_price', 16, 4);
+            $table->decimal('period', 16, 4);
+            $table->decimal('salvage_value', 16, 4);
         });
     }
 

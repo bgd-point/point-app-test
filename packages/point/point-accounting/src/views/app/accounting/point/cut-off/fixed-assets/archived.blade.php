@@ -72,8 +72,8 @@
                                 </thead>
                                 <tbody class="manipulate-row">
                                     <?php 
-                                        $i = 0; 
-                                        $total_amount = 0; 
+                                        $i = 0;
+                                        $total_amount = 0;
                                     ?>
 
                                     @foreach($list_coa as $coa)

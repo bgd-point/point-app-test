@@ -5,7 +5,6 @@ namespace Point\PointPurchasing\Vesa\FixedAssets;
 use Point\PointPurchasing\Models\FixedAssets\FixedAssetsDownpayment;
 use Point\PointPurchasing\Models\FixedAssets\FixedAssetsPurchaseOrder;
 
-
 trait FixedAssetsDownpaymentVesa
 {
     public static function getVesa()

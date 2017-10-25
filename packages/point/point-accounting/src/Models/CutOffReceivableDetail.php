@@ -11,17 +11,17 @@ class CutOffReceivableDetail extends Model
 
     public function person()
     {
-        return $this->belongsTo('Point\Framework\Models\Master\Person','subledger_id');
+        return $this->belongsTo('Point\Framework\Models\Master\Person', 'subledger_id');
     }
 
     public function coa()
     {
-        return $this->belongsTo('Point\Framework\Models\Master\Coa','coa_id');
+        return $this->belongsTo('Point\Framework\Models\Master\Coa', 'coa_id');
     }
 
     public function cutoffReceivable()
     {
-        return $this->belongsTo('Point\PointAccounting\Models\CutOffReceivable','cut_off_receivable_id');
+        return $this->belongsTo('Point\PointAccounting\Models\CutOffReceivable', 'cut_off_receivable_id');
     }
 
     public function scopeJoinReceivable($q)
@@ -33,5 +33,4 @@ class CutOffReceivableDetail extends Model
     {
         $q->join('formulir', 'formulir.id', '=', 'point_accounting_cut_off_receivable.formulir_id');
     }
-
 }

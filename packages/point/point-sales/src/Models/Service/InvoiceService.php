@@ -28,7 +28,7 @@ class InvoiceService extends Model
             ->joinFormulir()
             ->whereNotNull('formulir.form_number')
             ->whereIn('formulir.form_status', [0, 1])
-            ->where(function($query) use ($date_from, $date_to) {
+            ->where(function ($query) use ($date_from, $date_to) {
                 if ($date_from && $date_to) {
                     $query->whereBetween('formulir.form_date', [$date_from, $date_to]);
                 }
