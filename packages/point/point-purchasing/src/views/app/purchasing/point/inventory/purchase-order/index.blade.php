@@ -46,6 +46,10 @@
                             @if(auth()->user()->may('read.point.purchasing.order'))
                                 <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" href="{{url('purchasing/point/purchase-order/pdf?date_from='.\Input::get('date_from').'&date_to='.\Input::get('date_to').'&search='.\Input::get('search').'&order_by='.\Input::get('order_by').'&order_type='.\Input::get('order_type').'&status='.\Input::get('status'))}}"> export to PDF</a>
                             @endif
+
+                                <a class="btn  btn-success" onclick="showAll();">Show All</a>
+                                <a class="btn  btn-success" onclick="compact();">COMPACT</a>
+                                <input type="hidden" id="cek_show" >
                         </div>
                     </div>
                 </form>
@@ -61,7 +65,7 @@
                     {!! $list_purchase_order->appends(['order_by'=>app('request')->get('order_by'), 'order_type'=>app('request')->get('order_type'), 'status'=>app('request')->get('status'), 'search'=>app('request')->get('search'), 'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
                     <table class="table table-striped table-bordered">
                         <thead>
-                        <tr>
+                        <tr class="thead">
                             <th style="width: 180px"></th>
                             <th style="cursor:pointer" onclick="selectData('form_date', @if($order_by == 'form_date' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_date' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Form Date <span class="pull-right"><i class="fa @if($order_by == 'form_date' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_date' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
                             <th style="cursor:pointer" onclick="selectData('form_number', @if($order_by == 'form_number' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_number' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Form Number <span class="pull-right"><i class="fa @if($order_by == 'form_number' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_number' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
@@ -74,6 +78,7 @@
                         </thead>
                         <tbody>
                         @foreach($list_purchase_order as $purchase_order)
+                        <tr class="rowDetail" id="row_detail_{{$purchase_order->id}}">
                             <td>
                                 @if($purchase_order->formulir->approval_status == '1' && $purchase_order->formulir->form_status == 0 && auth()->user()->may('create.point.purchasing.downpayment') && $purchase_order->is_cash == 1)
                                     {{ $purchase_order->checkDownpayment() }}
@@ -107,6 +112,44 @@
 @stop
 @section('scripts')
 <script>
+
+//method mesti huruf kecil didepan
+//Class hruf kapital
+
+    $('#cek_show').val(0);
+function showAll(){
+    $('.thdetail').remove();
+    var html = '<th class="thdetail">ITEM</th>'
+                +'<th class="thdetail">QTY</th>'
+                +'<th class="thdetail">PRICE</th>'
+    $('.thead').append(html);
+    $('.rowDetail').append('<td class="txtDetail data_detail" colspan="3" align="center"><strong>DETAIL</strong></td>');
+    var cek_show = $('#cek_show').val();
+    if(cek_show == 0){
+        var str_url = "{{ url('purchasing/point/purchase-order/Detail') }}";
+        $.ajax({ url:str_url, success: function(data) {
+            for (var i = 0; i < data.length; i++) {
+                var html_detail = ' <tr class="data_detail">'
+                        +'      <td colspan="8" class="data_detail"></td>'
+                        +'      <td class="data_detail">'+data[i].item_name+'</td>'
+                        +'      <td class="data_detail">'+data[i].quantity+'</td>'
+                        +'      <td class="data_detail">'+data[i].price+'</td>'
+                        +'  </tr>';
+
+                $('#row_detail_'+data[i].point_purchasing_order_id).after(html_detail);
+            
+            $('#cek_show').val(1);
+            }
+        }});
+    }else{
+        $('.data_detail').show();
+    }
+}
+function compact(){
+    $('.thdetail').remove();
+    $('.data_detail').hide();
+
+}
 function selectData(order_by, order_type) {
     var status = $("#status option:selected").val();
     var date_from = $("#date-from").val();

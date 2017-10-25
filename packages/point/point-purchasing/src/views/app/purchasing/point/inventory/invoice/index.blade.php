@@ -7,7 +7,7 @@
             <li>Invoice</li>
         </ul>
         <h2 class="sub-header">Invoice</h2>
-        @include('point-purchasing::app.purchasing.point.inventory.invoice._menu')
+        {{-- @include('point-purchasing::app.purchasing.point.inventory.invoice._menu') --}}
 
         <div class="panel panel-default">
             <div class="panel-body">

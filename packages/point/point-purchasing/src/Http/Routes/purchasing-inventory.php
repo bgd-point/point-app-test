@@ -63,7 +63,12 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::post('/purchase-order/basic/store', 'PurchaseOrderController@store');
         Route::get('/purchase-order/basic/create', 'PurchaseOrderController@create');
         Route::get('/purchase-order/pdf', 'PurchaseOrderController@indexPDF');
+        //Purchase Order Ajax Detail
+        Route::get('/purchase-order/Detail', 'PurchaseOrderController@ajaxDetailItem');
         Route::resource('/purchase-order', 'PurchaseOrderController');
+            
+
+
     });
 
     // DOWNPAYMENT

@@ -37,6 +37,7 @@ class PurchaseOrder extends Model
         $q->join('person', 'person.id', '=', 'point_purchasing_order.supplier_id');
     }
 
+  
     public function scopeIncludeExpedition($q, $supplier_id)
     {
         $q->joinFormulir()
