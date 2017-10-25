@@ -48,11 +48,11 @@ class Invoice extends Model
 
     public function scopeAvailableToCreatePaymentOrder($q, $supplier_id)
     {
-        $invoice_locked = Invoice::getLockedInvoice();
-        
+        // $invoice_locked = Invoice::getLockedInvoice();
+
         $q->joinFormulir()
             ->joinSupplier()
-            ->whereNotIn('point_purchasing_invoice.formulir_id', $invoice_locked)
+            // ->whereNotIn('point_purchasing_invoice.formulir_id', $invoice_locked)
             ->notArchived()
             ->open()
             ->approvalApproved()
