@@ -79,9 +79,9 @@
                             
                         @endforeach
                         <tr>
-                            <td class="text-left"><h4><strong>Total</strong></h4></td>
+                            <td colspan="3" class="text-left"><h4><strong>Total</strong></h4></td>
                             <td class="text-right"><h4><strong>{{number_format_quantity($total_quantity, 0)}}</strong></h4></td>
-                            <td colspan="3" class="text-right"><h4><strong>{{number_format_quantity($total_amount)}}</strong></h4></td>
+                            <td class="text-right"><h4><strong>{{number_format_quantity($total_amount)}}</strong></h4></td>
                         </tr>
                         </tbody>
                     </table>
