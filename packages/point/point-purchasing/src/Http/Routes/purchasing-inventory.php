@@ -22,6 +22,7 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::post('/purchase-requisition/send-email-requisition', 'PurchaseRequisitionController@sendEmailRequisition');
         Route::get('/purchase-requisition/{id}/archived', 'PurchaseRequisitionController@archived');
         Route::get('/purchase-requisition/pdf', 'PurchaseRequisitionController@indexPDF');
+        Route::get('/purchase-requisition/Detail', 'PurchaseRequisitionController@ajaxDetailItem');
         Route::resource('/purchase-requisition', 'PurchaseRequisitionController');
     });
 

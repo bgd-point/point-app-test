@@ -41,7 +41,7 @@ class PurchaseOrderController extends Controller
     public function ajaxDetailItem(Request $request)
     {
         access_is_allowed('read.point.purchasing.order');
-        $list_purchase_order = PurchaseOrderDetail::select('item.name as item_name','point_purchasing_order_item.quantity','point_purchasing_order_item.price')->joinAllocation()->joinItem()->joinPurchasingOrder()->joinSupplier()->joinFormulir()->get();
+        $list_purchase_order = PurchaseOrderDetail::select('item.name as item_name','point_purchasing_order_item.quantity','point_purchasing_order_item.price','point_purchasing_order_item.point_purchasing_order_id')->joinAllocation()->joinItem()->joinPurchasingOrder()->joinSupplier()->joinFormulir()->get();
         return response()->json($list_purchase_order);
     }
 

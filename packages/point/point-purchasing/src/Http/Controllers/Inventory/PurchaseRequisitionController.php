@@ -21,6 +21,7 @@ use Point\Framework\Models\Master\Warehouse;
 use Point\PointPurchasing\Helpers\PurchaseRequisitionHelper;
 use Point\PointPurchasing\Http\Requests\PurchaseRequest;
 use Point\PointPurchasing\Models\Inventory\PurchaseRequisition;
+use Point\PointPurchasing\Models\Inventory\PurchaseRequisitionDetail;
 
 class PurchaseRequisitionController extends Controller
 {
@@ -44,11 +45,9 @@ class PurchaseRequisitionController extends Controller
     }
 
     public function ajaxDetailItem(){
-        access_is_allowed('point-purchasing::app.purchasing.point.inventory.purchase-requisition.index');
-        $list_purchase_order = PurchaseOrderDetail::select('item.name as item_name','point_purchasing_order_item.quantity','point_purchasing_order_item.price')->joinAllocation()->joinItem()->joinPurchasingOrder()->joinSupplier()->joinFormulir()->get();
+        access_is_allowed('read.point.purchasing.requisition');
+        $list_purchase_order = PurchaseRequisitionDetail::select('item.name as item_name','point_purchasing_requisition_item.quantity','point_purchasing_requisition_item.price','point_purchasing_requisition_item.point_purchasing_requisition_id')->joinAllocation()->joinItem()->joinPurchasingRequisition()->joinSupplier()->joinFormulir()->get();
         return response()->json($list_purchase_order);
-
-        access_is_allowed('read.')
     }
 
     public function indexPDF(Request $request)

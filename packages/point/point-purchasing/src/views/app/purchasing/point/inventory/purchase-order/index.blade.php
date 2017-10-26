@@ -119,6 +119,7 @@ function showAll(){
                 +'<th class="thdetail">QTY</th>'
                 +'<th class="thdetail">PRICE</th>'
     $('.thead').append(html);
+    $('.txtDetail').remove();
     $('.rowDetail').append('<td class="txtDetail data_detail" colspan="3" align="center"><strong>DETAIL</strong></td>');
     var cek_show = $('#cek_show').val();
     if(cek_show == 0){
