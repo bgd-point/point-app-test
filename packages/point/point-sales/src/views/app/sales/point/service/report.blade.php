@@ -49,7 +49,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <?php $total_price = 0; $total_quantity = 0; ?>
+                        <?php $total_amount = 0; $total_quantity = 0; ?>
                         @foreach($list_invoice as $invoice)
                             <?php
                             $date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : '';
@@ -69,15 +69,19 @@
                                     <td></td>
                                     <td>{{ $invoice_detail->service->name }}</td>
                                     <td class="text-right">{{ number_format_quantity($invoice_detail->quantity, 0)}}</td>
-                                    <td class="text-right">{{ number_format_quantity($invoice_detail->price)}}</td>
+                                    <td class="text-right">{{ number_format_quantity($invoice_detail->price * $invoice_detail->quantity)}}</td>
                                 </tr>
+                                <?php
+                                    $total_quantity += $invoice_detail->quantity;
+                                    $total_amount += $invoice_detail->quantity * $invoice_detail->price;
+                                ?>
                             @endforeach
                             
                         @endforeach
                         <tr>
                             <td class="text-left"><h4><strong>Total</strong></h4></td>
                             <td class="text-right"><h4><strong>{{number_format_quantity($total_quantity, 0)}}</strong></h4></td>
-                            <td colspan="3" class="text-right"><h4><strong>{{number_format_quantity($total_price)}}</strong></h4></td>
+                            <td colspan="3" class="text-right"><h4><strong>{{number_format_quantity($total_amount)}}</strong></h4></td>
                         </tr>
                         </tbody>
                     </table>
