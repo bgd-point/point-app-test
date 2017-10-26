@@ -17,8 +17,7 @@ class ServiceReportController extends Controller
     {
         access_is_allowed('read.point.sales.service.report');
         $view = view('point-sales::app.sales.point.service.report');
-        $view->list_service = Service::active()->paginate(100);
-        
+        $view->list_invoice = Invoice::joinFormulir()->notArchived()->paginate(100);
         return $view;
     }
 

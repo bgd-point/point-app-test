@@ -37,10 +37,12 @@
                 <br/>
 
                 <div class="table-responsive">
-                    {!! $list_service->appends(['date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
+                    {!! $list_invoice->appends(['date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
                     <table class="table">
                         <thead>
                         <tr>
+                            <th>Form Number</th>
+                            <th>Form Date</th>
                             <th>Service</th>
                             <th class="text-right">Total Quantity</th>
                             <th class="text-right">Total Amount</th>
@@ -48,22 +50,28 @@
                         </thead>
                         <tbody>
                         <?php $total_price = 0; $total_quantity = 0; ?>
-                        @foreach($list_service as $service)
+                        @foreach($list_invoice as $invoice)
                             <?php
                             $date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : '';
                             $date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : '';
-                            
-                            $data = Point\PointSales\Helpers\ServiceReportHelper::detailByService($service->id, $date_from, $date_to);
-                            if ($data) {
-                                $total_price += $data->price;
-                                $total_quantity += $data->quantity;
-                            }
                             ?>
+
                             <tr>
-                                <td><a href="{{url('sales/point/service/report/'.$service->id.'?date_from='.$date_from.'&date_to='.$date_to)}}" title="show detail"> {{ $service->name}} </a></td>
-                                <td class="text-right">{{ number_format_quantity($data->quantity, 0)}}</td>
-                                <td class="text-right">{{ number_format_quantity($data->price)}}</td>
+                                <td>{{ $invoice->formulir->form_number }}</td>
+                                <td>{{ $invoice->formulir->form_date }}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                             </tr>
+                            @foreach($invoice->services as $invoice_detail)
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ $invoice_detail->service->name }}</td>
+                                    <td class="text-right">{{ number_format_quantity($invoice_detail->quantity, 0)}}</td>
+                                    <td class="text-right">{{ number_format_quantity($invoice_detail->price)}}</td>
+                                </tr>
+                            @endforeach
                             
                         @endforeach
                         <tr>
@@ -73,7 +81,7 @@
                         </tr>
                         </tbody>
                     </table>
-                    {!! $list_service->appends(['date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
+                    {!! $list_invoice->appends(['date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
                 </div>
             </div>
         </div>
