@@ -35,7 +35,6 @@ class SalesQuotationController extends Controller
         access_is_allowed('read.point.sales.quotation');
 
         $list_sales_quotation = SalesQuotation::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
-
         $view = view('point-sales::app.sales.point.sales.sales-quotation.index');
         $view->list_sales_quotation = SalesQuotationHelper::searchList($list_sales_quotation, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_sales_quotation = $view->list_sales_quotation->paginate(100);
