@@ -112,11 +112,7 @@
 @stop
 @section('scripts')
 <script>
-
-//method mesti huruf kecil didepan
-//Class hruf kapital
-
-    $('#cek_show').val(0);
+$('#cek_show').val(0);
 function showAll(){
     $('.thdetail').remove();
     var html = '<th class="thdetail">ITEM</th>'
