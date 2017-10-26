@@ -22,7 +22,7 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::post('/purchase-requisition/send-email-requisition', 'PurchaseRequisitionController@sendEmailRequisition');
         Route::get('/purchase-requisition/{id}/archived', 'PurchaseRequisitionController@archived');
         Route::get('/purchase-requisition/pdf', 'PurchaseRequisitionController@indexPDF');
-        Route::get('/purchase-requisition/Detail', 'PurchaseRequisitionController@ajaxDetailItem');
+        Route::get('/purchase-requisition/detail', 'PurchaseRequisitionController@ajaxDetailItem');
         Route::resource('/purchase-requisition', 'PurchaseRequisitionController');
     });
 
@@ -65,7 +65,7 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::get('/purchase-order/basic/create', 'PurchaseOrderController@create');
         Route::get('/purchase-order/pdf', 'PurchaseOrderController@indexPDF');
         //Purchase Order Ajax Detail
-        Route::get('/purchase-order/Detail', 'PurchaseOrderController@ajaxDetailItem');
+        Route::get('/purchase-order/detail', 'PurchaseOrderController@ajaxDetailItem');
         Route::resource('/purchase-order', 'PurchaseOrderController');
             
 

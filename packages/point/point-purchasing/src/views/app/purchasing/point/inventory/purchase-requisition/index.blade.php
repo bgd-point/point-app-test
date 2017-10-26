@@ -48,7 +48,7 @@
                             @endif
                             <a class="btn  btn-success" onclick="showAll();">Show All</a>
                             <a class="btn  btn-success" onclick="compact();">COMPACT</a>
-                            <input type="text" id="cek_show" >
+                            <input type="hidden" id="check_show" >
                         </div>
                     </div>
                 </form>
@@ -107,19 +107,19 @@
 
 @section('scripts')
 <script>
-$('#cek_show').val(0);
+$('#check_show').val(0);
 function showAll(){
-    $('.thdetail').remove();
-    var html = '<th class="thdetail">ITEM</th>'
-                +'<th class="thdetail">QTY</th>'
-                +'<th class="thdetail">PRICE</th>'
+    $('.header_detail').remove();
+    var html = '<th class="header_detail">ITEM</th>'
+                +'<th class="header_detail">QTY</th>'
+                +'<th class="header_detail">PRICE</th>'
     $('.thead').append(html);
     $('.txtDetail').remove();
     $('.rowDetail').append('<td class="txtDetail data_detail" colspan="3" align="center"><strong>DETAIL</strong></td>');
-    var cek_show = $('#cek_show').val();
-    $('#cek_show').val(1);
-    if(cek_show == 0){
-        var str_url = "{{ url('purchasing/point/purchase-requisition/Detail') }}";
+    var check_show = $('#check_show').val();
+    $('#check_show').val(1);
+    if(check_show == 0){
+        var str_url = "{{ url('purchasing/point/purchase-requisition/detail') }}";
         $.ajax({ url:str_url, success: function(data) {
             for (var i = 0; i < data.length; i++) {
                 var html_detail = ' <tr class="data_detail">'
@@ -138,7 +138,7 @@ function showAll(){
     }
 }
 function compact(){
-    $('.thdetail').remove();
+    $('.header_detail').remove();
     $('.data_detail').hide();
 
 }

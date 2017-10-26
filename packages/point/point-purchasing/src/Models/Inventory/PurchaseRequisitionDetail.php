@@ -13,7 +13,6 @@ class PurchaseRequisitionDetail extends Model
     protected $table = 'point_purchasing_requisition_item';
     public $timestamps = false;
 
-    //Ragil 23/10 2017
     public function scopeJoinAllocation($q){
         $q->join('allocation', 'allocation.id', '=', 'point_purchasing_requisition_item.allocation_id');
     }
@@ -34,5 +33,4 @@ class PurchaseRequisitionDetail extends Model
         $q->join('formulir', 'formulir.id', '=', 'point_purchasing_requisition.formulir_id');
     }
 
-    //END RAGIL
 }
