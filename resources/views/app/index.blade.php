@@ -76,7 +76,7 @@
                                     <td style="vertical-align: top"><a href="{{ $vesa['url'] }}"><i class="fa fa-share-square-o"></i></a></td>
                                     <td style="vertical-align: top">{{ date_format_view($vesa['deadline']) }}</td>
                                     <td><b>{{ $permission }}</b></td>
-                                    <td>{{ $vesa['message'] }}</td>
+                                    <td>{!! $vesa['message'] !!}</td>
                                 </tr>
                             @endif
                         @endforeach
