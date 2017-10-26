@@ -31,12 +31,7 @@ class PurchaseOrderController extends Controller
     public function index()
     {
         access_is_allowed('read.point.purchasing.order');
-        // dd(\Input::get('showType'));
         $list_purchase_order = PurchaseOrder::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
-
-        // $list_purchase_order = PurchaseOrderDetail::joinAllocation()->joinItem()->joinPurchasingOrder()->joinSupplier()->joinFormulir()->get();
-        // dd($list_purchase_order);
-        // dd(PurchaseOrder::joinFormulir()->joinSupplier()->notArchived()->selectOriginal()->get());
         $list_purchase_order = PurchaseOrderHelper::searchList($list_purchase_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view = view('point-purchasing::app.purchasing.point.inventory.purchase-order.index');
         $view->list_purchase_order = $list_purchase_order->paginate(100);
@@ -47,7 +42,6 @@ class PurchaseOrderController extends Controller
     {
         access_is_allowed('read.point.purchasing.order');
         $list_purchase_order = PurchaseOrderDetail::select('item.name as item_name','point_purchasing_order.*','point_purchasing_order_item.*')->joinAllocation()->joinItem()->joinPurchasingOrder()->joinSupplier()->joinFormulir()->get();
-        // json_encode($list_purchase_order);
         return response()->json($list_purchase_order);
     }
 
