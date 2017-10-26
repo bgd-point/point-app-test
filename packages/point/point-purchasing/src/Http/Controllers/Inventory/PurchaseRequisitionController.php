@@ -43,6 +43,14 @@ class PurchaseRequisitionController extends Controller
         return $view;
     }
 
+    public function ajaxDetailItem(){
+        access_is_allowed('point-purchasing::app.purchasing.point.inventory.purchase-requisition.index');
+        $list_purchase_order = PurchaseOrderDetail::select('item.name as item_name','point_purchasing_order_item.quantity','point_purchasing_order_item.price')->joinAllocation()->joinItem()->joinPurchasingOrder()->joinSupplier()->joinFormulir()->get();
+        return response()->json($list_purchase_order);
+
+        access_is_allowed('read.')
+    }
+
     public function indexPDF(Request $request)
     {
         access_is_allowed('read.point.purchasing.requisition');
