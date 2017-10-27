@@ -13,6 +13,7 @@ use Point\PointExpedition\Models\ExpeditionOrder;
 use Point\PointExpedition\Models\ExpeditionOrderItem;
 use Point\PointPurchasing\Helpers\GoodsReceivedHelper;
 use Point\PointPurchasing\Models\Inventory\GoodsReceived;
+use Point\PointPurchasing\Models\Inventory\GoodsReceivedDetail;
 use Point\PointPurchasing\Models\Inventory\PurchaseOrder;
 
 class GoodsReceivedController extends Controller
@@ -32,7 +33,17 @@ class GoodsReceivedController extends Controller
         $list_goods_received = GoodsReceived::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
         $list_goods_received = GoodsReceivedHelper::searchList($list_goods_received, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_goods_received = $list_goods_received->paginate(100);
+        
+        $data_id = [];
+        $view->data_id = $data_id;
         return $view;
+    }
+
+    public function ajaxDetailItem($id)
+    {
+        access_is_allowed('read.point.purchasing.goods.received');
+        $list_purchase_order = GoodReceivedDetail::select('item.name as item_name','point_purchasing_goods_received_item.quantity','point_purchasing_goods_received_item.price','point_purchasing_goods_received_item.point_good_received_id')->joinAllocation()->joinItem()->joinGoodReceived()->joinSupplier()->joinFormulir()->where('point_purchasing_goods_received_item.point_good_received_id', '=', $id)->get();
+        return response()->json($list_purchase_order);
     }
 
     public function indexPDF(Request $request)
