@@ -18,7 +18,7 @@
                 <div class="col-xs-12 col-md-8">
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-3 control-label">Customer *</label>
-                        <div class="col-xs-12 col-sm-3 col-md-9" id="content-customer">
+                        <div class="col-xs-12 col-sm-3 col-md-9 content-show" id="content-customer">
                             @if(!$carts)
                                 <div class="@if(access_is_allowed_to_view('create.customer')) input-group @endif">
                                     <select id="contact_id" name="customer_id" class="selectize" onchange="selectCustomer(this.value)" data-placeholder="Choose customer...">
@@ -37,13 +37,13 @@
                                 </div>
                             @else
                                 <?php $customer_id = Point\PointSales\Helpers\PosHelper::getCustomer();?>
-                                <div style="padding-top:10px">{{Point\Framework\Models\Master\Person::find($customer_id)->name}}</div>
+                                <div>{{Point\Framework\Models\Master\Person::find($customer_id)->name}}</div>
                             @endif
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-3 control-label">Warehouse</label>
-                        <div class="col-xs-12 col-sm-9 col-md-9 content-show"  style="padding-top:10px">
+                        <div class="col-xs-12 col-sm-9 col-md-9 content-show">
                             {{ $warehouse->name }}
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                         <div class="col-xs-12 col-sm-3 col-md-3 control-label">
                             <strong>Date</strong>
                         </div>
-                        <div class="col-xs-12 col-sm-9 col-md-9 content-show"  style="padding-top:10px">
+                        <div class="col-xs-12 col-sm-9 col-md-9 content-show">
                             {{ date_format_view(date('Y-m-d'))}}
                         </div>
                     </div>
@@ -130,11 +130,9 @@
                         </tr>
                     </table>
                 </div>
-                <div class="row" style="padding:0 20px 0 20px">
+                <div class="row" style="">
                     <div class="col-sm-3">
-                        <input type="checkbox" id="tax-choice-include-tax" class="tax" name="tax_type" {{ old('tax_type') == 'include' ? 'checked'  : '' }} onchange="calculate()" value="include"> Tax Included <br/>
-                        <input type="checkbox" id="tax-choice-exclude-tax" class="tax" name="tax_type" {{ old('tax_type') == 'exclude' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
-                        <input type="checkbox" id="tax-choice-non-tax" class="tax" name="tax_type" {{ old('tax_type') == 'non' ? 'checked'  : '' }} checked onchange="calculate()" value="non" style="display:none">
+
                     </div>
                     <div class="col-sm-3">
                         <div class="form-group">
@@ -157,49 +155,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <div class="col-md-6 control-label  content-show">
-                                <label>TOTAL ITEM</label>
-                            </div>
-                            <div class="col-md-6 content-show text-right">
-                                <label id="total-item">0</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-6 control-label  content-show">
-                                <label>TOTAL QUANTITY</label>
-                            </div>
-                            <div class="col-md-6 content-show text-right">
-                                <label id="total-quantity">0</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div style="margin-left:20px">
-                            <div class="[ form-group ]">
-                                <input type="checkbox" name="print" id="print" value="true" checked=""/>
-                                <div class="[ btn-group ]">
-                                    <label for="print" class="[ btn btn-info ]">
-                                        <span class="[ fa fa-check ]"></span>
-                                        <span> </span>
-                                    </label>
-                                    <label for="print" class="[ btn btn-default ]">
-                                        Print Bill
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" style="padding:0 20px 0 20px">
-                    <div class="col-sm-3">
-                        <a href="{{url('sales/point/pos/clear')}}" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-danger btn-block" style="padding:10px">Cancel</a>
-                        <input type="submit" onclick="setAction('draft')" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-info btn-block" id="submit" value="draft" style="padding:10px"/>
-                        <input type="hidden" name="action" id="action">
-                    </div>
-                    <div class="col-sm-3">
                         <div class="form-group">
                             <div class="col-md-6 control-label  content-show">
                                 <label>TAX BASE</label>
@@ -210,7 +165,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-6 control-label  content-show">
+                            <div class="col-md-6 control-label content-show">
                                 <label>TAX</label>
                             </div>
                             <div class="col-md-6 content-show text-right">
@@ -218,38 +173,55 @@
                                 <input type="hidden" readonly="" id="tax" name="foot_tax" class="form-control format-quantity calculate text-right" value="0" />
                             </div>
                         </div>
+                        <div class="col-md-6 content-show">
+                        </div>
+                        <div class="col-md-6 content-show">
+                            <input type="checkbox" id="tax-choice-include-tax" class="tax" name="tax_type" {{ old('tax_type') == 'include' ? 'checked'  : '' }} onchange="calculate()" value="include"> Tax Included <br/>
+                            <input type="checkbox" id="tax-choice-exclude-tax" class="tax" name="tax_type" {{ old('tax_type') == 'exclude' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
+                            <input type="checkbox" id="tax-choice-non-tax" class="tax" name="tax_type" {{ old('tax_type') == 'non' ? 'checked'  : '' }} checked onchange="calculate()" value="non" style="display:none">
+                        </div>
                     </div>
                     <div class="col-sm-3">
                         <div class="form-group">
-                            <div class="col-md-6 control-label content-show">
-                                <label>TOTAL</label>
-                            </div>
+                            <label class="col-md-6 control-label">TOTAL ITEM</label>
                             <div class="col-md-6 content-show text-right">
-                                <label id="total-label" style="margin-top:10px">0.00</label>
+                                <span id="total-item">0</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">TOTAL QUANTITY</label>
+                            <div class="col-md-6 content-show text-right">
+                                <span id="total-quantity">0</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">TOTAL</label>
+                            <div class="col-md-6 content-show text-right">
+                                <span id="total-label" style="margin-top:10px">0.00</span>
                                 <input type="hidden" readonly id="total" name="foot_total" class="form-control format-quantity calculate text-right" value="0" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-6 control-label content-show">
-                                <label>MONEY RECEIVED</label>
-                            </div>
+                            <label class="col-md-6 control-label">MONEY RECEIVED</label>
                             <div class="col-md-6 content-show text-right">
                                 <!-- <label id="money-received-label">0.00</label> -->
                                 <input type="text" id="money-received" name="foot_money_received" onkeyup="calculateChange()" class="form-control format-quantity text-right" value="0" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-6 control-label  content-show">
-                                <label>CHANGE</label>
-                            </div>
+                            <label class="col-md-6 control-label">CHANGE</label>
                             <div class="col-md-6 content-show text-right">
-                                <label id="change-label" style="margin-top:10px">0.00</label>
+                                <span id="change-label" style="margin-top:10px">0.00</span>
                                 <input type="hidden" readonly id="change" name="foot_change" class="form-control format-quantity calculate text-right" value="0" />
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-3">
-                        <button type="submit" onclick="setAction('save')" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-primary btn-block" id="submit" style="padding:15px"><font style="font-size:20px; font-weight:bold">Close</font> <br>Transaction</button>
+                    <div class="col-sm-3" style="padding-right:30px">
+                        <a href="{{url('sales/point/pos/clear')}}" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-danger btn-block" style="padding:10px">Cancel</a>
+                        <input type="submit" onclick="setAction('draft')" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-info btn-block" id="submit" value="draft" style=""/>
+                        <input type="hidden" name="action" id="action">
+                        <button type="submit" onclick="setAction('save')" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-primary btn-block" id="submit" style="padding:30px 0;"><span style="font-size:20px; font-weight:bold">Close</span> <br>Transaction</button>
+                        <input type="checkbox" name="print" id="print" value="true" checked="" style="visibility: hidden;"/>
                     </div>
                 </div>
             </form>
@@ -294,10 +266,6 @@
     }
     .form-group input[type="checkbox"]:checked + .btn-group > label span:last-child {
         display: none;   
-    }
-
-    .content-show {
-         padding-top: 0; 
     }
 
    tbody.manipulate-row:after {
