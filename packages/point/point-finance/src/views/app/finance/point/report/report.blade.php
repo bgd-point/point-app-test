@@ -14,7 +14,7 @@
                 {!! csrf_field() !!}
                 <input type="hidden" name="type" value="{{$type}}">
                 <div class="form-group">
-                    <label class="col-md-3 control-label">Date Periode</label>
+                    <label class="col-md-3 control-label">Period</label>
                     <div class="col-sm-6">
                         <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
                             <input type="text" name="date_from" class="form-control date input-datepicker"
