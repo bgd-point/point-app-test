@@ -35,13 +35,19 @@ class PurchaseOrderController extends Controller
         $list_purchase_order = PurchaseOrderHelper::searchList($list_purchase_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view = view('point-purchasing::app.purchasing.point.inventory.purchase-order.index');
         $view->list_purchase_order = $list_purchase_order->paginate(100);
+
+        $data_id = [];
+        foreach($list_purchase_order as $purchase_order):
+            array_push($data_id,$purchase_order->id);
+        endforeach;
+        $view->data_id = $data_id;
         return $view;
     }
 
-    public function ajaxDetailItem(Request $request)
+    public function ajaxDetailItem(Request $request, $id)
     {
         access_is_allowed('read.point.purchasing.order');
-        $list_purchase_order = PurchaseOrderDetail::select('item.name as item_name','point_purchasing_order_item.quantity','point_purchasing_order_item.price','point_purchasing_order_item.point_purchasing_order_id')->joinAllocation()->joinItem()->joinPurchasingOrder()->joinSupplier()->joinFormulir()->get();
+        $list_purchase_order = PurchaseOrderDetail::select('item.name as item_name','point_purchasing_order_item.quantity','point_purchasing_order_item.price','point_purchasing_order_item.point_purchasing_order_id')->joinAllocation()->joinItem()->joinPurchasingOrder()->joinSupplier()->joinFormulir()->where('point_purchasing_order_item.point_purchasing_order_id', '=',$id)->get();
         return response()->json($list_purchase_order);
     }
 

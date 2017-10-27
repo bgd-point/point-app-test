@@ -77,8 +77,10 @@
                         </tr>
                         </thead>
                         <tbody>
+                        
                         @foreach($list_purchase_order as $purchase_order)
                         <tr class="rowDetail" id="row_detail_{{$purchase_order->id}}">
+                            <?php array_push($data_id,$purchase_order->id); ?>
                             <td>
                                 @if($purchase_order->formulir->approval_status == '1' && $purchase_order->formulir->form_status == 0 && auth()->user()->may('create.point.purchasing.downpayment') && $purchase_order->is_cash == 1)
                                     {{ $purchase_order->checkDownpayment() }}
@@ -102,6 +104,7 @@
                             </td>
                         </tr>
                         @endforeach
+                        <input type="hidden" id="data_id" value="{{ implode('#',$data_id) }}">
                         </tbody>
                     </table>
                     {!! $list_purchase_order->appends(['order_by'=>app('request')->get('order_by'), 'order_type'=>app('request')->get('order_type'), 'status'=>app('request')->get('status'), 'search'=>app('request')->get('search'), 'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
@@ -122,22 +125,27 @@ function showAll(){
     $('.txtDetail').remove();
     $('.rowDetail').append('<td class="txtDetail data_detail" colspan="3" align="center"><strong>DETAIL</strong></td>');
     var check_show = $('#check_show').val();
+    var data_id = $('#data_id').val();
     if(check_show == 0){
-        var str_url = "{{ url('purchasing/point/purchase-order/detail') }}";
-        $.ajax({ url:str_url, success: function(data) {
-            for (var i = 0; i < data.length; i++) {
-                var html_detail = ' <tr class="data_detail">'
-                        +'      <td colspan="8" class="data_detail"></td>'
-                        +'      <td class="data_detail">'+data[i].item_name+'</td>'
-                        +'      <td class="data_detail">'+data[i].quantity+'</td>'
-                        +'      <td class="data_detail">'+data[i].price+'</td>'
-                        +'  </tr>';
+        var temp = data_id.split('#');
+        for (var x = temp.length - 1; x >= 0; x--) {
+            console.log(data_id[x])
+            var str_url = "{{ url('purchasing/point/purchase-order/detail/') }}/"+temp[x];
+            $.ajax({ url:str_url, success: function(data) {
+                for (var i = 0; i < data.length; i++) {
+                    var html_detail = ' <tr class="data_detail">'
+                            +'      <td colspan="8" class="data_detail"></td>'
+                            +'      <td class="data_detail">'+data[i].item_name+'</td>'
+                            +'      <td class="data_detail">'+data[i].quantity+'</td>'
+                            +'      <td class="data_detail">'+data[i].price+'</td>'
+                            +'  </tr>';
 
-                $('#row_detail_'+data[i].point_purchasing_order_id).after(html_detail);
-            
-            $('#check_show').val(1);
-            }
-        }});
+                    $('#row_detail_'+data[i].point_purchasing_order_id).after(html_detail);
+                
+                $('#check_show').val(1);
+                }
+            }});
+        }
     }else{
         $('.data_detail').show();
     }
