@@ -129,7 +129,6 @@ function showAll(){
     if(check_show == 0){
         var temp = data_id.split('#');
         for (var x = temp.length - 1; x >= 0; x--) {
-            console.log(data_id[x])
             var str_url = "{{ url('purchasing/point/purchase-order/detail/') }}/"+temp[x];
             $.ajax({ url:str_url, success: function(data) {
                 for (var i = 0; i < data.length; i++) {

@@ -37,9 +37,6 @@ class PurchaseOrderController extends Controller
         $view->list_purchase_order = $list_purchase_order->paginate(100);
 
         $data_id = [];
-        foreach($list_purchase_order as $purchase_order):
-            array_push($data_id,$purchase_order->id);
-        endforeach;
         $view->data_id = $data_id;
         return $view;
     }
@@ -47,7 +44,7 @@ class PurchaseOrderController extends Controller
     public function ajaxDetailItem(Request $request, $id)
     {
         access_is_allowed('read.point.purchasing.order');
-        $list_purchase_order = PurchaseOrderDetail::select('item.name as item_name','point_purchasing_order_item.quantity','point_purchasing_order_item.price','point_purchasing_order_item.point_purchasing_order_id')->joinAllocation()->joinItem()->joinPurchasingOrder()->joinSupplier()->joinFormulir()->where('point_purchasing_order_item.point_purchasing_order_id', '=',$id)->get();
+        $list_purchase_order = PurchaseOrderDetail::select('item.name as item_name','point_purchasing_order_item.quantity','point_purchasing_order_item.price','point_purchasing_order_item.point_purchasing_order_id')->joinAllocation()->joinItem()->joinPurchasingOrder()->joinSupplier()->joinFormulir()->where('point_purchasing_order_item.point_purchasing_order_id', '=', $id)->get();
         return response()->json($list_purchase_order);
     }
 

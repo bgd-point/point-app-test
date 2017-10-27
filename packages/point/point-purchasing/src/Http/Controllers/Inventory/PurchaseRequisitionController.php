@@ -41,12 +41,15 @@ class PurchaseRequisitionController extends Controller
         $view = view('point-purchasing::app.purchasing.point.inventory.purchase-requisition.index');
         $view->list_purchase_requisition = PurchaseRequisitionHelper::searchList($list_purchase_requisition, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_purchase_requisition = $view->list_purchase_requisition->paginate(100);
+
+        $data_id = [];
+        $view->data_id = $data_id;
         return $view;
     }
 
-    public function ajaxDetailItem(){
+    public function ajaxDetailItem($id){
         access_is_allowed('read.point.purchasing.requisition');
-        $list_purchase_order = PurchaseRequisitionDetail::select('item.name as item_name','point_purchasing_requisition_item.quantity','point_purchasing_requisition_item.price','point_purchasing_requisition_item.point_purchasing_requisition_id')->joinAllocation()->joinItem()->joinPurchasingRequisition()->joinSupplier()->joinFormulir()->get();
+        $list_purchase_order = PurchaseRequisitionDetail::select('item.name as item_name','point_purchasing_requisition_item.quantity','point_purchasing_requisition_item.price','point_purchasing_requisition_item.point_purchasing_requisition_id')->joinAllocation()->joinItem()->joinPurchasingRequisition()->joinSupplier()->joinFormulir()->where('point_purchasing_requisition_item.point_purchasing_requisition_id', '=', $id)->get();
         return response()->json($list_purchase_order);
     }
 
