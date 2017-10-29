@@ -17,7 +17,16 @@ class ServiceReportController extends Controller
     {
         access_is_allowed('read.point.sales.service.report');
         $view = view('point-sales::app.sales.point.service.report');
-        $view->list_invoice = Invoice::joinFormulir()->notArchived()->paginate(100);
+        $date_from = \Input::get('date_from');
+        $date_to = \Input::get('date_to');
+        $list_invoice = Invoice::joinFormulir()->notArchived();
+
+        if ($date_from != null && $date_to != null) {
+            $list_invoice->where('formulir.form_date', '>=', date_format_db($date_from))
+                ->where('formulir.form_date', '<=', date_format_db($date_to));
+        }
+
+        $view->list_invoice = $list_invoice->paginate(100);
         return $view;
     }
 
