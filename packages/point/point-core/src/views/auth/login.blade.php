@@ -17,11 +17,9 @@
     <div class="block animation-fadeInQuickInv">
         <!-- Login Title -->
         <div class="block-title">
-            @if(\Point\Core\Models\Setting::userChangePasswordAllowed() == "true")
             <div class="block-options pull-right">
                 <a href="{{ url('/password/email') }}" class="btn btn-effect-ripple btn-primary" data-toggle="tooltip" data-placement="left" title="Forgot your password?"><i class="fa fa-exclamation-circle"></i></a>
             </div>
-            @endif
             <h2>Please Login ...</h2>
         </div>
         <!-- END Login Title -->
