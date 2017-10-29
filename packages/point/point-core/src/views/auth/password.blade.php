@@ -23,7 +23,6 @@
             <h2>Password Reminder</h2>
         </div>
         <!-- END Reminder Title -->
-        @if(\Point\Core\Models\Setting::userChangePasswordAllowed() == "true")
         <!-- Reminder Form -->
         <form id="form-reminder" action="/password/email" method="post" class="form-horizontal">
             {!! csrf_field() !!}
@@ -52,7 +51,6 @@
                 </div>
             @endif
         </form>
-        @endif
         <!-- END Reminder Form -->
     </div>
     <!-- END Reminder Block -->
