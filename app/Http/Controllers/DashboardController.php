@@ -94,6 +94,7 @@ class DashboardController extends Controller
         // FINANCE
         $array_vesa = array_merge($array_vesa, PaymentOrderFinance::getVesa());
         $array_vesa = array_merge($array_vesa, PaymentReference::getVesa());
+        $array_vesa = array_merge($array_vesa, \Point\PointFinance\Models\CashAdvance::getVesa());
 
         // ACCOUNTING
         $array_vesa = array_merge($array_vesa, MemoJournal::getVesa());

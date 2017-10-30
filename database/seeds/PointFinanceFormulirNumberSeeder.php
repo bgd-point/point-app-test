@@ -14,5 +14,6 @@ class PointFinanceFormulirNumberSeeder extends Seeder
         FormulirNumberHelper::create('point-finance-bank-payment-out', 'BANK-OUT/');
         FormulirNumberHelper::create('point-finance-cheque-payment-in', 'CHEQUE-IN/');
         FormulirNumberHelper::create('point-finance-cheque-payment-out', 'CHEQUE-OUT/');
+        FormulirNumberHelper::create('point-finance-cash-advance', 'BG/');
     }
 }

@@ -10,6 +10,18 @@
 </div>
 @endif
 
+@if(client_has_addon('basic') && auth()->user()->may('create.point.finance.cash.advance'))
+    <div class="col-md-4 col-lg-3">
+        <a href="{{url('finance/point/cash-advance')}}" class="widget widget-button">
+            <div class="widget-content text-right clearfix">
+                <i class="fa fa-4x fa-file-text push-bit pull-left"></i>
+                <h4 class="widget-heading"><strong>Cash Advance</strong></h4>
+                <span class="text-muted"></span>
+            </div>
+        </a>
+    </div>
+@endif
+
 @if(client_has_addon('basic') && auth()->user()->may('read.point.finance.cashier.cash'))
 <div class="col-md-4 col-lg-3">
     <a href="{{url('finance/point/cash')}}" class="widget widget-button">
