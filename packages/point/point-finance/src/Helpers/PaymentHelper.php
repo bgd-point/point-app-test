@@ -9,6 +9,7 @@ use Point\Framework\Models\Journal;
 use Point\PointFinance\Models\Bank\Bank;
 use Point\PointFinance\Models\Bank\BankDetail;
 use Point\PointFinance\Models\Cash\Cash;
+use Point\PointFinance\Models\Cash\CashCashAdvance;
 use Point\PointFinance\Models\Cash\CashDetail;
 use Point\PointFinance\Models\PaymentReference;
 
@@ -38,13 +39,13 @@ class PaymentHelper
 
     public static function cashOut($formulir)
     {
+
         $payment_reference = PaymentReference::find(app('request')->input('payment_reference_id'));
 
         $cash = new Cash;
         $cash->formulir_id = $formulir->id;
         $cash->person_id = app('request')->input('person_id');
         $cash->coa_id = app('request')->input('account_cash_id');
-        $cash->cash_advance_id = app('request')->input('cash_advance_id');
         $cash->payment_flow = $payment_reference->payment_flow;
         $cash->total = number_format_db(app('request')->input('total')) * -1;
         $cash->save();
@@ -54,6 +55,20 @@ class PaymentHelper
         if ($cash->cash_advance_id) {
             $cash->cashAdvance->remaining_amount = 0;
             $cash->cashAdvance->save();
+        }
+
+        for ($i = 0; $i < count(app('request')->input('cash_advance_id')); $i++) {
+            $cash_cash_advance = new CashCashAdvance;
+            $cash_cash_advance->point_finance_cash_id = $cash->id;
+            $cash_cash_advance->cash_advance_id = app('request')->input('cash_advance_id')[0];
+            $cash_cash_advance->cash_advance_amount = app('request')->input('cash_advance_amount')[0];
+            $cash_cash_advance->close = app('request')->input('close')[0] == 'on' ? 1 : 0;
+            $cash_cash_advance->save();
+        }
+
+        if ($cash_cash_advance->close) {
+            $cash_cash_advance->cashAdvance->remaining_amount = 0;
+            $cash_cash_advance->cashAdvance->save();
         }
 
         $total_amount = 0;
