@@ -41,6 +41,12 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-md-3 control-label">Cash Account</label>
+                    <div class="col-md-6 content-show">
+                        {{ $cash_advance_archived->coa->account}}
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-md-3 control-label">Employee</label>
                     <div class="col-md-6 content-show">
                         {{ $cash_advance_archived->employee->name }}

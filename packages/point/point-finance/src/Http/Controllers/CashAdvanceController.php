@@ -24,7 +24,7 @@ class CashAdvanceController extends Controller
     {
         $view = view('point-finance::app.finance.point.cash-advance.index');
 
-        $view->list_cash_advance = CashAdvance::paginate(100);
+        $view->list_cash_advance = CashAdvance::joinFormulir()->notArchived()->selectOriginal()->paginate(100);
 
         return $view;
     }
@@ -132,6 +132,8 @@ class CashAdvanceController extends Controller
         $view->list_employee = PersonHelper::getByType(['employee']);
 
         $view->cash_advance = CashAdvance::find($id);
+
+        $view->list_cash_account = Coa::active()->joinCategory()->where('coa_category.name', 'Petty Cash')->selectOriginal()->orderBy('coa_number')->orderBy('name')->get();
 
         return $view;
     }

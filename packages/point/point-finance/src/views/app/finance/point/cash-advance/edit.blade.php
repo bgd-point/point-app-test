@@ -48,13 +48,23 @@
                         </div>
                         <div class="col-md-3">
                             <div class="input-group bootstrap-timepicker">
-                                <input type="text" id="time" name="time" class="form-control timepicker"
-                                        value="{{date('H:i', strtotime($cash_advance->formulir->form_date))}}">
+                                <input type="text" id="time" name="time" class="form-control timepicker" value="{{date('H:i', strtotime($cash_advance->formulir->form_date))}}">
                                 <span class="input-group-btn">
-                                <a href="javascript:void(0)" class="btn btn-effect-ripple btn-primary"><i
-                                            class="fa fa-clock-o"></i></a>
-                            </span>
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-primary">
+                                        <i class="fa fa-clock-o"></i>
+                                    </a>
+                                </span>
                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Cash Account *</label>
+                        <div class="col-md-6">
+                            <select id="coa-id" name="coa_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                                @foreach($list_cash_account as $coa)
+                                    <option @if($coa->id == $cash_advance->coa_id) selected @endif value="{{ $coa->id }}">{{ $coa->account }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
