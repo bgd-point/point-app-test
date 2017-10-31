@@ -41,6 +41,16 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-md-3 control-label">Cash Account *</label>
+                        <div class="col-md-6">
+                            <select id="coa-id" name="coa_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                                @foreach($list_cash_account as $coa)
+                                    <option value="{{ $coa->id }}">{{ $coa->account }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-md-3 control-label">Employee *</label>
                         <div class="col-md-6">
                             <select id="employee-id" name="employee_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">

@@ -9,6 +9,7 @@ use Point\Core\Helpers\UserHelper;
 use Point\Core\Http\Controllers\Controller;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\PersonHelper;
+use Point\Framework\Models\Master\Coa;
 use Point\PointFinance\Models\CashAdvance;
 use Point\PointFinance\Models\PaymentReference;
 
@@ -41,6 +42,8 @@ class CashAdvanceController extends Controller
 
         $view->list_employee = PersonHelper::getByType(['employee']);
 
+        $view->list_cash_account = Coa::active()->joinCategory()->where('coa_category.name', 'Petty Cash')->selectOriginal()->orderBy('coa_number')->orderBy('name')->get();
+
         return $view;
     }
 
@@ -55,6 +58,7 @@ class CashAdvanceController extends Controller
         $this->validate($request, [
             'form_date' => 'required',
             'employee_id' => 'required',
+            'coa_id' => 'required',
             'amount' => 'required|min:1',
             'approval_to' => 'required',
         ]);
@@ -67,6 +71,7 @@ class CashAdvanceController extends Controller
 
         $cash_advance = new CashAdvance;
         $cash_advance->formulir_id = $formulir->id;
+        $cash_advance->coa_id = $request->input('coa_id');
         $cash_advance->employee_id = $request->input('employee_id');
         $cash_advance->amount = number_format_db($request->input('amount'));
         $cash_advance->remaining_amount = number_format_db($request->input('amount'));
