@@ -14,11 +14,15 @@ class FixSeeder extends Seeder
         $setting_journal = SettingJournal::where('name', '=', 'advance to employees');
         if ($setting_journal) {
             $setting_journal->delete();
+        } else {
+            \Log::info('fail');
         }
 
         $coa = Coa::where('name', 'Advance to Employees')->first();
         if ($coa) {
             $coa->delete();
+        } else {
+            \Log::info('fail2');
         }
 
         \DB::commit();
