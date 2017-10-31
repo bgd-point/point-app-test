@@ -104,9 +104,18 @@
                                         @endforeach
                                     </tbody>
                                     <tfoot>
+                                        @if($payment_reference->cash_advance_id)
+                                            <tr>
+                                                <td colspan="2" class="text-right">Cash Advance</td>
+                                                <td class="text-right">
+                                                    {{ number_format_accounting($payment_reference->cashAdvance->remaining_amount * -1) }}
+                                                    <input readonly type="hidden" id="cash_advance_id" name="cash_advance_id" class="form-control text-right" value="{{ number_format_price($payment_reference->cash_advance_id) }}" />
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        @endif
                                         <tr>
-                                            <td></td>
-                                            <td></td>
+                                            <td colspan="2" class="text-right">Total</td>
                                             <td class="text-right">
                                                 {{ number_format_price($payment_reference->total) }}
                                                 <input readonly type="hidden" id="total" name="total" class="form-control text-right" value="{{ number_format_price($payment_reference->total) }}" />

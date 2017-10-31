@@ -38,6 +38,11 @@ class PaymentReference extends Model
         return $this->belongsTo('Point\Framework\Models\Master\Person', 'person_id');
     }
 
+    public function cashAdvance()
+    {
+        return $this->belongsTo('Point\PointFinance\Models\CashAdvance', 'cash_advance_id');
+    }
+
     public function detail()
     {
         return $this->hasMany('Point\PointFinance\Models\PaymentReferenceDetail', 'point_finance_payment_reference_id');
