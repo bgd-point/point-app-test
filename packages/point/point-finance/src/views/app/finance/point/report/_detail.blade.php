@@ -92,6 +92,16 @@
             <td></td>
             <td class="text-right"><strong>{{ number_format_price($opening_balance + $total_received + $total_disbursed) }}</strong></td>
         </tr>
+        <tr>
+            <td colspan="5" class="text-right">Total Cash Advance</td>
+            <td></td>
+            <td class="text-right"><strong>{{ number_format_price($total_cash_advance) }}</strong></td>
+        </tr>
+        <tr>
+            <td colspan="5" class="text-right">Total</td>
+            <td></td>
+            <td class="text-right"><strong>{{ number_format_price($opening_balance + $total_received + $total_disbursed - $total_cash_advance) }}</strong></td>
+        </tr>
         </tbody> 
     </table>
 </div>
