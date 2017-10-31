@@ -51,6 +51,11 @@ class PaymentOrder extends Model
         return $this->hasMany('Point\PointFinance\Models\PaymentOrder\PaymentOrderDetail', 'point_finance_payment_order_id');
     }
 
+    public function cashAdvance()
+    {
+        return $this->belongsTo('Point\PointFinance\Models\CashAdvance', 'cash_advance_id');
+    }
+
     public function person()
     {
         return $this->belongsTo('Point\Framework\Models\Master\Person', 'person_id');

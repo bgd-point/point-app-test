@@ -54,6 +54,17 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-md-3 control-label">Cash Advance *</label>
+                    <div class="col-md-6">
+                        <select id="cash_advance" name="cash_advance" class="selectize" style="width: 100%;" data-placeholder="Please choose">
+                            @foreach($list_cash_advance as $cash_advance)
+                                <option value="0">Without Cash Advance</option>
+                            <option value="{{$cash_advance->id}}">{{$cash_advance->employee->name}} | {{number_format_price($cash_advance->remaining_amount)}} | {{$cash_advance->formulir->notes}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-md-3 control-label">Notes</label>
                     <div class="col-md-6">
                         <input type="text" name="notes" class="form-control"value="{{old('notes')}}">
@@ -85,7 +96,7 @@
                                             <tfoot>
                                                 <tr>
                                                     <td colspan="2"><input type="button" id="addItemRow" class="btn btn-primary" value="add account"></td>
-                                                    <td class="text-right"><h4><b>Total Payment</b></h4></td>
+                                                    <td class="text-right"><h4><b>Total Expense</b></h4></td>
                                                     <td class="text-right">
                                                         <input readonly type="hidden" id="total" name="total" class="form-control format-price text-right" value="0" />
                                                         <h4><strong><span id="totalAmount" class="format-price text-right"></span></strong></h4>

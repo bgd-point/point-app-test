@@ -17,6 +17,7 @@ use Point\Framework\Models\Master\Person;
 use Point\PointFinance\Helpers\PaymentHelper;
 use Point\PointFinance\Helpers\PaymentOrderHelper;
 use Point\PointFinance\Http\Controllers\Controller;
+use Point\PointFinance\Models\CashAdvance;
 use Point\PointFinance\Models\PaymentOrder\PaymentOrder;
 
 class PaymentOrderController extends Controller
@@ -74,6 +75,10 @@ class PaymentOrderController extends Controller
         $view->list_coa = Coa::getNonSubledgerAndNotInSettingJournal();
         $view->list_allocation = Allocation::active()->get();
         $view->list_user_approval = UserHelper::getAllUser();
+        $view->list_cash_advance = CashAdvance::joinFormulir()->notArchived()->notCanceled()->selectOriginal()
+            ->where('is_payed', true)
+            ->where('remaining_amount', '>', 0)
+            ->get();
 
         $view->coa_expense = CoaPosition::where("name", "Expense")->first();
         $view->list_coa_category_expense = CoaCategory::where('coa_position_id', $view->coa_expense->id)->get();
@@ -101,6 +106,7 @@ class PaymentOrderController extends Controller
         $view->person = Person::find(app('request')->input('person_id'));
         $view->coa_id = app('request')->input('coa_id');
         $view->payment_type = app('request')->input('payment_type');
+        $view->cash_advance = CashAdvance::find(app('request')->input('cash_advance'));
         $view->notes = app('request')->input('notes');
         $view->amount = number_format_db(app('request')->input('amount'));
         $view->allocation_id = app('request')->input('allocation_id');
@@ -154,6 +160,7 @@ class PaymentOrderController extends Controller
 
         $view = view('point-finance::app.finance.point.payment-order.show');
         $view->payment_order = PaymentOrder::find($id);
+        $view->cash_advance = $view->payment_order->cashAdvance;
         $view->list_payment_order_archived = PaymentOrder::joinFormulir()->archived($view->payment_order->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_payment_order_archived->count();
         return $view;

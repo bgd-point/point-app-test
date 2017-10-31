@@ -40,7 +40,10 @@ class PaymentOrderHelper
         $payment_order->person_id = app('request')->input('person_id');
         $payment_order->payment_type = app('request')->input('payment_type');
         $payment_order->total = app('request')->input('total');
-        $payment_order->save();
+        if (app('request')->input('cash_advance_id')) {
+            $payment_order->cash_advance_id = app('request')->input('cash_advance_id');
+        }
+
         if (! $payment_order->save()) {
             gritter_error('create has been failed', false);
         }

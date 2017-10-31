@@ -58,7 +58,7 @@ class ReportController extends Controller
         $view = view('point-finance::app.finance.point.report._detail');
         $view->list_report = $report['report'];
         $view->type = $type;
-        $view->total_cash_advance = CashAdvance::joinFormulir()->selectOriginal()
+        $view->total_cash_advance = CashAdvance::joinFormulir()->selectOriginal()->notArchived()->notCanceled()
             ->where('formulir.form_date', '<=', date_format_db($date_to, 'end'))
             ->where('is_payed', true)
             ->where('remaining_amount', '>', 0)

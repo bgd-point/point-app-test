@@ -94,11 +94,33 @@
                                             @endforeach
                                         </tbody>
                                         <tfoot>
+                                        @if($cash_advance)
+                                            <tr>
+                                                <td colspan="2" class="text-right">Total Expense</td>
+                                                <td class="text-right">{{ \NumberHelper::formatAccounting($total)}}</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" class="text-right">Cash Advance</td>
+                                                <td class="text-right">{{ \NumberHelper::formatAccounting($cash_advance->remaining_amount)}}</td>
+                                                <td></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td colspan="2" class="text-right"><h4><b>Total payment</b></h4></td>
+                                                <td class="text-right">
+                                                    <h4><strong>{{ \NumberHelper::formatAccounting($total - $cash_advance->remaining_amount)}}</strong></h4>
+                                                    <input type="hidden" name="total" value="{{$total - $cash_advance->remaining_amount}}" />
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        @else
                                             <tr>
                                                 <td colspan="2" class="text-right"><h4><b>Total Payment</b></h4></td>
                                                 <td class="text-right"><h4><strong>{{ number_format_quantity($total)}}</strong></h4></td>
                                                 <td></td>
                                             </tr>
+                                            @endif
                                         </tfoot>
                                     </table> 
                                 </div>
