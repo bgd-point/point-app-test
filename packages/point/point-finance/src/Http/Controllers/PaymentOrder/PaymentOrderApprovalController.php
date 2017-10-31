@@ -108,11 +108,6 @@ class PaymentOrderApprovalController extends Controller
             $payment_reference_detail->save();
         }
 
-        if ($payment_order->cash_advance_id != null) {
-            $payment_reference->cash_advance_id = $payment_order->cash_advance_id;
-            $total -= $payment_order->cashAdvance->remaining_amount;
-        }
-
         $payment_reference->total = $total;
 
         $payment_reference->save();
