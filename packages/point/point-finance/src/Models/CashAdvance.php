@@ -35,6 +35,11 @@ class CashAdvance extends Model
         return $this->belongsTo('\Point\Framework\Models\Master\Person', 'employee_id');
     }
 
+    public function coa()
+    {
+        return $this->belongsTo('\Point\Framework\Models\Master\Coa', 'coa_id');
+    }
+
     public function scopeAvailableToCreatePaymentOrder($q)
     {
         $q->joinFormulir()
