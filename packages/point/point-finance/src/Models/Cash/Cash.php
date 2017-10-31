@@ -46,6 +46,11 @@ class Cash extends Model
         return $this->belongsTo('Point\PointFinance\Models\CashAdvance', 'cash_advance_id');
     }
 
+    public function cashCashAdvance()
+    {
+        return $this->hasMany('Point\PointFinance\Models\Cash\CashCashAdvance', 'point_finance_cash_id');
+    }
+
     public function person()
     {
         return $this->belongsTo('Point\Framework\Models\Master\Person', 'person_id');

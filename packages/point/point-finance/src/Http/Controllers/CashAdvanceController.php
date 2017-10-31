@@ -10,6 +10,8 @@ use Point\Core\Http\Controllers\Controller;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\PersonHelper;
 use Point\Framework\Models\Master\Coa;
+use Point\PointFinance\Models\Cash\Cash;
+use Point\PointFinance\Models\Cash\CashCashAdvance;
 use Point\PointFinance\Models\CashAdvance;
 use Point\PointFinance\Models\PaymentReference;
 
@@ -101,6 +103,9 @@ class CashAdvanceController extends Controller
         $view->list_cash_advance_archived = CashAdvance::joinFormulir()
             ->archived($view->cash_advance->formulir->form_number)
             ->get();
+
+        $view->list_used = CashCashAdvance::joinCash()->joinFormulir()->notArchived()->notCanceled()->selectOriginal()
+            ->where('point_finance_cash_cash_advance.cash_advance_id', $id)->get();
 
         $view->revision = $view->list_cash_advance_archived->count();
 
