@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Master\CoaGroupCategory;
+use Point\Framework\Models\SettingJournal;
 
 class FixSeeder extends Seeder
 {
@@ -9,22 +11,15 @@ class FixSeeder extends Seeder
     {
         \DB::beginTransaction();
 
-//        \DB::statement('alter table `point_sales_payment_collection_detail` add `reference_id` int null, add `reference_type` varchar(255) null');
-//        \DB::statement('alter table `point_sales_payment_collection_detail` add index `point_sales_payment_collection_detail_reference_id_index`(`reference_id`)');
-//        \DB::statement('alter table `point_sales_payment_collection_detail` add index `point_sales_payment_collection_detail_reference_type_index`(`reference_type`)');
-//
-//        \DB::statement('alter table `point_expedition_payment_order_detail` add `reference_id` int null, add `reference_type` varchar(255) null');
-//        \DB::statement('alter table `point_expedition_payment_order_detail` add index `point_expedition_payment_order_detail_reference_id_index`(`reference_id`)');
-//        \DB::statement('alter table `point_expedition_payment_order_detail` add index `point_expedition_payment_order_detail_reference_type_index`(`reference_type`)');
-//
-//        \DB::statement('alter table `point_purchasing_payment_order_detail` add `reference_id` int null, add `reference_type` varchar(255) null');
-//        \DB::statement('alter table `point_purchasing_payment_order_detail` add index `point_purchasing_payment_order_detail_reference_id_index`(`reference_id`)');
-//        \DB::statement('alter table `point_purchasing_payment_order_detail` add index `point_purchasing_payment_order_detail_reference_type_index`(`reference_type`)');
+        $setting_journal = SettingJournal::where('name', '=', 'advance to employees');
+        if ($setting_journal) {
+            $setting_journal->delete();
+        }
 
-
-        $coa_group = CoaGroupCategory::where('name', 'Current Assets & Liabilities')->first();
-        $coa_group->name = 'Current Assets';
-        $coa_group->save();
+        $coa = Coa::where('name', 'Advance to Employees')->first();
+        if ($coa) {
+            $coa->delete();
+        }
 
         \DB::commit();
     }
