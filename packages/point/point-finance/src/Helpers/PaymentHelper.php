@@ -37,6 +37,11 @@ class PaymentHelper
             ->paginate(100);
     }
 
+    /**
+     * @param $formulir
+     *
+     * @return \Point\PointFinance\Models\Cash\Cash
+     */
     public static function cashOut($formulir)
     {
 
@@ -52,26 +57,43 @@ class PaymentHelper
 
         self::updatePaymentReference($payment_reference, $formulir->id);
 
-        if ($cash->cash_advance_id) {
-            $cash->cashAdvance->remaining_amount = 0;
-            $cash->cashAdvance->save();
-        }
+        $total_cash_advance = 0;
 
         for ($i = 0; $i < count(app('request')->input('cash_advance_id')); $i++) {
+
             $cash_cash_advance = new CashCashAdvance;
             $cash_cash_advance->point_finance_cash_id = $cash->id;
             $cash_cash_advance->cash_advance_id = app('request')->input('cash_advance_id')[0];
-            $cash_cash_advance->cash_advance_amount = app('request')->input('cash_advance_amount')[0];
+            $cash_cash_advance->cash_advance_amount = number_format_db(app('request')->input('cash_advance_amount')[0]);
             $cash_cash_advance->close = app('request')->input('close')[0] == 'on' ? 1 : 0;
             $cash_cash_advance->save();
-        }
 
-        if ($cash_cash_advance->close) {
-            $cash_cash_advance->cashAdvance->remaining_amount = 0;
+            if ($cash_cash_advance->cash_advance_amount > $cash_cash_advance->cashAdvance->remaining_amount) {
+                throw new PointException('Total cash advance higher than remaining value');
+            }
+
+            $total_cash_advance += $cash_cash_advance->cash_advance_amount;
+
+            $cash_cash_advance->cashAdvance->remaining_amount -= number_format_db($cash_cash_advance->cash_advance_amount);
             $cash_cash_advance->cashAdvance->save();
+
+            if ($cash_cash_advance->cashAdvance->remaining_amount == 0) {
+                $cash_cash_advance->cashAdvance->formulir->form_status = 1;
+                $cash_cash_advance->cashAdvance->formulir->save();
+            }
+
+            if ($cash_cash_advance->close) {
+                $cash_cash_advance->cashAdvance->formulir->form_status = 1;
+                $cash_cash_advance->cashAdvance->formulir->save();
+                $cash_cash_advance->cashAdvance->remaining_amount = 0;
+                $cash_cash_advance->cashAdvance->save();
+            }
         }
 
-        $total_amount = 0;
+        if ($total_cash_advance > $cash->total * -1) {
+            throw new PointException('Total cash advance higher than total expense');
+        }
+
         for ($i=0 ; $i<count(app('request')->input('notes_detail')) ; $i++) {
             $cash_detail = new CashDetail;
             $cash_detail->point_finance_cash_id = $cash->id;
@@ -85,11 +107,7 @@ class PaymentHelper
             $cash_detail->reference_id = app('request')->input('reference_id')[$i] ?: null;
             $cash_detail->reference_type = app('request')->input('reference_type')[$i]?: null;
             $cash_detail->save();
-
-            $total_amount += $cash_detail->amount;
         }
-
-        $cash->total = $total_amount;
 
         FormulirHelper::close($payment_reference->payment_reference_id);
         FormulirHelper::close($cash->formulir->id);

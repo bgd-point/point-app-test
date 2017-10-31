@@ -78,8 +78,8 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-12">
-                                <div class="table-responsive"> 
-                                    <table id="item-datatable" class="table table-striped">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
                                         <thead>
                                             <tr>
                                                 <th>Account</th>
@@ -88,7 +88,7 @@
                                                 <th class="text-right">Allocation</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="manipulate-row">
+                                        <tbody class="">
                                         @foreach($cash->detail as $cash_detail)
                                         <tr>
                                             <td>{{ $cash_detail->coa->account }}</td>
@@ -99,13 +99,6 @@
                                         @endforeach
                                         </tbody> 
                                         <tfoot>
-                                            @if($cash->cash_advance_id)
-                                                <tr>
-                                                    <td colspan="2" class="text-right">Cash Advance</td>
-                                                    <td class="text-right">{{number_format_accounting($cash->cashAdvance->amount * -1)}}</td>
-                                                    <td></td>
-                                                </tr>
-                                            @endif
                                             <tr>
                                                 <td colspan="2" class="text-right">TOTAL</td>
                                                 <td class="text-right">{{number_format_quantity($cash->total * -1)}}</td>
@@ -116,6 +109,43 @@
                                 </div>
                             </div>                                           
                         </div>
+                        @if($cash->cashCashAdvance)
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Cash Advance Usage</th>
+                                            <th>Notes</th>
+                                            <th class="text-right">Amount</th>
+                                            <th>Close</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="">
+                                        <?php $cash_advance_total = 0;?>
+                                        @foreach($cash->cashCashAdvance as $cash_advance)
+                                            <?php $cash_advance_total+= $cash_advance->cash_advance_amount; ?>
+                                            <tr>
+                                                <td><a href="{{url($cash_advance->cash::showUrl($cash_advance->cash->id))}}">{{ $cash_advance->cash->formulir->form_number }}</a></td>
+                                                <td>{{ $cash_advance->cash->formulir->notes }}</td>
+                                                <td class="text-right">{{ number_format_price($cash_advance->cash_advance_amount) }}</td>
+                                                <td>{{ $cash_advance->close == true ? 'close' : '' }}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <td colspan="2" class="text-right">TOTAL</td>
+                                            <td class="text-right">{{number_format_quantity($cash_advance_total)}}</td>
+                                            <td></td>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </fieldset>
 
                     <fieldset>
