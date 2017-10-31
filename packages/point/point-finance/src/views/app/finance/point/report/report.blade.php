@@ -58,7 +58,7 @@
             <br/>
                 <div class="report-view" style="margin: 20px;">
                     
-                </div>                
+                </div>
             </div>
         </div>
     </div>  

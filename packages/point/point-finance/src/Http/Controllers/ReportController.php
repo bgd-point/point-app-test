@@ -8,6 +8,7 @@ use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Master\Person;
 use Point\PointFinance\Models\Bank\Bank;
 use Point\PointFinance\Models\Cash\Cash;
+use Point\PointFinance\Models\CashAdvance;
 
 class ReportController extends Controller
 {
@@ -57,10 +58,15 @@ class ReportController extends Controller
         $view = view('point-finance::app.finance.point.report._detail');
         $view->list_report = $report['report'];
         $view->type = $type;
+        $view->total_cash_advance = CashAdvance::joinFormulir()->selectOriginal()
+            ->where('formulir.form_date', '<=', date_format_db($date_to, 'end'))
+            ->where('is_payed', true)
+            ->where('remaining_amount', '>', 0)
+            ->sum('remaining_amount');
+
         $view->opening_balance = $report['journal_debit'] - $report['journal_credit'];
         $view->url = url('finance/point/report/export/?type='.$type.'&subledger_id='.$subledger.'&coa_id='.$coa_id.'&date_from='.$date_from.'&date_to='.$date_to);
         $view->url_pdf = url('finance/point/report/export/pdf?type='.$type.'&subledger_id='.$subledger.'&coa_id='.$coa_id.'&date_from='.$date_from.'&date_to='.$date_to);
-
 
         return $view;
     }
