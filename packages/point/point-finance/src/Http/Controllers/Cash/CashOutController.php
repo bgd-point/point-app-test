@@ -13,6 +13,7 @@ use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Http\Controllers\Controller;
 use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Master\Person;
+use Point\PointFinance\Models\CashAdvance;
 use Point\PointFinance\Models\PaymentReference;
 
 class CashOutController extends Controller
@@ -53,13 +54,16 @@ class CashOutController extends Controller
     {
         $request['form_date'] = app('request')->input('payment_date');
 
+
         $payment_reference = PaymentReference::find($request->input('payment_reference_id'));
         formulir_is_allowed_to_create('create.point.finance.cashier.cash', date_format_db($request->input('form_date'), $request->input('time')), [$payment_reference->payment_reference_id]);
 
         DB::beginTransaction();
 
         $formulir = FormulirHelper::create($request->input(), 'point-finance-cash-payment-out');
+
         PaymentHelper::cashOut($formulir);
+
         timeline_publish('create.cash.payment', 'payment '  . $formulir->form_number. ' success');
 
         DB::commit();
