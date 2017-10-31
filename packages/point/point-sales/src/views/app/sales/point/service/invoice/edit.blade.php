@@ -64,7 +64,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Customer</label>
                         <div class="col-md-6 content-show">
-                            <input type="hidden" name="person_id" value="{{$invoice->person_id}}">
+                            <input type="hidden" name="customer_id" value="{{$invoice->person_id}}">
                             {!! get_url_person($invoice->person_id) !!}
                         </div>
                     </div>
