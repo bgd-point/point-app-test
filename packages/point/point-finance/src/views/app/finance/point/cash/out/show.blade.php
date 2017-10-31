@@ -99,8 +99,15 @@
                                         @endforeach
                                         </tbody> 
                                         <tfoot>
+                                            @if($cash->cash_advance_id)
+                                                <tr>
+                                                    <td colspan="2" class="text-right">Cash Advance</td>
+                                                    <td class="text-right">{{number_format_accounting($cash->cashAdvance->amount * -1)}}</td>
+                                                    <td></td>
+                                                </tr>
+                                            @endif
                                             <tr>
-                                                <td colspan="2" class="text-right"><h4><b>TOTAL</b></h4></td>
+                                                <td colspan="2" class="text-right">TOTAL</td>
                                                 <td class="text-right">{{number_format_quantity($cash->total * -1)}}</td>
                                                 <td></td>
                                             </tr>

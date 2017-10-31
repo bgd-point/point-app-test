@@ -44,12 +44,19 @@ class PaymentHelper
         $cash->formulir_id = $formulir->id;
         $cash->person_id = app('request')->input('person_id');
         $cash->coa_id = app('request')->input('account_cash_id');
+        $cash->cash_advance_id = app('request')->input('cash_advance_id');
         $cash->payment_flow = $payment_reference->payment_flow;
         $cash->total = number_format_db(app('request')->input('total')) * -1;
         $cash->save();
 
         self::updatePaymentReference($payment_reference, $formulir->id);
 
+        if ($cash->cash_advance_id) {
+            $cash->cashAdvance->remaining_amount = 0;
+            $cash->cashAdvance->save();
+        }
+
+        $total_amount = 0;
         for ($i=0 ; $i<count(app('request')->input('notes_detail')) ; $i++) {
             $cash_detail = new CashDetail;
             $cash_detail->point_finance_cash_id = $cash->id;
@@ -63,7 +70,11 @@ class PaymentHelper
             $cash_detail->reference_id = app('request')->input('reference_id')[$i] ?: null;
             $cash_detail->reference_type = app('request')->input('reference_type')[$i]?: null;
             $cash_detail->save();
+
+            $total_amount += $cash_detail->amount;
         }
+
+        $cash->total = $total_amount;
 
         FormulirHelper::close($payment_reference->payment_reference_id);
         FormulirHelper::close($cash->formulir->id);
