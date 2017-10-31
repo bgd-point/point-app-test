@@ -81,7 +81,11 @@ class CashAdvanceApprovalController extends Controller
         DB::beginTransaction();
 
         FormulirHelper::approve($cash_advance->formulir, $approval_message, 'approval.point.finance.cash.advance', $token);
-        self::addPaymentReference($cash_advance);
+
+        $cash_advance->is_payed = true;
+        $cash_advance->form_status = 1;
+        $cash_advance->save();
+
         timeline_publish('approve', $cash_advance->formulir->form_number . ' approved', $this->getUserForTimeline($request, $cash_advance->formulir->approval_to));
 
         DB::commit();
@@ -117,7 +121,11 @@ class CashAdvanceApprovalController extends Controller
         foreach ($array_formulir_id as $id) {
             $cash_advance = CashAdvance::where('formulir_id', $id)->first();
             FormulirHelper::approve($cash_advance->formulir, $approval_message, 'approval.point.finance.cash.advance', $token);
-            self::addPaymentReference($cash_advance);
+
+            $cash_advance->is_payed = true;
+            $cash_advance->form_status = 1;
+            $cash_advance->save();
+
             timeline_publish('approve', $cash_advance->formulir->form_number . ' approved', $cash_advance->formulir->approval_to);
         }
         DB::commit();
@@ -148,29 +156,5 @@ class CashAdvanceApprovalController extends Controller
         $view->formulir = \Input::get('formulir_id');
 
         return $view;
-    }
-
-    private static function addPaymentReference($cash_advance)
-    {
-        $payment_reference = new PaymentReference;
-        $payment_reference->payment_reference_id = $cash_advance->formulir->id;
-        $payment_reference->person_id = $cash_advance->employee_id;
-        $payment_reference->payment_flow = 'out';
-        $payment_reference->payment_type = $cash_advance->payment_type;
-        $payment_reference->total = $cash_advance->amount;
-        $payment_reference->save();
-
-        $finance_cash_advance_account = JournalHelper::getAccount('point purchasing', 'advance to employees');
-        $payment_reference_detail = new PaymentReferenceDetail;
-        $payment_reference_detail->point_finance_payment_reference_id = $payment_reference->id;
-        $payment_reference_detail->coa_id = $finance_cash_advance_account;
-        $payment_reference_detail->notes_detail;
-        $payment_reference_detail->amount = $cash_advance->amount;
-        $payment_reference_detail->allocation_id = 1;
-        $payment_reference_detail->notes_detail = $cash_advance->formulir->notes;
-        $payment_reference_detail->form_reference_id = $cash_advance->formulir->id;
-        $payment_reference_detail->subledger_id = $cash_advance->employee_id;
-        $payment_reference_detail->subledger_type = get_class(new Person);
-        $payment_reference_detail->save();
     }
 }
