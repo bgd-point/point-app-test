@@ -260,7 +260,6 @@ class CashController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-
     public function printCash(Request $request, $id)
     {
         $view = view('point-finance::app.finance.point.cash.print');
