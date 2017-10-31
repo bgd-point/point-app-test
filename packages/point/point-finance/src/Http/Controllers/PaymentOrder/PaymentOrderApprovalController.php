@@ -108,7 +108,17 @@ class PaymentOrderApprovalController extends Controller
             $payment_reference_detail->save();
         }
 
+        if ($payment_order->cash_advance_id != null) {
+            $payment_reference->cash_advance_id = $payment_order->cash_advance_id;
+            $total -= $payment_order->cashAdvance->remaining_amount;
+
+            if ($total < 0) {
+                $total = 0;
+            }
+        }
+
         $payment_reference->total = $total;
+
         $payment_reference->save();
 
         FormulirHelper::approve($payment_order->formulir, $approval_message, 'approval.point.finance.payment.order', $token);

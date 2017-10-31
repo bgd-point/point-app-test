@@ -44,6 +44,20 @@
                         {{$payment_type}}
                     </div>
                 </div>
+                @if($cash_advance)
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Cash Advance</label>
+                    <div class="col-md-6 content-show">
+                        <input type="hidden" name="cash_advance_id" value="{{$cash_advance->id}}">
+                        <input type="hidden" name="total_cash_advance" value="{{$cash_advance->remaining_amount}}">
+                        {{$cash_advance->employee->name}} |
+                        {{number_format_price($cash_advance->remaining_amount, 0)}} |
+                        {{$cash_advance->formulir->notes}}
+                    </div>
+                </div>
+                    @else
+                    <input type="hidden" name="total_cash_advance" value="0">
+                @endif
                 <div class="form-group">
                     <label class="col-md-3 control-label">Notes</label>
                     <div class="col-md-6 content-show">
@@ -88,14 +102,37 @@
                                         @endfor
                                     </tbody>
                                     <tfoot>
+                                        @if($cash_advance)
+                                        <tr>
+                                            <td colspan="2" class="text-right">Total Expense</td>
+                                            <td class="text-right">{{ \NumberHelper::formatAccounting($total)}}</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="text-right">Cash Advance</td>
+                                            <td class="text-right">{{ \NumberHelper::formatAccounting($cash_advance->remaining_amount)}}</td>
+                                            <td></td>
+                                        </tr>
+
                                         <tr>
                                             <td colspan="2" class="text-right"><h4><b>Total payment</b></h4></td>
                                             <td class="text-right">
-                                                <h4><strong>{{ \NumberHelper::formatAccounting($total)}}</strong></h4>
-                                                <input type="hidden" name="total" value="{{$total}}" />
+                                                <h4><strong>{{ \NumberHelper::formatAccounting($total - $cash_advance->remaining_amount)}}</strong></h4>
+                                                <input type="hidden" name="total" value="{{$total - $cash_advance->remaining_amount}}" />
                                             </td>
                                             <td></td>
                                         </tr>
+                                        @else
+                                            <tr>
+                                                <td colspan="2" class="text-right"><h4><b>Total payment</b></h4></td>
+                                                <td class="text-right">
+                                                    <h4><strong>{{ \NumberHelper::formatAccounting($total)}}</strong></h4>
+                                                    <input type="hidden" name="total" value="{{$total}}" />
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                            @endif
+
                                     </tfoot>
                                 </table> 
                             </div>
