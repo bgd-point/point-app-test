@@ -70,7 +70,7 @@ trait FormulirTrait
     public function scopeOrderByStandard($q)
     {
         $q->orderBy(\DB::raw('CAST(form_date as date)'), 'desc')
-            ->orderBy(\DB::raw('SUBSTRING_INDEX(form_number, "/", -2)'));
+            ->orderBy('form_raw_number', 'desc');
     }
 
     public function scopeNotArchived($q, $form_number = 0)
