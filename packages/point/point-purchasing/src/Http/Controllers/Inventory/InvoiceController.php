@@ -34,7 +34,7 @@ class InvoiceController extends Controller
     {
         $view = view('point-purchasing::app.purchasing.point.inventory.invoice.index');
         $list_invoice = Invoice::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
-        // dd($list_invoice);
+
         $list_invoice = InvoiceHelper::searchList($list_invoice, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_invoice = $list_invoice->paginate(100);
      
