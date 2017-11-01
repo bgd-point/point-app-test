@@ -46,6 +46,9 @@
                             @if(auth()->user()->may('read.point.sales.quotation'))
                                 <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" href="{{url('sales/point/indirect/sales-quotation/pdf?date_from='.\Input::get('date_from').'&date_to='.\Input::get('date_to').'&search='.\Input::get('search').'&order_by='.\Input::get('order_by').'&order_type='.\Input::get('order_type').'&status='.\Input::get('status'))}}"> export to PDF</a>
                             @endif
+
+                                <a class="btn  btn-success" onclick="showAll();">Show All</a>
+                                <a class="btn  btn-success" onclick="compact();">COMPACT</a>
                         </div>
                     </div>
                 </form>
@@ -84,14 +87,14 @@
                                 </td>
                                 <td>{{number_format_price($sales_quotation->total)}}</td>
                             </tr>
-                            <tr>
+                            <tr class="row_detail">
                                 <th colspan="2"></th>
                                 <th>Item</th>
                                 <th>Quantity</th>
                                 <th>Total</th>
                             </tr>
                             @foreach($sales_quotation->items as $detail)
-                                <tr>
+                                <tr class="row_detail">
                                     <td colspan="2"></td>
                                     <td>{{$detail->item->name}}</td>
                                     <td>{{number_format_quantity($detail->quantity)}} {{$detail->unit}}</td>
@@ -111,6 +114,13 @@
 
 @section('scripts')
 <script>
+    $('.row_detail').hide();
+function showAll() {
+    $('.row_detail').show();
+}
+function compact() {
+    $('.row_detail').hide();
+}
 function selectData(order_by, order_type) {
     var status = $("#status option:selected").val();
     var date_from = $("#date-from").val();
