@@ -64,7 +64,7 @@
                     {!! $list_invoice->appends(['order_by'=>app('request')->get('order_by'), 'order_type'=>app('request')->get('order_type'), 'status'=>app('request')->get('status'), 'search'=>app('request')->get('search'), 'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
                     <table class="table table-striped table-bordered">
                         <thead>
-                        <tr class="thead">
+                        <tr class="th-head">
                             <th style="cursor:pointer" onclick="selectData('form_date', @if($order_by == 'form_date' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_date' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Form Date <span class="pull-right"><i class="fa @if($order_by == 'form_date' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_date' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
                             <th style="cursor:pointer" onclick="selectData('form_number', @if($order_by == 'form_number' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_number' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Form Number <span class="pull-right"><i class="fa @if($order_by == 'form_number' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_number' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
                             <th style="cursor:pointer" onclick="selectData('person.name', @if($order_by == 'person.name' && $order_type == 'asc') 'desc' @elseif($order_by == 'person.name' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Supplier <span class="pull-right"><i class="fa @if($order_by == 'person.name' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'person.name' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
@@ -73,8 +73,8 @@
                         </thead>
                         <tbody>
                         @foreach($list_invoice as $invoice)
-                            <?php array_push($data_id,$invoice->id); ?>
-                            <tr class="rowDetail" id="row_detail_{{$invoice->id}}">
+                            <?php array_push($array_invoice_id,$invoice->id); ?>
+                            <tr class="row-detail" id="row_detail_{{$invoice->id}}">
                                 <td>{{ date_format_view($invoice->formulir->form_date) }}</td>
                                 <td>
                                     <a href="{{ url('purchasing/point/invoice/'.$invoice->id) }}">{{ $invoice->formulir->form_number}}</a>
@@ -88,7 +88,7 @@
                                 </td>
                             </tr>
                         @endforeach
-                        <input type="hidden" id="data_id" value="{{ implode('#',$data_id) }}">
+                        <input type="hidden" id="array_invoice_id" value="{{ implode('#',$array_invoice_id) }}">
                         </tbody>
                     </table>
                     {!! $list_invoice->appends(['order_by'=>app('request')->get('order_by'), 'order_type'=>app('request')->get('order_type'), 'status'=>app('request')->get('status'), 'search'=>app('request')->get('search'), 'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
@@ -106,37 +106,37 @@ function showAll(){
     var html = '<th class="header_detail">ITEM</th>'
                 +'<th class="header_detail">QTY</th>'
                 +'<th class="header_detail">PRICE</th>'
-    $('.thead').append(html);
-    $('.txtDetail').remove();
-    $('.rowDetail').append('<td class="txtDetail data_detail" colspan="3" align="center"><strong>DETAIL</strong></td>');
+    $('.th-head').append(html);
+    $('.txt-detail').remove();
+    $('.row-detail').append('<td class="txt-detail extend_column_detail" colspan="3" align="center"><strong>DETAIL</strong></td>');
     var check_show = $('#check_show').val();
-    var data_id = $('#data_id').val();
+    var array_invoice_id = $('#array_invoice_id').val();
     if(check_show == 0){
-        var temp = data_id.split('#');
+        var temp = array_invoice_id.split('#');
         for (var x = temp.length - 1; x >= 0; x--) {
             var str_url = "{{ url('purchasing/point/purchase-order/detail/') }}/"+temp[x];
             $.ajax({ url:str_url, success: function(data) {
                 for (var i = 0; i < data.length; i++) {
-                    var html_detail = ' <tr class="data_detail">'
-                            +'      <td colspan="4" class="data_detail"></td>'
-                            +'      <td class="data_detail">'+data[i].item_name+'</td>'
-                            +'      <td class="data_detail">'+data[i].quantity+'</td>'
-                            +'      <td class="data_detail">'+data[i].price+'</td>'
+                    var extend_table_row = ' <tr class="extend_column_detail">'
+                            +'      <td colspan="4" class="extend_column_detail"></td>'
+                            +'      <td class="extend_column_detail">'+data[i].item_name+'</td>'
+                            +'      <td class="extend_column_detail">'+data[i].quantity+'</td>'
+                            +'      <td class="extend_column_detail">'+data[i].price+'</td>'
                             +'  </tr>';
 
-                    $('#row_detail_'+data[i].point_purchasing_order_id).after(html_detail);
+                    $('#row_detail_'+data[i].point_purchasing_order_id).after(extend_table_row);
                 
                 $('#check_show').val(1);
                 }
             }});
         }
     }else{
-        $('.data_detail').show();
+        $('.extend_column_detail').show();
     }
 }
 function compact(){
     $('.header_detail').remove();
-    $('.data_detail').hide();
+    $('.extend_column_detail').hide();
 
 }
 function selectData(order_by, order_type) {
