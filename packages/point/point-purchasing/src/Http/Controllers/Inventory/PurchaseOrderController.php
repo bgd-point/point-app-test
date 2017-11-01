@@ -81,7 +81,7 @@ class PurchaseOrderController extends Controller
         $view->list_purchase_requisition = PurchaseRequisitionHelper::availableToOrder();
         return $view;
     }
-    public function createStep2($point_purchasing_requisition_id)
+    public function creatStep($point_purchasing_requisition_id)
     {
         access_is_allowed('create.point.purchasing.order');
         
