@@ -36,8 +36,8 @@ class PurchaseOrderController extends Controller
         $view = view('point-purchasing::app.purchasing.point.inventory.purchase-order.index');
         $view->list_purchase_order = $list_purchase_order->paginate(100);
 
-        $data_id = [];
-        $view->data_id = $data_id;
+        $array_purchase_order_id = [];
+        $view->array_purchase_order_id = $array_purchase_order_id;
         return $view;
     }
 

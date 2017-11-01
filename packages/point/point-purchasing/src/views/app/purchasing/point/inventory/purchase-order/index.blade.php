@@ -65,7 +65,7 @@
                     {!! $list_purchase_order->appends(['order_by'=>app('request')->get('order_by'), 'order_type'=>app('request')->get('order_type'), 'status'=>app('request')->get('status'), 'search'=>app('request')->get('search'), 'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
                     <table class="table table-striped table-bordered">
                         <thead>
-                        <tr class="thead">
+                        <tr class="th-head">
                             <th style="width: 180px"></th>
                             <th style="cursor:pointer" onclick="selectData('form_date', @if($order_by == 'form_date' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_date' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Form Date <span class="pull-right"><i class="fa @if($order_by == 'form_date' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_date' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
                             <th style="cursor:pointer" onclick="selectData('form_number', @if($order_by == 'form_number' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_number' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Form Number <span class="pull-right"><i class="fa @if($order_by == 'form_number' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_number' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
@@ -79,8 +79,8 @@
                         <tbody>
                         
                         @foreach($list_purchase_order as $purchase_order)
-                        <tr class="rowDetail" id="row_detail_{{$purchase_order->id}}">
-                            <?php array_push($data_id,$purchase_order->id); ?>
+                        <tr class="row-detail" id="row_detail_{{$purchase_order->id}}">
+                            <?php array_push($array_purchase_order_id,$purchase_order->id); ?>
                             <td>
                                 @if($purchase_order->formulir->approval_status == '1' && $purchase_order->formulir->form_status == 0 && auth()->user()->may('create.point.purchasing.downpayment') && $purchase_order->is_cash == 1)
                                     {{ $purchase_order->checkDownpayment() }}
@@ -104,7 +104,7 @@
                             </td>
                         </tr>
                         @endforeach
-                        <input type="hidden" id="data_id" value="{{ implode('#',$data_id) }}">
+                        <input type="hidden" id="array_purchase_order_id" value="{{ implode('#',$array_purchase_order_id) }}">
                         </tbody>
                     </table>
                     {!! $list_purchase_order->appends(['order_by'=>app('request')->get('order_by'), 'order_type'=>app('request')->get('order_type'), 'status'=>app('request')->get('status'), 'search'=>app('request')->get('search'), 'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
@@ -121,37 +121,37 @@ function showAll(){
     var html = '<th class="header_detail">ITEM</th>'
                 +'<th class="header_detail">QTY</th>'
                 +'<th class="header_detail">PRICE</th>'
-    $('.thead').append(html);
-    $('.txtDetail').remove();
-    $('.rowDetail').append('<td class="txtDetail data_detail" colspan="3" align="center"><strong>DETAIL</strong></td>');
+    $('.th-head').append(html);
+    $('.txt-detail').remove();
+    $('.row-detail').append('<td class="txt-detail extend_column_detail" colspan="3" align="center"><strong>DETAIL</strong></td>');
     var check_show = $('#check_show').val();
-    var data_id = $('#data_id').val();
+    var array_purchase_order_id = $('#array_purchase_order_id').val();
     if(check_show == 0){
-        var temp = data_id.split('#');
+        var temp = array_purchase_order_id.split('#');
         for (var x = temp.length - 1; x >= 0; x--) {
             var str_url = "{{ url('purchasing/point/purchase-order/detail/') }}/"+temp[x];
             $.ajax({ url:str_url, success: function(data) {
                 for (var i = 0; i < data.length; i++) {
-                    var html_detail = ' <tr class="data_detail">'
-                            +'      <td colspan="8" class="data_detail"></td>'
-                            +'      <td class="data_detail">'+data[i].item_name+'</td>'
-                            +'      <td class="data_detail">'+data[i].quantity+'</td>'
-                            +'      <td class="data_detail">'+data[i].price+'</td>'
+                    var extend_table_row = ' <tr class="extend_column_detail">'
+                            +'      <td colspan="8" class="extend_column_detail"></td>'
+                            +'      <td class="extend_column_detail">'+data[i].item_name+'</td>'
+                            +'      <td class="extend_column_detail">'+data[i].quantity+'</td>'
+                            +'      <td class="extend_column_detail">'+data[i].price+'</td>'
                             +'  </tr>';
 
-                    $('#row_detail_'+data[i].point_purchasing_order_id).after(html_detail);
+                    $('#row_detail_'+data[i].point_purchasing_order_id).after(extend_table_row);
                 
                 $('#check_show').val(1);
                 }
             }});
         }
     }else{
-        $('.data_detail').show();
+        $('.extend_column_detail').show();
     }
 }
 function compact(){
     $('.header_detail').remove();
-    $('.data_detail').hide();
+    $('.extend_column_detail').hide();
 
 }
 function selectData(order_by, order_type) {
