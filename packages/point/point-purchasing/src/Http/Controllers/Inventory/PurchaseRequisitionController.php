@@ -42,8 +42,8 @@ class PurchaseRequisitionController extends Controller
         $view->list_purchase_requisition = PurchaseRequisitionHelper::searchList($list_purchase_requisition, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_purchase_requisition = $view->list_purchase_requisition->paginate(100);
 
-        $data_id = [];
-        $view->data_id = $data_id;
+        $array_purchase_requisition_id = [];
+        $view->array_purchase_requisition_id = $array_purchase_requisition_id;
         return $view;
     }
 
