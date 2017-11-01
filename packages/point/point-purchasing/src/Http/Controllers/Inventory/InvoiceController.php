@@ -38,15 +38,15 @@ class InvoiceController extends Controller
         $list_invoice = InvoiceHelper::searchList($list_invoice, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_invoice = $list_invoice->paginate(100);
      
-        $data_id = [];
-        $view->data_id = $data_id;
+        $array_invoice_id = [];
+        $view->array_invoice_id = $array_invoice_id;
         return $view;
     }
 
     public function ajaxDetailItem($id)
     {
         $view = view('point-expedition::app.expedition.point.invoice.index');
-        $list_purchase_order = PurchaseInvoiceDetail::select('item.name as item_name','point_purchasing_invoice_item.quantity','point_purchasing_invoice_item.price','point_purchasing_invoice_item.point_purchasing_invoice_id')->joinAllocation()->joinItem()->joinPurchasingInvoice()->joinSupplier()->joinFormulir()->where('point_purchasing_invoice_item.point_purchasing_invoice_id', '=', $id)->get();
+        $list_purchase_order = InvoiceItem::select('item.name as item_name','point_purchasing_invoice_item.quantity','point_purchasing_invoice_item.price','point_purchasing_invoice_item.point_purchasing_invoice_id')->joinAllocation()->joinItem()->joinPurchasingInvoice()->joinSupplier()->joinFormulir()->where('point_purchasing_invoice_item.point_purchasing_invoice_id', '=', $id)->get();
         return response()->json($list_purchase_order);
     }
 
