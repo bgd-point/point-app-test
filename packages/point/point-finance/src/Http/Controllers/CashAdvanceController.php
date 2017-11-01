@@ -26,7 +26,11 @@ class CashAdvanceController extends Controller
     {
         $view = view('point-finance::app.finance.point.cash-advance.index');
 
-        $view->list_cash_advance = CashAdvance::joinFormulir()->notArchived()->selectOriginal()->paginate(100);
+        $view->list_cash_advance = CashAdvance::joinFormulir()
+            ->notArchived()
+            ->selectOriginal()
+            ->orderByStandard()
+            ->paginate(100);
 
         return $view;
     }
