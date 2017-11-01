@@ -1,7 +1,5 @@
 <?php
-
 namespace Point\PointPurchasing\Http\Controllers\Inventory;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,12 +18,11 @@ use Point\PointPurchasing\Helpers\PurchaseOrderHelper;
 use Point\PointPurchasing\Helpers\PurchaseRequisitionHelper;
 use Point\PointPurchasing\Http\Requests\PurchaseRequest;
 use Point\PointPurchasing\Models\Inventory\PurchaseOrder;
+use Point\PointPurchasing\Models\Inventory\PurchaseOrderDetail;
 use Point\PointPurchasing\Models\Inventory\PurchaseRequisition;
-
 class PurchaseOrderController extends Controller
 {
     use ValidationTrait;
-
     /**
      * Display a listing of the resource.
      *
@@ -34,12 +31,21 @@ class PurchaseOrderController extends Controller
     public function index()
     {
         access_is_allowed('read.point.purchasing.order');
-        
         $list_purchase_order = PurchaseOrder::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
         $list_purchase_order = PurchaseOrderHelper::searchList($list_purchase_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view = view('point-purchasing::app.purchasing.point.inventory.purchase-order.index');
         $view->list_purchase_order = $list_purchase_order->paginate(100);
+
+        $data_id = [];
+        $view->data_id = $data_id;
         return $view;
+    }
+
+    public function ajaxDetailItem(Request $request, $id)
+    {
+        access_is_allowed('read.point.purchasing.order');
+        $list_purchase_order = PurchaseOrderDetail::select('item.name as item_name','point_purchasing_order_item.quantity','point_purchasing_order_item.price','point_purchasing_order_item.point_purchasing_order_id')->joinAllocation()->joinItem()->joinPurchasingOrder()->joinSupplier()->joinFormulir()->where('point_purchasing_order_item.point_purchasing_order_id', '=', $id)->get();
+        return response()->json($list_purchase_order);
     }
 
     public function indexPDF(Request $request)
@@ -50,7 +56,6 @@ class PurchaseOrderController extends Controller
         $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.inventory.purchase-order.index-pdf', ['list_purchase_order' => $list_purchase_order]);
         return $pdf->stream();
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -68,7 +73,6 @@ class PurchaseOrderController extends Controller
         $view->code_contact = PersonHelper::getCode($person_type);
         return $view;
     }
-
     public function createStep1()
     {
         access_is_allowed('create.point.purchasing.order');
@@ -77,7 +81,6 @@ class PurchaseOrderController extends Controller
         $view->list_purchase_requisition = PurchaseRequisitionHelper::availableToOrder();
         return $view;
     }
-
     public function createStep2($point_purchasing_requisition_id)
     {
         access_is_allowed('create.point.purchasing.order');
@@ -93,7 +96,6 @@ class PurchaseOrderController extends Controller
         
         return $view;
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -103,28 +105,21 @@ class PurchaseOrderController extends Controller
     public function store(PurchaseRequest $request)
     {
         $request['form_date'] = $request->input('required_date');
-
         DB::beginTransaction();
-
         $reference = null;
         if ($request->input('reference_type') != '') {
             $reference_type = $request->input('reference_type');
             $reference_id = $request->input('reference_id');
             $reference = $reference_type::find($reference_id)->formulir_id;
         }
-
         FormulirHelper::isAllowedToCreate('create.point.purchasing.order', date_format_db($request->input('form_date'), $request->input('time')), $reference ? [$reference] : []);
-
         $formulir = FormulirHelper::create($request, 'point-purchasing-order');
         $purchase_order = PurchaseOrderHelper::create($request, $formulir);
         timeline_publish('create.purchase.order', 'added new purchase order '  . $purchase_order->formulir->form_number);
-
         DB::commit();
-
         gritter_success('create form success', 'false');
         return redirect('purchasing/point/purchase-order/'.$purchase_order->id);
     }
-
     /**
      * Display the specified resource.
      *
@@ -143,24 +138,19 @@ class PurchaseOrderController extends Controller
         if (! $view->purchase_order->formulir->form_number) {
             return redirect(PurchaseOrder::showUrl($id));
         }
-
         return $view;
     }
-
     public function archived($id)
     {
         access_is_allowed('read.point.purchasing.order');
-
         $view = view('point-purchasing::app.purchasing.point.inventory.purchase-order.archived');
         $view->purchase_order_archived = PurchaseOrder::find($id);
         $view->purchase_order = PurchaseOrder::joinFormulir()->notArchived($view->purchase_order_archived->archived)->selectOriginal()->first();
         return $view;
     }
-
     public function edit($id)
     {
         access_is_allowed('update.point.purchasing.order');
-
         $view = view('point-purchasing::app.purchasing.point.inventory.purchase-order.edit');
         $view->purchase_order = PurchaseOrder::find($id);
         $view->purchase_requisition = $view->purchase_order->checkHaveReference();
@@ -171,11 +161,9 @@ class PurchaseOrderController extends Controller
         $view->code_contact = PersonHelper::getCode($view->person_type);
         return $view;
     }
-
     public function editBasic($id)
     {
         access_is_allowed('update.point.purchasing.order');
-
         $view = view('point-purchasing::app.purchasing.point.inventory.purchase-order.basic.edit');
         $view->purchase_order = PurchaseOrder::find($id);
         $view->list_user_approval = UserHelper::getAllUser();
@@ -185,7 +173,6 @@ class PurchaseOrderController extends Controller
         $view->code_contact = PersonHelper::getCode($person_type);
         return $view;
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -196,7 +183,6 @@ class PurchaseOrderController extends Controller
     public function update(PurchaseRequest $request, $id)
     {
         DB::beginTransaction();
-
         $purchase_order = PurchaseOrder::find($id);
         FormulirHelper::isAllowedToUpdate('update.point.purchasing.order', date_format_db($request->input('form_date')), $purchase_order->formulir);
         $formulir_old = FormulirHelper::archive($request->input(), $purchase_order->formulir_id);
@@ -204,13 +190,10 @@ class PurchaseOrderController extends Controller
         $formulir = FormulirHelper::update($request->input(), $formulir_old->archived, $formulir_old->form_raw_number);
         $purchase_order = PurchaseOrderHelper::create($request, $formulir);
         timeline_publish('update.purchase.order', 'update purchase order '  . $purchase_order->formulir->form_number);
-
         DB::commit();
-
         gritter_success('create form success', 'false');
         return redirect('purchasing/point/purchase-order/'.$purchase_order->id);
     }
-
     public function sendEmailOrder(Request $request)
     {
         $id = app('request')->input('purchase_order_id');
@@ -222,17 +205,14 @@ class PurchaseOrderController extends Controller
         if ($warehouse_id > 0) {
             $warehouse = Warehouse::find($warehouse_id);
         }
-
         if (! $purchase_order) {
             gritter_error('Failed, please select purchase order', 'false');
             return redirect()->back();
         }
-
         if (! $purchase_order->supplier->email) {
             gritter_error('Failed, please add email for supplier', 'false');
             return redirect()->back();
         }
-
         $data = array(
             'purchase_order' => $purchase_order,
             'token' => $token,
@@ -240,7 +220,6 @@ class PurchaseOrderController extends Controller
         );
         
         $name = 'PURCHASE ORDER '. $purchase_order->formulir->form_number;
-
         \Queue::push(function ($job) use ($data, $request, $purchase_order, $warehouse, $name) {
             QueueHelper::reconnectAppDatabase($request['database_name']);
             \Mail::send('point-purchasing::emails.purchasing.point.external.purchase-order', $data, function ($message) use ($purchase_order, $warehouse, $data, $name) {
@@ -250,7 +229,6 @@ class PurchaseOrderController extends Controller
             });
             $job->delete();
         });
-
         gritter_success('Success send email purchase order', 'false');
         return redirect()->back();
     }

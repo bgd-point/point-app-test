@@ -18,6 +18,7 @@ use Point\Framework\Models\Master\Warehouse;
 use Point\PointExpedition\Helpers\InvoiceHelper;
 use Point\PointExpedition\Models\ExpeditionOrder;
 use Point\PointExpedition\Models\Invoice;
+use Point\PointExpedition\Models\InvoiceDetail;
 use Point\PointExpedition\Models\InvoiceItem;
 
 class InvoiceController extends Controller
@@ -35,7 +36,7 @@ class InvoiceController extends Controller
         $list_invoice = Invoice::joinFormulir()->notArchived()->selectOriginal();
         $list_invoice = InvoiceHelper::searchList($list_invoice, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_invoice = $list_invoice->paginate(100);
-        return $view;
+       return $view;
     }
 
     public function indexPDF(Request $request)
