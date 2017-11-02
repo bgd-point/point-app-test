@@ -17,6 +17,7 @@ Route::group(['prefix' => 'sales/point/service', 'namespace' => 'Point\PointSale
         Route::get('/invoice/vesa-rejected', 'ServiceInvoiceVesaController@create');
         Route::get('/invoice/{id}/archived', 'InvoiceController@archived');
         Route::get('/invoice/pdf', 'InvoiceController@indexPDF');
+        Route::get('/invoice/detail/{id}', 'InvoiceController@ajaxDetailItem');
         Route::resource('/invoice', 'InvoiceController');
     });
 
