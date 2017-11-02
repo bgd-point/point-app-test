@@ -35,8 +35,8 @@ class GoodsReceivedController extends Controller
         $list_goods_received = GoodsReceivedHelper::searchList($list_goods_received, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_goods_received = $list_goods_received->paginate(100);
         
-        $data_id = [];
-        $view->data_id = $data_id;
+        $array_goods_received_id = [];
+        $view->array_goods_received_id = $array_goods_received_id;
         return $view;
     }
 
