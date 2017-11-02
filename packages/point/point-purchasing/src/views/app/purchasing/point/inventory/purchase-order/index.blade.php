@@ -47,8 +47,7 @@
                                 <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" href="{{url('purchasing/point/purchase-order/pdf?date_from='.\Input::get('date_from').'&date_to='.\Input::get('date_to').'&search='.\Input::get('search').'&order_by='.\Input::get('order_by').'&order_type='.\Input::get('order_type').'&status='.\Input::get('status'))}}"> export to PDF</a>
                             @endif
 
-                                <a class="btn  btn-success" onclick="showAll();">Show All</a>
-                                <a class="btn  btn-success" onclick="compact();">COMPACT</a>
+                                <a class="btn btn-success" onclick="showAll();">Show All</a>
                                 <input type="hidden" id="check_show" >
                         </div>
                     </div>
@@ -117,6 +116,8 @@
 <script>
 $('#check_show').val(0);
 function showAll(){
+    $('.btn-success').attr('onclick','compact()');
+    $('.btn-success').text('Compact');
     $('.header_detail').remove();
     var html = '<th class="header_detail">ITEM</th>'
                 +'<th class="header_detail">QTY</th>'
@@ -150,6 +151,9 @@ function showAll(){
     }
 }
 function compact(){
+    $('.btn-success').attr('onclick','showAll()');
+    $('.btn-success').text('Show All');
+
     $('.header_detail').remove();
     $('.extend_column_detail').hide();
 
