@@ -46,8 +46,7 @@
                             @if(auth()->user()->may('read.point.purchasing.invoice'))
                                 <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" href="{{url('purchasing/point/invoice/pdf?date_from='.\Input::get('date_from').'&date_to='.\Input::get('date_to').'&search='.\Input::get('search').'&order_by='.\Input::get('order_by').'&order_type='.\Input::get('order_type').'&status='.\Input::get('status'))}}"> export to PDF</a>
                             @endif
-                            <a class="btn  btn-success" onclick="showAll();">Show All</a>
-                            <a class="btn  btn-success" onclick="compact();">COMPACT</a>
+                            <a class="btn btn-success" id="full_view" onclick="showAll();">Show All</a>
                             <input type="hidden" id="check_show" >
                         </div>
                     </div>
@@ -102,6 +101,8 @@
 <script>
 $('#check_show').val(0);
 function showAll(){
+    $('#full_view').attr('onclick','compact()');
+    $('#full_view').text('Compact');
     $('.header_detail').remove();
     var html = '<th class="header_detail">ITEM</th>'
                 +'<th class="header_detail">QTY</th>'
@@ -125,7 +126,6 @@ function showAll(){
                             +'  </tr>';
 
                     $('#row_detail_'+data[i].point_purchasing_order_id).after(extend_table_row);
-                
                 $('#check_show').val(1);
                 }
             }});
@@ -135,6 +135,8 @@ function showAll(){
     }
 }
 function compact(){
+    $('#full_view').attr('onclick','showAll()');
+    $('#full_view').text('Show All');
     $('.header_detail').remove();
     $('.extend_column_detail').hide();
 
