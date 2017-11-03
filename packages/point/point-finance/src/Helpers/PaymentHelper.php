@@ -59,34 +59,35 @@ class PaymentHelper
 
         $total_cash_advance = 0;
 
-        for ($i = 0; $i < count(app('request')->input('cash_advance_id')); $i++) {
+        for ($i = 0; $i < count(app('request')->input('cash_advance_amount')); $i++) {
+            if (app('request')->input('cash_advance_amount')[0]) {
+                $cash_cash_advance = new CashCashAdvance;
+                $cash_cash_advance->point_finance_cash_id = $cash->id;
+                $cash_cash_advance->cash_advance_id = app('request')->input('cash_advance_id')[0];
+                $cash_cash_advance->cash_advance_amount = number_format_db(app('request')->input('cash_advance_amount')[0]);
+                $cash_cash_advance->close = app('request')->input('close')[0] == 'on' ? 1 : 0;
+                $cash_cash_advance->save();
 
-            $cash_cash_advance = new CashCashAdvance;
-            $cash_cash_advance->point_finance_cash_id = $cash->id;
-            $cash_cash_advance->cash_advance_id = app('request')->input('cash_advance_id')[0];
-            $cash_cash_advance->cash_advance_amount = number_format_db(app('request')->input('cash_advance_amount')[0]);
-            $cash_cash_advance->close = app('request')->input('close')[0] == 'on' ? 1 : 0;
-            $cash_cash_advance->save();
+                if ($cash_cash_advance->cash_advance_amount > $cash_cash_advance->cashAdvance->remaining_amount) {
+                    throw new PointException('Total cash advance higher than remaining value');
+                }
 
-            if ($cash_cash_advance->cash_advance_amount > $cash_cash_advance->cashAdvance->remaining_amount) {
-                throw new PointException('Total cash advance higher than remaining value');
-            }
+                $total_cash_advance += $cash_cash_advance->cash_advance_amount;
 
-            $total_cash_advance += $cash_cash_advance->cash_advance_amount;
-
-            $cash_cash_advance->cashAdvance->remaining_amount -= number_format_db($cash_cash_advance->cash_advance_amount);
-            $cash_cash_advance->cashAdvance->save();
-
-            if ($cash_cash_advance->cashAdvance->remaining_amount == 0) {
-                $cash_cash_advance->cashAdvance->formulir->form_status = 1;
-                $cash_cash_advance->cashAdvance->formulir->save();
-            }
-
-            if ($cash_cash_advance->close) {
-                $cash_cash_advance->cashAdvance->formulir->form_status = 1;
-                $cash_cash_advance->cashAdvance->formulir->save();
-                $cash_cash_advance->cashAdvance->remaining_amount = 0;
+                $cash_cash_advance->cashAdvance->remaining_amount -= number_format_db($cash_cash_advance->cash_advance_amount);
                 $cash_cash_advance->cashAdvance->save();
+
+                if ($cash_cash_advance->cashAdvance->remaining_amount == 0) {
+                    $cash_cash_advance->cashAdvance->formulir->form_status = 1;
+                    $cash_cash_advance->cashAdvance->formulir->save();
+                }
+
+                if ($cash_cash_advance->close) {
+                    $cash_cash_advance->cashAdvance->formulir->form_status = 1;
+                    $cash_cash_advance->cashAdvance->formulir->save();
+                    $cash_cash_advance->cashAdvance->remaining_amount = 0;
+                    $cash_cash_advance->cashAdvance->save();
+                }
             }
         }
 
