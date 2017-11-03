@@ -13,7 +13,7 @@
         }
 
         .header-table {
-            margin-top: 20px;
+            margin-top: 3px;
         }
 
         .detail-table {
@@ -29,7 +29,7 @@
         }
 
         .footer-table {
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         .text-right {
