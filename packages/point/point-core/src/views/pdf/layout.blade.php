@@ -40,7 +40,7 @@
             content: " ";
             width: 150px;
             text-align: center;
-            margin-top: 100px;
+            margin-top: 70px;
         }
 
         .signature-person {
@@ -55,7 +55,7 @@
     <tr>
         @if(url_logo())
             <td>
-                <img src="{{ public_path('app/'.app('request')->project->url.'/logo/logo.png') }}" style="background-color:transparent;width:auto;height:50px;">
+                <img src="{{ public_path('app/'.app('request')->project->url.'/logo/logo.png') }}" style="float:right;background-color:transparent;width:auto;height:50px;">
                 <div>
                     {{$warehouse->address ? : ''}}
                     <br>
