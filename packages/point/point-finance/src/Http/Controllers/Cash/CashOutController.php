@@ -54,7 +54,6 @@ class CashOutController extends Controller
     {
         $request['form_date'] = app('request')->input('payment_date');
 
-
         $payment_reference = PaymentReference::find($request->input('payment_reference_id'));
         formulir_is_allowed_to_create('create.point.finance.cashier.cash', date_format_db($request->input('form_date'), $request->input('time')), [$payment_reference->payment_reference_id]);
 

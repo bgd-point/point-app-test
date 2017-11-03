@@ -49,7 +49,7 @@
     @endforeach
     </tbody>
     <tfoot>
-    @if($invoice->subtotal == $invoice->total)
+    @if($invoice->subtotal != $invoice->total)
     <tr>
         <td colspan="5" class="text-right">Subtotal</td>
         <td class="text-right">{{ number_format_quantity($invoice->subtotal) }}</td>

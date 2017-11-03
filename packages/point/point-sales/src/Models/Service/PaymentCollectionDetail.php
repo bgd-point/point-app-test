@@ -3,6 +3,7 @@
 namespace Point\PointSales\Models\Service;
 
 use Illuminate\Database\Eloquent\Model;
+use Point\Framework\Models\Formulir;
 use Point\Framework\Traits\FormulirTrait;
 
 class PaymentCollectionDetail extends Model
@@ -15,6 +16,11 @@ class PaymentCollectionDetail extends Model
     public function paymentOrder()
     {
         return $this->belongsTo('\Point\PointSales\Models\Service\PaymentCollection', 'point_sales_service_payment_collection_id');
+    }
+
+    public function reference()
+    {
+        return $this->belongsTo('\Point\Framework\Models\Formulir', 'form_reference_id');
     }
 
     public function scopeJoinPaymentCollection($q)
