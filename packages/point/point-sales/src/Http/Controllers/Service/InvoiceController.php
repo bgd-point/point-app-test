@@ -22,6 +22,7 @@ use Point\PointSales\Helpers\ServiceInvoiceHelper;
 use Point\PointSales\Http\Requests\ServiceInvoiceRequest;
 use Point\PointSales\Models\Service\Invoice;
 use Point\PointSales\Models\Service\InvoiceItem;
+use Point\PointSales\Models\Service\InvoiceService;
 
 class InvoiceController extends Controller
 {
@@ -43,12 +44,27 @@ class InvoiceController extends Controller
     public function ajaxDetailItem(Request $request, $id)
     {
         access_is_allowed('read.point.sales.service.invoice');
-        $list_invoice = InvoiceItem::select('item.name as item_name',
+        $list_invoice_item = InvoiceItem::select('item.name as item_name',
             'point_sales_service_invoice_item.quantity',
             'point_sales_service_invoice_item.unit',
-            'point_sales_service_invoice_item.price',
-            'point_sales_service_invoice_item.point_sales_service_invoice_id')->joinItem()->joinInvoice()->joinFormulir()->where('point_sales_service_invoice_item.point_sales_service_invoice_id', '=', $id)->get();
-        return response()->json($list_invoice);
+            'point_sales_service_invoice_item.price'
+            )->
+            joinItem()->joinInvoice()->where(
+                'point_sales_service_invoice_item.point_sales_service_invoice_id', '=', $id
+            )->get();
+        
+        $list_invoice_service  = InvoiceService::select('service.name as service_name',
+            'point_sales_service_invoice_service.quantity as service_quantity ',
+            'point_sales_service_invoice_service.price as service_price ',
+            'point_sales_service_invoice_service.service_notes'
+            )->
+            joinService()->joinInvoiceService()->where(
+                'point_sales_service_invoice_service.point_sales_service_invoice_id', '=', $id
+            )->get();
+
+            dd($list_invoice_service);
+        // return response()->json($list_invoice_item);
+        // return response()->json($list_invoice_service);
     }
 
     public function indexPDF(Request $request)

@@ -24,8 +24,15 @@ class InvoiceItem extends Model
     public function scopeJoinItem($q){
         $q->join('item', 'item.id', '=', $this->table.'.item_id');
     }
+    public function scopeJoinService($q){
+        $q->join('service', 'service.id', '=','point_sales_service_invoice_service.service_id');
+    }
     public function scopeJoinInvoice($q)
     {
         $q->join('point_sales_service_invoice', 'point_sales_service_invoice.id', '=', 'point_sales_service_invoice_item.point_sales_service_invoice_id');
+    }
+    public function scopeJoinInvoiceService($q)
+    {
+        $q->join('point_sales_service_invoice', 'point_sales_service_invoice.id', '=', 'point_sales_service_invoice_service.point_sales_service_invoice_id');
     }
 }
