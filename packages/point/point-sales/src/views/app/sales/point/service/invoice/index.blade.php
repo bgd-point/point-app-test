@@ -124,7 +124,7 @@ function showAll(){
                             +'      <td class="extend_column_detail">'+data[i].price+'</td>'
                             +'  </tr>';
 
-                    $('#row_detail_'+data[i].point_sales_invoice_id).after(extend_table_row);
+                    $('#row_detail_'+data[i].point_sales_service_invoice_id).after(extend_table_row);
                 
                 $('#check_show').val(1);
                 }

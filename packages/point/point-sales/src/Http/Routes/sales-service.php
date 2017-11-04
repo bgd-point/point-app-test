@@ -60,6 +60,7 @@ Route::group(['prefix' => 'sales/point/service', 'namespace' => 'Point\PointSale
         Route::post('/payment-collection/send-email-payment', 'PaymentCollectionController@sendEmailPayment');
         Route::post('/payment-collection/{id}/edit-review', 'PaymentCollectionController@editReview');
         Route::post('/payment-collection/{id}/store', 'PaymentCollectionController@storePb');
+        Route::get('/payment-collection/detail/{id}', 'PaymentCollectionController@ajaxDetailItem');
         Route::resource('/payment-collection', 'PaymentCollectionController');
     });
 });

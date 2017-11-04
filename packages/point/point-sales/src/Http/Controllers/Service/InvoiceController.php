@@ -47,24 +47,24 @@ class InvoiceController extends Controller
         $list_invoice_item = InvoiceItem::select('item.name as item_name',
             'point_sales_service_invoice_item.quantity',
             'point_sales_service_invoice_item.unit',
-            'point_sales_service_invoice_item.price'
+            'point_sales_service_invoice_item.price',
+            'point_sales_service_invoice_id'
             )->
             joinItem()->joinInvoice()->where(
                 'point_sales_service_invoice_item.point_sales_service_invoice_id', '=', $id
-            )->get();
+            );
         
-        $list_invoice_service  = InvoiceService::select('service.name as service_name',
-            'point_sales_service_invoice_service.quantity as service_quantity ',
-            'point_sales_service_invoice_service.price as service_price ',
-            'point_sales_service_invoice_service.service_notes'
+        $list_invoice_service  = InvoiceService::select('service.name as item_name',
+            'point_sales_service_invoice_service.quantity as quantity ',
+            'point_sales_service_invoice_service.service_notes as unit',
+            'point_sales_service_invoice_service.price as price ',
+            'point_sales_service_invoice_id'
             )->
             joinService()->joinInvoiceService()->where(
                 'point_sales_service_invoice_service.point_sales_service_invoice_id', '=', $id
-            )->get();
-
-            dd($list_invoice_service);
-        // return response()->json($list_invoice_item);
-        // return response()->json($list_invoice_service);
+            );
+        $results = $list_invoice_item->union($list_invoice_service)->get();
+        return response()->json($results);
     }
 
     public function indexPDF(Request $request)
