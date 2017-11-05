@@ -8,7 +8,6 @@
     </ul>
     <h2 class="sub-header"> Payment Order</h2>
     @include('point-finance::app.finance.point.payment-order._menu')
-
     <div class="panel panel-default">
         <div class="panel-body">
             <form action="{{ url('finance/point/payment-order') }}" method="get" class="form-horizontal">
@@ -25,6 +24,7 @@
                     </div>
                     <div class="col-sm-3">
                         <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button> 
+                        <a class="btn btn-success" id="full_view" onclick="showAll();">Show All</a>
                     </div>
                 </div>
             </form>
@@ -40,7 +40,7 @@
                             <th>Date</th>
                             <th>Form Number</th>
                             <th>Pay To</th>
-                            <th></th>
+                            <th colspan="2" class="th-detail">Detail</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,25 +60,23 @@
                                     <a href="{{ url('finance/point/payment-order/'.$payment_order->id) }}">{{ $payment_order->formulir->form_number}}</a>
                                 </td>
                                 <td>{!! get_url_person($payment_order->person->id) !!}</td>
-                                <td>
-
+                                <td class="td-detail">
+                                    <strong>ITEM</strong>
+                                </td>
+                                <td class="td-detail">
+                                    <strong>AMOUNT</strong>
                                 </td>
                             </tr>
-                            <tr>
-                                <th></th>
-                                <th colspan="3">Description</th>
-                                <th class="text-right">Amount</th>
-                            </tr>
                             @foreach($payment_order->detail as $payment_order_detail)
-                                <tr>
-                                    <td></td>
-                                    <td colspan="3">[ {{ $payment_order_detail->coa->account }} ] {{ $payment_order_detail->notes_detail }}</td>
+                                <tr class="tr-detail">
+                                    <td colspan="4"></td>
+                                    <td>[ {{ $payment_order_detail->coa->account }} ] {{ $payment_order_detail->notes_detail }}</td>
                                     <td class="text-right">{{ number_format_price($payment_order_detail->amount) }}</td>
                                 </tr>
                             @endforeach
-                            <tr>
+                            <tr class="tr-detail">
                                 <td></td>
-                                <td colspan="3">
+                                <td colspan="4">
                                 <td class="text-right"><b>{{ number_format_price($payment_order->total) }}</b></td>
                             </tr>
                         @endforeach  
@@ -89,4 +87,22 @@
         </div>
     </div>  
 </div>
+@section('scripts')
+<script>
+    function showAll(){
+        $('.th-detail').show();
+        $('.td-detail').show();
+        $('.tr-detail').show();
+        $('#full_view').attr('onclick','compact()');
+        $('#full_view').text('Compact');
+    }
+    compact();
+    function compact(){
+        $('.th-detail').hide();   
+        $('.td-detail').hide();   
+        $('.tr-detail').hide();   
+        $('#full_view').attr('onclick','showAll()');
+        $('#full_view').text('Show All');
+    }
+</script>
 @stop
