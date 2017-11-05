@@ -204,7 +204,7 @@
             </tr>
             @foreach($invoice->items as $invoice_item)
                 <tr>
-                    <td>{{ $invoice_item->item->codeName }}</td>
+                    <td>{{ $invoice_item->item->name }}</td>
                     <td>{{$invoice_item->item_notes}}</td>
                     <td align="right">{{ number_format_quantity($invoice_item->quantity, 0) }} {{ $invoice_item->unit }}</td>
                     <td align="right">{{ number_format_quantity($invoice_item->price) }}</td>

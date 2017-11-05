@@ -39,7 +39,7 @@
     @foreach($invoice->items as $invoice_item)
         <tr>
             <td>{{$no}}</td>
-            <td>{{ucwords($invoice_item->item->codeName)}}</td>
+            <td style="text-transform: lowercase !important;">{{ strtolower($invoice_item->item->name) }}</td>
             <td class="text-right">{{number_format_quantity($invoice_item->quantity, 0). ' ' .$invoice_item->unit}}</td>
             <td class="text-right">{{number_format_quantity($invoice_item->price)}}</td>
             <td class="text-right">{{number_format_quantity($invoice_item->discount)}}</td>
@@ -87,7 +87,7 @@
 @section('signature')
     <td style="padding-left:100px">
         Tanda terima,
-        <div class="signature-date">{{ \DateHelper::formatView($invoice->formulir->approval_at) }}</div>
+        <div class="signature-date">&nbsp;</div>
         <div class="signature">____________________</div>
         <div class="signature-person"></div>
     </td>
