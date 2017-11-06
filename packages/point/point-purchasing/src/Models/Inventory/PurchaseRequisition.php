@@ -59,9 +59,9 @@ class PurchaseRequisition extends Model
     {
         $class = self::find($id);
         if ($class->formulir->form_number) {
-            return '/purchasing/point/purchase-requisition/'.$this->id;
+            return '/purchasing/point/purchase-requisition/'.$id;
         } else {
-            return '/purchasing/point/purchase-requisition/'.$this->id.'/archived';
+            return '/purchasing/point/purchase-requisition/'.$id.'/archived';
         }
     }
 
