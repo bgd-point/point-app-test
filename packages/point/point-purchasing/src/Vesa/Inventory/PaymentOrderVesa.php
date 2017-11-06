@@ -83,7 +83,7 @@ trait PaymentOrderVesa
                 'url' => url('purchasing/point/payment-order/create-step-2/' . $invoice->supplier_id),
                 'deadline' => $invoice->due_date ? : $invoice->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $invoice->due_date) ? true : false,
-                'message' => 'Make a payment order from invoice number ' . $invoice->formulir->form_number,
+                'message' => 'Make a payment order from invoice number ' . formulir_url($invoice->formulir),
                 'permission_slug' => 'create.point.purchasing.payment.order'
             ]);
         }
