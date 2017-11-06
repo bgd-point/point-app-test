@@ -36,7 +36,7 @@
                                         <a href="{{ url('finance/point/cash/'.$payment_reference->payment_flow.'/create/'.$payment_reference->id) }}" class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-external-link"></i> Create</a>
                                     </td>
                                     <td>{{ date_format_view($payment_reference->reference->form_date) }}</td>
-                                    <td>{{ $payment_reference->reference->form_number }}</td>
+                                    <td>{!! formulir_url($payment_reference->reference) !!}</td>
                                     <td>{{ $payment_reference->person->codeName }}</td>
                                     <td>{{ $payment_reference->reference->notes }}</td>
                                 </tr>

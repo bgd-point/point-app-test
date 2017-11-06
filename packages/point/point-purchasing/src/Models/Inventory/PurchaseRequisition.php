@@ -57,7 +57,8 @@ class PurchaseRequisition extends Model
 
     public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
+        $class = self::find($id);
+        if ($class->formulir->form_number) {
             return '/purchasing/point/purchase-requisition/'.$this->id;
         } else {
             return '/purchasing/point/purchase-requisition/'.$this->id.'/archived';

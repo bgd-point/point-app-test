@@ -70,7 +70,8 @@ class Retur extends Model
 
     public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
+        $class = self::find($id);
+        if ($class->formulir->form_number) {
             return '/purchasing/point/retur/'.$this->id;
         } else {
             return '/purchasing/point/retur/'.$this->id.'/archived';
