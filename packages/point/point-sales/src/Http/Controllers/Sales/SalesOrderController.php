@@ -22,6 +22,7 @@ use Point\PointExpedition\Models\ExpeditionOrderReference;
 use Point\PointSales\Helpers\SalesOrderHelper;
 use Point\PointSales\Helpers\SalesQuotationHelper;
 use Point\PointSales\Models\Sales\SalesOrder;
+use Point\PointSales\Models\Sales\SalesOrderItem;
 use Point\PointSales\Models\Sales\SalesQuotation;
 
 class SalesOrderController extends Controller
@@ -41,8 +42,19 @@ class SalesOrderController extends Controller
         $list_sales_order = SalesOrderHelper::searchList($list_sales_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view = view('point-sales::app.sales.point.sales.sales-order.index');
         $view->list_sales_order = $list_sales_order->paginate(100);
+        
+        $array_sales_order_id = [];
+        $view->array_sales_order_id = $array_sales_order_id;
         return $view;
     }
+
+    public function ajaxDetailItem(Request $request, $id)
+    {
+        access_is_allowed('read.point.sales.order');
+        $list_sales_order = SalesOrderItem::select('item.name as item_name','point_sales_order_item.quantity','point_sales_order_item.unit','point_sales_order_item.price','point_sales_order_item.point_sales_order_id')->joinAllocation()->joinItem()->joinSalesOrder()->joinFormulir()->where('point_sales_order_item.point_sales_order_id', '=', $id)->get();
+        return response()->json($list_sales_order);
+    }
+
 
     public function indexPDF(Request $request)
     {

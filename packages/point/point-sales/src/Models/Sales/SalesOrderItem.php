@@ -16,9 +16,23 @@ class SalesOrderItem extends Model
     {
         return $this->belongsTo('\Point\Framework\Models\Master\Item', 'item_id');
     }
-
     public function allocation()
     {
         return $this->belongsTo('\Point\Framework\Models\Master\Allocation', 'allocation_id');
+    }
+    public function scopeJoinAllocation($q){
+        $q->join('allocation', 'allocation.id', '=', $this->table.'.allocation_id');
+    }
+    public function scopeJoinItem($q){
+        $q->join('item', 'item.id', '=', $this->table.'.item_id');
+    }
+    
+    public function scopeJoinSalesOrder($q){
+        $q->join('point_sales_order', 'point_sales_order.id', '=', $this->table.'.point_sales_order_id');
+    }
+
+    public function scopeJoinFormulir($q)
+    {
+        $q->join('formulir', 'formulir.id', '=', 'point_sales_order.formulir_id');
     }
 }

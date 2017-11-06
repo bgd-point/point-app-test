@@ -28,7 +28,10 @@ class InvoiceItem extends Model
     {
         $q->join('person', 'person.id', '=', 'point_sales_invoice.person_id');
     }
-
+    public function scopeJoinItem($q){
+        $q->join('item', 'item.id', '=', $this->table.'.item_id');
+    }
+    
     public function invoice()
     {
         return $this->belongsTo('Point\PointSales\Models\Sales\Invoice', 'point_sales_invoice_id');

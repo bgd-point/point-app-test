@@ -16,4 +16,20 @@ class InvoiceItem extends Model
     {
         return $this->belongsTo('\Point\Framework\Models\Master\Item', 'item_id');
     }
+    public function scopeJoinAllocation($q){
+        $q->join('allocation', 'allocation.id', '=', $this->table.'.allocation_id');
+    }
+    public function scopeJoinItem($q){
+        $q->join('item', 'item.id', '=', $this->table.'.item_id');
+    }
+    
+    public function scopeJoinServiceInvoice($q){
+        $q->join('point_purchasing_service_invoice', 'point_purchasing_service_invoice.id', '=', $this->table.'.point_purchasing_service_invoice_id');
+    }
+
+    
+    public function scopeJoinFormulir($q)
+    {
+        $q->join('formulir', 'formulir.id', '=', 'point_purchasing_service_invoice.formulir_id');
+    }
 }

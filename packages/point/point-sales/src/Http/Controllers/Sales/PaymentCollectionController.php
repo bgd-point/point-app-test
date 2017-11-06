@@ -33,6 +33,8 @@ use Point\PointSales\Helpers\PaymentCollectionHelper;
 use Point\PointSales\Models\Sales\Downpayment;
 use Point\PointSales\Models\Sales\Invoice;
 use Point\PointSales\Models\Sales\PaymentCollection;
+use Point\PointSales\Models\Sales\PaymentCollectionDetail;
+use Point\PointSales\Models\Sales\PaymentCollectionOther;
 use Point\PointSales\Models\Sales\Retur;
 
 class PaymentCollectionController extends Controller
@@ -52,9 +54,33 @@ class PaymentCollectionController extends Controller
         $list_payment_collection = PaymentCollection::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         $list_payment_collection = PaymentCollectionHelper::searchList($list_payment_collection, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_payment_collection = $list_payment_collection->paginate(100);
+        $array_payment_collection_id = [];
+        $view->array_payment_collection_id = $array_payment_collection_id;
         return $view;
     }
-
+    public function ajaxDetailItem(Request $request, $id)
+    {
+        access_is_allowed('read.point.sales.payment.collection');
+        $list_payment_detail = PaymentCollectionDetail::select('formulir.form_number',
+            'point_sales_payment_collection_detail.detail_notes',
+            'point_sales_payment_collection_detail.amount',
+            'point_sales_payment_collection_id'
+            )->
+            joinFormulir()->joinPaymentCollection()->where(
+                'point_sales_payment_collection_detail.point_sales_payment_collection_id', '=', $id
+            );
+        
+        $list_payment_others  = PaymentCollectionOther::select('coa.name as form_number',
+            'point_sales_payment_collection_other.other_notes',
+            'point_sales_payment_collection_other.amount',
+            'point_sales_payment_collection_id'
+            )->
+            joinCoa()->joinPaymentCollection()->where(
+                'point_sales_payment_collection_other.point_sales_payment_collection_id', '=', $id
+            );
+        $results = $list_payment_detail->union($list_payment_others)->get();
+        return response()->json($results);
+    }
     public function indexPDF()
     {
         access_is_allowed('read.point.sales.payment.collection');
