@@ -51,7 +51,7 @@ trait PaymentOrderVesa
             array_push($array, [
                 'url' => url('purchasing/point/payment-order/' . $payment_order->id),
                 'deadline' => $payment_order->formulir->form_date,
-                'message' => 'Please approve this payment order purchasing number ' . $payment_order->formulir->form_number,
+                'message' => 'Please approve this payment order purchasing number ' . formulir_url($payment_order->formulir),
                 'permission_slug' => 'approval.point.purchasing.payment.order'
             ]);
         }
@@ -112,7 +112,7 @@ trait PaymentOrderVesa
             array_push($array, [
                 'url' => url('purchasing/point/payment-order/' . $payment_order->id.'/edit'),
                 'deadline' =>  $payment_order->formulir->form_date,
-                'message' => $payment_order->formulir->form_number. ' Rejected, please edit your form payment order purchasing',
+                'message' => formulir_url($payment_order->formulir). ' Rejected, please edit your form payment order purchasing',
                 'permission_slug' => 'update.point.purchasing.payment.order'
             ]);
         }

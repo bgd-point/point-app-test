@@ -45,7 +45,7 @@ trait PurchaseRequisitionVesa
                 'url' => url('purchasing/point/purchase-requisition/' . $purchase_requisition->id),
                 'deadline' => $purchase_requisition->required_date ? : $purchase_requisition->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $purchase_requisition->required_date) ? true : false,
-                'message' => 'please approve this purchase requisition ' . $purchase_requisition->formulir->form_number,
+                'message' => 'please approve this purchase requisition ' . formulir_url($purchase_requisition->formulir),
                 'permission_slug' => 'approval.point.purchasing.requisition'
             ]);
         }
@@ -76,7 +76,7 @@ trait PurchaseRequisitionVesa
                 'url' => url('purchasing/point/purchase-requisition/' . $purchase_requisition->id.'/edit'),
                 'deadline' => $purchase_requisition->required_date ? : $purchase_requisition->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $purchase_requisition->required_date) ? true : false,
-                'message' => $purchase_requisition->formulir->form_number. ' Rejected, please edit your form',
+                'message' => formulir_url($purchase_requisition->formulir) . ' Rejected, please edit your form',
                 'permission_slug' => 'update.point.purchasing.requisition'
             ]);
         }

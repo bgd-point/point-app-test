@@ -59,7 +59,7 @@ trait GoodsReceivedVesa
                 array_push($array, [
                     'url' => url('purchasing/point/goods-received/create-step-4/'.$purchase_order->id),
                     'deadline' => $purchase_order->formulir->form_date,
-                    'message' => 'create goods received from ' . $purchase_order->formulir->form_number,
+                    'message' => 'create goods received from ' . formulir_url($purchase_order->formulir),
                     'permission_slug' => 'create.point.purchasing.goods.received'
                 ]);
 
@@ -71,7 +71,7 @@ trait GoodsReceivedVesa
                 array_push($array, [
                     'url' => url('purchasing/point/goods-received/create-step-4/'.$purchase_order->id),
                     'deadline' => $purchase_order->formulir->form_date,
-                    'message' => 'create goods received from ' . $purchase_order->formulir->form_number,
+                    'message' => 'create goods received from ' . formulir_url($purchase_order->formulir),
                     'permission_slug' => 'create.point.purchasing.goods.received'
                 ]);
 
@@ -83,7 +83,7 @@ trait GoodsReceivedVesa
                 array_push($array, [
                     'url' => url('purchasing/point/goods-received/create-step-3/'.$purchase_order->id),
                     'deadline' => $purchase_order->formulir->form_date,
-                    'message' => 'create goods received from ' . $purchase_order->formulir->form_number,
+                    'message' => 'create goods received from ' . formulir_url($purchase_order->formulir),
                     'permission_slug' => 'create.point.purchasing.goods.received'
                 ]);
 
@@ -115,7 +115,7 @@ trait GoodsReceivedVesa
             array_push($array, [
                 'url' => url('purchasing/point/goods-received/' . $goods_received->id),
                 'deadline' => $goods_received->formulir->form_date,
-                'message' => 'please approve this purchase goods received ' . $goods_received->formulir->form_number,
+                'message' => 'please approve this purchase goods received ' . formulir_url($goods_received->formulir),
                 'permission_slug' => 'approval.point.purchasing.goods.received'
             ]);
         }
@@ -144,7 +144,7 @@ trait GoodsReceivedVesa
             array_push($array, [
                 'url' => url('purchasing/point/goods-received/' . $goods_received->id.'/edit'),
                 'deadline' => $goods_received->formulir->form_date,
-                'message' => $goods_received->formulir->form_number. ' Rejected, please edit your form',
+                'message' => formulir_url($goods_received->formulir). ' Rejected, please edit your form',
                 'permission_slug' => 'update.point.purchasing.goods.received'
             ]);
         }

@@ -55,7 +55,7 @@ trait PurchaseOrderVesa
                 'url' => url('purchasing/point/purchase-order/create-step-2/' . $purchase_requisition->id),
                 'deadline' => $purchase_requisition->required_date ? : $purchase_requisition->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $purchase_requisition->required_date) ? true : false,
-                'message' => 'Please create purchase order from '.$purchase_requisition->formulir->form_number,
+                'message' => 'Please create purchase order from '. formulir_url($purchase_requisition->formulir),
                 'permission_slug' => 'create.point.purchasing.order',
                 'color' => ''
             ]);
@@ -85,7 +85,7 @@ trait PurchaseOrderVesa
             array_push($array, [
                 'url' => url('purchasing/point/purchase-order/' . $purchase_order->id),
                 'deadline' => $purchase_order->formulir->form_date,
-                'message' => 'please approve this purchase order ' . $purchase_order->formulir->form_number,
+                'message' => 'please approve this purchase order ' . formulir_url($purchase_order->formulir),
                 'permission_slug' => 'approval.point.purchasing.order'
             ]);
         }
