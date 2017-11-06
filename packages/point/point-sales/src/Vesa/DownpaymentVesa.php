@@ -58,7 +58,7 @@ trait DownpaymentVesa
                 array_push($array, [
                     'url' => url('sales/point/indirect/downpayment/insert/'.$sales_order->id),
                     'deadline' => $sales_order->formulir->form_date,
-                    'message' => 'Make an sales downpayment from sales order ' . $sales_order->formulir->form_number,
+                    'message' => 'Make an sales downpayment from sales order ' . formulir_url($sales_order->formulir),
                     'permission_slug' => 'create.point.sales.downpayment'
                 ]);
             }
@@ -88,7 +88,7 @@ trait DownpaymentVesa
             array_push($array, [
                 'url' => url('sales/point/indirect/downpayment/' . $downpayment->id),
                 'deadline' => $downpayment->formulir->form_date,
-                'message' => 'please approve this sales downpayment ' . $downpayment->formulir->form_number,
+                'message' => 'please approve this sales downpayment ' . formulir_url($downpayment->formulir),
                 'permission_slug' => 'approval.point.sales.downpayment'
             ]);
         }
@@ -116,7 +116,7 @@ trait DownpaymentVesa
             array_push($array, [
                 'url' => url('sales/point/indirect/downpayment/' . $downpayment->id.'/edit'),
                 'deadline' => $downpayment->formulir->form_date,
-                'message' => $downpayment->formulir->form_number. ' Rejected, please edit your form sales downpayment',
+                'message' => formulir_url($downpayment->formulir). ' Rejected, please edit your form sales downpayment',
                 'permission_slug' => 'update.point.sales.downpayment'
             ]);
         }

@@ -45,7 +45,7 @@ trait SalesQuotationVesa
                 'url' => url('sales/point/indirect/sales-quotation/' . $sales_quotation->id),
                 'deadline' => $sales_quotation->required_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $sales_quotation->required_date) ? true : false,
-                'message' => 'please approve this sales quotation ' . $sales_quotation->formulir->form_number,
+                'message' => 'please approve this sales quotation ' . formulir_url($sales_quotation->formulir),
                 'permission_slug' => 'approval.point.sales.quotation'
             ]);
         }

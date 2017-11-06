@@ -56,7 +56,7 @@ trait ServicePaymentCollectionVesa
                 'url' => url('sales/point/service/payment-collection/create-step-2/' . $invoice->person_id),
                 'deadline' => $invoice->due_date ? : $invoice->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $invoice->due_date) ? true : false,
-                'message' => 'Make a payment collection from invoice number ' . $invoice->formulir->form_number,
+                'message' => 'Make a payment collection from invoice number ' . formulir_url($invoice->formulir),
                 'permission_slug' => 'create.point.sales.service.payment.collection'
             ]);
         }
@@ -86,7 +86,7 @@ trait ServicePaymentCollectionVesa
                 'url' => url('sales/point/service/payment-collection/' . $payment_collection->id),
                 'deadline' => $payment_collection->due_date ? : $payment_collection->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $payment_collection->due_date) ? true : false,
-                'message' => 'Please approve this payment collection service number ' . $payment_collection->formulir->form_number,
+                'message' => 'Please approve this payment collection service number ' . formulir_url($payment_collection->formulir),
                 'permission_slug' => 'approval.point.sales.service.payment.collection'
             ]);
         }
@@ -115,7 +115,7 @@ trait ServicePaymentCollectionVesa
             array_push($array, [
                 'url' => url('sales/point/service/payment-collection/' . $payment_collection->id.'/edit'),
                 'deadline' => $payment_collection->due_date ? : $payment_collection->formulir->form_date,
-                'message' => $payment_collection->formulir->form_number. ' Rejected, please edit your form payment collection service',
+                'message' => formulir_url($payment_collection->formulir) . ' Rejected, please edit your form payment collection service',
                 'permission_slug' => 'update.point.sales.service.payment.collection'
             ]);
         }
