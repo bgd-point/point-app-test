@@ -20,6 +20,13 @@ if (! function_exists('access_is_allowed_to_view')) {
     }
 }
 
+if (! function_exists('formulir_url')) {
+    function formulir_url($formulir)
+    {
+        return FormulirHelper::formulirUrl($formulir);
+    }
+}
+
 if (! function_exists('formulir_is_allowed_to_create')) {
     function formulir_is_allowed_to_create($permission_slug, $form_date, $formulir_references)
     {

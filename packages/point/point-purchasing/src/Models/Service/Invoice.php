@@ -100,7 +100,8 @@ class Invoice extends Model
 
     public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
+        $class = self::find($id);
+        if ($class->formulir->form_number) {
             return '/purchasing/point/service/invoice/'.$this->id;
         } else {
             return '/purchasing/point/service/invoice/'.$this->id.'/archived';

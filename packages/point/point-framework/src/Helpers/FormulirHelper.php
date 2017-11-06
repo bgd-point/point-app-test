@@ -13,6 +13,11 @@ use Point\PointFinance\Models\PaymentReference;
 
 class FormulirHelper
 {
+    public static function formulirUrl($formulir) {
+        $model = $formulir->formulirable_type;
+        $url = $model::showUrl($formulir->formulirable_id);
+        return "<a href='". url($url) ."'>".$formulir->form_number."</a>";
+    }
 
     /**
      * FORM STATUS HELPER

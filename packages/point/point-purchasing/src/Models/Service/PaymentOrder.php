@@ -54,7 +54,8 @@ class PaymentOrder extends Model
 
     public static function showUrl($id)
     {
-        if ($this->formulir->form_number) {
+        $model = PaymentOrder::find($id);
+        if ($model->formulir->form_number) {
             return '/purchasing/point/service/payment-order/'.$id;
         } else {
             return '/purchasing/point/service/payment-order/'.$id.'/archived';
