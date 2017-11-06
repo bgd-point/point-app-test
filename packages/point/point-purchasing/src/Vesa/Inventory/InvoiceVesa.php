@@ -40,7 +40,7 @@ trait InvoiceVesa
             array_push($array, [
                 'url' => url('purchasing/point/invoice/create-step-2/' . $goods_received->supplier_id),
                 'deadline' => $goods_received->formulir->form_date,
-                'message' => 'Please create invoice from ' . $goods_received->formulir->form_number,
+                'message' => 'Please create invoice from ' . formulir_url($goods_received->formulir),
                 'permission_slug' => 'create.point.purchasing.invoice'
             ]);
         }

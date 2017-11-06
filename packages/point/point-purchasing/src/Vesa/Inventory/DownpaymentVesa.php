@@ -63,7 +63,7 @@ trait DownpaymentVesa
                 array_push($array, [
                     'url' => url('purchasing/point/downpayment/create/'.$purchasing_order->id),
                     'deadline' => $purchasing_order->formulir->form_date,
-                    'message' => 'Make an purchasing downpayment from purchasing order ' . $purchasing_order->formulir->form_number,
+                    'message' => 'Make an purchasing downpayment from purchasing order ' . formulir_url($purchasing_order->formulir),
                     'permission_slug' => 'create.point.purchasing.downpayment'
                 ]);
             }
@@ -93,7 +93,7 @@ trait DownpaymentVesa
             array_push($array, [
                 'url' => url('purchasing/point/downpayment/' . $downpayment->id),
                 'deadline' => $downpayment->formulir->form_date,
-                'message' => 'please approve this purchasing downpayment ' . $downpayment->formulir->form_number,
+                'message' => 'please approve this purchasing downpayment ' . formulir_url($downpayment->formulir),
                 'permission_slug' => 'approval.point.purchasing.downpayment'
             ]);
         }
