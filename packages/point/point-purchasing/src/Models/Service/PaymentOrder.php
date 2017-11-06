@@ -55,9 +55,9 @@ class PaymentOrder extends Model
     public static function showUrl($id)
     {
         if ($this->formulir->form_number) {
-            return '/purchasing/point/service/payment-order/'.$this->id;
+            return '/purchasing/point/service/payment-order/'.$id;
         } else {
-            return '/purchasing/point/service/payment-order/'.$this->id.'/archived';
+            return '/purchasing/point/service/payment-order/'.$id.'/archived';
         }
     }
 
