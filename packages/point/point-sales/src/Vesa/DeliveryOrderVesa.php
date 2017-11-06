@@ -60,7 +60,7 @@ trait DeliveryOrderVesa
                     array_push($array, [
                         'url' => url('sales/point/indirect/delivery-order/create-step-1/'),
                         'deadline' => $sales_order->formulir->form_date,
-                        'message' => 'create delivery order from ' . $sales_order->formulir->form_number,
+                        'message' => 'create delivery order from ' . formulir_url($sales_order->formulir),
                         'permission_slug' => 'create.point.sales.delivery.order'
                     ]);
                 }
@@ -68,7 +68,7 @@ trait DeliveryOrderVesa
                 array_push($array, [
                     'url' => url('sales/point/indirect/delivery-order/create-step-1/'),
                     'deadline' => $sales_order->formulir->form_date,
-                    'message' => 'create delivery order from ' . $sales_order->formulir->form_number,
+                    'message' => 'create delivery order from ' . formulir_url($sales_order->formulir),
                     'permission_slug' => 'create.point.sales.delivery.order'
                 ]);
             }
@@ -98,7 +98,7 @@ trait DeliveryOrderVesa
             array_push($array, [
                 'url' => url('sales/point/indirect/delivery-order/' . $delivery_order->id),
                 'deadline' => $delivery_order->formulir->form_date,
-                'message' => 'please approve this delivery order ' . $delivery_order->formulir->form_number,
+                'message' => 'please approve this delivery order ' . formulir_url($delivery_order->formulir),
                 'permission_slug' => 'approval.point.sales.delivery.order'
             ]);
         }
@@ -127,7 +127,7 @@ trait DeliveryOrderVesa
             array_push($array, [
                 'url' => url('sales/point/delivery-order/' . $delivery_order->id.'/edit'),
                 'deadline' => $delivery_order->formulir->form_date,
-                'message' => $delivery_order->formulir->form_number. ' Rejected, please edit your form',
+                'message' => formulir_url($delivery_order->formulir) . ' Rejected, please edit your form',
                 'permission_slug' => 'update.point.delivery.order'
             ]);
         }

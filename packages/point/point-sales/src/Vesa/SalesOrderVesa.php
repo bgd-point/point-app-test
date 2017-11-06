@@ -82,7 +82,7 @@ trait SalesOrderVesa
             array_push($array, [
                 'url' => url('sales/point/indirect/sales-order/' . $sales_order->id),
                 'deadline' => $sales_order->formulir->form_date,
-                'message' => 'please approve this sales order ' . $sales_order->formulir->form_number,
+                'message' => 'please approve this sales order ' . formulir_url($sales_order->formulir),
                 'permission_slug' => 'approval.point.sales.order'
             ]);
         }
