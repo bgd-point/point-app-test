@@ -53,6 +53,10 @@ class Journal extends Model
                     ->where('person_id', $this->subledger_id)
                     ->first();
 
+            if (! $account_payable_and_receivable) {
+                return;
+            }
+
             if (array_key_exists('reference_type', $options) && array_key_exists('reference_id', $options)) {
                 if ($options['reference_type'] && $options['reference_id']) {
                     $account_payable_and_receivable_reference = AccountPayableAndReceivable::where('reference_type', $options['reference_type'])
@@ -113,6 +117,10 @@ class Journal extends Model
                     ->where('person_id', $this->subledger_id)
                     ->first();
 
+            if (! $account_payable_and_receivable) {
+                return;
+            }
+
             if (array_key_exists('reference_type', $options) && array_key_exists('reference_id', $options)) {
                 if ($options['reference_type'] && $options['reference_id']) {
                     $account_payable_and_receivable_reference = AccountPayableAndReceivable::where('reference_type', $options['reference_type'])
@@ -126,9 +134,6 @@ class Journal extends Model
             }
 
             if (! $account_payable_and_receivable_id) {
-                if (!$account_payable_and_receivable) {
-                    \Log::info($this);
-                }
                 $account_payable_and_receivable_id = $account_payable_and_receivable->id;
             }
 
