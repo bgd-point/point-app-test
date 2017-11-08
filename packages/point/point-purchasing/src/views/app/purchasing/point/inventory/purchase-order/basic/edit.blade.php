@@ -387,7 +387,7 @@
             var subtotal = 0;
             for (var i = 0; i < rows_length; i++) {
                 if (dbNum($('#item-discount-' + i).val()) >= 100) {
-                    dbNum($('#item-discount-' + i).val(99))
+                    dbNum($('#item-discount-' + i).val(100))
                 }
                 var total_per_row = dbNum($('#item-quantity-' + i).val()) * dbNum($('#item-price-' + i).val())
                         - ( dbNum($('#item-quantity-' + i).val()) * dbNum($('#item-price-' + i).val()) / 100 * dbNum($('#item-discount-' + i).val()) );
@@ -398,7 +398,7 @@
             $('#subtotal').val(appNum(subtotal));
 
             if (dbNum($('#discount').val()) >= 100) {
-                dbNum($('#discount').val(99))
+                dbNum($('#discount').val(100))
             }
 
             var discount = dbNum($('#discount').val());
