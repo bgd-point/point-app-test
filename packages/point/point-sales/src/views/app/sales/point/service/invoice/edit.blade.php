@@ -454,7 +454,7 @@
             var service_row = $("#service-datatable").dataTable().fnGetNodes().length;
             var subtotal = 0;
             for (var i = 0; i < service_row; i++) {
-                if (dbNum($('#service-discount-' + i).val()) >= 100) {
+                if (dbNum($('#service-discount-' + i).val()) > 100) {
                     dbNum($('#service-discount-' + i).val(100))
                 }
 
@@ -469,7 +469,7 @@
             }
 
             for (var i = 0; i < item_row; i++) {
-                if (dbNum($('#item-discount-' + i).val()) >= 100) {
+                if (dbNum($('#item-discount-' + i).val()) > 100) {
                     dbNum($('#item-discount-' + i).val(100))
                 }
                 var item_total_per_row = dbNum($('#item-quantity-' + i).val()) * dbNum($('#item-price-' + i).val())
@@ -486,7 +486,7 @@
         }
 
         function calculateTotal() {
-            if (dbNum($('#discount').val()) >= 100) {
+            if (dbNum($('#discount').val()) > 100) {
                 dbNum($('#discount').val(100))
             }
 
