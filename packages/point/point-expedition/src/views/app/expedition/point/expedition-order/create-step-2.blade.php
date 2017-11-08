@@ -244,7 +244,7 @@
 
         function calculate() {
             if (dbNum($('#discount').val()) >= 100) {
-                dbNum($('#discount').val(99))
+                dbNum($('#discount').val(100))
             }
 
             var discount = dbNum($('#discount').val());
