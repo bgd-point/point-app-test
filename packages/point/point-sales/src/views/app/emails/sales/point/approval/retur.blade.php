@@ -272,10 +272,10 @@
     @endforeach
     @if($list_retur->count() > 1)
     <br>
-    <a href="{{ $url . '/sales/point/retur/approve-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
+    <a href="{{ $url . '/sales/point/indirect/retur/approve-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
         <input type="button" class="btn btn-primary" value="Approve All">
     </a>
-    <a href="{{ $url . '/sales/point/retur/reject-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
+    <a href="{{ $url . '/sales/point/indirect/retur/reject-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
         <input type="button" class="btn btn-warning" value="Reject All">
     </a>
     @endif

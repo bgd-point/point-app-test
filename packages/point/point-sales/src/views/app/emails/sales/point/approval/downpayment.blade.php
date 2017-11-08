@@ -193,10 +193,10 @@
     @endforeach
     @if($list_data->count() > 1)
     <br>
-    <a href="{{ $url . '/sales/point/downpayment/approve-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
+    <a href="{{ $url . '/sales/point/indirect/downpayment/approve-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
         <input type="button" class="btn btn-primary" value="Approve All">
     </a>
-    <a href="{{ $url . '/sales/point/downpayment/reject-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
+    <a href="{{ $url . '/sales/point/indirect/downpayment/reject-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
         <input type="button" class="btn btn-warning" value="Reject All">
     </a>
     @endif
