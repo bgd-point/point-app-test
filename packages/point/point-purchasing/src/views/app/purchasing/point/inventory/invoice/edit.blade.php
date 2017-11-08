@@ -263,7 +263,7 @@
             var rows_length = $("#item-datatable").dataTable().fnGetNodes().length;
             var subtotal = 0;
             for (var i = 1; i <= rows_length; i++) {
-                if (dbNum($('#item-discount-' + i).val()) >= 100) {
+                if (dbNum($('#item-discount-' + i).val()) > 100) {
                     dbNum($('#item-discount-' + i).val(100))
                 }
                 var total_per_row = dbNum($('#item-quantity-' + i).val()) * dbNum($('#item-price-' + i).val())
@@ -274,7 +274,7 @@
             }
 
             $('#subtotal').val(appNum(subtotal));
-            if (dbNum($('#discount').val()) >= 100) {
+            if (dbNum($('#discount').val()) > 100) {
                 dbNum($('#discount').val(100))
             }
 

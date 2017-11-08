@@ -226,7 +226,7 @@
     <script>
         var item_table = initDatatable('#item-datatable');
         function calculate() {
-            if (dbNum($('#discount').val()) >= 100) {
+            if (dbNum($('#discount').val()) > 100) {
                 dbNum($('#discount').val(100))
             }
 
