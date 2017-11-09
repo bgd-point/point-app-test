@@ -19,7 +19,7 @@
     <tr>
         <td>Customer</td>
         <td>:</td>
-        <td>{{ ucwords($invoice->person->codeName) }}</td>
+        <td>{{ ucwords($invoice->person->name) }}</td>
     </tr>
 @stop
 
@@ -27,7 +27,7 @@
     <thead>
     <tr>
         <th width="10px">No</th>
-        <th width="220px">Service</th>
+        <th>Service</th>
         <th class="text-right">Quantity</th>
         <th class="text-right">Price</th>
         <th class="text-right">Discount</th>

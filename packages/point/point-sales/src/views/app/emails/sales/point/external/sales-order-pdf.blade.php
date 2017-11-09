@@ -14,7 +14,7 @@
     <tr>
         <td>Customer</td>
         <td>:</td>
-        <td>{{ ucwords($sales_order->person->codeName) }}</td>
+        <td>{{ ucwords($sales_order->person->name) }}</td>
     </tr>
 @stop
 
@@ -22,7 +22,7 @@
     <thead>
     <tr>
         <th width="10px">No</th>
-        <th width="220px">Item</th>
+        <th>Item</th>
         <th class="text-right">Quantity</th>
         <th class="text-right">Price</th>
         <th class="text-right">Discount</th>
@@ -34,7 +34,7 @@
     @foreach($sales_order->items as $sales_order_item)
         <tr>
             <td>{{$no}}</td>
-            <td>{{ucwords($sales_order_item->item->codeName)}}</td>
+            <td>{{ucwords($sales_order_item->item->name)}}</td>
             <td class="text-right">{{number_format_quantity($sales_order_item->quantity, 0). ' ' .$sales_order_item->unit}}</td>
             <td class="text-right">{{number_format_quantity($sales_order_item->price)}}</td>
             <td class="text-right">{{number_format_quantity($sales_order_item->discount)}}</td>
