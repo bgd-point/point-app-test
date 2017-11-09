@@ -16,12 +16,12 @@ class AllocationReportController extends Controller
             return view('core::errors.restricted');
         }
 
-        $list_allocation_report = AllocationHelper::searchList(\Input::get('date_from'), \Input::get('date_to'), \Input::get('search'), false, true);
-        
-        $view = view('framework::app.master.allocation.report');
-        $view->list_allocation_report = $list_allocation_report->paginate(100);
-        $view->list_allocation = Allocation::active()->get();
-        return $view;
+//        $list_allocation_report = AllocationHelper::searchList(\Input::get('date_from'), \Input::get('date_to'), \Input::get('search'), false, true);
+//
+//        $view = view('framework::app.master.allocation.report');
+//        $view->list_allocation_report = $list_allocation_report->paginate(100);
+//        $view->list_allocation = Allocation::active()->get();
+//        return $view;
     }
 
     public function detail($id)
@@ -30,12 +30,12 @@ class AllocationReportController extends Controller
             return view('core::errors.restricted');
         }
 
-        $list_allocation_report = AllocationHelper::searchList(\Input::get('date_from'), \Input::get('date_to'), false, $id, false);
-        
-        $view = view('framework::app.master.allocation.report-detail');
-        $view->list_allocation_report = $list_allocation_report->paginate(100);
-        $view->list_allocation = Allocation::active()->get();
-        return $view;
+//        $list_allocation_report = AllocationHelper::searchList(\Input::get('date_from'), \Input::get('date_to'), false, $id, false);
+//
+//        $view = view('framework::app.master.allocation.report-detail');
+//        $view->list_allocation_report = $list_allocation_report->paginate(100);
+//        $view->list_allocation = Allocation::active()->get();
+//        return $view;
     }
 
     public function export(Request $request)

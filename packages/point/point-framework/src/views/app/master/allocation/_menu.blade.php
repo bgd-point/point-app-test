@@ -8,11 +8,6 @@
     Create
 </a>
 @endif
-@if(access_is_allowed_to_view('read.allocation.report'))
-<a href="{{ url('master/allocation/report') }}" class="btn {{\Request::segment(3)=='report'?'btn-primary':'btn-info'}}">
-    Report
-</a>
-@endif
 @if(access_is_allowed_to_view('create.role'))
 <a href="{{ url('temporary-access/allocation/allocation') }}" class="btn {{\Request::segment(3)=='access'?'btn-primary':'btn-info'}}">
     Temporary Access
