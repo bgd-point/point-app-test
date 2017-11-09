@@ -29,7 +29,7 @@
     <thead>
     <tr>
         <th width="10px">No</th>
-        <th width="220px">Item</th>
+        <th>Item</th>
         <th class="text-right">Quantity</th>
     </tr>
     </thead>
@@ -38,7 +38,7 @@
     @foreach($delivery_order->items as $delivery_order_item)
         <tr>
             <td>{{$no}}</td>
-            <td>{{ucwords($delivery_order_item->item->codeName)}}</td>
+            <td>{{ucwords($delivery_order_item->item->name)}}</td>
             <td class="text-right">{{number_format_quantity($delivery_order_item->quantity, 0). ' ' .$delivery_order_item->unit}}</td>
         </tr>
         <?php $no++;?>

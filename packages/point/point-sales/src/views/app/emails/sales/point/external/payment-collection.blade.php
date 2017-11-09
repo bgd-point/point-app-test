@@ -172,7 +172,7 @@
                 :
             </td>
             <td>
-                {{ $payment_collection->person->codeName }}
+                {{ $payment_collection->person->name }}
             </td>
         </tr>
     </table>

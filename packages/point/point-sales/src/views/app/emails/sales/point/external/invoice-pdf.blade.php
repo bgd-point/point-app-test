@@ -27,7 +27,7 @@
     <thead>
     <tr>
         <th width="10px">No</th>
-        <th width="220px">Item</th>
+        <th>Item</th>
         <th class="text-right">Quantity</th>
         <th class="text-right">Price</th>
         <th class="text-right">Discount</th>
