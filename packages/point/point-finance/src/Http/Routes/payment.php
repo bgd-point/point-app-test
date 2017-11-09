@@ -13,6 +13,9 @@ Route::group(['prefix' => 'finance/point', 'namespace' => 'Point\PointFinance\Ht
         Route::post('report/view', 'ReportController@_view');
         Route::get('report/{type}', 'ReportController@index');
 
+        // Allocation Report
+        Route::get('allocation-report', 'AllocationReportController@index');
+
         // Payment
         Route::get('payment/choose/{formulir_id}', 'PaymentController@choose');
         Route::post('payment/cancel', 'PaymentController@cancel');

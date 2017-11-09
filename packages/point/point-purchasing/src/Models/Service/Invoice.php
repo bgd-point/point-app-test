@@ -102,9 +102,9 @@ class Invoice extends Model
     {
         $class = self::find($id);
         if ($class->formulir->form_number) {
-            return '/purchasing/point/service/invoice/'.$this->id;
+            return '/purchasing/point/service/invoice/'.$id;
         } else {
-            return '/purchasing/point/service/invoice/'.$this->id.'/archived';
+            return '/purchasing/point/service/invoice/'.$id.'/archived';
         }
     }
 
