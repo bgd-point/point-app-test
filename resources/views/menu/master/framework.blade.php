@@ -53,17 +53,17 @@
         </a>
     </div>
 @endif
-@if(auth()->user()->may('read.fixed.assets.item'))
-    <div class="col-md-4 col-lg-3">
-        <a href="{{url('master/fixed-assets-item')}}" class="widget widget-button">
-            <div class="widget-content text-right clearfix">
-                <i class="fa fa-4x fa-building push-bit pull-left"></i>
-                <h4 class="widget-heading"><strong>Fixed Asset Item</strong></h4>
-                <span class="text-muted"></span>
-            </div>
-        </a>
-    </div>
-@endif   
+{{--@if(auth()->user()->may('read.fixed.assets.item'))--}}
+    {{--<div class="col-md-4 col-lg-3">--}}
+        {{--<a href="{{url('master/fixed-assets-item')}}" class="widget widget-button">--}}
+            {{--<div class="widget-content text-right clearfix">--}}
+                {{--<i class="fa fa-4x fa-building push-bit pull-left"></i>--}}
+                {{--<h4 class="widget-heading"><strong>Fixed Asset Item</strong></h4>--}}
+                {{--<span class="text-muted"></span>--}}
+            {{--</div>--}}
+        {{--</a>--}}
+    {{--</div>--}}
+{{--@endif   --}}
 @if(auth()->user()->may('read.service'))
     <div class="col-md-4 col-lg-3">
         <a href="{{url('master/service')}}" class="widget widget-button">
