@@ -49,6 +49,10 @@ class PointFinanceServiceProvider extends ServiceProvider
             __DIR__ . '/database/seeds' => database_path('seeds'),
             __DIR__ . '/views/app/menu/finance' => base_path('resources/views/menu/finance'),
         ], 'setup');
+
+        $this->publishes([
+            __DIR__ . '/views/app/menu/finance' => base_path('resources/views/menu/finance'),
+        ], 'menu');
     }
 
     /**

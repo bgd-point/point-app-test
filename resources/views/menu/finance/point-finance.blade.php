@@ -70,6 +70,18 @@
 </div>
 @endif
 
+{{--@if(client_has_addon('basic') && auth()->user()->may('read.point.finance.allocation.report'))--}}
+<div class="col-md-4 col-lg-3">
+    <a href="{{url('finance/point/allocation-report')}}" class="widget widget-button">
+        <div class="widget-content text-right clearfix">
+            <i class="fa fa-4x fa-file-o push-bit pull-left"></i>
+            <h4 class="widget-heading"><strong>Allocation Report</strong></h4>
+            <span class="text-muted"></span>
+        </div>
+    </a>
+</div>
+{{--@endif--}}
+
 @if(client_has_addon('basic') && auth()->user()->may('read.point.finance.bank.report'))
 <div class="col-md-4 col-lg-3">
     <a href="{{url('finance/point/report/bank')}}" class="widget widget-button">
