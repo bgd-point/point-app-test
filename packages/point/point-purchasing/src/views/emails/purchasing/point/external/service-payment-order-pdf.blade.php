@@ -14,7 +14,7 @@
     <tr>
         <td>Supplier</td>
         <td>:</td>
-        <td>{{ ucwords($payment_collection->person->codeName) }}</td>
+        <td>{{ ucwords($payment_collection->person->name) }}</td>
     </tr>
 @stop
 
@@ -22,8 +22,8 @@
     <thead>
     <tr>
         <th width="10px">No</th>
-        <th width="220px">Reference Number</th>
-        <th width="220px">Notes</th>
+        <th>Reference Number</th>
+        <th>Notes</th>
         <th class="text-right">Amount</th>
     </tr>
     </thead>
@@ -41,8 +41,8 @@
     @if(count($payment_collection->others) > 0)
         <tr>
             <th width="10px">No</th>
-            <th width="220px">Account</th>
-            <th width="220px">Notes</th>
+            <th>Account</th>
+            <th>Notes</th>
             <th class="text-right">Amount</th>
         </tr>
     <?php $no = 1; ?>

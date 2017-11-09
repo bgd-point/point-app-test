@@ -172,7 +172,7 @@
                 :
             </td>
             <td>
-                {{ $payment_order->supplier->codeName }}
+                {{ $payment_order->supplier->name }}
             </td>
         </tr>
     </table>

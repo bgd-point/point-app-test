@@ -161,7 +161,7 @@
             <tr>
                 <td style="width: 20%">Supplier</td>
                 <td>:</td>
-                <td>{{ $invoice->supplier->codeName }}</td>
+                <td>{{ $invoice->supplier->name }}</td>
             </tr>
             <tr>
                 <td style="width: 20%">Notes</td>
