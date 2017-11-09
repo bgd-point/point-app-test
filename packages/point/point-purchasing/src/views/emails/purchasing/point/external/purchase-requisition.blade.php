@@ -161,7 +161,7 @@
             <tr>
                 <td style="width: 20%">Supplier</td>
                 <td>:</td>
-                <td>{{ $purchase_requisition->supplier->codeName }}</td>
+                <td>{{ $purchase_requisition->supplier->name }}</td>
             </tr>
             @endif
             <tr>
@@ -178,7 +178,7 @@
             </tr>
             @foreach($purchase_requisition->items as $purchase_requisition_item)
                 <tr class="item">
-                    <td>{{ucwords($purchase_requisition_item->item->codeName)}}</td>
+                    <td>{{ucwords($purchase_requisition_item->item->name)}}</td>
                     <td>{{number_format_quantity($purchase_requisition_item->quantity). ' ' .$purchase_requisition_item->unit}}</td>
                 </tr>
             @endforeach

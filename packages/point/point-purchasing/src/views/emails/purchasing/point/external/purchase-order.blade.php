@@ -156,7 +156,7 @@
             <tr>
                 <td style="width: 20%">Supplier</td>
                 <td>:</td>
-                <td>{{ $purchase_order->supplier->codeName }}</td>
+                <td>{{ $purchase_order->supplier->name }}</td>
             </tr>
             @endif
             <tr>
@@ -181,7 +181,7 @@
             </tr>
             @foreach($purchase_order->items as $purchase_order_item)
                 <tr class="item">
-                    <td>{{$purchase_order_item->item->codeName}}</td>
+                    <td>{{$purchase_order_item->item->name}}</td>
                     <td align="right">{{number_format_quantity($purchase_order_item->quantity, 0). ' ' .$purchase_order_item->unit}}</td>
                     <td align="right">{{number_format_quantity($purchase_order_item->price)}}</td>
                     <td align="right">{{number_format_quantity($purchase_order_item->discount)}}</td>
