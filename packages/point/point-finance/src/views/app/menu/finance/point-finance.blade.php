@@ -70,7 +70,7 @@
 </div>
 @endif
 
-{{--@if(client_has_addon('basic') && auth()->user()->may('read.point.finance.allocation.report'))--}}
+@if(client_has_addon('basic') && auth()->user()->may('read.allocation.report'))
 <div class="col-md-4 col-lg-3">
     <a href="{{url('finance/point/allocation-report')}}" class="widget widget-button">
         <div class="widget-content text-right clearfix">
@@ -80,7 +80,7 @@
         </div>
     </a>
 </div>
-{{--@endif--}}
+@endif
 
 @if(client_has_addon('basic') && auth()->user()->may('read.point.finance.bank.report'))
 <div class="col-md-4 col-lg-3">
