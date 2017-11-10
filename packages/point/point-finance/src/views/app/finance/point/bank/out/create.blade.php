@@ -110,6 +110,31 @@
                                         </tr>
                                     </tfoot>
                                 </table>
+
+                                <?php $counter = 0;?>
+                                <table id="item-datatable" class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 50px"></th>
+                                        <th style="min-width: 220px">CASH ADVANCE *</th>
+                                        <th style="min-width: 220px">AMOUNT</th>
+                                        <th style="min-width: 30px">CLOSE</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="manipulate-row">
+
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td>
+                                            <input type="button" id="addItemRow" class="btn btn-primary" value="Add Item">
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -139,4 +164,70 @@
         </div>
     </div>  
 </div>
+@stop
+
+@section('scripts')
+    <script>
+      var item_table = initDatatable('#item-datatable');
+      var counter = {{$counter}} ? {{$counter}} : 0;
+
+      $('#addItemRow').on('click', function () {
+        item_table.row.add([
+          '<a href="javascript:void(0)" class="remove-row btn btn-danger"><i class="fa fa-trash"></i></a>',
+          '<select id="cash-advance-id-' + counter + '" name="cash_advance_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one.." onchange="selectCashAdvance(this.value, ' + counter + ')">'
+          +'<option></option>'
+          +'</select>',
+          '<input type="text" id="cash-advance-amount-' + counter + '" name="cash_advance_amount[]" class="form-control format-quantity calculate text-right" value="0" />',
+          '<input type="checkbox" id="close-' + counter +'" name="close[]" />'
+        ]).draw(false);
+
+        initSelectize('#cash-advance-id-' + counter);
+        reloadCashAdvance(counter);
+        initFormatNumber();
+
+        $("textarea").on("click", function () {
+          $(this).select();
+        });
+        $("input[type='text']").on("click", function () {
+          $(this).select();
+        });
+        counter++;
+      });
+
+      $('#item-datatable tbody').on('click', '.remove-row', function () {
+        item_table.row($(this).parents('tr')).remove().draw();
+      });
+
+      $(document).on("keypress", 'form', function (e) {
+        var code = e.keyCode || e.which;
+        if (code == 13) {
+          e.preventDefault();
+          return false;
+        }
+      });
+
+      function selectCashAdvance(item_id, counter) {
+
+      }
+
+      function reloadCashAdvance(counter)
+      {
+        $.ajax({
+          url: "{{URL::to('finance/point/cash-advance/list')}}",
+          method: "get",
+          success: function(data) {
+            console.log("ss");
+            console.log(data);
+            var allocation = $('#cash-advance-id-'+counter)[0].selectize;
+            allocation.load(function(callback) {
+              callback(eval(JSON.stringify(data.lists)));
+            });
+
+          }, error: function(data) {
+            console.log("ss" + data.message);
+          }
+        });
+      }
+
+    </script>
 @stop
