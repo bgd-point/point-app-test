@@ -79,44 +79,7 @@
                                 {{ $cash_advance->employee->name }}
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Amount</label>
-                            <div class="col-md-6 content-show">
-                                <table class="table tabble-striped table-bordered" cellpadding="0" cellspacing="0" border="0" >
-                                    <thead>
-                                    <tr>
-                                        <th>Description</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>Opening Balance</td>
-                                        <td class="text-right">{{ number_format_quantity($cash_advance->amount) }}</td>
-                                    </tr>
-                                    <?php $total_used = 0;?>
-                                    @foreach($list_used as $used)
-                                        <?php $total_used += $used->cash_advance_amount;?>
-                                        <tr>
-                                            <td><a href="{{url($used->cash::showUrl($used->cash->id))}}">{{ $used->cash->formulir->form_number }}</a></td>
-                                            <td class="text-right">{{ number_format_accounting($used->cash_advance_amount * -1) }}</td>
-                                        </tr>
-                                        @if ($used->close)
-                                            <?php $total_used = $cash_advance->amount;?>
-                                            <tr>
-                                                <td></td>
-                                                <td class="text-right"><b>Close</b></td>
-                                            </tr>
-                                        @endif
-                                    @endforeach
-                                    <tr>
-                                        <td>Remaining Amount</td>
-                                        <td class="text-right">{{ number_format_quantity($cash_advance->amount - $total_used) }}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+
                         <div class="form-group">
                             <label class="col-md-3 control-label">Notes</label>
                             <div class="col-md-6 content-show">
