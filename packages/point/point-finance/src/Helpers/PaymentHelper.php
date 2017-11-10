@@ -3,6 +3,7 @@
 namespace Point\PointFinance\Helpers;
 
 use Point\Core\Exceptions\PointException;
+use Point\Framework\Helpers\AllocationHelper;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Models\Journal;
@@ -108,6 +109,10 @@ class PaymentHelper
             $cash_detail->reference_id = app('request')->input('reference_id')[$i] ?: null;
             $cash_detail->reference_type = app('request')->input('reference_type')[$i]?: null;
             $cash_detail->save();
+
+            if ($cash_detail->form_reference_id == NULL) {
+                AllocationHelper::save($cash->formulir_id, $cash_detail->allocation_id, $cash_detail->amount, $cash_detail->notes_detail);
+            }
         }
 
         FormulirHelper::close($payment_reference->payment_reference_id);
@@ -148,6 +153,11 @@ class PaymentHelper
             $cash_detail->reference_id = app('request')->input('reference_id')[$i] ?: null;
             $cash_detail->reference_type = app('request')->input('reference_type')[$i]?: null;
             $cash_detail->save();
+
+            if ($cash_detail->form_reference_id == NULL) {
+                AllocationHelper::save($cash->formulir_id, $cash_detail->allocation_id, $cash_detail->amount, $cash_detail->notes_detail);
+            }
+
             $count++;
         }
 
@@ -195,6 +205,10 @@ class PaymentHelper
             $bank_detail->reference_id = app('request')->input('reference_id')[$i] ?: null;
             $bank_detail->reference_type = app('request')->input('reference_type')[$i]?: null;
             $bank_detail->save();
+
+            if ($bank_detail->form_reference_id == NULL) {
+                AllocationHelper::save($bank->formulir_id, $bank_detail->allocation_id, $bank_detail->amount, $bank_detail->notes_detail);
+            }
         }
 
         FormulirHelper::close($payment_reference->payment_reference_id);
@@ -233,6 +247,11 @@ class PaymentHelper
             $bank_detail->reference_id = app('request')->input('reference_id')[$i] ?: null;
             $bank_detail->reference_type = app('request')->input('reference_type')[$i]?: null;
             $bank_detail->save();
+
+            if ($bank_detail->form_reference_id == NULL) {
+                AllocationHelper::save($bank->formulir_id, $bank_detail->allocation_id, $bank_detail->amount, $bank_detail->notes_detail);
+            }
+
             $count++;
         }
 
