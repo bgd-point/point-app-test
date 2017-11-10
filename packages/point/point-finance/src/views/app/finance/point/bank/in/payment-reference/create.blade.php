@@ -82,8 +82,7 @@
                                         <tr>
                                             <th>Account</th>
                                             <th>Notes</th>
-                                            <th>Amount</th>
-                                            {{--<th>Allocation</th>--}}
+                                            <th class="text-right">Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>

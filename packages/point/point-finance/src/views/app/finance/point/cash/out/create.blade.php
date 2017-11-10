@@ -73,8 +73,7 @@
                                         <tr>
                                             <th>Account</th>
                                             <th>Notes</th>
-                                            <th>Amount</th>
-                                            <th>Allocation</th>
+                                            <th class="text-right">Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -91,9 +90,6 @@
                                                 <td class="text-right">
                                                     {{number_format_quantity($payment_reference_detail->amount)}}
                                                     <input type="hidden" name="amount[]" value="{{ $payment_reference_detail->amount }}">
-                                                </td>
-                                                <td>
-                                                    {{$payment_reference_detail->allocation->name}}
                                                     <input type="hidden" name="allocation_id[]" value="{{ $payment_reference_detail->allocation_id }}">
                                                     <input type="hidden" name="formulir_reference_id[]" value="{{ $payment_reference_detail->form_reference_id }}">
                                                     <input type="hidden" name="formulir_reference_class[]" value="{{ $payment_reference_detail->subledger_type }}">
@@ -111,7 +107,6 @@
                                                     {{ number_format_accounting($payment_reference->cashAdvance->remaining_amount * -1) }}
                                                     <input readonly type="hidden" id="cash_advance_id" name="cash_advance_id" class="form-control text-right" value="{{ number_format_price($payment_reference->cash_advance_id) }}" />
                                                 </td>
-                                                <td></td>
                                             </tr>
                                         @endif
                                         <tr>
@@ -120,7 +115,6 @@
                                                 {{ number_format_price($payment_reference->total) }}
                                                 <input readonly type="hidden" id="total" name="total" class="form-control text-right" value="{{ number_format_price($payment_reference->total) }}" />
                                             </td>
-                                            <td></td>
                                         </tr>
                                     </tfoot>
                                 </table>
