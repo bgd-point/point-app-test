@@ -153,7 +153,7 @@ class PaymentOrderController extends Controller
         $view->expedition = Person::find(\Input::get('expedition_id'));
         $view->coa_id = \Input::get('coa_id');
         $view->coa_amount = \Input::get('coa_amount');
-        $view->coa_notes = \Input::get('coa_notes');
+        $view->other_notes = \Input::get('other_notes');
         $view->allocation_id = \Input::get('allocation_id');
         $view->total = number_format_db(\Input::get('total'));
 
@@ -349,7 +349,7 @@ class PaymentOrderController extends Controller
         $view->expedition = Person::find(\Input::get('expedition_id'));
         $view->coa_id = \Input::get('coa_id');
         $view->coa_amount = \Input::get('coa_amount');
-        $view->coa_notes = \Input::get('coa_notes');
+        $view->other_notes = \Input::get('other_notes');
         $view->allocation_id = \Input::get('allocation_id');
         $view->total = number_format_db(\Input::get('total'));
 

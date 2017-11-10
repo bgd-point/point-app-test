@@ -108,7 +108,7 @@ class FixedAssetsPaymentOrderController extends Controller
         $view->supplier = Person::find(\Input::get('supplier_id'));
         $view->coa_id = \Input::get('coa_id');
         $view->coa_amount = \Input::get('coa_amount');
-        $view->coa_notes = \Input::get('coa_notes');
+        $view->other_notes = \Input::get('other_notes');
         $view->payment_type = \Input::get('payment_type');
         $view->allocation_id = \Input::get('allocation_id');
         $view->total = number_format_db(\Input::get('total'));
@@ -288,7 +288,7 @@ class FixedAssetsPaymentOrderController extends Controller
         $view->payment_type = \Input::get('payment_type');
         $view->coa_id = \Input::get('coa_id');
         $view->coa_amount = \Input::get('coa_amount');
-        $view->coa_notes = \Input::get('coa_notes');
+        $view->other_notes = \Input::get('other_notes');
         $view->allocation_id = \Input::get('allocation_id');
         $view->total = number_format_db(\Input::get('total'));
 

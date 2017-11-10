@@ -129,11 +129,11 @@
                                                 {{\Point\Framework\Models\Master\Coa::find($coa_id[$i])->account}}
                                                 <input type="hidden" name="coa_id[]" value="{{$coa_id[$i]}}"/>
                                                 <input type="hidden" name="allocation_id[]" value="{{$allocation_id[$i]}}"/>
-                                                <input type="hidden" name="coa_notes[]" value="{{$coa_notes[$i]}}"/>
+                                                <input type="hidden" name="other_notes[]" value="{{$other_notes[$i]}}"/>
                                                 <input type="hidden" name="coa_amount[]" value="{{$total[$i]}}"/>
                                             </td>
 
-                                            <td>{{$coa_notes[$i]}}</td>
+                                            <td>{{$other_notes[$i]}}</td>
                                             <td class="text-right">{{number_format_quantity($total[$i])}}</td>
                                         </tr>
                                     @endfor

@@ -98,7 +98,7 @@ class ServicePaymentOrderHelper
             $payment_order_other = new PaymentOrderOther;
             $payment_order_other->point_purchasing_service_payment_order_id = $payment_order->id;
             $payment_order_other->coa_id = $request->input('coa_id')[$i];
-            $payment_order_other->other_notes = $request->input('coa_notes')[$i];
+            $payment_order_other->other_notes = $request->input('other_notes')[$i];
             $payment_order_other->amount = number_format_db($request->input('coa_amount')[$i]);
             $payment_order_other->allocation_id = $request->input('allocation_id')[$i];
             $payment_order_other->save();

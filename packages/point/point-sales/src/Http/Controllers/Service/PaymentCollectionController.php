@@ -118,7 +118,7 @@ class PaymentCollectionController extends Controller
         $view->person = Person::find(\Input::get('person_id'));
         $view->coa_id = \Input::get('coa_id');
         $view->coa_amount = \Input::get('coa_amount');
-        $view->coa_notes = \Input::get('coa_notes');
+        $view->other_notes = \Input::get('other_notes');
         $view->allocation_id = \Input::get('allocation_id');
         $view->total = number_format_db(\Input::get('total'));
 
@@ -271,7 +271,7 @@ class PaymentCollectionController extends Controller
         $view->person = Person::find(\Input::get('person_id'));
         $view->coa_id = \Input::get('coa_id');
         $view->coa_amount = \Input::get('coa_amount');
-        $view->coa_notes = \Input::get('coa_notes');
+        $view->other_notes = \Input::get('other_notes');
         $view->total = number_format_db(\Input::get('total'));
         $view->payment_type = \Input::get('payment_type');
         $view->allocation_id = \Input::get('allocation_id');

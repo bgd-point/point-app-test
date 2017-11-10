@@ -82,7 +82,7 @@
                                                 {{Point\Framework\Models\Master\Coa::find($coa_id[$i])->account}} <br/>
                                                 <input type="hidden" name="coa_id[]" value="{{$coa_id[$i]}}" />
                                                 <input type="hidden" name="coa_allocation_id[]" value="{{$allocation_id[$i]}}" />
-                                                <input type="hidden" name="coa_notes[]" value="{{$detail_notes[$i]}}" />
+                                                <input type="hidden" name="other_notes[]" value="{{$detail_notes[$i]}}" />
                                                 <input  type="hidden" name="coa_value[]" value="{{$amount[$i]}}" />
                                             </td>
                                             <td>{{$detail_notes[$i]}}</td>

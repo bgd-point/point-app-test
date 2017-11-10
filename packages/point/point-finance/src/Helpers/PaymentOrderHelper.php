@@ -54,7 +54,7 @@ class PaymentOrderHelper
             $payment_order_detail->point_finance_payment_order_id = $payment_order->id;
             $payment_order_detail->coa_id = app('request')->input('coa_id')[$i];
             $payment_order_detail->allocation_id = app('request')->input('coa_allocation_id')[$i];
-            $payment_order_detail->notes_detail = app('request')->input('coa_notes')[$i];
+            $payment_order_detail->notes_detail = app('request')->input('other_notes')[$i];
             $payment_order_detail->amount = app('request')->input('coa_value')[$i];
             $payment_order_detail->save();
             $total += $payment_order_detail->amount;
