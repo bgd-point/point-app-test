@@ -9,6 +9,8 @@ class AllocationReportController extends Controller
 {
     public function index()
     {
+        access_is_allowed('read.allocation.report');
+
         $view = view('point-finance::app.finance.point.allocation-report.index');
 
         $view->list_report = AllocationReport::joinFormulir()
