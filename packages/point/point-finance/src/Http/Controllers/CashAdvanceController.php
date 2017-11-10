@@ -10,6 +10,7 @@ use Point\Core\Http\Controllers\Controller;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\PersonHelper;
 use Point\Framework\Models\Master\Coa;
+use Point\PointFinance\Models\Bank\Bank;
 use Point\PointFinance\Models\Cash\Cash;
 use Point\PointFinance\Models\Cash\CashCashAdvance;
 use Point\PointFinance\Models\CashAdvance;
@@ -48,7 +49,10 @@ class CashAdvanceController extends Controller
 
         $view->list_employee = PersonHelper::getByType(['employee']);
 
-        $view->list_cash_account = Coa::active()->joinCategory()->where('coa_category.name', 'Petty Cash')->selectOriginal()->orderBy('coa_number')->orderBy('name')->get();
+        $view->list_cash_account = Coa::active()
+            ->joinCategory()
+            ->where('coa_category.name', 'Petty Cash')->orWhere('coa_category.name', 'Bank Account')
+            ->selectOriginal()->orderBy('coa_number')->orderBy('name')->get();
 
         return $view;
     }
@@ -78,6 +82,7 @@ class CashAdvanceController extends Controller
         $cash_advance = new CashAdvance;
         $cash_advance->formulir_id = $formulir->id;
         $cash_advance->coa_id = $request->input('coa_id');
+        $cash_advance->payment_type = $request->input('payment_type');
         $cash_advance->employee_id = $request->input('employee_id');
         $cash_advance->amount = number_format_db($request->input('amount'));
         $cash_advance->remaining_amount = number_format_db($request->input('amount'));
@@ -180,6 +185,7 @@ class CashAdvanceController extends Controller
         $cash_advance->employee_id = $request->input('employee_id');
         $cash_advance->amount = number_format_db($request->input('amount'));
         $cash_advance->remaining_amount = number_format_db($request->input('amount'));
+        $cash_advance->payment_type = $request->input('payment_type');
         $cash_advance->is_payed = false;
         $cash_advance->save();
 
