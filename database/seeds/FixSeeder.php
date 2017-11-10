@@ -59,6 +59,27 @@ class FixSeeder extends Seeder
             }
         }
 
+//        $payment_orders = \Point\PointFinance\Models\PaymentOrder\PaymentOrder::joinFormulir()->notArchived()->notCanceled()->selectOriginal()->get();
+//        foreach ($payment_orders as $order) {
+//            foreach ($order->detail() as $details) {
+//                AllocationHelper::save($order->formulir->id, $details->allocation_id, $detail->amount * -1, $details->notes_detail);
+//            }
+//        }
+
+        $cash_details = \Point\PointFinance\Models\Cash\CashDetail::joinCash()
+            ->notArchived()->notCanceled()->where('form_reference_id', NULL)->selectOriginal()->get();
+
+        foreach ($cash_details as $detail) {
+            AllocationHelper::save($detail->cash->formulir->id, $detail->allocation_id, $detail->amount, $detail->notes_detail);
+        }
+
+        $bank_details = \Point\PointFinance\Models\Bank\BankDetail::joinBank()
+            ->notArchived()->notCanceled()->where('form_reference_id', NULL)->selectOriginal()->get();
+
+        foreach ($bank_details as $detail) {
+            AllocationHelper::save($detail->bank->formulir->id, $detail->allocation_id, $detail->amount, $detail->notes_detail);
+        }
+
         \DB::commit();
     }
 }
