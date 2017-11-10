@@ -408,7 +408,7 @@
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="other_notes[]" class="form-control"
+                                                            <input type="text" name="coa_notes[]" class="form-control"
                                                                    value="{{$payment_collection_other->other_notes}}"/>
                                                         </td>
                                                         <td>
