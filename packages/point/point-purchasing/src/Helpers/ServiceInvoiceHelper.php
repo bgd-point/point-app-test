@@ -77,7 +77,7 @@ class ServiceInvoiceHelper
             $invoice_service->save();
 
             $amount = ($invoice_service->quantity * $invoice_service->price) - ($invoice_service->quantity * $invoice_service->price/100 * $invoice_service->discount);
-            AllocationHelper::save($invoice->formulir_id, $invoice_service->allocation_id, $amount);
+            AllocationHelper::save($invoice->formulir_id, $invoice_service->allocation_id, $amount, $invoice_service->service_notes);
 
             $subtotal_service += $amount;
         }
@@ -97,7 +97,7 @@ class ServiceInvoiceHelper
             $invoice_item->save();
 
             $total_per_row = $invoice_item->quantity * $invoice_item->price - $invoice_item->quantity * $invoice_item->price / 100 * $invoice_item->discount;
-            AllocationHelper::save($invoice->formulir_id, $invoice_item->allocation_id, $total_per_row);
+            AllocationHelper::save($invoice->formulir_id, $invoice_item->allocation_id, $total_per_row, $invoice_item->item_notes);
             
             if ($request->input('type_of_tax') == 'include') {
                 $total_per_row = $total_per_row * 100 / 110;

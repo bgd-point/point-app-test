@@ -181,8 +181,6 @@ class FixedAssetsPaymentOrderApprovalController extends Controller
             $payment_reference_detail->notes_detail = $payment_order_other->other_notes;
             $payment_reference_detail->amount = $payment_order_other->amount;
             $payment_reference_detail->save();
-
-            AllocationHelper::save($payment_order->formulir_id, $payment_order_other->allocation_id, $payment_order_other->amount);
         }
     }
 }

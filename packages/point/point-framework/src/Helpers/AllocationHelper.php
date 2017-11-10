@@ -7,12 +7,13 @@ use Point\Framework\Models\Master\AllocationReport;
 
 class AllocationHelper
 {
-    public static function save($formulir_id, $allocation_id, $amount)
+    public static function save($formulir_id, $allocation_id, $amount, $notes)
     {
         $allocation = new AllocationReport();
         $allocation->formulir_id = $formulir_id;
         $allocation->allocation_id = $allocation_id;
         $allocation->amount = $amount;
+        $allocation->notes = $notes;
         $allocation->save();
     }
 

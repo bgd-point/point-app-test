@@ -23,7 +23,7 @@
                     </div>
                 </form>
 
-                <h1>Allocation : L112P</h1>
+                <h1>Allocation : {{ $allocation_name }}</h1>
 
                 <br/>
 
@@ -47,9 +47,9 @@
                             <?php
 
                             if ($report->amount > 0) {
-                                $total_out += abs($report->amount);
-                            } else {
                                 $total_in += $report->amount;
+                            } else {
+                                $total_out += abs($report->amount);
                             }
                             ?>
                             <tr>
@@ -66,8 +66,8 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td></td>
-                                <td></td>
+                                <td class="text-right"><b>{{ number_format_price($total_in, 0) }}</b></td>
+                                <td class="text-right"><b>{{ number_format_price($total_out, 0) }}</b></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -79,7 +79,7 @@
 @section('scripts')
     <script>
       function selectData() {
-        var allocation_id = $("#status option:selected").val();
+        var allocation_id = $("#allocation_id option:selected").val();
         var url = '{{url()}}/finance/point/allocation-report/?allocation_id='+allocation_id;
         location.href = url;
       }
