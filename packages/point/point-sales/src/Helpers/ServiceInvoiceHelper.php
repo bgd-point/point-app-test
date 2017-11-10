@@ -98,7 +98,7 @@ class ServiceInvoiceHelper
             $amount_item = ($invoice_item->quantity * $invoice_item->price) - ($invoice_item->quantity * $invoice_item->price/100 * $invoice_item->discount);
             $subtotal_item += $amount_item;
             // Insert to Allocation Report
-            AllocationHelper::save($invoice->formulir->id, $invoice_item->allocation_id, $amount_item * -1, $invoice_item->item_notes);
+            AllocationHelper::save($invoice->formulir->id, $invoice_item->allocation_id, $amount_item, $invoice_item->item_notes);
         }
 
         $subtotal = $subtotal_item + $subtotal_service;
