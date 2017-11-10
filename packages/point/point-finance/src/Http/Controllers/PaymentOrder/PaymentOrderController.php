@@ -129,7 +129,7 @@ class PaymentOrderController extends Controller
             'payment_type' => 'required',
             'coa_id' => 'required',
             'coa_allocation_id' => 'required',
-            'coa_notes' => 'required',
+            'other_notes' => 'required',
             'coa_value' => 'required',
         ]);
 
@@ -262,7 +262,7 @@ class PaymentOrderController extends Controller
             'payment_type' => 'required',
             'coa_id' => 'required',
             'coa_allocation_id' => 'required',
-            'coa_notes' => 'required',
+            'other_notes' => 'required',
             'coa_value' => 'required',
         ]);
 

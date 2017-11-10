@@ -119,7 +119,7 @@ class PaymentCollectionHelper
             $payment_collection_other->point_sales_payment_collection_id = $payment_collection->id;
             $payment_collection_other->allocation_id = $request->input('allocation_id')[$i];
             $payment_collection_other->coa_id = $request->input('coa_id')[$i];
-            $payment_collection_other->other_notes = $request->input('coa_notes')[$i];
+            $payment_collection_other->other_notes = $request->input('other_notes')[$i];
             $payment_collection_other->amount = number_format_db($request->input('coa_amount')[$i]);
             $payment_collection_other->save();
 
