@@ -15,6 +15,7 @@
                                 <option value="supplier">Supplier</option>
                                 <option value="customer">Customer</option>
                                 <option value="expedition">Expedition</option>
+                                <option value="employee">Employee</option>
                             </select>
                             <input type="hidden" name="slug" id="slug">
                         </div>

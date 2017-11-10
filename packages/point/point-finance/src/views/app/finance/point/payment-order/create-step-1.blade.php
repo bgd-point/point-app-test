@@ -25,7 +25,7 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Payment To *</label>
                     <div class="col-md-6">
-                        <div class="@if(access_is_allowed_to_view('create.customer') || access_is_allowed_to_view('create.supplier') || access_is_allowed_to_view('create.expedition')) input-group @endif">
+                        <div class="@if(access_is_allowed_to_view('create.customer') || access_is_allowed_to_view('create.supplier') || access_is_allowed_to_view('create.expedition') || access_is_allowed_to_view('create.employee')) input-group @endif">
                             <select id="person_id" name="person_id" class="selectize" style="width: 100%;" data-placeholder="Please choose">
                                 <option></option>
                                 @foreach($list_person as $person)
