@@ -1,10 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Point\Framework\Models\Master\Coa;
-use Point\Framework\Models\Master\CoaGroupCategory;
-use Point\Framework\Models\SettingJournal;
-use Point\PointFinance\Models\Cash\Cash;
+use Point\Framework\Helpers\AllocationHelper;
 
 class FixSeeder extends Seeder
 {
@@ -12,14 +9,54 @@ class FixSeeder extends Seeder
     {
         \DB::beginTransaction();
 
-        $setting_journal = SettingJournal::where('name', '=', 'advance to employees');
-        if ($setting_journal) {
-            $setting_journal->delete();
+        \Point\Framework\Models\Master\AllocationReport::where('id','>',0)->delete();
+
+        $sales_invoices = \Point\PointSales\Models\Sales\Invoice::joinFormulir()->notArchived()->notCanceled()->selectOriginal()->get();
+        foreach ($sales_invoices as $sales_invoice) {
+            foreach ($sales_invoice->items as $item) {
+                $total = $item->price * $item->quantity;
+                $amount = $total - ($item->price * $item->quantity * $item->discount / 100);
+                AllocationHelper::save($sales_invoice->formulir->id, $item->allocation_id, $amount * -1, $item->item_notes);
+            }
         }
 
-        $coa = Coa::where('name', 'Advance to Employees')->first();
-        if ($coa) {
-            $coa->delete();
+        $sales_invoices = \Point\PointSales\Models\Service\Invoice::joinFormulir()->notArchived()->notCanceled()->selectOriginal()->get();
+        foreach ($sales_invoices as $sales_invoice) {
+            foreach ($sales_invoice->items as $item) {
+                $total = $item->price * $item->quantity;
+                $amount = $total - ($item->price * $item->quantity * $item->discount / 100);
+                AllocationHelper::save($sales_invoice->formulir->id, $item->allocation_id, $amount * -1, $item->item_notes);
+            }
+
+            foreach ($sales_invoice->services as $item) {
+                $total = $item->price * $item->quantity;
+                $amount = $total - ($item->price * $item->quantity * $item->discount / 100);
+                AllocationHelper::save($sales_invoice->formulir->id, $item->allocation_id, $amount * -1, $item->service_notes);
+            }
+        }
+
+        $sales_invoices = Point\PointPurchasing\Models\Inventory\Invoice::joinFormulir()->notArchived()->notCanceled()->selectOriginal()->get();
+        foreach ($sales_invoices as $sales_invoice) {
+            foreach ($sales_invoice->items as $item) {
+                $total = $item->price * $item->quantity;
+                $amount = $total - ($item->price * $item->quantity * $item->discount / 100);
+                AllocationHelper::save($sales_invoice->formulir->id, $item->allocation_id, $amount, $item->item_notes);
+            }
+        }
+
+        $sales_invoices = Point\PointPurchasing\Models\Service\Invoice::joinFormulir()->notArchived()->notCanceled()->selectOriginal()->get();
+        foreach ($sales_invoices as $sales_invoice) {
+            foreach ($sales_invoice->items as $item) {
+                $total = $item->price * $item->quantity;
+                $amount = $total - ($item->price * $item->quantity * $item->discount / 100);
+                AllocationHelper::save($sales_invoice->formulir->id, $item->allocation_id, $amount, $item->item_notes);
+            }
+
+            foreach ($sales_invoice->services as $item) {
+                $total = $item->price * $item->quantity;
+                $amount = $total - ($item->price * $item->quantity * $item->discount / 100);
+                AllocationHelper::save($sales_invoice->formulir->id, $item->allocation_id, $amount, $item->service_notes);
+            }
         }
 
         \DB::commit();

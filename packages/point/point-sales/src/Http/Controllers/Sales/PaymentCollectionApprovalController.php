@@ -191,7 +191,7 @@ class PaymentCollectionApprovalController extends Controller
             $total += $payment_reference_detail->amount;
 
             // Insert to Allocation Report
-            AllocationHelper::save($payment_collection->formulir->id, $payment_collection_other->allocation_id, $payment_collection_other->amount);
+            AllocationHelper::save($payment_collection->formulir->id, $payment_collection_other->allocation_id, $payment_collection_other->amount * -1, $payment_reference_detail->notes_detail);
         }
         
         $payment_reference->total = $total;

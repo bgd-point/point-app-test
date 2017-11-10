@@ -63,7 +63,6 @@ class FixedAssetsInvoiceHelper
 
             // Insert to Allocation Report
             $amount = ($invoice_item->quantity * $invoice_item->price) - ($invoice_item->quantity * $invoice_item->price /100 * $invoice_item->discount);
-            AllocationHelper::save($invoice->formulir_id, $invoice_item->allocation_id, $amount);
 
             if ($references != null) {
                 ReferHelper::create(
