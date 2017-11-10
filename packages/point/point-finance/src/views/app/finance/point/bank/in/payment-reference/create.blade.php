@@ -83,7 +83,7 @@
                                             <th>Account</th>
                                             <th>Notes</th>
                                             <th>Amount</th>
-                                            <th>Allocation</th>
+                                            {{--<th>Allocation</th>--}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -100,9 +100,6 @@
                                                 <td class="text-right">
                                                     {{number_format_quantity($payment_reference_detail->amount)}}
                                                     <input type="hidden" name="amount[]" value="{{ $payment_reference_detail->amount }}">
-                                                </td>
-                                                <td>
-                                                    {{$payment_reference_detail->allocation->name}}
                                                     <input type="hidden" name="allocation_id[]" value="{{ $payment_reference_detail->allocation_id }}">
                                                     <input type="hidden" name="formulir_reference_id[]" value="{{ $payment_reference_detail->form_reference_id }}">
                                                     <input type="hidden" name="formulir_reference_class[]" value="{{ $payment_reference_detail->subledger_type }}">
@@ -120,7 +117,6 @@
                                                 {{ number_format_price($payment_reference->total) }}
                                                 <input readonly type="hidden" id="total" name="total" class="form-control text-right" value="{{ number_format_price($payment_reference->total) }}" />
                                             </td>
-                                            <td></td>
                                         </tr>
                                     </tfoot>
                                 </table>
