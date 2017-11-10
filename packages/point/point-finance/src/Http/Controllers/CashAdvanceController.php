@@ -113,9 +113,6 @@ class CashAdvanceController extends Controller
             ->archived($view->cash_advance->formulir->form_number)
             ->get();
 
-        $view->list_used = CashCashAdvance::joinCash()->joinFormulir()->notArchived()->notCanceled()->selectOriginal()
-            ->where('point_finance_cash_cash_advance.cash_advance_id', $id)->get();
-
         $view->revision = $view->list_cash_advance_archived->count();
 
         return $view;
