@@ -21,7 +21,7 @@
                             <option value="all" @if(\Input::get('status') == 'all') selected @endif>all</option>
                         </select>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
                             <input type="text" name="date_from" id="date-from" class="form-control date input-datepicker" placeholder="From"  value="{{\Input::get('date_from') ? \Input::get('date_from') : ''}}">
                             <span class="input-group-addon"><i class="fa fa-chevron-right"></i></span>
@@ -31,10 +31,11 @@
                     <div class="col-sm-3">
                         <input type="text" name="search" id="search" class="form-control" placeholder="Search..." value="{{\Input::get('search')}}" value="{{\Input::get('search') ? \Input::get('search') : ''}}">
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-sm-3">
                         <input type="hidden" name="order_by" value="{{\Input::get('order_by') ? \Input::get('order_by') : 'form_date'}}">
                         <input type="hidden" name="order_type" value="{{\Input::get('order_type') ? \Input::get('order_type') : 'desc'}}">
                         <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> search</button>
+                        <a class="btn btn-success" id="full_view" onclick="showAll();">Show All</a>
                     </div>
                 </div>
             </form>
@@ -52,8 +53,7 @@
                         <tr>
                             <th style="cursor:pointer" onclick="selectData('form_date', @if($order_by == 'form_date' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_date' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Date <span class="pull-right"><i class="fa @if($order_by == 'form_date' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_date' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
                             <th style="cursor:pointer" onclick="selectData('form_number', @if($order_by == 'form_number' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_number' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Form Number <span class="pull-right"><i class="fa @if($order_by == 'form_number' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_number' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
-                            <th></th>
-                            <th></th>
+                            <th colspan="6" class="th-detail">DETAIL</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,22 +61,24 @@
                         <tr id="list-{{$memo_journal->id}}">
                             <td>{{ date_format_view($memo_journal->formulir->form_date) }}</td>
                             <td><a href="{{url('accounting/point/memo-journal/'.$memo_journal->id)}}">{{$memo_journal->formulir->form_number}}</a></td>
-                            <td></td>
-                            <td></td>
+                            <td class="td-detail">COA</td>
+                            <td class="td-detail">MASTER REF</td>
+                            <td class="td-detail">FORM REF</td>
+                            <td class="td-detail">DESCRIPTION</td>
+                            <td class="td-detail">DEBIT</td>
+                            <td class="td-detail">Credit</td>
                         </tr>
-
-                        <tr>
-                            <th colspan="2" class="text-left">Description</th>
-                            <th class="text-right">Debit</th>
-                            <th class="text-right">Credit</th>
-                        </tr>
-                        @foreach($memo_journal->detail as $detail)
-                        <tr>
-                            <td colspan="2" class="text-left">{{ $detail->coa->account}}</td>
-                            <td class="text-right">{{ number_format_accounting($detail->debit) }}</td>
-                            <td class="text-right">{{ number_format_accounting($detail->credit) }}</td>
-                        </tr>
-                        @endforeach
+                            @foreach($memo_journal->detail as $detail)
+                            <tr class="tr-detail">
+                                <td colspan="2"></td>
+                                <td class="text-left">{{ $detail->coa->name}}</td>
+                                <td class="text-left">{{ $detail->subledger_type ? $detail->subledger_type::find($detail->subledger_id)->name : '-'}}</td>
+                                <td class="text-left">{{ $detail->form_reference_id ? $detail->reference->form_number : '-'}}</td>
+                                <td class="text-left">{{ $detail->description}}</td>
+                                <td class="text-right">{{ number_format_accounting($detail->debit) }}</td>
+                                <td class="text-right">{{ number_format_accounting($detail->credit) }}</td>
+                            </tr>
+                            @endforeach
 
                         @endforeach  
                     </tbody> 
@@ -90,6 +92,21 @@
 
 @section('scripts')
 <script>
+function showAll(){
+    $('.th-detail').show();
+    $('.td-detail').show();
+    $('.tr-detail').show();
+    $('#full_view').attr('onclick','compact()');
+    $('#full_view').text('Compact');
+}
+compact();
+function compact(){
+    $('.th-detail').hide();   
+    $('.td-detail').hide();   
+    $('.tr-detail').hide();   
+    $('#full_view').attr('onclick','showAll()');
+    $('#full_view').text('Show All');
+}
 function selectData(order_by, order_type) {
     var status = $("#status option:selected").val();
     var date_from = $("#date-from").val();

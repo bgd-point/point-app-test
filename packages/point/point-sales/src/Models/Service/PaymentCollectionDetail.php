@@ -27,4 +27,9 @@ class PaymentCollectionDetail extends Model
     {
         $q->join('point_sales_service_payment_collection', 'point_sales_service_payment_collection.id', '=', 'point_sales_service_payment_collection_id');
     }
+    public function scopeJoinFormulir($q)
+    {
+        $q->join('formulir', 'formulir.id', '=', $this->table.'.form_reference_id');
+    }
+    
 }

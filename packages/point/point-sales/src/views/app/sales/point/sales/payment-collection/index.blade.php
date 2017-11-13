@@ -46,6 +46,8 @@
                             @if(auth()->user()->may('read.point.sales.payment.collection'))
                                 <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" href="{{url('sales/point/indirect/payment-collection/pdf?date_from='.\Input::get('date_from').'&date_to='.\Input::get('date_to').'&search='.\Input::get('search').'&order_by='.\Input::get('order_by').'&order_type='.\Input::get('order_type').'&status='.\Input::get('status'))}}"> export to PDF</a>
                             @endif
+                            <a class="btn btn-success" id="full_view" onclick="showAll();">Show All</a>
+                            <input type="hidden" id="check_show" >
                         </div>
                     </div>
                 </form>
@@ -60,7 +62,7 @@
                     {!! $list_payment_collection->appends(['order_by'=>app('request')->get('order_by'), 'order_type'=>app('request')->get('order_type'), 'status'=>app('request')->get('status'), 'search'=>app('request')->get('search'), 'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
                     <table class="table table-striped table-bordered">
                         <thead>
-                        <tr>
+                        <tr class="th-head">
                             <th style="cursor:pointer" onclick="selectData('form_date', @if($order_by == 'form_date' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_date' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Date <span class="pull-right"><i class="fa @if($order_by == 'form_date' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_date' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
                             <th style="cursor:pointer" onclick="selectData('form_number', @if($order_by == 'form_number' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_number' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Form Number <span class="pull-right"><i class="fa @if($order_by == 'form_number' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_number' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
                             <th style="cursor:pointer" onclick="selectData('person.name', @if($order_by == 'person.name' && $order_type == 'asc') 'desc' @elseif($order_by == 'person.name' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Customer <span class="pull-right"><i class="fa @if($order_by == 'person.name' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'person.name' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
@@ -69,7 +71,8 @@
                         </thead>
                         <tbody>
                         @foreach($list_payment_collection as $payment_collection)
-                            <tr id="list-{{$payment_collection->formulir_id}}">
+                            <tr class="row-detail" id="row_detail_{{$payment_collection->id}}">
+                            <?php array_push($array_payment_collection_id,$payment_collection->id); ?>
                                 <td>{{ date_Format_view($payment_collection->formulir->form_date) }}</td>
                                 <td>
                                     <a href="{{ url('sales/point/indirect/payment-collection/'.$payment_collection->id) }}">{{ $payment_collection->formulir->form_number}}</a>
@@ -83,6 +86,8 @@
                                 </td>
                             </tr>
                         @endforeach
+                        <input type="hidden" id="array_payment_collection_id" value="{{ implode('#',$array_payment_collection_id) }}">
+                        </tbody>
                         </tbody>
                     </table>
                     {!! $list_payment_collection->appends(['order_by'=>app('request')->get('order_by'), 'order_type'=>app('request')->get('order_type'), 'status'=>app('request')->get('status'), 'search'=>app('request')->get('search'), 'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
@@ -95,6 +100,50 @@
 
 @section('scripts')
 <script>
+$('#check_show').val(0);
+function showAll(){
+    $('#full_view').attr('onclick','compact()');
+    $('#full_view').text('Compact');
+    $('.header_detail').remove();
+    var html = '<th class="header_detail">FORM NUMBER</th>'
+                +'<th class="header_detail">DETAIL NOTES</th>'
+                +'<th class="header_detail">AMOUNT</th>'
+    $('.th-head').append(html);
+    $('.txt-detail').remove();
+    $('.row-detail').append('<td class="txt-detail extend_column_detail" colspan="3" align="center"><strong>DETAIL</strong></td>');
+    var check_show = $('#check_show').val();
+    var array_payment_collection_id = $('#array_payment_collection_id').val();
+    if(check_show == 0){
+        var temp = array_payment_collection_id.split('#');
+        for (var x = temp.length - 1; x >= 0; x--) {
+            var str_url = "{{ url('sales/point/indirect/payment-collection/detail/') }}/"+temp[x];
+            $.ajax({ url:str_url, success: function(data) {
+                for (var i = 0; i < data.length; i++) {
+                    var extend_table_row = ' <tr class="extend_column_detail">'
+                            +'      <td colspan="4" class="extend_column_detail"></td>'
+                            +'      <td class="extend_column_detail">'+data[i].form_number+'</td>'
+                            +'      <td class="extend_column_detail">'+data[i].detail_notes+'</td>'
+                            +'      <td class="extend_column_detail">'+data[i].amount+'</td>'
+                            +'  </tr>';
+
+                    $('#row_detail_'+data[i].point_sales_payment_collection_id).after(extend_table_row);
+                
+                $('#check_show').val(1);
+                }
+            }});
+        }
+    }else{
+        $('.extend_column_detail').show();
+    }
+}
+function compact(){
+    $('#full_view').attr('onclick','showAll()');
+    $('#full_view').text('Show All');
+
+    $('.header_detail').remove();
+    $('.extend_column_detail').hide();
+
+}
 function selectData(order_by, order_type) {
     var status = $("#status option:selected").val();
     var date_from = $("#date-from").val();
