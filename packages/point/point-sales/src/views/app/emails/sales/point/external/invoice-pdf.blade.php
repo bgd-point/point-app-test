@@ -2,7 +2,7 @@
 
 @section('header')
     <tr>
-        <td width="25%">No. Invoice</td>
+        <td width="35%">No. Invoice</td>
         <td width="10px">:</td>
         <td>{{ $invoice->formulir->form_number }}</td>
     </tr>
@@ -17,7 +17,7 @@
         <td>{{ \DateHelper::formatView($invoice->due_date) }}</td>
     </tr>
     <tr>
-        <td style="width: 20%">Delivery Order Number</td>
+        <td>Delivery Order Number</td>
         <td>:</td>
         <td>
             @foreach($invoice->lockingForm as $lockingForm)
