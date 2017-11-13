@@ -247,6 +247,8 @@
                                         Form</a>
                                 @endif
                                 @if(formulir_view_email_vendor($purchase_order->formulir, 'create.point.purchasing.order'))
+                                    <a class="btn btn-effect-ripple btn-info"
+                                            href="{{url('purchasing/point/purchase-order/'.$purchase_order->id.'/export')}}">Print</a>
                                     <form action="{{url('purchasing/point/purchase-order/send-email-order')}}" method="post">
                                         {!! csrf_field() !!}
                                         <input type="hidden" readonly="" name="purchase_order_id" value="{{$purchase_order->id}}">
