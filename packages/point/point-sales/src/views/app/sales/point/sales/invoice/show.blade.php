@@ -68,6 +68,14 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-md-3 control-label">DELIVERY ORDER NUMBER</label>
+                            <div class="col-md-6 content-show">
+                                @foreach($invoice->lockingForm as $lockingForm)
+                                    {!! formulir_url($lockingForm->lockedForm) !!}
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-md-3 control-label">Customer</label>
                             <div class="col-md-6 content-show">
                                 {!! get_url_person($invoice->person_id) !!}

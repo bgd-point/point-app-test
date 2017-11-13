@@ -159,6 +159,15 @@
                 <td>{{ \DateHelper::formatView($invoice->due_date) }}</td>
             </tr>
             <tr>
+                <td style="width: 20%">Delivery Order Number</td>
+                <td>:</td>
+                <td>
+                    @foreach($invoice->lockingForm as $lockingForm)
+                        {!! formulir_url($lockingForm->lockedForm) !!}
+                    @endforeach
+                </td>
+            </tr>
+            <tr>
                 <td style="width: 20%">Customer</td>
                 <td>:</td>
                 <td>{{ $invoice->person->name }}</td>
