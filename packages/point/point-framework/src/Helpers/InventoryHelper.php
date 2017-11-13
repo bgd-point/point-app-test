@@ -211,7 +211,7 @@ class InventoryHelper
     public function in()
     {
         // doesn't allow minus quantity to use this method
-        if ($this->inventory->quantity <= 0) {
+        if ($this->inventory->quantity < 0) {
             throw new PointException('Inventory error, please contact our support');
         }
 
@@ -233,7 +233,7 @@ class InventoryHelper
     public function out()
     {
         // doesn't allow minus quantity to use this method
-        if ($this->inventory->quantity <= 0) {
+        if ($this->inventory->quantity < 0) {
             throw new PointException('Inventory error, please contact our support');
         }
 
