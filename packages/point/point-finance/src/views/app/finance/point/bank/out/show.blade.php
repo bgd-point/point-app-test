@@ -92,7 +92,7 @@
                                         <tbody class="manipulate-row">
                                         @foreach($bank->detail as $bank_detail)
                                         <tr>
-                                            <td>{{ $bank_detail->coa->account }}</td>
+                                            <td>{{ $bank_detail->coa->account }} @if($bank_detail->reference)| {!! formulir_url($bank_detail->reference) !!}@endif</td>
                                             <td>{{ $bank_detail->notes_detail }}</td>
                                             <td class="text-right">{{ number_format_price($bank_detail->amount) }}</td>
                                             <td class="text-right">{{ $bank_detail->allocation->name }}</td>
