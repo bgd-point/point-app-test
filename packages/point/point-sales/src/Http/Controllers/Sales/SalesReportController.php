@@ -14,7 +14,7 @@ class SalesReportController extends Controller
         access_is_allowed('read.point.sales.report');
 
         $view = view('point-sales::app.sales.point.sales.report.index');
-        $view->list_report = SalesReportHelper::searchList(\Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->paginate(100);
+        $view->list_report = SalesReportHelper::searchList(\Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->paginate(9999);
 
         return $view;
     }
