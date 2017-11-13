@@ -138,4 +138,9 @@ trait FormulirTrait
     {
         return $this->hasMany('\Point\Framework\Models\FormulirLock', 'locked_id', 'formulir_id');
     }
+
+    public function lockingForm()
+    {
+        return $this->hasMany('\Point\Framework\Models\FormulirLock', 'locking_id', 'formulir_id');
+    }
 }

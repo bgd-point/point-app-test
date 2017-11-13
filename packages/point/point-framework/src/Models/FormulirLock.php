@@ -14,7 +14,7 @@ class FormulirLock extends Model
 
     use HistoryTrait, ByTrait;
 
-    public function locked()
+    public function lockedForm()
     {
         return $this->belongsTo('\Point\Framework\Models\Formulir', 'locked_id');
     }
