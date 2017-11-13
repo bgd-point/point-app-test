@@ -91,7 +91,7 @@
                                         <tbody class="">
                                         @foreach($cash->detail as $cash_detail)
                                         <tr>
-                                            <td>{{ $cash_detail->coa->account }}</td>
+                                            <td>{{ $cash_detail->coa->account }} @if($cash_detail->reference)| {!! formulir_url($cash_detail->reference) !!}@endif</td>
                                             <td>{{ $cash_detail->notes_detail }}</td>
                                             <td class="text-right">{{ number_format_price($cash_detail->amount) }}</td>
                                             <td class="text-right">{{ $cash_detail->allocation->name }}</td>
