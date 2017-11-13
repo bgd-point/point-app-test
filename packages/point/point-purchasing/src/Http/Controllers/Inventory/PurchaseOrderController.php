@@ -232,4 +232,17 @@ class PurchaseOrderController extends Controller
         gritter_success('Success send email purchase order', 'false');
         return redirect()->back();
     }
+
+    public function exportPDF($id)
+    {
+        $purchase_order = PurchaseOrder::find($id);
+        $data = array(
+            'warehouse' => Warehouse::find(1),
+            'purchase_order' => $purchase_order
+        );
+
+        $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.purchase-order-pdf', $data);
+        return $pdf->download($purchase_order->formulir->form_number.'.pdf');
+    }
+
 }
