@@ -2,6 +2,7 @@
 
 namespace Point\PointAccounting\Helpers;
 
+use Carbon\Carbon;
 use Point\Core\Exceptions\PointException;
 use Point\Core\Helpers\DateHelper;
 use Point\Framework\Helpers\AccountPayableAndReceivableHelper;
@@ -54,7 +55,7 @@ class CutOffHelper
         }
 
         if (! self::checkFixedAssets($cut_off_account)) {
-            return false;
+//            return false;
         }
 
         self::insertJournal($cut_off_account);
@@ -125,28 +126,30 @@ class CutOffHelper
             ->get();
 
         if ($inventories) {
-            $emptying_inventory = new Inventory();
-            $emptying_inventory->form_date = $cut_off_account->formulir->form_date;
-            $emptying_inventory->formulir_id = $cut_off_account->formulir_id;
-            $emptying_inventory->warehouse_id = $inventory->warehouse_id;
-            $emptying_inventory->item_id = $inventory->item_id;
-            $emptying_inventory->quantity = $inventory->total_quantity;
-            $emptying_inventory->price = 0;
+            foreach($inventories as $inventory) {
+                $emptying_inventory = new Inventory();
+                $emptying_inventory->form_date = $cut_off_account->formulir->form_date;
+                $emptying_inventory->formulir_id = $cut_off_account->formulir_id;
+                $emptying_inventory->warehouse_id = $inventory->warehouse_id;
+                $emptying_inventory->item_id = $inventory->item_id;
+                $emptying_inventory->quantity = $inventory->total_quantity;
+                $emptying_inventory->price = 0;
 
-            $inventory_helper = new InventoryHelper($emptying_inventory);
-            $inventory_helper->out();
+                $inventory_helper = new InventoryHelper($emptying_inventory);
+                $inventory_helper->out();
 
-            $position = JournalHelper::position($inventory->item->account_asset_id);
-            $journal = new Journal();
-            $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
-            $journal->coa_id = $inventory->item->account_asset_id;
-            $journal->description = "Cut Off from formulir number " . $cut_off_account->formulir->form_number;
-            $journal->$position = $inventory->total_value * -1;
-            $journal->form_journal_id = $cut_off_account->formulir_id;
-            $journal->form_reference_id;
-            $journal->subledger_id = $inventory->item_id;
-            $journal->subledger_type = get_class(new Item());
-            $journal->save();
+                $position = JournalHelper::position($inventory->item->account_asset_id);
+                $journal = new Journal();
+                $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
+                $journal->coa_id = $inventory->item->account_asset_id;
+                $journal->description = "Cut Off from formulir number " . $cut_off_account->formulir->form_number;
+                $journal->$position = $inventory->total_value * -1;
+                $journal->form_journal_id = $cut_off_account->formulir_id;
+                $journal->form_reference_id;
+                $journal->subledger_id = $inventory->item_id;
+                $journal->subledger_type = get_class(new Item());
+                $journal->save();
+            }
         }
 
         // ACCOUNT PAYABLE AND RECEIVABLE
@@ -154,7 +157,7 @@ class CutOffHelper
         foreach ($list_account_payable_receivable as $account_payable_receivable) {
             $account_payable_receivable_detail_amount = AccountPayableAndReceivableDetail::where('account_payable_and_receivable_id', $account_payable_receivable->id)->sum('amount');
             $total_debt = $account_payable_receivable->amount - $account_payable_receivable_detail_amount;
-            if ($total_debt > 0) {
+            if ($total_debt > 0 && $account_payable_receivable < $cut_off_account->formulir->form_date ) {
                 $position = JournalHelper::position($account_payable_receivable->account_id);
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
@@ -343,33 +346,35 @@ class CutOffHelper
 
     private static function accountFixedAsset($cut_off_account, $cut_off_account_detail)
     {
-        $cut_off_fixed_assets = CutOffFixedAssets::joinFormulir()
-            ->approvalApproved()
-            ->open()
-            ->notArchived()
-            ->where('form_date', 'like', date('Y-m-d', strtotime($cut_off_account->formulir->form_date)) . '%')
-            ->selectOriginal()
-            ->orderby('id', 'desc')
-            ->first();
-        if ($cut_off_fixed_assets) {
-            foreach ($cut_off_fixed_assets->cutOffFixedAssetsDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_fixed_assets_detail) {
-                $position = JournalHelper::position($cut_off_account_detail->coa_id);
-                $journal = new Journal();
-                $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
-                $journal->coa_id = $cut_off_account_detail->coa_id;
-                $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
-                $journal->$position = $cut_off_fixed_assets_detail->total_price;
-                $journal->form_journal_id = $cut_off_account->formulir_id;
-                $journal->form_reference_id;
-                $journal->subledger_id = $cut_off_fixed_assets_detail->subledger_id;
-                $journal->subledger_type = get_class(new FixedAsset());
-                $journal->save();
-            }
-
-            if ($cut_off_fixed_assets->cutOffFixedAssetsDetail->where('coa_id', $cut_off_account_detail->coa_id)->count()) {
-                FormulirHelper::close($cut_off_fixed_assets->formulir_id);
-            }
-        }
+//        $cut_off_fixed_assets = CutOffFixedAssets::joinFormulir()
+//            ->approvalApproved()
+//            ->open()
+//            ->notArchived()
+//            ->where('form_date', 'like', date('Y-m-d', strtotime($cut_off_account->formulir->form_date)) . '%')
+//            ->selectOriginal()
+//            ->orderby('id', 'desc')
+//            ->get();
+//
+//        dd($cut_off_fixed_assets);
+//        if ($cut_off_fixed_assets) {
+//            foreach ($cut_off_fixed_assets->cutOffFixedAssetsDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_fixed_assets_detail) {
+//                $position = JournalHelper::position($cut_off_account_detail->coa_id);
+//                $journal = new Journal();
+//                $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
+//                $journal->coa_id = $cut_off_account_detail->coa_id;
+//                $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
+//                $journal->$position = $cut_off_fixed_assets_detail->total_price;
+//                $journal->form_journal_id = $cut_off_account->formulir_id;
+//                $journal->form_reference_id;
+//                $journal->subledger_id = $cut_off_fixed_assets_detail->subledger_id;
+//                $journal->subledger_type = get_class(new FixedAsset());
+//                $journal->save();
+//            }
+//
+//            if ($cut_off_fixed_assets->cutOffFixedAssetsDetail->where('coa_id', $cut_off_account_detail->coa_id)->count()) {
+//                FormulirHelper::close($cut_off_fixed_assets->formulir_id);
+//            }
+//        }
     }
 
     private static function accountNonSubledger($cut_off_account, $cut_off_account_detail)
@@ -414,7 +419,8 @@ class CutOffHelper
 
                 // insert fixed assets
                 if ($cut_off_account_detail->coa->subledger_type == get_class(new FixedAsset())) {
-                    self::accountFixedAsset($cut_off_account, $cut_off_account_detail);
+                    // self::accountFixedAsset($cut_off_account, $cut_off_account_detail);
+                    self::accountNonSubledger($cut_off_account, $cut_off_account_detail);
                 }
             } else {
                 // insert coa non subledger account
