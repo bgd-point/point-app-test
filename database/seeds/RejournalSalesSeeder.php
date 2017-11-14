@@ -36,20 +36,20 @@ class RejournalSalesSeeder extends Seeder
     public function invoice()
     {
         $list_invoice = Invoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->select('formulir.id')->get()->toArray();
-        $journal = Journal::whereIn('form_journal_id', $list_invoice)->delete();
-        $account_receivable = AccountPayableAndReceivable::whereIn('formulir_reference_id', $list_invoice)->delete();
-        $inventory = Inventory::whereIn('formulir_id', $list_invoice)->delete();
+        Journal::whereIn('form_journal_id', $list_invoice)->delete();
+        AccountPayableAndReceivable::whereIn('formulir_reference_id', $list_invoice)->delete();
+        Inventory::whereIn('formulir_id', $list_invoice)->delete();
+
         $list_invoice = Invoice::joinFormulir()->whereIn('formulir.form_status', [0, 1])->notArchived()->approvalApproved()->selectOriginal()->get();
+
         \Log::info('Journal invoice indirect started');
+
         foreach ($list_invoice as $invoice) {
             $subtotal = 0;
+            $cost_of_sales = 0;
             foreach ($invoice->items as $invoice_detail) {
                 $total_per_row = $invoice_detail->quantity * $invoice_detail->price - $invoice_detail->quantity * $invoice_detail->price / 100 * $invoice_detail->discount;
                 $subtotal += $total_per_row;
-                
-                if ($invoice->type_of_tax == 'include') {
-                    $total_per_row = $total_per_row * 100 / 110;
-                }
 
                 \Log::info('Journal inventory invoice '. $invoice->formulir->id);
                 $item = Item::find($invoice_detail->item_id);
@@ -63,6 +63,20 @@ class RejournalSalesSeeder extends Seeder
 
                 $inventory_helper = new InventoryHelper($inventory);
                 $inventory_helper->out();
+
+                $cost = InventoryHelper::getCostOfSales($invoice->formulir->form_date, $inventory->item_id, $inventory->warehouse_id) * abs($inventory->quantity);
+                $cost_of_sales += $cost;
+
+                $journal = new Journal;
+                $journal->form_date = $invoice->formulir->form_date;
+                $journal->coa_id = $inventory->item->account_asset_id;
+                $journal->description = 'invoice "' . $inventory->item->codeName.'"';
+                $journal->credit = $cost;
+                $journal->form_journal_id = $invoice->formulir_id;
+                $journal->form_reference_id;
+                $journal->subledger_id = $inventory->item_id;
+                $journal->subledger_type = get_class($inventory->item);
+                $journal->save();
             }
 
             $discount = $subtotal * $invoice->discount/100;
@@ -89,6 +103,7 @@ class RejournalSalesSeeder extends Seeder
                     'value_of_account_receivable' => $invoice->total,
                     'value_of_income_tax_payable' => $tax,
                     'value_of_sale_of_goods' => $subtotal,
+                    'value_of_cost_of_sales' => $cost_of_sales,
                     'value_of_discount' => $discount * (-1),
                     'value_of_expedition_income' => $invoice->expedition_fee,
                     'formulir' => $invoice->formulir,
@@ -100,6 +115,7 @@ class RejournalSalesSeeder extends Seeder
                     'value_of_account_receivable' => $invoice->total,
                     'value_of_income_tax_payable' => $tax,
                     'value_of_sale_of_goods' => $tax_base,
+                    'value_of_cost_of_sales' => $cost_of_sales,
                     'value_of_discount' => $discount,
                     'value_of_expedition_income' => $invoice->expedition_fee,
                     'formulir' => $invoice->formulir,
@@ -194,6 +210,18 @@ class RejournalSalesSeeder extends Seeder
             $journal->subledger_type = get_class($data['invoice']->person);
             $journal->save();
         }
+
+        $cost_of_sales_account = JournalHelper::getAccount('point sales indirect', 'cost of sales');
+        $journal = new Journal;
+        $journal->form_date = $data['formulir']->form_date;
+        $journal->coa_id = $cost_of_sales_account;
+        $journal->description = 'invoice indirect sales "' . $data['formulir']->form_number.'"';
+        $journal->debit = $data['value_of_cost_of_sales'];
+        $journal->form_journal_id = $data['formulir']->id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
     }
 
     public function invoiceService()
