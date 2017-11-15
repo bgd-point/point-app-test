@@ -75,7 +75,6 @@ class Journal extends Model
 
             if (AccountPayableAndReceivableHelper::isDone($account_payable_and_receivable_id)) {
                 if ($check->reference_type == get_class(new CutOffReceivableDetail()) || $check->reference_type == get_class(new CutOffPayableDetail())) {
-                    \Log::info('continue #'.$account_payable_and_receivable_id);
                     return true;
                 }
                 throw new PointException('PAYMENT HAS DONE #'.$account_payable_and_receivable_id);
@@ -140,7 +139,6 @@ class Journal extends Model
             if (AccountPayableAndReceivableHelper::isDone($account_payable_and_receivable_id)) {
                 $check = AccountPayableAndReceivable::find($account_payable_and_receivable_id);
                 if ($check->reference_type == get_class(new CutOffReceivableDetail()) || $check->reference_type == get_class(new CutOffPayableDetail())) {
-                    \Log::info('continue #'.$account_payable_and_receivable_id);
                     return true;
                 }
                 throw new PointException('PAYMENT HAS DONE #' . $account_payable_and_receivable_id);
