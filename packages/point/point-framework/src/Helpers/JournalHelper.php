@@ -254,7 +254,6 @@ class JournalHelper
             ->selectRaw('sum(debit) as debit, sum(credit) as credit')
             ->first();
 
-        \Log::info('Debit : ' . $journal->debit . ' >><< Credit : ' .$journal->credit);
         if ($journal->debit != $journal->credit) {
             throw new PointException('Journal unbalance, Please contact administrator to fix this error');
         }
