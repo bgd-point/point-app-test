@@ -128,7 +128,7 @@
 
 <body>
 <div class="invoice-box">
-    Hi, {{ $payment_order->expedition->name }}. You have an email expedition payment order from <br>
+    Hello Mr/Mrs/Ms/ {{ $payment_order->expedition->name }},<br/>You have an email expedition payment order from <br>
     @if($warehouse->store_name)
     <strong style="font-size:18px; text-transform: uppercase;">{{$warehouse->store_name}}</strong> <br/>
     <font style="font-size:12px;text-transform: capitalize;">

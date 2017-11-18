@@ -127,7 +127,7 @@
 
 <body>
     <div class="invoice-box">
-        Hi, {{ $username }}. You have an approval request for selling shares. We would like to inform the details as follows :
+        Hello Mr/Mrs/Ms/ {{ $username }},<br/>You have an approval request for selling shares. We would like to inform the details as follows :
         @foreach($list_shares_sell as $shares_sell)
             <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
                 <tr>

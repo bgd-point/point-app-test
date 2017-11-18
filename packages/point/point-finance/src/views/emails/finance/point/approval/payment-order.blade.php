@@ -127,7 +127,7 @@
 
 <body>
     <div class="invoice-box">
-        Hi, {{ $approver->name }}. You have an approval request for payment order. We would like to inform the details as follows :
+        Hello Mr/Mrs/Ms/ {{ $approver->name }},<br/>You have an approval request for payment order. We would like to inform the details as follows :
 
         @foreach($list_data as $payment_order)
             <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">

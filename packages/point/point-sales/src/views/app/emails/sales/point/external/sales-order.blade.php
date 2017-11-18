@@ -128,7 +128,9 @@
 
 <body>
     <div class="invoice-box">
-        Hi, {{ $sales_order->person->name }}. You have an email sales order from <br>
+        Hello Mr/Mrs/Ms/ {{ $sales_order->person->name }},<br/>
+        You have an email sales order from <br>
+
         @if($warehouse->store_name)
         <strong style="font-size:18px; text-transform: uppercase;">{{$warehouse->store_name}}</strong> <br/>
         <font style="font-size:12px;text-transform: capitalize;">

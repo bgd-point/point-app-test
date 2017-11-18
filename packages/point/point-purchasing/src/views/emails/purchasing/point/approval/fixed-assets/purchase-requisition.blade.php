@@ -128,7 +128,7 @@
 
 <body>
     <div class="invoice-box">
-        Hi, {{ $approver->name }}. You have an request approval purchase requisition form. We would like to inform the
+        Hello Mr/Mrs/Ms/ {{ $approver->name }},<br/>You have an request approval purchase requisition form. We would like to inform the
         details as follows :
 
         @foreach($list_data as $purchase_requisition)

@@ -127,7 +127,7 @@
 
 <body>
     <div class="invoice-box">
-        Hi, {{ $username }}. You have an approval request for loan application. We would like to inform the details as follows :
+        Hello Mr/Mrs/Ms/ {{ $username }},<br/>You have an approval request for loan application. We would like to inform the details as follows :
         @foreach($list_data as $loan_application)
             <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
                 <tr>

@@ -128,7 +128,7 @@
 
 <body>
 <div class="invoice-box">
-    Hi, {{ $username }}. You have an Request approval contract form. We would like to inform the
+    Hello Mr/Mrs/Ms/ {{ $username }},<br/>You have an Request approval contract form. We would like to inform the
     details as follows :
 
    @foreach($list_data as $contract)

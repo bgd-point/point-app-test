@@ -127,7 +127,7 @@
 
 <body>
 <div class="invoice-box">
-    Hi, {{ $approver->name }}. You have an approval request for manufacture input form. We would like to inform the
+    Hello Mr/Mrs/Ms/ {{ $approver->name }},<br/>You have an approval request for manufacture input form. We would like to inform the
     details as follows :
 
     @foreach($list_data as $process_in)
