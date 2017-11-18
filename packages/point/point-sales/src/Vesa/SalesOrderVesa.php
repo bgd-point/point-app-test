@@ -108,9 +108,9 @@ trait SalesOrderVesa
 
         // Push all
         foreach ($list_sales_order->get() as $sales_order) {
-            $url = url('sales/point/sales-order/' . $sales_order->id.'/edit');
+            $url = url('sales/point/indirect/sales-order/' . $sales_order->id.'/edit');
             if ($sales_order->checkHaveReference() == null) {
-                $url = url('sales/point/sales-order/basic/' . $sales_order->id.'/edit');
+                $url = url('sales/point/indirect/sales-order/basic/' . $sales_order->id.'/edit');
             }
             array_push($array, [
                 'url' => $url,
