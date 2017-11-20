@@ -76,7 +76,7 @@
         <div class="signature-person">({{strtoupper($payment_collection->formulir->approvalTo->name)}})</div>
     </td>
     <td>
-        Peminta,
+        Penerima,
         <div class="signature-date">{{ \DateHelper::formatView($payment_collection->formulir->form_date) }}</div>
         <div class="signature">____________________</div>
         <div class="signature-person">({{strtoupper($payment_collection->person->name)}})</div>
