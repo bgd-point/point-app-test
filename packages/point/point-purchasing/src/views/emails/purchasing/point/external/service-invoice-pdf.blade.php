@@ -108,7 +108,7 @@
         <div class="signature-person">({{strtoupper($invoice->formulir->approvalTo->name)}})</div>
     </td>
     <td>
-        Peminta,
+        Penerima,
         <div class="signature-date">{{ \DateHelper::formatView($invoice->formulir->form_date) }}</div>
         <div class="signature">____________________</div>
         <div class="signature-person">({{strtoupper($invoice->person->name)}})</div>

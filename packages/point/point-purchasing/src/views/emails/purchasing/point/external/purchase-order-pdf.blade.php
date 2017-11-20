@@ -85,7 +85,7 @@
         <div class="signature-person">({{strtoupper($purchase_order->formulir->approvalTo->name)}})</div>
     </td>
     <td>
-        Peminta,
+        Penerima,
         <div class="signature-date">{{ \DateHelper::formatView($purchase_order->formulir->form_date) }}</div>
         <div class="signature">____________________</div>
         <div class="signature-person">({{strtoupper($purchase_order->supplier->name)}})</div>
