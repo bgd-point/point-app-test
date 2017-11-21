@@ -18,7 +18,10 @@ class PaymentCollectionOther extends Model
     {
         $q->join('formulir', 'formulir.id', '=', 'point_sales_order.formulir_id');
     }
-
+    public function scopeJoinCoa($q)
+    {
+        $q->join('coa', 'coa.id', '=','point_sales_service_payment_collection_other.coa_id');
+    }
     public function paymentOrder()
     {
         return $this->belongsTo('\Point\PointSales\Models\Service\PaymentCollection', 'point_sales_service_payment_collection_id');

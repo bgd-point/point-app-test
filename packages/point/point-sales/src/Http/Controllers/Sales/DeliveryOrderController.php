@@ -14,6 +14,7 @@ use Point\PointExpedition\Models\ExpeditionOrder;
 use Point\PointExpedition\Models\ExpeditionOrderItem;
 use Point\PointSales\Helpers\DeliveryOrderHelper;
 use Point\PointSales\Models\Sales\DeliveryOrder;
+use Point\PointSales\Models\Sales\DeliveryOrderItem;
 use Point\PointSales\Models\Sales\SalesOrder;
 
 class DeliveryOrderController extends Controller
@@ -33,7 +34,16 @@ class DeliveryOrderController extends Controller
         $list_delivery_order = DeliveryOrder::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         $list_delivery_order = DeliveryOrderHelper::searchList($list_delivery_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_delivery_order = $list_delivery_order->paginate(100);
+        $array_delivery_order_id = [];
+        $view->array_delivery_order_id = $array_delivery_order_id;
         return $view;
+    }
+
+    public function ajaxDetailItem(Request $request, $id)
+    {
+        access_is_allowed('read.point.sales.delivery.order');
+        $list_sales_order = DeliveryOrderItem::select('item.name as item_name','point_sales_delivery_order_item.quantity','point_sales_delivery_order_item.unit','point_sales_delivery_order_item.price','point_sales_delivery_order_item.point_sales_delivery_order_id')->joinAllocation()->joinItem()->joinDeliveryOrder()->joinFormulir()->where('point_sales_delivery_order_item.point_sales_delivery_order_id', '=', $id)->get();
+        return response()->json($list_sales_order);
     }
 
     public function indexPDF(Request $request)
