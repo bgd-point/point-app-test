@@ -130,9 +130,9 @@ class DeliveryOrder extends Model
         $class = self::find($id);
 
         if ($class->formulir->form_number) {
-            return '/sales/point/indirect/delivery-oder/'.$class->id;
+            return '/sales/point/indirect/delivery-order/'.$class->id;
         } else {
-            return '/sales/point/indirect/delivery-oder/'.$class->id.'/archived';
+            return '/sales/point/indirect/delivery-order/'.$class->id.'/archived';
         }
     }
 
