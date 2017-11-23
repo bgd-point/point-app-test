@@ -10,7 +10,7 @@ class PurchaseReportHelper
     {
         $date_from = $date_from ? date_format_db($date_from, 'start') : date('Y-m-1 00:00:00');
         $date_to = $date_to ? date_format_db($date_to, 'end') : date('Y-m-31 23:59:59');
-        return InvoiceItem::joinInvoice()
+        return InvoiceItem::joinPurchasingInvoice()
             ->joinFormulir()
             ->joinSupplier()
             ->whereNotNull('formulir.form_number')
