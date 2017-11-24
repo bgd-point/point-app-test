@@ -85,7 +85,6 @@ class InputRequest extends Request
                 }
             }
             
-
             if (number_format_db(\Input::get('material_quantity')[$i]) < 1) {
                 $rules['raw_material_line_' . $index . '_cannot_null'] = 'accepted';
             }
