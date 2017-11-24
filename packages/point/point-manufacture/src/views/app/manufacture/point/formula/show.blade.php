@@ -34,7 +34,6 @@
                                         'approval_at' => $formula->formulir->approval_at,
                                         'approval_to' => $formula->formulir->approvalTo->name,
                                     ])
-                                    @include('framework::app.include._form_status_label', ['form_status' => $formula->formulir->form_status])
                                 </div>
                             </div>
                         </fieldset>
