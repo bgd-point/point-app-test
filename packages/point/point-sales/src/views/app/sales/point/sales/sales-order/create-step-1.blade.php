@@ -40,8 +40,7 @@
                                 </td>
                                 <td>
                                     {{ date_format_view($sales_quotation->formulir->form_date) }}
-                                    <br/> <a
-                                            href="{{ url('sales/point/indirect/sales-quotation/'.$sales_quotation->id) }}">{{ $sales_quotation->formulir->form_number}}</a>
+                                    <br/> <a href="{{ url('sales/point/indirect/sales-quotation/'.$sales_quotation->id) }}">{{ $sales_quotation->formulir->form_number}}</a>
                                 </td>
                                 <td>{{ $sales_quotation->formulir->notes }}</td>
                                 <td>

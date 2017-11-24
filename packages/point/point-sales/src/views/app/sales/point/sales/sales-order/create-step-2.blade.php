@@ -112,8 +112,7 @@
                         <label class="col-md-3 control-label">Include Expedition</label>
 
                         <div class="col-md-6 content-show">
-                            <input type="checkbox" id="include-expedition" name="include_expedition"
-                                   onchange="includeExpedition()" checked value="true">
+                            <input type="checkbox" id="include-expedition" name="include_expedition" checked value="true">
                             <span class="help-block">Uncheck this if you want to order expedition service</span>
                         </div>
                     </div>
@@ -317,16 +316,6 @@
 
             calculate();
         });
-
-        function includeExpedition() {
-            if (document.getElementById("include-expedition").checked) {
-                $('#fee-expedition').show();
-            } else {
-                $('#fee-expedition').val(0);
-                $('#fee-expedition').hide();
-            }
-            calculate();
-        }
 
         function setToNontax() {
             $("#tax-choice-include-tax").attr("checked", false);
