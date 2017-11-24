@@ -74,7 +74,7 @@ class InputRequest extends Request
                 \Input::get('material_warehouse_id.' . $i));
                 
                 if (number_format_db(\Input::get('material_quantity')[$i]) > $max) {
-                    $rules['raw_material_line_' . $i . '_reater_than_available_stock'] = 'accepted';
+                    $rules['raw_material_line_' . $i . '_greater_than_available_stock'] = 'accepted';
                 }
             }
 

@@ -128,4 +128,15 @@ class InputProcess extends Model
     {
         return 'point-manufacture::emails.manufacture.point.approval.input';
     }
+
+    public static function showUrl($id)
+    {
+        $class = self::find($id);
+
+        if ($class->formulir->form_number) {
+            return '/manufacture/point/process-io/'.$class->process_id.'/input/'.$class->id;
+        } else {
+            return '/manufacture/point/process-io/'.$class->process_id.'/input/'.$class->id.'/archived';
+        }
+    }
 }
