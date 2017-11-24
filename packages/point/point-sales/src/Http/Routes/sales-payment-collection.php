@@ -23,6 +23,7 @@ Route::group(['prefix' => 'sales/point/indirect', 'namespace' => 'Point\PointSal
         Route::post('/payment-collection/send-email-payment', 'PaymentCollectionController@sendEmailPayment');
         Route::post('/payment-collection/{id}/edit-review', 'PaymentCollectionController@editReview');
         Route::post('/payment-collection/{id}/store', 'PaymentCollectionController@storePb');
+        Route::get('/payment-collection/detail/{id}', 'PaymentCollectionController@ajaxDetailItem');
         Route::resource('/payment-collection', 'PaymentCollectionController');
     });
 });

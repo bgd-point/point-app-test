@@ -19,6 +19,7 @@ Route::group(['prefix' => 'sales/point/indirect', 'namespace' => 'Point\PointSal
         Route::get('/delivery-order/create-step-1', 'DeliveryOrderController@createStep1');
         Route::get('/delivery-order/create-step-2/{sales_order_id}/{expedition_id?}', 'DeliveryOrderController@createStep2');
         Route::get('/delivery-order/pdf', 'DeliveryOrderController@indexPDF');
+        Route::get('/delivery-order/detail/{id}', 'DeliveryOrderController@ajaxDetailItem');
         Route::resource('/delivery-order', 'DeliveryOrderController');
     });
 });

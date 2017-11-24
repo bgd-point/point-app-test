@@ -46,6 +46,8 @@
                             @if(auth()->user()->may('read.point.sales.service.invoice'))
                                 <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" href="{{url('sales/point/service/invoice/pdf?date_from='.\Input::get('date_from').'&date_to='.\Input::get('date_to').'&search='.\Input::get('search').'&order_by='.\Input::get('order_by').'&order_type='.\Input::get('order_type').'&status='.\Input::get('status'))}}"> export to PDF</a>
                             @endif
+                            <a class="btn btn-success" id="full_view" onclick="showAll();">Show All</a>
+                            <input type="hidden" id="check_show" >
                         </div>
                     </div>
                 </form>
@@ -60,7 +62,7 @@
                     ?>
                     <table class="table table-striped table-bordered">
                         <thead>
-                        <tr>
+                        <tr class="th-head">
                             <th style="cursor:pointer" onclick="selectData('form_date', @if($order_by == 'form_date' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_date' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Date <span class="pull-right"><i class="fa @if($order_by == 'form_date' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_date' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
                             <th style="cursor:pointer" onclick="selectData('form_number', @if($order_by == 'form_number' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_number' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Form Number <span class="pull-right"><i class="fa @if($order_by == 'form_number' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_number' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
                             <th style="cursor:pointer" onclick="selectData('person.name', @if($order_by == 'person.name' && $order_type == 'asc') 'desc' @elseif($order_by == 'person.name' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Customer <span class="pull-right"><i class="fa @if($order_by == 'person.name' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'person.name' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
@@ -69,7 +71,8 @@
                         </thead>
                         <tbody>
                         @foreach($list_invoice as $invoice)
-                            <tr id="list-{{$invoice->formulir_id}}">
+                            <tr class="row-detail" id="row_detail_{{$invoice->id}}">
+                            <?php array_push($array_invoice_id,$invoice->id); ?>
                                 <td>{{ date_format_view($invoice->formulir->form_date) }}</td>
                                 <td>
                                     <a href="{{ url('sales/point/service/invoice/'.$invoice->id) }}">{{ $invoice->formulir->form_number}}</a>
@@ -82,6 +85,7 @@
                                 </td>
                             </tr>
                         @endforeach
+                        <input type="hidden" id="array_invoice_id" value="{{ implode('#',$array_invoice_id) }}">
                         </tbody>
                     </table>
                     {!! $list_invoice->appends(['order_by'=>app('request')->get('order_by'), 'order_type'=>app('request')->get('order_type'), 'status'=>app('request')->get('status'), 'search'=>app('request')->get('search'), 'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
@@ -94,6 +98,50 @@
 
 @section('scripts')
 <script>
+$('#check_show').val(0);
+function showAll(){
+    $('#full_view').attr('onclick','compact()');
+    $('#full_view').text('Compact');
+    $('.header_detail').remove();
+    var html = '<th class="header_detail">ITEM</th>'
+                +'<th class="header_detail">QTY</th>'
+                +'<th class="header_detail">PRICE</th>'
+    $('.th-head').append(html);
+    $('.txt-detail').remove();
+    $('.row-detail').append('<td class="txt-detail extend_column_detail" colspan="3" align="center"><strong>DETAIL</strong></td>');
+    var check_show = $('#check_show').val();
+    var array_invoice_id = $('#array_invoice_id').val();
+    if(check_show == 0){
+        var temp = array_invoice_id.split('#');
+        for (var x = temp.length - 1; x >= 0; x--) {
+            var str_url = "{{ url('sales/point/service/invoice/detail/') }}/"+temp[x];
+            $.ajax({ url:str_url, success: function(data) {
+                for (var i = 0; i < data.length; i++) {
+                    var extend_table_row = ' <tr class="extend_column_detail">'
+                            +'      <td colspan="4" class="extend_column_detail"></td>'
+                            +'      <td class="extend_column_detail">'+data[i].item_name+'</td>'
+                            +'      <td class="extend_column_detail">'+data[i].quantity+' '+data[i].unit+'</td>'
+                            +'      <td class="extend_column_detail">'+data[i].price+'</td>'
+                            +'  </tr>';
+
+                    $('#row_detail_'+data[i].point_sales_service_invoice_id).after(extend_table_row);
+                
+                $('#check_show').val(1);
+                }
+            }});
+        }
+    }else{
+        $('.extend_column_detail').show();
+    }
+}
+function compact(){
+    $('#full_view').attr('onclick','showAll()');
+    $('#full_view').text('Show All');
+
+    $('.header_detail').remove();
+    $('.extend_column_detail').hide();
+
+}
 function selectData(order_by, order_type) {
     var status = $("#status option:selected").val();
     var date_from = $("#date-from").val();

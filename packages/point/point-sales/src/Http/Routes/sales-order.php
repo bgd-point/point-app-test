@@ -22,7 +22,7 @@ Route::group(['prefix' => 'sales/point/indirect', 'namespace' => 'Point\PointSal
         Route::get('/sales-order/pdf', 'SalesOrderController@indexPDF');
         Route::post('/sales-order/{id}/store', 'SalesOrderController@store');
         Route::post('/sales-order/store', 'SalesOrderController@store');
-
+        Route::get('/sales-order/detail/{id}', 'SalesOrderController@ajaxDetailItem');
         Route::resource('/sales-order', 'SalesOrderController');
     });
 });

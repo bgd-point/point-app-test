@@ -31,6 +31,8 @@ Route::group(['prefix' => 'sales/point/indirect', 'namespace' => 'Point\PointSal
         Route::get('/invoice/{id}/archived', 'InvoiceController@archived');
         Route::get('/invoice/pdf', 'InvoiceController@indexPDF');
         Route::post('/invoice/send-email', 'InvoiceController@sendEmail');
+        
+        Route::get('/invoice/detail/{id}', 'InvoiceController@ajaxDetailItem');
         Route::resource('/invoice', 'InvoiceController');
     });
 
