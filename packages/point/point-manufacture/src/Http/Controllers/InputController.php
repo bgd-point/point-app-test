@@ -86,7 +86,6 @@ class InputController extends Controller
         $view->list_formula = Formula::joinFormulir()
             ->notArchived()
             ->approvalApproved()
-            ->close()
             ->search(
                 null,
                 null,
