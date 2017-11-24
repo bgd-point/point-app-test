@@ -45,6 +45,7 @@
                             @if(auth()->user()->may('read.point.purchasing.payment.order'))
                                 <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" href="{{url('purchasing/point/payment-order/pdf?date_from='.\Input::get('date_from').'&date_to='.\Input::get('date_to').'&search='.\Input::get('search').'&order_by='.\Input::get('order_by').'&order_type='.\Input::get('order_type').'&status='.\Input::get('status'))}}"> export to PDF</a>
                             @endif
+                            <a class="btn btn-success" id="full_view" onclick="showAll();">Show All</a>
                         </div>
                     </div>
                 </form>
@@ -65,6 +66,7 @@
                             <th style="cursor:pointer" onclick="selectData('form_number', @if($order_by == 'form_number' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_number' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Form Number <span class="pull-right"><i class="fa @if($order_by == 'form_number' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_number' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
                             <th style="cursor:pointer" onclick="selectData('person.name', @if($order_by == 'person.name' && $order_type == 'asc') 'desc' @elseif($order_by == 'person.name' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Supplier <span class="pull-right"><i class="fa @if($order_by == 'person.name' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'person.name' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
                             <th>Status</th>
+                            <th colspan="4" class="th-detail">DETAIL</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -81,7 +83,46 @@
                                     @include('framework::app.include._approval_status_label', ['approval_status' => $payment_order->formulir->approval_status])
                                     @include('framework::app.include._form_status_label', ['form_status' => $payment_order->formulir->form_status])
                                 </td>
+                                <td class="th-detail"><strong>DATE</strong></td>
+                                <td class="th-detail"><strong>FORM NUMBER</strong></td>
+                                <td class="th-detail"><strong>NOTES</strong></td>
+                                <td class="th-detail"><strong>TOTAL</strong></td>
                             </tr>
+                            @foreach(\Point\Framework\Helpers\ReferHelper::getRefers(get_class($payment_order), $payment_order->id) as $refer)
+                                <?php
+                                $payment_order_detail = \Point\PointPurchasing\Models\Inventory\PaymentOrderDetail::find($refer->to_id);
+                                $reference_type = $refer->by_type;
+                                $reference = $reference_type::find($refer->by_id);
+                                if (get_class($reference) == get_class(new Point\PointAccounting\Models\CutOffPayableDetail())) {
+                                    $reference->formulir = $reference->cutoffPayable->formulir;
+                                }
+                                ?>
+                                <tr class="tr-detail">
+                                    <td colspan="4"></td>
+                                    <td>
+                                        {{ date_format_view($reference->formulir->form_date) }}
+                                    </td>
+                                    <td>{{ $reference->formulir->form_number }}</td>
+                                    <td>{{ $payment_order_detail->detail_notes }}</td>
+                                    <td class="text-right">{{ number_format_quantity($payment_order_detail->amount) }}</td>
+                                </tr>
+                            @endforeach
+                            <tr class="tr-detail">
+                                <td colspan="4"></td>
+                                <td colspan="4"><h4><b>Others</b></h4></td>
+                            </tr>
+                            @foreach($payment_order->others as $payment_order_other)
+                                <tr class="tr-detail">
+                                    <td colspan="4"></td>
+                                    <td colspan="2">
+                                        {{$payment_order_other->coa->account}} <br/>
+                                        <b>ALLOCATION :</b> {{$payment_order_other->allocation->name}}
+                                    </td>
+
+                                    <td>{{$payment_order_other->other_notes}}</td>
+                                    <td class="text-right">{{number_format_quantity($payment_order_other->amount)}}</td>
+                                </tr>
+                            @endforeach
                         @endforeach
                         </tbody>
                     </table>
@@ -95,6 +136,21 @@
 
 @section('scripts')
 <script>
+function showAll(){
+    $('.th-detail').show();
+    $('.td-detail').show();
+    $('.tr-detail').show();
+    $('#full_view').attr('onclick','compact()');
+    $('#full_view').text('Compact');
+}
+compact();
+function compact(){
+    $('.th-detail').hide();   
+    $('.td-detail').hide();   
+    $('.tr-detail').hide();   
+    $('#full_view').attr('onclick','showAll()');
+    $('#full_view').text('Show All');
+}
 function selectData(order_by, order_type) {
     var status = $("#status option:selected").val();
     var date_from = $("#date-from").val();

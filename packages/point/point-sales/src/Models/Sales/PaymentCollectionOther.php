@@ -33,4 +33,8 @@ class PaymentCollectionOther extends Model
     {
         return $this->belongsTo('\Point\Framework\Models\Master\Allocation', 'allocation_id');
     }
+    public function scopeJoinCoa($q)
+    {
+        $q->join('coa', 'coa.id', '=','point_sales_payment_collection_other.coa_id');
+    }
 }

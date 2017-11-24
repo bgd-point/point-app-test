@@ -21,6 +21,7 @@ use Point\Framework\Models\Master\Warehouse;
 use Point\PointPurchasing\Helpers\ServiceInvoiceHelper;
 use Point\PointPurchasing\Http\Requests\ServiceInvoiceRequest;
 use Point\PointPurchasing\Models\Service\Invoice;
+use Point\PointPurchasing\Models\Service\InvoiceItem;
 
 class InvoiceController extends Controller
 {
@@ -32,7 +33,16 @@ class InvoiceController extends Controller
         $list_invoice = Invoice::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         $list_invoice = ServiceInvoiceHelper::searchList($list_invoice, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_invoice = $list_invoice->paginate(100);
+
+        $array_invoice_id = [];
+        $view->array_invoice_id = $array_invoice_id;
         return $view;
+    }
+
+    public function ajaxDetailItem($id){
+        $view = view('point-purchasing::app.purchasing.point.service.invoice.index');
+        $list_invoice = InvoiceItem::select('item.name as item_name','point_purchasing_service_invoice_item.quantity','point_purchasing_service_invoice_item.price','point_purchasing_service_invoice_item.point_purchasing_service_invoice_id')->joinAllocation()->joinItem()->joinServiceInvoice()->joinFormulir()->where('point_purchasing_service_invoice_item.point_purchasing_service_invoice_id', '=', $id)->get();
+        return response()->json($list_invoice);
     }
 
     public function indexPDF(Request $request)

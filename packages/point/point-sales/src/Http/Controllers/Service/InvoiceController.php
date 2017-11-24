@@ -21,6 +21,8 @@ use Point\Framework\Models\Master\Warehouse;
 use Point\PointSales\Helpers\ServiceInvoiceHelper;
 use Point\PointSales\Http\Requests\ServiceInvoiceRequest;
 use Point\PointSales\Models\Service\Invoice;
+use Point\PointSales\Models\Service\InvoiceItem;
+use Point\PointSales\Models\Service\InvoiceService;
 
 class InvoiceController extends Controller
 {
@@ -34,7 +36,35 @@ class InvoiceController extends Controller
         $list_invoice = Invoice::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         $list_invoice = ServiceInvoiceHelper::searchList($list_invoice, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_invoice = $list_invoice->paginate(100);
+        $array_invoice_id = [];
+        $view->array_invoice_id = $array_invoice_id;
         return $view;
+    }
+
+    public function ajaxDetailItem(Request $request, $id)
+    {
+        access_is_allowed('read.point.sales.service.invoice');
+        $list_invoice_item = InvoiceItem::select('item.name as item_name',
+            'point_sales_service_invoice_item.quantity',
+            'point_sales_service_invoice_item.unit',
+            'point_sales_service_invoice_item.price',
+            'point_sales_service_invoice_id'
+            )->
+            joinItem()->joinInvoice()->where(
+                'point_sales_service_invoice_item.point_sales_service_invoice_id', '=', $id
+            );
+        
+        $list_invoice_service  = InvoiceService::select('service.name as item_name',
+            'point_sales_service_invoice_service.quantity as quantity ',
+            'point_sales_service_invoice_service.service_notes as unit',
+            'point_sales_service_invoice_service.price as price ',
+            'point_sales_service_invoice_id'
+            )->
+            joinService()->joinInvoiceService()->where(
+                'point_sales_service_invoice_service.point_sales_service_invoice_id', '=', $id
+            );
+        $results = $list_invoice_item->union($list_invoice_service)->get();
+        return response()->json($results);
     }
 
     public function indexPDF(Request $request)
