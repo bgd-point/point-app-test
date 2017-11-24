@@ -111,4 +111,15 @@ class OutputProcess extends Model
     {
         return $this->belongsTo('\Point\PointManufacture\Models\InputProcess', 'input_id');
     }
+
+    public static function showUrl($id)
+    {
+        $class = self::find($id);
+
+        if ($class->formulir->form_number) {
+            return '/manufacture/point/process-io/'.$class->input->process_id.'/output/'.$class->id;
+        } else {
+            return '/manufacture/point/process-io/'.$class->input->process_id.'/output/'.$class->id.'/archived';
+        }
+    }
 }
