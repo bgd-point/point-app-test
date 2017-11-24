@@ -55,14 +55,15 @@ class InputRequest extends Request
 
         // material items
         for ($i = 0; $i < count(\Input::get('material_id')); $i++) {
+            $index = $i+1;
             if (! \Input::get('material_id')[$i]) {
-                $rules['[row_'.$i.']_material_required'] = 'accepted';
+                $rules['[row_'.$index.']_material_required'] = 'accepted';
             }
             if (number_format_db(\Input::get('material_quantity')[$i]) == 0) {
-                $rules['[row_'.$i.']_material_quantity_required'] = 'accepted';
+                $rules['[row_'.$index.']_material_quantity_required'] = 'accepted';
             }
             if (! \Input::get('material_warehouse_id')[$i]) {
-                $rules['[row_'.$i.']_material_warehouse_required'] = 'accepted';
+                $rules['[row_'.$index.']_material_warehouse_required'] = 'accepted';
             }
 
             $date_to = \Input::get('form_date') ? date_format_db(\Input::get('form_date'),
@@ -74,7 +75,7 @@ class InputRequest extends Request
                 \Input::get('material_warehouse_id.' . $i));
                 
                 if (number_format_db(\Input::get('material_quantity')[$i]) > $max) {
-                    $rules['raw_material_line_' . $i . '_greater_than_available_stock'] = 'accepted';
+                    $rules['raw_material_line_' . $index . '_greater_than_available_stock'] = 'accepted';
                 }
             }
 
@@ -86,7 +87,7 @@ class InputRequest extends Request
             
 
             if (number_format_db(\Input::get('material_quantity')[$i]) < 1) {
-                $rules['raw_material_line_' . $i . '_cannot_null'] = 'accepted';
+                $rules['raw_material_line_' . $index . '_cannot_null'] = 'accepted';
             }
         }
 
