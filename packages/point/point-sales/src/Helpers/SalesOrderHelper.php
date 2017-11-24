@@ -53,11 +53,7 @@ class SalesOrderHelper
 
     private static function getExpeditionFee(Request $request)
     {
-        if ($request->input('include_expedition')) {
-            return number_format_db($request->input('expedition_fee'));
-        }
-
-        return 0;
+        return number_format_db($request->input('expedition_fee'));
     }
 
     private static function getReference($request)
