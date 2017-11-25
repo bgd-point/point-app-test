@@ -86,33 +86,33 @@
                                             <td class="text-right">{{ number_format_quantity($invoice_archived_item->quantity) }} {{ $invoice_archived_item->unit }}</td>
                                             <td class="text-right">{{ number_format_quantity($invoice_archived_item->price) }}</td>
                                             <td class="text-right">{{ number_format_quantity($invoice_archived_item->discount) }}</td>
-                                            <td class="text-right">{{ number_format_quantity(($invoice_archived_item->quantity * $invoice_archived_item->price) - ($invoice_archived_item->quantity * $invoice_archived_item->discount)) }}</td>
+                                            <td class="text-right">{{ number_format_quantity(($invoice_archived_item->quantity * $invoice_archived_item->price) - ($invoice_archived_item->quantity * $invoice_archived_item->price * $invoice_archived_item->discount / 100)) }}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <td colspan="4" class="text-right">SUB TOTAL</td>
+                                        <td colspan="5" class="text-right">SUB TOTAL</td>
                                         <td class="text-right">{{ number_format_quantity($invoice_archived->subtotal) }}</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="4" class="text-right">DISCOUNT</td>
+                                        <td colspan="5" class="text-right">DISCOUNT</td>
                                         <td class="text-right">{{ number_format_quantity($invoice_archived->discount) }}</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="4" class="text-right">TAX BASE</td>
+                                        <td colspan="5" class="text-right">TAX BASE</td>
                                         <td class="text-right">{{ number_format_quantity($invoice_archived->tax_base) }}</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="4" class="text-right">TAX</td>
+                                        <td colspan="5" class="text-right">TAX</td>
                                         <td class="text-right">{{ number_format_quantity($invoice_archived->tax) }}</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="4" class="text-right">EXPEDITION FEE</td>
+                                        <td colspan="5" class="text-right">EXPEDITION FEE</td>
                                         <td class="text-right">{{ number_format_quantity($invoice_archived->expedition_fee) }}</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="4" class="text-right">TOTAL</td>
+                                        <td colspan="5" class="text-right">TOTAL</td>
                                         <td class="text-right">{{ number_format_quantity($invoice_archived->total) }}</td>
                                     </tr>
                                     </tfoot>
