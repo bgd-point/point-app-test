@@ -121,7 +121,7 @@
                                                 <td class="text-right">{{ number_format_quantity($invoice_item->quantity) }} {{ $invoice_item->unit }}</td>
                                                 <td class="text-right">{{ number_format_quantity($invoice_item->price) }}</td>
                                                 <td class="text-right">{{ number_format_quantity($invoice_item->discount) }}</td>
-                                                <td class="text-right">{{ number_format_quantity(($invoice_item->quantity * $invoice_item->price) - ($invoice_item->quantity * $invoice_item->discount)) }}</td>
+                                                <td class="text-right">{{ number_format_quantity(($invoice_item->quantity * $invoice_item->price) - ($invoice_item->quantity * $invoice_item->price * $invoice_item->discount / 100)) }}</td>
                                             </tr>
                                         @endforeach
                                         </tbody>
