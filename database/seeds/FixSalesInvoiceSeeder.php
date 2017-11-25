@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Models\FormulirLock;
+use Point\Framework\Models\Refer;
+use Point\PointSales\Models\Sales\DeliveryOrder;
 use Point\PointSales\Models\Sales\Invoice;
 use Point\PointSales\Models\Sales\InvoiceItem;
 
@@ -10,22 +14,54 @@ class FixSalesInvoiceSeeder extends Seeder
     {
         \DB::beginTransaction();
 
-        $invoices = Invoice::joinFormulir()->notArchived()->notCanceled()->selectOriginal()->get();
+        Refer::where('by_type', 'Point\PointSales\Models\Sales\DeliveryOrderItem')->delete();
 
-        foreach($invoices as $invoice) {
-            $archived = Invoice::joinFormulir()->selectOriginal()->where('archived', $invoice->formulir->form_number)->orderBy('id', 'asc')->first();
-            if ($archived) {
-                foreach($archived->items as $item) {
-                    $invoice_item = new InvoiceItem;
-                    $invoice_item->point_sales_invoice_id = $invoice->id;
-                    $invoice_item->item_id = $item->item_id;
-                    $invoice_item->quantity = $item->quantity;
-                    $invoice_item->price = $item->price;
-                    $invoice_item->discount = $item->discount;
-                    $invoice_item->unit = $item->unit;
-                    $invoice_item->allocation_id = $item->allocation_id;
-                    $invoice_item->converter = 1;
-                    $invoice_item->save();
+        \DB::commit();
+
+        $invoices = Invoice::joinFormulir()->notArchived()->notCanceled()->selectOriginal()->get();
+        foreach ($invoices as $invoice) {
+            \Log::info($invoice->formulir->form_number);
+            $reference = FormulirLock::where('locking_id', $invoice->formulir_id)->where('locked', 1)->first();
+            \Log::info($reference);
+
+            if ($reference) {
+                $delivery_order = DeliveryOrder::where('formulir_id', $reference->locked_id)->first();
+                foreach($invoice->items as $invoice_item) {
+                    $close = true;
+                    foreach ($delivery_order->items as $delivery_order_item) {
+                        if ($delivery_order_item->item_id == $invoice_item->item_id) {
+                            ReferHelper::create(
+                                'Point\PointSales\Models\Sales\DeliveryOrderItem',
+                                $delivery_order_item->id,
+                                get_class($invoice_item),
+                                $invoice_item->id,
+                                get_class($invoice),
+                                $invoice->id,
+                                $invoice_item->quantity
+                            );
+                        }
+
+                        $refers = Refer::where('by_type', '=', 'Point\PointSales\Models\Sales\DeliveryOrderItem')
+                            ->where('by_id', '=', $delivery_order_item->id)
+                            ->where('status', '=', true)
+                            ->get();
+
+                        $value = 0;
+                        foreach ($refers as $refer) {
+                            $value += $refer->value;
+                        }
+
+                        \Log::info(number_format_quantity($value) . ' != ' .number_format_quantity($delivery_order_item->quantity));
+                        if (number_format_quantity($value) != number_format_quantity($delivery_order_item->quantity)) {
+                            $close = false;
+                        }
+                    }
+
+                    if ($close) {
+                        $delivery_order->formulir->form_status = 1;
+                        $delivery_order->formulir->save();
+                    }
+
                 }
             }
         }

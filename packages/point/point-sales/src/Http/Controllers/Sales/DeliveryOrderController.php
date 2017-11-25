@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Point\Core\Helpers\UserHelper;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
+use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
 use Point\PointExpedition\Models\ExpeditionOrder;
@@ -140,6 +141,7 @@ class DeliveryOrderController extends Controller
         $view->reference = $reference;
         $view->list_delivery_order_archived = DeliveryOrder::joinFormulir()->archived($view->delivery_order->formulir->form_number)->get();
         $view->revision = $view->list_delivery_order_archived->count();
+        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->delivery_order->formulir_id)->get();
         return $view;
     }
 
