@@ -125,6 +125,7 @@
                                                 </td>
                                                 <td>
                                                     <a href="{{ url('master/item/'.$delivery_order_item->item_id) }}">{{ $delivery_order_item->item->codeName }}</a>
+                                                    <input type="hidden" name="item_id[]" value="{{$delivery_order_item->item_id}}">
                                                 </td>
                                                 <td>
                                                     {{ $delivery_order_item->allocation->name }}
