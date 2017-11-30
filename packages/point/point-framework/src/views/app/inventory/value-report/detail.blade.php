@@ -60,8 +60,8 @@
                                 <td>{{date_format_view($inventory->form_date)}}</td>
                                 <td>{{number_format_quantity($inventory->quantity)}}</td>
                                 <td>{{number_format_quantity($inventory->cogs)}}</td>
-                                <td>{{number_format_quantity($inventory->total_quantity)}}</td>
-                                <td>{{number_format_quantity($inventory->total_value)}}</td>
+                                <td>{{number_format_quantity($total_quantity)}}</td>
+                                <td>{{number_format_quantity($total_value)}}</td>
                             </tr>
                         @endforeach
                     </tbody> 
