@@ -10,7 +10,17 @@
         </tr>
     </thead>
     <tbody>
-        <?php $balance = 0; ?>
+        <?php
+            $balance = 0;
+            $opening_balance = 0;
+            if(\Input::get('subledger_id')) {
+                $opening_balance = \JournalHelper::coaOpeningBalanceSubledger($coa_id, $date_from, \Input::get('subledger_id'));
+                $balance = $opening_balance;
+            } else {
+                $opening_balance = \JournalHelper::coaOpeningBalance($coa_id, $date_from);
+                $balance = $opening_balance;
+            }
+        ?>
         <tr>
             <td>{{ date_format_view($date_from) }}</td>
             <td></td>
@@ -18,9 +28,9 @@
             <td></td>
             <td></td>
             @if(\Input::get('subledger_id'))
-            <td>{{ number_format_accounting(\JournalHelper::coaOpeningBalanceSubledger($coa_id, $date_from, \Input::get('subledger_id'))) }}</td>
+            <td>{{ number_format_accounting($opening_balance) }}</td>
                 @else
-            <td>{{ number_format_accounting(\JournalHelper::coaOpeningBalance($coa_id, $date_from)) }}</td>
+            <td>{{ number_format_accounting($opening_balance) }}</td>
             @endif
         </tr>
         
