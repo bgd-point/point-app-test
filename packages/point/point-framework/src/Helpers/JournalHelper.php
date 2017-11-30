@@ -188,6 +188,22 @@ class JournalHelper
         return static::journalValue($journal);
     }
 
+    public static function coaOpeningBalanceSubledger($coa_id, $date_from, $subledger_id)
+    {
+        $journal = Journal::where('coa_id', $coa_id)
+            ->where('form_date', '<', $date_from)
+            ->where('subledger_id', '<', $subledger_id)
+            ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+            ->groupBy('coa_id')
+            ->first();
+
+        if (!$journal) {
+            return 0;
+        }
+
+        return static::journalValue($journal);
+    }
+
     public static function coaEndingBalance($coa_id, $date_to)
     {
         $journal = Journal::where('coa_id', $coa_id)

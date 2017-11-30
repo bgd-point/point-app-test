@@ -17,7 +17,7 @@
             <td>OPENING BALANCE</td>
             <td></td>
             <td></td>
-            <td>{{ number_format_accounting(\JournalHelper::coaOpeningBalance($coa_id, $date_from)) }}</td>
+            <td>{{ number_format_accounting(\JournalHelper::coaOpeningBalanceSubledger($coa_id, $date_from, \Input::get('subledger_id'))) }}</td>
         </tr>
         
         @if($journals)
