@@ -168,7 +168,7 @@
                 </div>
 
                 <div class="tab-pane" id="block-tabs-settings">
-                    @if($output->formulir->form_status == 0)
+                    @if($output->formulir->form_status != -1)
                         <fieldset>
                             <div class="form-group">
                                 <div class="col-md-12">
