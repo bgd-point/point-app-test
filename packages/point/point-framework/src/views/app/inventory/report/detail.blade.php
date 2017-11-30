@@ -62,7 +62,7 @@
                                 <td>{{$inventory->formulir->form_number}}</td>
                                 <td>{{date_format_view($inventory->form_date)}}</td>
                                 <td>{{number_format_quantity($inventory->quantity)}}</td>
-                                <td>{{number_format_quantity($inventory->total_quantity)}}</td>
+                                <td>{{number_format_quantity($total_quantity)}}</td>
                             </tr>
                         @endforeach
                         @if($list_inventory->count())
