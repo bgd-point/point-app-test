@@ -23,4 +23,9 @@ class OpeningInventory extends Model
     {
         return $this->morphMany('Point\Framework\Models\Journal', 'journalable');
     }
+
+    public static function showUrl($id)
+    {
+        return '#';
+    }
 }
