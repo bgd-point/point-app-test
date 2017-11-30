@@ -189,7 +189,7 @@
                 </div>
 
                 <div class="tab-pane" id="block-tabs-settings">
-                    @if($input->form_status == 0)
+                    @if($input->form_status != -1)
                         @if(formulir_is_not_locked($input->formulir_id))
                             <fieldset>
                                 <div class="form-group">
