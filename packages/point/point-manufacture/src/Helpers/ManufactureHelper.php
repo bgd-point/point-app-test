@@ -33,7 +33,7 @@ class ManufactureHelper
             $finished_goods->product_id = $request->input('product_id')[$i];
             $finished_goods->warehouse_id = $request->input('product_warehouse_id')[$i];
             $finished_goods->quantity += $request->input('product_quantity')[$i];
-            $unit = ItemUnit::find($request->input('product_id')[$i]);
+            $unit = ItemUnit::where('item_id',$request->input('product_id')[$i])->first();
             $finished_goods->unit = $unit->name;
             $converter = number_format_db($unit->converter);
             $finished_goods->converter = $converter;
@@ -47,7 +47,7 @@ class ManufactureHelper
             $raw_material->material_id = $request->input('material_id')[$i];
             $raw_material->warehouse_id = $request->input('material_warehouse_id')[$i];
             $raw_material->quantity += number_format_db($request->input('material_quantity')[$i]);
-            $unit = ItemUnit::find($request->input('material_id')[$i]);
+            $unit = ItemUnit::where('item_id',$request->input('material_id')[$i])->first();
             $raw_material->unit = $unit->name;
             $raw_material->converter = number_format_db($unit->converter);
             $raw_material->save();
