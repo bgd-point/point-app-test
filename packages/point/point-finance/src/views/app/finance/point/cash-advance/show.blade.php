@@ -79,6 +79,18 @@
                                 {{ $cash_advance->employee->name }}
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Cash Advance Amount</label>
+                            <div class="col-md-6 content-show">
+                                {{ number_format_quantity($cash_advance->amount) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Remaining Amount</label>
+                            <div class="col-md-6 content-show">
+                                {{ number_format_quantity($cash_advance->remaining_amount) }}
+                            </div>
+                        </div>
 
                         <div class="form-group">
                             <label class="col-md-3 control-label">Notes</label>
