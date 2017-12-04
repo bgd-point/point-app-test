@@ -44,7 +44,7 @@ trait ServiceDownpaymentVesa
             array_push($array, [
                 'url' => url('purchasing/point/service/downpayment/' . $downpayment->id),
                 'deadline' => $downpayment->formulir->form_date,
-                'message' => 'please approve this purchasing downpayment ' . $downpayment->formulir->form_number,
+                'message' => 'please approve this purchasing downpayment ' . formulir_url($downpayment->formulir),
                 'permission_slug' => 'approval.point.purchasing.service.downpayment'
             ]);
         }
@@ -72,7 +72,7 @@ trait ServiceDownpaymentVesa
             array_push($array, [
                 'url' => url('purchasing/point/service/downpayment/' . $downpayment->id.'/edit'),
                 'deadline' => $downpayment->formulir->form_date,
-                'message' => $downpayment->formulir->form_number. ' Rejected, please edit your form purchasing downpayment',
+                'message' => formulir_url($downpayment->formulir) . ' Rejected, please edit your form purchasing downpayment',
                 'permission_slug' => 'update.point.purchasing.service.downpayment'
             ]);
         }

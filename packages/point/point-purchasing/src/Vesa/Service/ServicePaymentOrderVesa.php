@@ -54,7 +54,7 @@ trait ServicePaymentOrderVesa
                 'url' => url('purchasing/point/service/payment-order/create-step-2/' . $invoice->person_id),
                 'deadline' => $invoice->due_date ? : $invoice->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $invoice->due_date) ? true : false,
-                'message' => 'Make a payment order from invoice number ' . $invoice->formulir->form_number,
+                'message' => 'Make a payment order from invoice number ' . formulir_url($invoice->formulir),
                 'permission_slug' => 'create.point.purchasing.service.payment.order'
             ]);
         }
@@ -84,7 +84,7 @@ trait ServicePaymentOrderVesa
                 'url' => url('purchasing/point/service/payment-order/' . $payment_order->id),
                 'deadline' => $payment_order->due_date ? : $payment_order->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $payment_order->due_date) ? true : false,
-                'message' => 'Please approve this payment order service number ' . $payment_order->formulir->form_number,
+                'message' => 'Please approve this payment order service number ' . formulir_url($payment_order->formulir),
                 'permission_slug' => 'approval.point.purchasing.service.payment.order'
             ]);
         }
@@ -115,7 +115,7 @@ trait ServicePaymentOrderVesa
                 'url' => url('purchasing/point/service/payment-order/' . $payment_order->id.'/edit'),
                 'deadline' => $payment_order->due_date ? : $payment_order->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $payment_order->due_date) ? true : false,
-                'message' => $payment_order->formulir->form_number. ' Rejected, please edit your form payment order service',
+                'message' => formulir_url($payment_order->formulir) . ' Rejected, please edit your form payment order service',
                 'permission_slug' => 'update.point.purchasing.service.payment.order'
             ]);
         }

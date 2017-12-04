@@ -95,7 +95,7 @@ trait CashAdvanceVesa
             array_push($array, [
                 'url' => url('purchasing/point/cash-advance/' . $cash_advance->id),
                 'deadline' => $cash_advance->formulir->form_date,
-                'message' => 'please approve this purchasing cash advance ' . $cash_advance->formulir->form_number,
+                'message' => 'please approve this purchasing cash advance ' . formulir_url($cash_advance->formulir),
                 'permission_slug' => 'approval.point.purchasing.cash.advance'
             ]);
         }
@@ -123,7 +123,7 @@ trait CashAdvanceVesa
             array_push($array, [
                 'url' => url('purchasing/point/cash-advance/' . $cash_advance->id.'/edit'),
                 'deadline' => $cash_advance->formulir->form_date,
-                'message' => $cash_advance->formulir->form_number. ' Rejected, please edit your form purchasing cash advance',
+                'message' => formulir_url($cash_advance->formulir) . ' Rejected, please edit your form purchasing cash advance',
                 'permission_slug' => 'update.point.purchasing.cash.advance'
             ]);
         }
