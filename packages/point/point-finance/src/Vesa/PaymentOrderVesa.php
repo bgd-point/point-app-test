@@ -44,7 +44,7 @@ trait PaymentOrderVesa
             array_push($array, [
                 'url' => url('finance/point/payment-order/' . $payment_order->id),
                 'deadline' => $payment_order->formulir->form_date,
-                'message' => 'please approve this payment order ' . $payment_order->formulir->form_number,
+                'message' => 'please approve this payment order ' . formulir_url($payment_order->formulir),
                 'permission_slug' => 'approval.point.finance.payment.order'
             ]);
         }
@@ -73,7 +73,7 @@ trait PaymentOrderVesa
             array_push($array, [
                 'url' => url('finance/point/payment-order/' . $payment_order->id.'/edit'),
                 'deadline' => $payment_order->required_date ? : $payment_order->formulir->form_date,
-                'message' => $payment_order->formulir->form_number. ' Rejected, please edit your form',
+                'message' => formulir_url($payment_order->formulir) . ' Rejected, please edit your form',
                 'permission_slug' => 'update.point.finance.payment.order'
             ]);
         }
