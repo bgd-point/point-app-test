@@ -1,8 +1,3 @@
-@if(!count($list_report))
-<h3 class="">Data not found</h3>
-<?php return false; ?>
-@endif
-
 <a href="{{$url}}" class="btn btn-primary btn-effect-ripple">Export to Excel</a>
 <a href="{{$url_pdf}}" class="btn btn-primary btn-effect-ripple">Export to PDF</a>
 <br><br>
