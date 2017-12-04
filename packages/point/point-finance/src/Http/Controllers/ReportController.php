@@ -62,6 +62,7 @@ class ReportController extends Controller
             ->where('formulir.form_date', '<=', date_format_db($date_to, 'end'))
             ->where('is_payed', true)
             ->where('remaining_amount', '>', 0)
+            ->where('coa_id', $coa_id)
             ->sum('remaining_amount');
 
         $view->opening_balance = $report['journal_debit'] - $report['journal_credit'];
