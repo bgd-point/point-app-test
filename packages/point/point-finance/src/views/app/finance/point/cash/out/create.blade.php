@@ -28,11 +28,11 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Payment date *</label>
                     <div class="col-md-3">
-                        <input type="text" name="payment_date" class="form-control date input-datepicker" data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}" value="{{ date(date_format_get(), strtotime(\Carbon::now())) }}">
+                        <input type="text" id="payment-date" name="payment_date" class="form-control date input-datepicker" data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}" value="{{ date(date_format_get(), strtotime(\Carbon::now())) }}">
                     </div>
                     <div class="col-md-3">
                         <div class="input-group bootstrap-timepicker">
-                            <input type="text" id="time" name="time" class="form-control timepicker" value="{{old('time')}}">
+                            <input type="text" id="time" name="time" class="form-control timepicker" value="{{date(date_format_get(), strtotime(\Carbon::now()))}}">
                             <span class="input-group-btn">
                                 <a href="javascript:void(0)" class="btn btn-effect-ripple btn-primary"><i class="fa fa-clock-o"></i></a>
                             </span>
@@ -42,7 +42,7 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Cash Account *</label>
                     <div class="col-md-6">
-                        <select name="account_cash_id" class="selectize" data-placeholder="Choose account...">
+                        <select id="account_cash_id" name="account_cash_id" class="selectize" data-placeholder="Choose account...">
                             <option ></option>
                             @foreach($list_coa as $coa)
                                 <option selected value="{{$coa->id}}">{{$coa->account}}</option>
@@ -223,9 +223,12 @@
         $.ajax({
           url: "{{URL::to('finance/point/cash-advance/list')}}",
           method: "get",
+          data: {
+            date: $('#payment-date').val(),
+            type: 'cash',
+            account: $('#account_cash_id').val()
+          },
           success: function(data) {
-            console.log("ss");
-            console.log(data);
             var allocation = $('#cash-advance-id-'+counter)[0].selectize;
             allocation.load(function(callback) {
               callback(eval(JSON.stringify(data.lists)));
