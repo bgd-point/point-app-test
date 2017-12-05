@@ -202,16 +202,19 @@ class CashAdvanceController extends Controller
      */
     public function destroy($id)
     {
-        //
+
     }
 
-    public function _list()
+    public function _list(Request $request)
     {
         return response()->json(array(
             'lists' => CashAdvance::joinFormulir()->joinEmployee()->notArchived()->notCanceled()->selectOriginal()
                 ->where('is_payed', true)
+                ->where('form_date', '<', date_format_db($request->get('date'),'end'))
+                ->where('payment_type', $request->get('type'))
+                ->where('coa_id', $request->get('account'))
                 ->where('remaining_amount', '>', 0)
-                ->select('point_finance_cash_advance.id as value', DB::raw('CONCAT(formulir.form_number, " - ", remaining_amount, " a/n ",person.name) AS text'))
+                ->select('point_finance_cash_advance.id as value', DB::raw('CONCAT(formulir.form_date, " - ", remaining_amount, " a/n ",person.name) AS text'))
                 ->get()
                 ->toArray()
         ));

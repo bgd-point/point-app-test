@@ -28,7 +28,7 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Payment date *</label>
                     <div class="col-md-3">
-                        <input type="text" name="payment_date" class="form-control date input-datepicker" data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}" value="{{ date(date_format_get(), strtotime(\Carbon::now())) }}">
+                        <input type="text" id="payment-date" name="payment_date" class="form-control date input-datepicker" data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}" value="{{ date(date_format_get(), strtotime(\Carbon::now())) }}">
                     </div>
                     <div class="col-md-3">
                         <div class="input-group bootstrap-timepicker">
@@ -42,7 +42,7 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Bank Account *</label>
                     <div class="col-md-6">
-                        <select name="account_bank_id" class="selectize" data-placeholder="Choose account...">
+                        <select id="account_bank_id" name="account_bank_id" class="selectize" data-placeholder="Choose account...">
                             <option ></option>
                             @foreach($list_coa as $coa)
                                 <option selected value="{{$coa->id}}">{{$coa->account}}</option>
@@ -215,6 +215,11 @@
         $.ajax({
           url: "{{URL::to('finance/point/cash-advance/list')}}",
           method: "get",
+          data: {
+            date: $('#payment-date').val(),
+            type: 'bank',
+            account: $('#account_bank_id').val()
+          },
           success: function(data) {
             console.log("ss");
             console.log(data);
