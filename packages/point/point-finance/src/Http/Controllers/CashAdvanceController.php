@@ -214,7 +214,7 @@ class CashAdvanceController extends Controller
                 ->where('payment_type', $request->get('type'))
                 ->where('coa_id', $request->get('account'))
                 ->where('remaining_amount', '>', 0)
-                ->select('point_finance_cash_advance.id as value', DB::raw('CONCAT(formulir.form_date, " - ", remaining_amount, " a/n ",person.name) AS text'))
+                ->select('point_finance_cash_advance.id as value', DB::raw('CONCAT(formulir.form_number, " - ", remaining_amount, " a/n ",person.name) AS text'))
                 ->get()
                 ->toArray()
         ));
