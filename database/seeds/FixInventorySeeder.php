@@ -7,8 +7,6 @@ class FixInventorySeeder extends Seeder
 {
     public function run()
     {
-        \DB::beginTransaction();
-
         $inventories = Inventory::orderBy('form_date', 'asc')
             ->orderBy('formulir_id', 'asc')
             ->orderBy('id', 'asc')
@@ -38,9 +36,6 @@ class FixInventorySeeder extends Seeder
                     if ($l_inventory->total_quantity > 0) {
                         $total_value += $l_inventory->quantity * $l_inventory->price;
                         $l_inventory->cogs = $l_inventory->total_value / $l_inventory->total_quantity;
-                        if ($inventory->item_id == 21) {
-                            \Log::info('cogs: ' . $l_inventory->formulir->form_number . ' = '. $l_inventory->total_value .' / '. $l_inventory->total_quantity . ' = '. $l_inventory->cogs);
-                        }
                         $cogs_tmp = $l_inventory->cogs;
                     } else {
                         $l_inventory->recalculate = true;
@@ -53,16 +48,11 @@ class FixInventorySeeder extends Seeder
                     } else {
                         $total_value += $l_inventory->quantity * $l_inventory->cogs;
                     }
-                    if ($inventory->item_id == 21) {
-                        \Log::info('cogs: ' . $l_inventory->total_value .' / '. $l_inventory->total_quantity . ' = '. $l_inventory->cogs);
-                    }
                 }
                 $l_inventory->total_quantity = $total_quantity;
                 $l_inventory->total_value = $l_inventory->total_quantity ? $total_value : 0;
                 $l_inventory->save();
             }
         }
-
-        \DB::commit();
     }
 }
