@@ -63,7 +63,7 @@ class PaymentHelper
         for ($i = 0; $i < count(app('request')->input('cash_advance_amount')); $i++) {
             if (app('request')->input('cash_advance_amount')[0]) {
                 $cash_cash_advance = new CashCashAdvance;
-                $cash_cash_advance->point_finance_cash_id = $cash->id;
+                $cash_cash_advance->point_finance_cash_id = $formulir->id;
                 $cash_cash_advance->cash_advance_id = app('request')->input('cash_advance_id')[0];
                 $cash_cash_advance->cash_advance_amount = number_format_db(app('request')->input('cash_advance_amount')[0]);
                 $cash_cash_advance->close = app('request')->input('close')[0] == 'on' ? 1 : 0;
@@ -197,7 +197,7 @@ class PaymentHelper
         for ($i = 0; $i < count(app('request')->input('cash_advance_amount')); $i++) {
             if (app('request')->input('cash_advance_amount')[0]) {
                 $cash_cash_advance = new CashCashAdvance;
-                $cash_cash_advance->point_finance_cash_id = $bank->id;
+                $cash_cash_advance->point_finance_cash_id = $formulir->id;
                 $cash_cash_advance->cash_advance_id = app('request')->input('cash_advance_id')[0];
                 $cash_cash_advance->cash_advance_amount = number_format_db(app('request')->input('cash_advance_amount')[0]);
                 $cash_cash_advance->close = app('request')->input('close')[0] == 'on' ? 1 : 0;
