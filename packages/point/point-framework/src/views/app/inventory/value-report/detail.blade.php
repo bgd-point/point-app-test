@@ -53,15 +53,15 @@
                         </tr>
                         @foreach($list_inventory as $inventory)
                             <?php $total_quantity += $inventory->quantity ?>
-                            <?php $total_value += $inventory->total_value ?>
+                            <?php $total_value += $inventory->quantity * $inventory->cogs ?>
                             <tr>
                                 @if(!$warehouse) <td>{{$inventory->warehouse->name}}</td> @endif
                                 <td>{{$inventory->formulir->form_number}}</td>
                                 <td>{{date_format_view($inventory->form_date)}}</td>
                                 <td>{{number_format_quantity($inventory->quantity)}}</td>
                                 <td>{{number_format_quantity($inventory->cogs)}}</td>
-                                <td>{{number_format_quantity($inventory->total_quantity)}}</td>
-                                <td>{{number_format_quantity($inventory->total_value)}}</td>
+                                <td>{{number_format_quantity($total_quantity)}}</td>
+                                <td>{{number_format_quantity($total_value)}}</td>
                             </tr>
                         @endforeach
                         </tbody>
