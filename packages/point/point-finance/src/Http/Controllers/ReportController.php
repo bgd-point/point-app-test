@@ -8,6 +8,7 @@ use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Master\Person;
 use Point\PointFinance\Models\Bank\Bank;
 use Point\PointFinance\Models\Cash\Cash;
+use Point\PointFinance\Models\Cash\CashCashAdvance;
 use Point\PointFinance\Models\CashAdvance;
 
 class ReportController extends Controller
@@ -61,9 +62,16 @@ class ReportController extends Controller
         $view->total_cash_advance = CashAdvance::joinFormulir()->selectOriginal()->notArchived()->notCanceled()
             ->where('formulir.form_date', '<=', date_format_db($date_to, 'end'))
             ->where('is_payed', true)
-            ->where('remaining_amount', '>', 0)
+            ->where('amount', '>', 0)
             ->where('coa_id', $coa_id)
-            ->sum('remaining_amount');
+            ->sum('amount');
+
+        $view->total_cash_advance_used = CashCashAdvance::joinFormulir()->selectOriginal()->notArchived()->notCanceled()
+            ->where('formulir.form_date', '<=', date_format_db($date_to, 'end'))
+            ->where('cash_advance_amount', '>', 0)
+            ->sum('cash_advance_amount');
+
+        \Log::info($view->total_cash_advance_used);
 
         $view->opening_balance = $report['journal_debit'] - $report['journal_credit'];
         $view->url = url('finance/point/report/export/?type='.$type.'&subledger_id='.$subledger.'&coa_id='.$coa_id.'&date_from='.$date_from.'&date_to='.$date_to);

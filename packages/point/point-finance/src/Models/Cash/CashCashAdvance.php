@@ -15,7 +15,7 @@ class CashCashAdvance extends Model
 
     public function scopeJoinFormulir($q)
     {
-        $q->join('formulir', 'formulir.id', '=', 'point_finance_cash.formulir_id');
+        $q->join('formulir', 'formulir.id', '=', 'point_finance_cash_id');
     }
 
     public function scopeNotArchived($q, $form_number = 0)
