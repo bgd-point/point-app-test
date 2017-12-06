@@ -41,9 +41,9 @@ class CashCashAdvance extends Model
         $q->join('point_finance_cash', 'point_finance_cash.id', '=', $this->table.'.point_finance_cash_id');
     }
 
-    public function cash()
+    public function used()
     {
-        return $this->belongsTo('Point\PointFinance\Models\Cash\Cash', 'point_finance_cash_id');
+        return $this->belongsTo('Point\Framework\Models\Formulir', 'point_finance_cash_id');
     }
 
     public function cashAdvance()
