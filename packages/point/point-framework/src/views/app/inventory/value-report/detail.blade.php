@@ -54,7 +54,7 @@
                         @foreach($list_inventory as $inventory)
                             <?php $total_quantity += $inventory->quantity ?>
                             <?php $total_value += $inventory->quantity * $inventory->cogs ?>
-                            <tr>
+                            <tr @if($inventory->recalculate == 1) style="background: red;color:white;" @endif>
                                 @if(!$warehouse) <td>{{$inventory->warehouse->name}}</td> @endif
                                 <td>{{$inventory->formulir->form_number}}</td>
                                 <td>{{date_format_view($inventory->form_date)}}</td>
