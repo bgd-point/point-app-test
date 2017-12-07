@@ -82,12 +82,12 @@
                                             <th width="15%" class="text-right">QUANTITY</th>
                                         </tr>
                                         </thead>
-                                        <?php $counter = 1; ?>
+                                        <?php $counter = 1;$subtotal=0; ?>
                                         <tbody class="manipulate-row">
 
                                         @foreach($list_expedition_order_invoice as $expedition_order)
+                                            <?php $subtotal += $expedition_order->expedition_fee; ?>
                                             @foreach($expedition_order->items as $receive_order_item)
-
                                                 <tr>
                                                     <td>
                                                         <a href="{{url('expedition/point/expedition-order/'.$expedition_order->id)}}">{{$expedition_order->formulir->form_number}} </a>
@@ -123,9 +123,9 @@
 
                     <fieldset>
                         <div class="form-group">
-                            <label class="col-md-9 control-label text-right">SUB TOTAL</label>
+                            <label class="col-md-9 control-label text-right">EXPEDITION FEE</label>
                             <div class="col-md-3 content-show">
-                                <input type="text" id="subtotal" onclick="setToNontax()" onkeyup="calculate()" name="subtotal" class="form-control format-quantity text-right" value="0"/>
+                                <input type="text" id="subtotal" onclick="setToNontax()" onkeyup="calculate()" name="subtotal" class="form-control format-quantity text-right" value="{{ $subtotal }}"/>
                             </div>
                         </div>
                         <div class="form-group">
