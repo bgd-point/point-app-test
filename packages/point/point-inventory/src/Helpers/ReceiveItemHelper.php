@@ -26,7 +26,7 @@ class ReceiveItemHelper
 
         for ($i=0; $i < count($item); $i++) {
             $transfer_item_detail = TransferItemDetail::where('transfer_item_id', $receive_item->id)->where('item_id', $item[$i])->first();
-            $transfer_item_detail->qty_received = $quantity[$i];
+            $transfer_item_detail->qty_received = number_format_db($quantity[$i]);
             $transfer_item_detail->save();
 
             $inventory = new Inventory;
