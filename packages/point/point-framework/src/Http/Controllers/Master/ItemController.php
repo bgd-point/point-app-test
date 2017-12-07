@@ -222,10 +222,10 @@ class ItemController extends Controller
 
                 $form_date = date_format_db($request->input('form_date'), 'start');
                 $form_number = FormulirHelper::number('opening-inventory', $form_date);
-
                 $formulir = new Formulir;
                 $formulir->form_date = $form_date;
                 $formulir->form_number = $form_number['form_number'];
+                $formulir->form_raw_number = $form_number['raw'];
                 $formulir->approval_to = 1;
                 $formulir->approval_status = 1;
                 $formulir->form_status = 1;
