@@ -80,7 +80,7 @@ class GoodsReceivedController extends Controller
         $view = view('point-purchasing::app.purchasing.point.inventory.goods-received.create-step-3');
 
         $purchase_order = PurchaseOrder::find($purchase_order_id);
-        $view->list_expedition_order = ExpeditionOrder::joinFormulir()->approvalApproved()->notArchived()->where('done', 0)->where('form_reference_id', $purchase_order->formulir_id)->orderBy('group')->selectOriginal()->paginate(100);
+        $view->list_expedition_order = ExpeditionOrder::joinFormulir()->approvalApproved()->notArchived()->notCanceled()->where('done', 0)->where('form_reference_id', $purchase_order->formulir_id)->orderBy('group')->selectOriginal()->paginate(100);
 
         return $view;
     }
@@ -89,7 +89,7 @@ class GoodsReceivedController extends Controller
     {
         $view = view('point-purchasing::app.purchasing.point.inventory.goods-received.create-step-4');
         $view->reference_purchase_order = PurchaseOrder::find($purchase_order_id);
-        $view->reference_expedition_order = $group_expedition ? ExpeditionOrder::joinFormulir()->notArchived()->approvalApproved()->where('done', 0)->where('group', $group_expedition)->where('form_reference_id', $view->reference_purchase_order->formulir_id)->selectOriginal()->first() : '';
+        $view->reference_expedition_order = $group_expedition ? ExpeditionOrder::joinFormulir()->notArchived()->notCanceled()->approvalApproved()->where('done', 0)->where('group', $group_expedition)->where('form_reference_id', $view->reference_purchase_order->formulir_id)->selectOriginal()->first() : '';
         $view->list_item = $view->reference_expedition_order ? : $view->reference_purchase_order;
         $view->list_warehouse = Warehouse::all();
         return $view;
