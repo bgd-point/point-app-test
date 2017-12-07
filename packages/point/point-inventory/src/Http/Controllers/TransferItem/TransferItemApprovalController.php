@@ -81,7 +81,7 @@ class TransferItemApprovalController extends Controller
 
         FormulirHelper::approve($transfer_item->formulir, $approval_message, 'approval.point.inventory.transfer.item', $token);
         TransferItemHelper::approve($transfer_item);
-        timeline_publish('approval.point.inventory.transfer.item', 'Approve Transfer Item "'  . $transfer_item->formulir->form_number .'"', $this->getUserForTimeline($request, $stock_opname->formulir->approval_to));
+        timeline_publish('approval.point.inventory.transfer.item', 'Approve Transfer Item "'  . $transfer_item->formulir->form_number .'"', $this->getUserForTimeline($request, $transfer_item->formulir->approval_to));
 
         DB::commit();
 
@@ -98,11 +98,53 @@ class TransferItemApprovalController extends Controller
         \DB::beginTransaction();
 
         \FormulirHelper::reject($transfer_item->formulir, $approval_message, 'approval.point.inventory.transfer.item', $token);
-        timeline_publish('reject', $transfer_item->formulir->form_number.' Rejected', $this->getUserForTimeline($request, $stock_opname->formulir->approval_to));
+        timeline_publish('reject', $transfer_item->formulir->form_number.' Rejected', $this->getUserForTimeline($request, $transfer_item->formulir->approval_to));
 
         \DB::commit();
 
         gritter_success('form rejected', false);
-        return $this->getRedirectLink($request, $stock_opname->formulir);
+        return $this->getRedirectLink($request, $transfer_item->formulir);
+    }
+
+    public function approveAll()
+    {
+        $token = \Input::get('token');
+        $array_formulir_id = explode(',', \Input::get('formulir_id'));
+        $approval_message = '';
+
+        DB::beginTransaction();
+        foreach ($array_formulir_id as $id) {
+            $transfer_item = TransferItem::where('formulir_id', $id)->first();
+            FormulirHelper::approve($transfer_item->formulir, $approval_message, 'approval.point.purchasing.requisition', $token);
+            timeline_publish('approve', $transfer_item->formulir->form_number . ' approved', $transfer_item->formulir->approval_to);
+        }
+        DB::commit();
+
+        $view = view('framework::app.approval-all-status');
+        $view->array_formulir_id = $array_formulir_id;
+        $view->formulir = \Input::get('formulir_id');
+
+        return $view;
+    }
+
+    public function rejectAll()
+    {
+        $token = \Input::get('token');
+        $array_formulir_id = explode(',', \Input::get('formulir_id'));
+        $approval_message = '';
+
+        DB::beginTransaction();
+        foreach ($array_formulir_id as $id) {
+            $transfer_item = TransferItem::where('formulir_id', $id)->first();
+            FormulirHelper::reject($transfer_item->formulir, $approval_message, 'approval.point.purchasing.requisition', $token);
+            timeline_publish('reject', $transfer_item->formulir->form_number . ' rejected', $transfer_item->formulir->approval_to);
+        }
+        DB::commit();
+
+        $view = view('framework::app.approval-all-status');
+        $view->array_formulir_id = $array_formulir_id;
+        $view->formulir = \Input::get('formulir_id');
+
+        return $view;
     }
 }
