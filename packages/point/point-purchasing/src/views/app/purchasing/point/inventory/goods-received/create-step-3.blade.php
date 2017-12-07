@@ -53,7 +53,7 @@
                                     
                                     <td>
                                         {{ date_format_view($expedition_order->formulir->form_date) }} <br>
-                                        <a href="#"> {{ $expedition_order->formulir->form_number }} </a>
+                                        {{ formulir_url($expedition_order->formulir) }}
                                     </td>
                                     <td>{{$expedition_order->formulir->notes}}</td>
                                     <td>{!! get_url_person($expedition_order->reference()->supplier_id) !!}</td>
