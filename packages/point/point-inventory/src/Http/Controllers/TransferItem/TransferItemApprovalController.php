@@ -32,7 +32,7 @@ class TransferItemApprovalController extends Controller
     {
         access_is_allowed('create.point.inventory.transfer.item');
 
-        $list_approver = TransferItem::joinFormulirselectApproverList(app('request')->input('formulir_id'));
+        $list_approver = TransferItem::selectApproverList(app('request')->input('formulir_id'));
         $request = $request->input();
         $token = md5(date('ymdhis'));
 
