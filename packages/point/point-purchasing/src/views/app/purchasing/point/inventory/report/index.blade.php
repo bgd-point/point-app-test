@@ -72,7 +72,7 @@
                                 <td><a href="{{url('master/item/'.$report->item_id)}}"> {{$report->item->codeName}}</a></td>
                                 <td class="text-center">{{number_format_quantity($report->quantity, 0) . ' ' . $report->unit}}</td>
                                 <td class="text-right">{{number_format_quantity($report->price)}}</td>
-                                <td class="text-right">{{number_format_quantity($report->discount)}}</td>
+                                <td class="text-right">{{number_format_quantity($report->discount)}} %</td>
                                 <td class="text-right">{{number_format_quantity($total)}}</td>
                             </tr>
                         @endforeach
