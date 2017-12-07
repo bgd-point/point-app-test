@@ -53,6 +53,7 @@
                             <th>Item</th>
                             <th class="text-center">Quantity</th>
                             <th class="text-right">Price</th>
+                            <th class="text-right">Discount</th>
                             <th class="text-right">Total</th>
                         </tr>
                         </thead>
@@ -61,6 +62,7 @@
                         @foreach($list_report as $report)
                             <?php
                             $total = $report->price * $report->quantity;
+                            $total = $total - ($total * $report->discount / 100);
                             $total_value += $total;
                             ?>
                             <tr>
@@ -70,6 +72,7 @@
                                 <td><a href="{{url('master/item/'.$report->item_id)}}"> {{$report->item->codeName}}</a></td>
                                 <td class="text-center">{{number_format_quantity($report->quantity, 0) . ' ' . $report->unit}}</td>
                                 <td class="text-right">{{number_format_quantity($report->price)}}</td>
+                                <td class="text-right">{{number_format_quantity($report->discount)}}</td>
                                 <td class="text-right">{{number_format_quantity($total)}}</td>
                             </tr>
                         @endforeach
