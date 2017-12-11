@@ -71,19 +71,23 @@
     @endif
     </tbody>
     <tfoot>
+    @if($invoice->subtotal == $invoice->total)
     <tr>
         <td colspan="5" class="text-right">Subtotal</td>
         <td class="text-right">{{ number_format_quantity($invoice->subtotal) }}</td>
     </tr>
+    @endif
+    @if($invoice->discount)
     <tr>
         <td colspan="5" class="text-right">Discount (%)</td>
         <td class="text-right">{{ number_format_quantity($invoice->discount) }}</td>
     </tr>
-    <tr>
-        <td colspan="5" class="text-right">Tax Base</td>
-        <td class="text-right">{{ number_format_quantity($invoice->tax_base) }}</td>
-    </tr>
+    @endif
     @if($invoice->type_of_tax != 'non')
+        <tr>
+            <td colspan="5" class="text-right">Tax Base</td>
+            <td class="text-right">{{ number_format_quantity($invoice->tax_base) }}</td>
+        </tr>
         <tr>
             <td colspan="5" class="text-right">Tax ({{ ucwords($invoice->type_of_tax) }})</td>
             <td class="text-right">{{ number_format_quantity($invoice->tax) }}</td>

@@ -213,19 +213,23 @@
                 </tr>
             @endforeach
             @endif
+            @if($invoice->subtotal == $invoice->total)
             <tr>
                 <td colspan="5" align="right">Subtotal</td>
                 <td align="right">{{ number_format_quantity($invoice->subtotal) }}</td>
             </tr>
+            @endif
+            @if($invoice->discount)
             <tr>
                 <td colspan="5" align="right">Discount (%)</td>
                 <td align="right">{{ number_format_quantity($invoice->discount) }}</td>
             </tr>
+            @endif
+            @if($invoice->type_of_tax != 'non')
             <tr>
                 <td colspan="5" align="right">Tax Base</td>
                 <td align="right">{{ number_format_quantity($invoice->tax_base) }}</td>
             </tr>
-            @if($invoice->type_of_tax != 'non')
             <tr>
                 <td colspan="5" align="right">Tax ({{ $invoice->type_of_tax }})
                 </td>
