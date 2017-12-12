@@ -90,7 +90,7 @@
         <tr>
             <td colspan="5" class="text-right">Total Cash Advance</td>
             <td></td>
-            <td class="text-right"><strong>{{ number_format_price($total_cash_advance - $total_cash_advance_used) }}</strong></td>
+            <td class="text-right"><strong>{{ number_format_price($total_cash_advance_remaining) }}</strong></td>
         </tr>
         <tr>
             <td colspan="5" class="text-right">Total</td>
