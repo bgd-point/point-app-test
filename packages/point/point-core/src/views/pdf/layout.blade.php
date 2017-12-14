@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <style>
         * {
-            font-size: 13px;
+            font-size: 10px;
             text-transform: uppercase;
         }
 
@@ -40,12 +40,18 @@
             content: " ";
             width: 150px;
             text-align: center;
-            margin-top: 70px;
+            margin-top: 50px;
         }
 
         .signature-person {
             width: 150px;
             text-align: center;
+        }
+
+        .signature-date {
+            width: 150px;
+            padding-left: 10px;
+            text-align: left;
         }
     </style>
 </head>
