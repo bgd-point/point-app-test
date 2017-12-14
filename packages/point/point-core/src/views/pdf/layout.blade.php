@@ -24,8 +24,8 @@
         .detail-table tr,
         .detail-table th,
         .detail-table td {
-            border:1px solid black;
-            padding: 5px;
+            border:0.2px solid black;
+            padding: 2px;
         }
 
         .footer-table {
@@ -57,7 +57,7 @@
 </head>
 
 <body>
-<table class="header-table">
+<table class="header-table" style="float:right; text-align: right;">
     <tr>
         @if(url_logo())
             <td>
@@ -71,7 +71,7 @@
                 </div>
             </td>
         @else
-            <td valign="top" style="padding-left:5px">
+            <td>
                 <span style="text-transform: uppercase; font-weight: bold">{{$warehouse->store_name ? : ''}}</span>
                 <br/>
                 <span style="text-transform: capitalize;">
