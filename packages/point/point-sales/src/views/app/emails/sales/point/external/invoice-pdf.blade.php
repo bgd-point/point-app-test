@@ -92,7 +92,10 @@
 @stop
 
 @section('end-notes')
-    {{ get_end_notes('sales invoice') }}
+    @if(get_end_notes('sales invoice'))
+        {{ get_end_notes('sales invoice') }}
+        <br/><br/>
+    @endif
 @stop
 
 @section('signature')

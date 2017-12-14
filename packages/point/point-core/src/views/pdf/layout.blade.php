@@ -40,7 +40,7 @@
             content: " ";
             width: 150px;
             text-align: center;
-            margin-top: 50px;
+            margin-top: 35px;
         }
 
         .signature-person {
@@ -104,7 +104,6 @@
             <td colspan="2">
                 <!-- END NOTES -->
                 @yield('end-notes')
-                <br/><br/>
             </td>
         </tr>
         <tr>
