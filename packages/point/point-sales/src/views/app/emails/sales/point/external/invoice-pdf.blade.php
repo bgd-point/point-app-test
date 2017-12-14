@@ -2,7 +2,7 @@
 
 @section('header')
     <tr>
-        <td width="35%">No. Invoice</td>
+        <td width="20%">No. Invoice</td>
         <td width="10px">:</td>
         <td>{{ $invoice->formulir->form_number }}</td>
     </tr>
@@ -18,7 +18,7 @@
     </tr>
     @if($invoice->lockingForm)
     <tr>
-        <td>Delivery Order Number</td>
+        <td># Delivery Order</td>
         <td>:</td>
         <td>
             @foreach($invoice->lockingForm as $lockingForm)
@@ -37,12 +37,12 @@
 @section('content')
     <thead>
     <tr>
-        <th width="10px">No</th>
-        <th width="70%">Item</th>
-        <th class="text-right">Quantity</th>
-        <th class="text-right">Price</th>
-        <th class="text-right">Discount</th>
-        <th class="text-right">Total</th>
+        <td width="10px">#</td>
+        <td width="70%">Item</td>
+        <td class="text-right">Quantity</td>
+        <td class="text-right">Price</td>
+        <td class="text-right">Discount</td>
+        <td class="text-right">Total</td>
     </tr>
     </thead>
     <tbody>
