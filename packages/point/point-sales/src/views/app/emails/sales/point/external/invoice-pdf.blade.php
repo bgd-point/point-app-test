@@ -38,7 +38,7 @@
     <thead>
     <tr>
         <th width="10px">No</th>
-        <th width="50%">Item</th>
+        <th width="70%">Item</th>
         <th class="text-right">Quantity</th>
         <th class="text-right">Price</th>
         <th class="text-right">Discount</th>
@@ -96,16 +96,15 @@
 @stop
 
 @section('signature')
-    <td style="padding-left:100px">
-        Tanda terima,
-        <div class="signature-date">&nbsp;</div>
-        <div class="signature">____________________</div>
+    <td style="padding-left:20px">
+        <div class="signature-date">Tanda terima,</div>
+        <div class="signature">__________________________</div>
         <div class="signature-person"></div>
     </td>
     <td>
-        Hormat kami,
-        <div class="signature-date">{{ \DateHelper::formatView($invoice->formulir->form_date) }}</div>
-        <div class="signature">____________________</div>
+
+        <div class="signature-date">Hormat kami,<br/>{{ \DateHelper::formatView($invoice->formulir->form_date) }}</div>
+        <div class="signature">__________________________</div>
         <div class="signature-person"></div>
     </td>
 @stop
