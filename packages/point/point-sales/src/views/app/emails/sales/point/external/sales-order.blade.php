@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Eamil Invoice</title>
+    <title>Email Invoice</title>
 
     <style>
         a {
