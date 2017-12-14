@@ -12,10 +12,11 @@
         <td>{{ \DateHelper::formatView($invoice->formulir->form_date) }}</td>
     </tr>
     <tr>
-        <td>Tanggal Jatuh Tempo</td>
+        <td>Jatuh Tempo</td>
         <td>:</td>
         <td>{{ \DateHelper::formatView($invoice->due_date) }}</td>
     </tr>
+    @if($invoice->lockingForm)
     <tr>
         <td>Delivery Order Number</td>
         <td>:</td>
@@ -25,6 +26,7 @@
             @endforeach
         </td>
     </tr>
+    @endif
     <tr>
         <td>Customer</td>
         <td>:</td>
@@ -36,7 +38,7 @@
     <thead>
     <tr>
         <th width="10px">No</th>
-        <th>Item</th>
+        <th width="50%">Item</th>
         <th class="text-right">Quantity</th>
         <th class="text-right">Price</th>
         <th class="text-right">Discount</th>
