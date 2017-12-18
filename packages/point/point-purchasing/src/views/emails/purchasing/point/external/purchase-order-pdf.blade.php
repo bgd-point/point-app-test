@@ -50,7 +50,7 @@
         <td class="text-right">{{ number_format_quantity($purchase_order->subtotal) }}</td>
     </tr>
     @endif
-    @if($purchase_order->discount)
+    @if($purchase_order->discount > 0)
     <tr>
         <td colspan="5" class="text-right">Discount (%)</td>
         <td class="text-right">{{ number_format_quantity($purchase_order->discount) }}</td>
@@ -66,7 +66,7 @@
         <td class="text-right">{{ number_format_quantity($purchase_order->tax) }}</td>
     </tr>
     @endif
-    @if($purchase_order->expedition_fee)
+    @if($purchase_order->expedition_fee > 0)
     <tr>
         <td colspan="5" class="text-right">Expedition Fee</td>
         <td class="text-right">{{ number_format_quantity($purchase_order->expedition_fee) }}</td>
