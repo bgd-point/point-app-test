@@ -62,25 +62,17 @@
         @if(url_logo())
             <td>
                 <img src="{{ public_path('app/'.app('request')->project->url.'/logo/logo.png') }}" style="background-color:transparent;width:auto;height:50px;">
-                <div style="float:right">
-                    <span style="text-transform: uppercase; font-weight: bold">{{$warehouse->store_name ? : ''}}</span>
-                    <br/>
-                    {{$warehouse->address ? : ''}}
-                    <br>
-                    {{$warehouse->phone ? : ''}}
-                </div>
-            </td>
-        @else
-            <td>
-                <span style="text-transform: uppercase; font-weight: bold">{{$warehouse->store_name ? : ''}}</span>
-                <br/>
-                <span style="text-transform: capitalize;">
-                    {{$warehouse->address ? : ''}}
-                    <br/>
-                    {{$warehouse->phone ? : ''}}
-                </span>
             </td>
         @endif
+        <td>
+            <span style="text-transform: uppercase; font-weight: bold">{{$warehouse->store_name ? : ''}}</span>
+            <br/>
+            <span style="text-transform: capitalize;">
+                {{$warehouse->address ? : ''}}
+                <br/>
+                {{$warehouse->phone ? : ''}}
+            </span>
+        </td>
     </tr>
 </table>
 
