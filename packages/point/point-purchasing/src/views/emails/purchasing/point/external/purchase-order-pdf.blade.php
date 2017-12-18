@@ -44,28 +44,34 @@
     @endforeach
     </tbody>
     <tfoot>
+    @if($purchase_order->total != $purchase_order->subtotal)
     <tr>
         <td colspan="5" class="text-right">Subtotal</td>
         <td class="text-right">{{ number_format_quantity($purchase_order->subtotal) }}</td>
     </tr>
+    @endif
+    @if($purchase_order->discount)
     <tr>
         <td colspan="5" class="text-right">Discount (%)</td>
         <td class="text-right">{{ number_format_quantity($purchase_order->discount) }}</td>
     </tr>
+    @endif
+    @if($purchase_order->type_of_tax != 'non')
     <tr>
         <td colspan="5" class="text-right">Tax Base</td>
         <td class="text-right">{{ number_format_quantity($purchase_order->tax_base) }}</td>
     </tr>
-    @if($purchase_order->type_of_tax != 'non')
-        <tr>
-            <td colspan="5" class="text-right">Tax ({{ ucwords($purchase_order->type_of_tax) }})</td>
-            <td class="text-right">{{ number_format_quantity($purchase_order->tax) }}</td>
-        </tr>
+    <tr>
+        <td colspan="5" class="text-right">Tax ({{ ucwords($purchase_order->type_of_tax) }})</td>
+        <td class="text-right">{{ number_format_quantity($purchase_order->tax) }}</td>
+    </tr>
     @endif
+    @if($purchase_order->expedition_fee)
     <tr>
         <td colspan="5" class="text-right">Expedition Fee</td>
         <td class="text-right">{{ number_format_quantity($purchase_order->expedition_fee) }}</td>
     </tr>
+    @endif
     <tr>
         <td colspan="5" class="text-right">Total</td>
         <td class="text-right">{{ number_format_quantity($purchase_order->total) }}</td>
