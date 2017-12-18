@@ -85,15 +85,13 @@
 
 @section('signature')
     <td>
-        Disetujui,
-        <div class="signature-date">{{ \DateHelper::formatView($purchase_order->formulir->approval_at) }}</div>
-        <div class="signature">____________________</div>
+        <div class="signature-date">Disetujui, {{ \DateHelper::formatView($purchase_order->formulir->approval_at) }}</div>
+        <div class="signature">___________________________</div>
         <div class="signature-person">({{strtoupper($purchase_order->formulir->approvalTo->name)}})</div>
     </td>
     <td>
-        Penerima,
-        <div class="signature-date">{{ \DateHelper::formatView($purchase_order->formulir->form_date) }}</div>
-        <div class="signature">____________________</div>
+        <div class="signature-date">Penerima, {{ \DateHelper::formatView($purchase_order->formulir->form_date) }}</div>
+        <div class="signature">___________________________</div>
         <div class="signature-person">({{strtoupper($purchase_order->supplier->name)}})</div>
     </td>
 @stop
