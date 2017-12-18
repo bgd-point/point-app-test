@@ -93,7 +93,7 @@
                                                 <td>
                                                     {{ date_format_view($reference->formulir->form_date) }}
                                                 </td>
-                                                <td>{{ $reference->formulir->form_number }}</td>
+                                                <td>{!! formulir_url($reference->formulir) !!}</td>
                                                 <td>{{ $payment_order_detail->detail_notes }}</td>
                                                 <td class="text-right">{{ number_format_quantity($payment_order_detail->amount) }}</td>
                                             </tr>

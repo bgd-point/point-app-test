@@ -53,7 +53,6 @@
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label">Payment Type</label>
-
                         <div class="col-md-6">
                             <select name="payment_type" class="selectize" style="width: 100%;" data-placeholder="Please choose">
                                 <option @if($payment_order->payment_type == 'cash') selected @endif value="cash">Cash</option>
@@ -61,10 +60,8 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label class="col-md-3 control-label">Notes</label>
-
                         <div class="col-md-6">
                             <input type="text" name="notes" class="form-control" value="{{$payment_order->formulir->notes}}">
                         </div>
