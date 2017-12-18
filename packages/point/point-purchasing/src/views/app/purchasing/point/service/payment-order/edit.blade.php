@@ -54,10 +54,11 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Payment Type</label>
 
-                        <div class="col-md-6 content-show">
-                            {{ $payment_order->payment_type }}
-                            <input readonly type="hidden" name="payment_type" class="form-control"
-                                   value="{{$payment_order->payment_type}}"/>
+                        <div class="col-md-6">
+                            <select name="payment_type" class="selectize" style="width: 100%;" data-placeholder="Please choose">
+                                <option @if($payment_order->payment_type == 'cash') selected @endif value="cash">Cash</option>
+                                <option @if($payment_order->payment_type == 'bank') selected @endif value="bank">Bank</option>
+                            </select>
                         </div>
                     </div>
 
