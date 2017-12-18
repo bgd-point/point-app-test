@@ -12,6 +12,7 @@ use Point\PointFinance\Models\Bank\BankDetail;
 use Point\PointFinance\Models\Cash\Cash;
 use Point\PointFinance\Models\Cash\CashCashAdvance;
 use Point\PointFinance\Models\Cash\CashDetail;
+use Point\PointFinance\Models\CashAdvance;
 use Point\PointFinance\Models\PaymentReference;
 
 class PaymentHelper
@@ -327,6 +328,16 @@ class PaymentHelper
         if ($payment_reference) {
             $payment_reference->point_finance_payment_id = null;
             $payment_reference->save();
+
+            $cash_cash_advances = CashCashAdvance::where('point_finance_cash_id', $payment_id)->get();
+
+            foreach($cash_cash_advances as $cash_cash_advance) {
+                $cash_advance = CashAdvance::find($cash_cash_advance->cash_advance_id);
+                $cash_advance->remaining_amount += $cash_cash_advance->cash_advance_amount;
+                $cash_advance->save();
+                $cash_advance->formulir->form_status = 0;
+                $cash_advance->formulir->save();
+            }
         }
     }
 
