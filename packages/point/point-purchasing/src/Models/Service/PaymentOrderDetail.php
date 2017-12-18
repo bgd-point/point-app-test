@@ -17,6 +17,11 @@ class PaymentOrderDetail extends Model
         return $this->belongsTo('\Point\PointPurchasing\Models\Service\PaymentOrder', 'point_purchasing_service_payment_order_id');
     }
 
+    public function reference()
+    {
+        return $this->belongsTo('\Point\Framework\Models\Formulir', 'form_reference_id');
+    }
+
     public function scopeJoinPaymentOrder($q)
     {
         $q->join('point_purchasing_service_payment_order', 'point_purchasing_service_payment_order.id', '=', 'point_purchasing_service_payment_order_id');

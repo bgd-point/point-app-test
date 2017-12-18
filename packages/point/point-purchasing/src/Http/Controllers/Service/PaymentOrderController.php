@@ -363,7 +363,14 @@ class PaymentOrderController extends Controller
         AccountPayableAndReceivableHelper::remove($formulir->id);
         AllocationHelper::remove($formulir->id);
         FormulirHelper::cancelPaymentReference($formulir->id);
+        $payment_order = PaymentOrder::where('formulir_id', $formulir->id)->first();
+        foreach ($payment_order->details as $payment_order_detail) {
+            $payment_order_detail->reference->formulirable_type == 'Point\PointPurchasing\Models\Service\Downpayment';
 
+            $downpayment = Downpayment::find($payment_order_detail->reference->formulirable_id);
+            $downpayment->remaining_amount += $payment_order_detail->amount * -1;
+            $downpayment->save();
+        }
 
         \DB::commit();
 
