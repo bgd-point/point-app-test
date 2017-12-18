@@ -62,7 +62,7 @@
         @if(url_logo())
             <td>
                 <img src="{{ public_path('app/'.app('request')->project->url.'/logo/logo.png') }}" style="background-color:transparent;width:auto;height:50px;">
-                <div>
+                <div style="float:right">
                     <span style="text-transform: uppercase; font-weight: bold">{{$warehouse->store_name ? : ''}}</span>
                     <br/>
                     {{$warehouse->address ? : ''}}
