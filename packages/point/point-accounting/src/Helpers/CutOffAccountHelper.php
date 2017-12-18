@@ -37,7 +37,7 @@ class CutOffAccountHelper
         $cut_off_account->save();
 
         for ($i=0 ; $i<count(app('request')->input('coa_id')) ; $i++) {
-            if (app('request')->input('debit')[$i] < 1 && app('request')->input('credit')[$i] < 1) {
+            if (app('request')->input('debit')[$i] <= 0 && app('request')->input('credit')[$i] <= 0) {
                 continue;
             }
             $cut_off_account_detail = new CutOffAccountDetail;
