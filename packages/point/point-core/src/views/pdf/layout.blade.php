@@ -92,7 +92,7 @@
         @yield('header')
     </table>
 
-    <table class="detail-table" style="margin-top:15px">
+    <table class="detail-table" @if(url_logo()) style="margin-top:35px" @endif>
         <!-- SAMPLE CONTENT
 
         -->
