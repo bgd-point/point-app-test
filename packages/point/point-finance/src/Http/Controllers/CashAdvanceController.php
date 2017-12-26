@@ -140,11 +140,14 @@ class CashAdvanceController extends Controller
 
         $view->list_user_approval = UserHelper::getAllUser();
 
+        $view->list_cash_account = Coa::active()
+            ->joinCategory()
+            ->where('coa_category.name', 'Petty Cash')->orWhere('coa_category.name', 'Bank Account')
+            ->selectOriginal()->orderBy('coa_number')->orderBy('name')->get();
+
         $view->list_employee = PersonHelper::getByType(['employee']);
 
         $view->cash_advance = CashAdvance::find($id);
-
-        $view->list_cash_account = Coa::active()->joinCategory()->where('coa_category.name', 'Petty Cash')->selectOriginal()->orderBy('coa_number')->orderBy('name')->get();
 
         return $view;
     }
@@ -183,6 +186,7 @@ class CashAdvanceController extends Controller
         $cash_advance->amount = number_format_db($request->input('amount'));
         $cash_advance->remaining_amount = number_format_db($request->input('amount'));
         $cash_advance->payment_type = $request->input('payment_type');
+        $cash_advance->coa_id = $request->input('coa_id');
         $cash_advance->is_payed = false;
         $cash_advance->save();
 
