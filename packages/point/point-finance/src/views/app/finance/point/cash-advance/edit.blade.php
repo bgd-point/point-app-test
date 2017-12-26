@@ -60,18 +60,29 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Payment Type *</label>
                         <div class="col-md-6">
-                            <select id="payment_type" name="payment_type" class="selectize" style="width: 100%;" data-placeholder="Please choose">
-                                <option value="cash">Cash</option>
-                                <option value="bank">Bank</option>
+                            <select id="payment_type" name="payment_type" class="selectize" style="width: 100%;" data-placeholder="Please choose" onchange="updateAccount()">
+                                <option @if($cash_advance->payment_type == 'cash') selected @endif value="cash">Cash</option>
+                                <option @if($cash_advance->payment_type == 'bank') selected @endif value="bank">Bank</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Cash Account *</label>
-                        <div class="col-md-6">
-                            <select id="coa-id" name="coa_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                        <label class="col-md-3 control-label">Cash / Bank Account *</label>
+                        <div id="account-cash" class="col-md-6" style="display: none;">
+                            <select id="coa-id-cash" name="coa_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
                                 @foreach($list_cash_account as $coa)
-                                    <option @if($coa->id == $cash_advance->coa_id) selected @endif value="{{ $coa->id }}">{{ $coa->account }}</option>
+                                    @if($coa->category->name == 'Petty Cash')
+                                        <option @if($coa->id == $cash_advance->coa_id) selected @endif value="{{ $coa->id }}">{{ $coa->account }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <div id="account-bank" class="col-md-6" style="display: none;">
+                            <select id="coa-id-bank" name="coa_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                                @foreach($list_cash_account as $coa)
+                                    @if($coa->category->name == 'Bank Account')
+                                        <option @if($coa->id == $cash_advance->coa_id) selected @endif value="{{ $coa->id }}">{{ $coa->account }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
@@ -142,5 +153,16 @@
 @section('scripts')
     <script>
         initDatatable('#item-datatable');
+
+        function updateAccount() {
+          if ($('#payment_type').val() == 'cash') {
+            $('#account-cash').css({ display: "block" });
+            $('#account-bank').css({ display: "none" });
+          } else {
+            $('#account-cash').css({ display: "none" });
+            $('#account-bank').css({ display: "block" });
+          }
+        }
+        updateAccount();
     </script>
 @stop
