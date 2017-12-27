@@ -18,7 +18,7 @@
                             <option value="{{$details[$i]['subledger_id']}}"><?php echo Point\Framework\Models\Master\Person::find($details[$i]['subledger_id'])->codeName;?></option>
                         </select>
                     </td>
-                    <td><input type="text" name="amount[]" id="amount-{{$i}}" onkeyup="calculate()" class="form-control text-right format-quantity" value="{{$details[$i]['amount']}}" /></td>
+                    <td><input type="text" name="amount[]" id="amount-{{$i}}" onkeyup="calculate()" class="form-control text-right format-quantity-alt" value="{{$details[$i]['amount']}}" /></td>
                     <td><input type="text" name="notes[]" value="{{$details[$i]['notes']}}" class="form-control" ></td>
                 </tr>
             @endfor
