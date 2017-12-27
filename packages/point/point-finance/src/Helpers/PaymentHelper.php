@@ -112,7 +112,7 @@ class PaymentHelper
             $cash_detail->save();
 
             if ($cash_detail->form_reference_id == NULL) {
-                AllocationHelper::save($cash->formulir_id, $cash_detail->allocation_id, $cash_detail->amount, $cash_detail->notes_detail);
+                AllocationHelper::save($cash->formulir_id, $cash_detail->allocation_id, $cash_detail->amount * -1, $cash_detail->notes_detail);
             }
         }
 
@@ -246,10 +246,8 @@ class PaymentHelper
             $bank_detail->save();
 
             if ($bank_detail->form_reference_id == NULL) {
-                AllocationHelper::save($bank->formulir_id, $bank_detail->allocation_id, $bank_detail->amount, $bank_detail->notes_detail);
+                AllocationHelper::save($bank->formulir_id, $bank_detail->allocation_id, $bank_detail->amount * -1, $bank_detail->notes_detail);
             }
-
-
         }
 
         FormulirHelper::close($payment_reference->payment_reference_id);
