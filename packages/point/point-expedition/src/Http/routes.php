@@ -76,7 +76,7 @@ Route::group(['prefix' => 'expedition/point', 'namespace' => 'Point\PointExpedit
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/payment-order/vesa-rejected', 'PaymentOrderVesaController@rejected');
         Route::get('/payment-order/vesa-approval', 'PaymentOrderVesaController@approval');
-        Route::get('/payment-order/vesa-create-payment-order', 'PaymentOrderVesaController@createPaymentOrder');
+        Route::get('/payment-order/vesa-create-payment-order', 'PaymentOrderVesaController@create');
         Route::get('/payment-order/request-approval', 'PaymentOrderApprovalController@requestApproval');
         Route::post('/payment-order/send-request-approval', 'PaymentOrderApprovalController@sendRequestApproval');
         Route::post('/payment-order/cancel', 'PaymentOrderController@cancel');
