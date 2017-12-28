@@ -54,6 +54,7 @@ class Invoice extends Model
             ->notArchived()
             ->open()
             ->approvalApproved()
+            ->selectOriginal()
             ->groupBy('point_expedition_invoice.expedition_id');
     }
 
