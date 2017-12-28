@@ -3,6 +3,8 @@
 namespace Point\PointAccounting\Helpers;
 
 use Point\Framework\Helpers\JournalHelper;
+use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Journal;
 use Point\PointAccounting\Models\MemoJournal;
 use Point\PointAccounting\Models\MemoJournalDetail;
@@ -93,12 +95,39 @@ class MemoJournalHelper
                 $memo_journal_detail->credit = number_format_db($credit[$i]);
             }
 
+            $ref = Formulir::find($memo_journal_detail->form_reference_id);
+
             if ($subledger[$i]) {
                 $memo_journal_detail->subledger_id = $subledger_id;
                 $memo_journal_detail->subledger_type = $subledger_type;
+                ReferHelper::create(
+                    $ref->formulirable_type,
+                    $ref->formulirable_id,
+                    get_class($memo_journal_detail),
+                    $memo_journal_detail->id,
+                    get_class($memo_journal),
+                    $memo_journal->id,
+                    $memo_journal_detail->debit ?: $memo_journal_detail->credit
+                );
             }
 
             $memo_journal_detail->save();
+
+//            $close_status = ReferHelper::closeStatus(
+//                $subledger_type,
+//                $subledger_id,
+//                $references_amount_original[$i],
+//                0
+//            );
+//
+//            formulir_lock($reference->formulir_id, $payment_order->formulir_id);
+
+//            if ($close_status) {
+//                if (get_class($reference) != get_class(new CutOffPayableDetail())) {
+//                    $reference->formulir->form_status = 1;
+//                    $reference->formulir->save();
+//                }
+//            }
         }
     }
 
