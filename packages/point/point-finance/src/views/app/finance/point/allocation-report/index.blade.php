@@ -12,6 +12,13 @@
             <div class="panel-body">
                 <form action="{{ url('finance/point/allocation-report') }}" method="get" class="form-horizontal">
                     <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
+                                <input type="text" name="date_from" id="date-from" class="form-control date input-datepicker" placeholder="From"  value="{{\Input::get('date_from') ? \Input::get('date_from') : date(date_format_get(), strtotime($date_from))}}">
+                                <span class="input-group-addon"><i class="fa fa-chevron-right"></i></span>
+                                <input type="text" name="date_to" id="date-to" class="form-control date input-datepicker" placeholder="To" value="{{\Input::get('date_to') ? \Input::get('date_to') : date(date_format_get(), strtotime($date_to))}}">
+                            </div>
+                        </div>
                         <div class="col-sm-3">
                             <select class="selectize" name="allocation_id" id="allocation_id" onchange="selectData()">
                                 <option value="0" @if(\Input::get('allocation_id') == 0) selected @endif>Choose one...</option>
@@ -19,6 +26,9 @@
                                     <option value="{{ $allocation->id }}" @if(\Input::get('allocation_id') == $allocation->id) selected @endif>{{ $allocation->name }}</option>
                                 @endforeach
                             </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
                         </div>
                     </div>
                 </form>
@@ -79,9 +89,9 @@
 @section('scripts')
     <script>
       function selectData() {
-        var allocation_id = $("#allocation_id option:selected").val();
-        var url = '{{url()}}/finance/point/allocation-report/?allocation_id='+allocation_id;
-        location.href = url;
+        {{--var allocation_id = $("#allocation_id option:selected").val();--}}
+        {{--var url = '{{url()}}/finance/point/allocation-report/?allocation_id='+allocation_id;--}}
+        {{--location.href = url;--}}
       }
     </script>
 @stop
