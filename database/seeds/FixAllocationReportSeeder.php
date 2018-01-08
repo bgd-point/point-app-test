@@ -12,6 +12,7 @@ class FixAllocationReportSeeder extends Seeder
         $reports = \Point\Framework\Models\Master\AllocationReport::join('formulir', 'formulir.id', '=', 'allocation_report.formulir_id')->select('allocation_report.*', 'form_number')->get();
 
         foreach ($reports as $report) {
+            // CASH OR BANK OUT & PURCHASING SHOULD BE IN DEBIT AREA, OTHERWISE SALES AND CASH OR BANK IN SHOULD BE IN CREDIT
             if (str_contains($report->form_number, 'PURCHASING') || str_contains($report->form_number, 'OUT/')) {
                 if ($report->amount > 0) {
                     $report->amount *= -1;
