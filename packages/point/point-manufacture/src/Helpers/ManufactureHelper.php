@@ -80,7 +80,7 @@ class ManufactureHelper
             $raw_material->material_id = $material_id[$i];
             $raw_material->warehouse_id = $warehouse_id[$i];
             $raw_material->quantity = number_format_db($material_quantity[$i]);
-            $unit = ItemUnit::find($material_id[$i]);
+            $unit = ItemUnit::where('item_id', $material_id[$i])->first();
             $raw_material->unit = $unit->name;
             $raw_material->converter = number_format_db($unit->converter);
             $raw_material->cogs = InventoryHelper::getCostOfSales($input->formulir->form_date, $raw_material->material_id, $raw_material->warehouse_id) * $raw_material->quantity;
@@ -93,7 +93,7 @@ class ManufactureHelper
             $finished_goods->input_id = $input->id;
             $finished_goods->product_id = $product_id[$i];
             $finished_goods->quantity = $quantity[$i];
-            $unit = ItemUnit::find($product_id[$i]);
+            $unit = ItemUnit::where('item_id', $product_id[$i])->first();
             $finished_goods->unit = $unit->name;
             $converter = number_format_db($unit->converter);
             $finished_goods->converter = $converter;
