@@ -18,6 +18,7 @@ class ServiceReportController extends Controller
             ->joinDetailService()
             ->joinService()
             ->notArchived()
+            ->selectOriginal()
             ->groupBy('point_purchasing_service_invoice.id');
 
         $list_invoice = ServiceInvoiceHelper::searchList($list_invoice, false, false, 'report', \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
