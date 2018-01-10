@@ -19,7 +19,7 @@ class ServiceReportController extends Controller
         $view = view('point-sales::app.sales.point.service.report');
         $date_from = \Input::get('date_from');
         $date_to = \Input::get('date_to');
-        $list_invoice = Invoice::joinFormulir()->notArchived();
+        $list_invoice = Invoice::joinFormulir()->notArchived()->selectOriginal()->orderByStandard();
 
         if ($date_from != null && $date_to != null) {
             $list_invoice->where('formulir.form_date', '>=', date_format_db($date_from))
