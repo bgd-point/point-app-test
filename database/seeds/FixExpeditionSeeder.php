@@ -29,18 +29,18 @@ class FixExpeditionSeeder extends Seeder
                 }
             }
 
-            $account_payable_expedition = JournalHelper::getAccount('point expedition', 'account payable - expedition');
-            $position = JournalHelper::position($account_payable_expedition);
-            $journal = new Journal;
-            $journal->form_date = $invoice->formulir->form_date;
-            $journal->coa_id = $account_payable_expedition;
-            $journal->description = 'expedition "' . $invoice->formulir->form_number . '"';
-            $journal->$position = $good_received->expedition_fee;
-            $journal->form_journal_id = $invoice->formulir_id;
-            $journal->form_reference_id;
-            $journal->subledger_id = $invoice->id;
-            $journal->subledger_type = get_class($invoice);
-            $journal->save();
+//            $account_payable_expedition = JournalHelper::getAccount('point expedition', 'account payable - expedition');
+//            $position = JournalHelper::position($account_payable_expedition);
+//            $journal = new Journal;
+//            $journal->form_date = $invoice->formulir->form_date;
+//            $journal->coa_id = $account_payable_expedition;
+//            $journal->description = 'expedition "' . $invoice->formulir->form_number . '"';
+//            $journal->$position = $good_received->expedition_fee;
+//            $journal->form_journal_id = $invoice->formulir_id;
+//            $journal->form_reference_id;
+//            $journal->subledger_id = $invoice->id;
+//            $journal->subledger_type = get_class($invoice);
+//            $journal->save();
         }
         \Log::info('end: ' . $start);
         \DB::commit();
