@@ -91,6 +91,8 @@ class InvoiceHelper
         if ($references != null) {
             foreach ($references as $reference) {
                 formulir_lock($reference->formulir_id, $invoice->formulir_id);
+                $reference->formulir->form_status = true;
+                $reference->formulir->save();
             }
         }
         $formulir->approval_status = 1;

@@ -72,18 +72,7 @@ class DeliveryOrder extends Model
 
     public function scopeAvailableToInvoiceGroupCustomer($q)
     {
-        $array_delivery_order_id_open = [] ;
-        $list_delivery_order = DeliveryOrder::joinFormulir()->notArchived()->approvalApproved()->selectOriginal()->get();
-        foreach ($list_delivery_order as $delivery_order) {
-            $is_locked_form_delivery_order = FormulirHelper::isLocked($delivery_order->formulir_id);
-            if ($is_locked_form_delivery_order) {
-                continue;
-            }
-
-            array_push($array_delivery_order_id_open, $delivery_order->id);
-        }
-
-        $q->open()->approvalApproved()->notArchived()->orderByStandard()->whereIn('point_sales_delivery_order.id', $array_delivery_order_id_open)->groupBy('point_sales_delivery_order.person_id');
+        $q->open()->approvalApproved()->notArchived()->orderByStandard()->groupBy('point_sales_delivery_order.person_id');
     }
 
     public function scopeAvailableToInvoice($q, $person_id)
