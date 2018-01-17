@@ -13,24 +13,35 @@ use Point\PointFinance\Models\PaymentReferenceDetail;
 
 class PaymentOrderHelper
 {
-    public static function searchList($payment_orders, $date_from, $date_to, $search)
+    public static function searchList($list_payment_order, $order_by, $order_type, $status = 0, $date_from, $date_to, $search)
     {
+        if ($order_by) {
+            $list_payment_order = $list_payment_order->orderBy($order_by, $order_type);
+        } else {
+            $list_payment_order = $list_payment_order->orderByStandard();
+        }
+
+        if ($status != 'all') {
+            $list_payment_order = $list_payment_order->where('formulir.form_status', '=', $status ?: 0);
+        }
+
         if ($date_from) {
-            $payment_orders = $payment_orders->where('form_date', '>=', \DateHelper::formatDB($date_from, 'start'));
+            $list_payment_order = $list_payment_order->where('form_date', '>=', date_format_db($date_from, 'start'));
         }
 
         if ($date_to) {
-            $payment_orders = $payment_orders->where('form_date', '<=', \DateHelper::formatDB($date_to, 'end'));
+            $list_payment_order = $list_payment_order->where('form_date', '<=', date_format_db($date_to, 'end'));
         }
 
         if ($search) {
-            $payment_orders = $payment_orders->where(function ($q) {
-                $q->where('name', 'like', '%'.$search.'%')
-                    ->orWhere('form_number', 'like', '%'.$search.'%');
+            // search input to database
+            $list_payment_order = $list_payment_order->where(function ($q) use ($search) {
+                $q->where('person.name', 'like', '%'.$search.'%')
+                    ->orWhere('formulir.form_number', 'like', '%'.$search.'%');
             });
         }
 
-        return $payment_orders;
+        return $list_payment_order;
     }
 
     public static function create(Request $request, $formulir)
