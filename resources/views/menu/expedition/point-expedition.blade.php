@@ -1,3 +1,4 @@
+{{ \Log::info('expedition: '.client_has_addon('premium') && auth()->user()->may('read.point.expedition.order')) }}
 @if(client_has_addon('premium') && auth()->user()->may('read.point.expedition.order'))
     <div class="col-md-4 col-lg-3">
         <a href="{{url('expedition/point/expedition-order')}}" class="widget widget-button">
