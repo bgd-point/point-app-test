@@ -110,7 +110,7 @@
                         <label class="col-md-3 control-label">Cash Purchasing</label>
                         <div class="col-md-6 content-show">
                             <input type="checkbox" id="cash-selling" name="is_cash" @if($purchase_order->is_cash == 1) checked @endif value="1">
-                            <span class="help-block">If checked, you need to make a downpayment before deliver the order</span>
+                            <span class="help-block">Check if this purchase need downpayment</span>
                         </div>
                     </div>
                     <div class="form-group">

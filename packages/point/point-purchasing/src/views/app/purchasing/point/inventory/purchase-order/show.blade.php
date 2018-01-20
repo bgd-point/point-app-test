@@ -109,7 +109,7 @@
                             <div class="col-md-6 content-show">
                                 <input disabled type="checkbox" id="is_credit"
                                        name="is_credit" {{ $purchase_order->is_cash == 1 ? 'checked' : '' }}>
-                                <span class="help-block">Check for create Delivery order / Uncheck for create Downpayment</span>
+                                <span class="help-block">Check if this purchase need downpayment</span>
                             </div>
                         </div>
                         <div class="form-group">

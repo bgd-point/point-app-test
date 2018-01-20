@@ -112,7 +112,7 @@
 
                         <div class="col-md-6 content-show">
                             <input type="checkbox" id="is-cash" name="is_cash" checked value="true">
-                            <span class="help-block">Check for create Receive order / Uncheck for create Downpayment</span>
+                            <span class="help-block">Check if this purchase need downpayment</span>
                         </div>
                     </div>
                     <div class="form-group">
