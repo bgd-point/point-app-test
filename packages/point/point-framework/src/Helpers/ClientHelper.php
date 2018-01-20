@@ -21,7 +21,7 @@ class ClientHelper
             }
         }
 
-        return false;
+        return true;
     }
 
     private static function checkPackage($code, $addons)
