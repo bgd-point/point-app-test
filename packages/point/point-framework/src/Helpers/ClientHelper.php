@@ -43,6 +43,8 @@ class ClientHelper
                 return true;
             }
         }
+
+        \Log::info('FALSE PACKAGE');
         return false;
     }
 }
