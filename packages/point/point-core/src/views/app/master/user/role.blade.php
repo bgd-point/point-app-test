@@ -63,6 +63,8 @@
                         @endforeach
                     </tbody>
                 </table>
+
+                <a href="{{ url('/master/warehouse/set-user') }}" class="btn btn-primary">Set User Warehouse</a>
             </div>
         </div>
     </div>
