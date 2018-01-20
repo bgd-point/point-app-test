@@ -21,12 +21,13 @@ class ClientHelper
             }
         }
 
-        return true;
+        return false;
     }
 
     private static function checkPackage($code, $addons)
     {
         foreach ($addons as $addon) {
+            \Log::info('ADDONL '.$addon);
             // if user has basic package | TIER 1
             if ($addon->code == $code) {
                 return true;
