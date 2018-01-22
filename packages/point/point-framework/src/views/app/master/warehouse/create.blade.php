@@ -34,7 +34,7 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Code *</label>
                     <div class="col-md-6">
-                        <input type="text" name="code" class="form-control" value="{{ $code }}" readonly>
+                        <input type="text" name="code" class="form-control" value="{{ $code }}">
                     </div>
                 </div>
                 <div class="form-group">
