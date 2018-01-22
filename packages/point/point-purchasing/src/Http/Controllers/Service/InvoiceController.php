@@ -39,10 +39,30 @@ class InvoiceController extends Controller
         return $view;
     }
 
-    public function ajaxDetailItem($id){
-        $view = view('point-purchasing::app.purchasing.point.service.invoice.index');
-        $list_invoice = InvoiceItem::select('item.name as item_name','point_purchasing_service_invoice_item.quantity','point_purchasing_service_invoice_item.price','point_purchasing_service_invoice_item.point_purchasing_service_invoice_id')->joinAllocation()->joinItem()->joinServiceInvoice()->joinFormulir()->where('point_purchasing_service_invoice_item.point_purchasing_service_invoice_id', '=', $id)->get();
-        return response()->json($list_invoice);
+    public function ajaxDetailItem(Request $request, $id)
+    {
+        access_is_allowed('read.point.purchasing.service.invoice');
+        $list_invoice_item = InvoiceItem::select('item.name as item_name',
+            'point_purchasing_service_invoice_item.quantity',
+            'point_purchasing_service_invoice_item.unit',
+            'point_purchasing_service_invoice_item.price',
+            'point_purchasing_service_invoice_id'
+        )->joinItem()->joinInvoice()->where(
+            'point_purchasing_service_invoice_item.point_purchasing_service_invoice_id', '=', $id
+        );
+        \Log::info($list_invoice_item);
+        $list_invoice_service = InvoiceService::select('service.name as item_name',
+            'point_purchasing_service_invoice_service.quantity as quantity ',
+            'point_purchasing_service_invoice_service.service_notes as unit',
+            'point_purchasing_service_invoice_service.price as price ',
+            'point_purchasing_service_invoice_id'
+        )->joinService()->joinInvoiceService()->where(
+            'point_purchasing_service_invoice_service.point_purchasing_service_invoice_id', '=', $id
+        );
+
+        \Log::info($list_invoice_service);
+        $results = $list_invoice_item->union($list_invoice_service)->get();
+        return response()->json($results);
     }
 
     public function indexPDF(Request $request)
