@@ -28,8 +28,8 @@
     <tr>
         <th width="10px">No</th>
         <th>Service</th>
-        <th>Description</th>
-        <th class="text-right">Quantity</th>
+        <th width="50%">Description</th>
+        <th class="text-right">Qty</th>
         <th class="text-right">Price</th>
         <th class="text-right">Discount</th>
         <th class="text-right">Total</th>
@@ -76,25 +76,25 @@
     </tbody>
     <tfoot>
     <tr>
-        <td colspan="5" class="text-right">Subtotal</td>
+        <td colspan="6" class="text-right">Subtotal</td>
         <td class="text-right">{{ number_format_quantity($invoice->subtotal) }}</td>
     </tr>
     <tr>
-        <td colspan="5" class="text-right">Discount (%)</td>
+        <td colspan="6" class="text-right">Discount (%)</td>
         <td class="text-right">{{ number_format_quantity($invoice->discount) }}</td>
     </tr>
     <tr>
-        <td colspan="5" class="text-right">Tax Base</td>
+        <td colspan="6" class="text-right">Tax Base</td>
         <td class="text-right">{{ number_format_quantity($invoice->tax_base) }}</td>
     </tr>
     @if($invoice->type_of_tax != 'non')
         <tr>
-            <td colspan="5" class="text-right">Tax ({{ ucwords($invoice->type_of_tax) }})</td>
+            <td colspan="6" class="text-right">Tax ({{ ucwords($invoice->type_of_tax) }})</td>
             <td class="text-right">{{ number_format_quantity($invoice->tax) }}</td>
         </tr>
     @endif
     <tr>
-        <td colspan="5" class="text-right">Total</td>
+        <td colspan="6" class="text-right">Total</td>
         <td class="text-right">{{ number_format_quantity($invoice->total) }}</td>
     </tr>
     </tfoot>
