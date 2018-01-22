@@ -47,7 +47,7 @@
         </tr>
         <?php $no++;?>
     @endforeach
-    @if($invoice->items)
+    @if($invoice->items->count())
         <tr>
             <th width="10px">No</th>
             <th width="150">Item</th>
@@ -102,14 +102,12 @@
 
 @section('signature')
     <td>
-        Disetujui,
-        <div class="signature-date">{{ \DateHelper::formatView($invoice->formulir->approval_at) }}</div>
+        <div class="signature-date">Disetujui,<br/>{{ \DateHelper::formatView($invoice->formulir->approval_at) }}</div>
         <div class="signature">____________________</div>
         <div class="signature-person">({{strtoupper($invoice->formulir->approvalTo->name)}})</div>
     </td>
     <td>
-        Penerima,
-        <div class="signature-date">{{ \DateHelper::formatView($invoice->formulir->form_date) }}</div>
+        <div class="signature-date">Penerima,<br/>{{ \DateHelper::formatView($invoice->formulir->form_date) }}</div>
         <div class="signature">____________________</div>
         <div class="signature-person">({{strtoupper($invoice->person->name)}})</div>
     </td>
