@@ -8,6 +8,7 @@ use Point\Core\Helpers\UserHelper;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\PersonHelper;
+use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\PersonGroup;
 use Point\Framework\Models\Master\PersonType;
@@ -35,7 +36,6 @@ class PurchaseOrderController extends Controller
         $list_purchase_order = PurchaseOrderHelper::searchList($list_purchase_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view = view('point-purchasing::app.purchasing.point.inventory.purchase-order.index');
         $view->list_purchase_order = $list_purchase_order->paginate(100);
-
         $array_purchase_order_id = [];
         $view->array_purchase_order_id = $array_purchase_order_id;
         return $view;
@@ -135,6 +135,7 @@ class PurchaseOrderController extends Controller
         $view->reference = $view->purchase_order->checkHaveReference() ? : null;
         $view->list_purchase_order_archived = PurchaseOrder::joinFormulir()->archived($view->purchase_order->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_purchase_order_archived->count();
+        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->purchase_order->formulir_id)->get();
         if (! $view->purchase_order->formulir->form_number) {
             return redirect(PurchaseOrder::showUrl($id));
         }

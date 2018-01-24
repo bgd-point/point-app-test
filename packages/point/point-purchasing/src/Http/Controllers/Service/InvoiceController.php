@@ -22,6 +22,7 @@ use Point\PointPurchasing\Helpers\ServiceInvoiceHelper;
 use Point\PointPurchasing\Http\Requests\ServiceInvoiceRequest;
 use Point\PointPurchasing\Models\Service\Invoice;
 use Point\PointPurchasing\Models\Service\InvoiceItem;
+use Point\PointPurchasing\Models\Service\InvoiceService;
 
 class InvoiceController extends Controller
 {
