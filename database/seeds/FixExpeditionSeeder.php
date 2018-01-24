@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Point\Framework\Models\FormulirLock;
+use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
 
 class FixExpeditionSeeder extends Seeder
@@ -20,11 +21,19 @@ class FixExpeditionSeeder extends Seeder
                 $coas = \Point\Framework\Models\Master\Item::select('account_asset_id')->groupBy('account_asset_id')->get();
                 if ($coas) {
                     $start++;
-                    $journals = Journal::where('form_journal_id', $invoice->formulir_id)->whereIn('coa_id', $coas)->get();
+//                    $journals = Journal::where('form_journal_id', $invoice->formulir_id)->whereIn('coa_id', $coas)->get();
+//
+//                    foreach ($journals as $journal) {
+//                        $journal->debit += $journal->debit / $invoice->subtotal * $good_received->expedition_fee;
+//                        $journal->save();
+//                    }
 
-                    foreach ($journals as $journal) {
-                        $journal->debit += $journal->debit / $invoice->subtotal * $good_received->expedition_fee;
-                        $journal->save();
+                    $inventories = Inventory::where('formulir_id', $invoice->formulir_id)->get();
+                    \Log::info($inventories->count());
+                    foreach ($inventories as $inventory) {
+                        $expedition_fee =  $inventory->total_value / $invoice->subtotal * $good_received->expedition_fee;
+                        $inventory->price += $expedition_fee;
+                        $inventory->save();
                     }
                 }
             }
