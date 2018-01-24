@@ -22,6 +22,8 @@
                             <th>Reference</th>
                             <th>Date</th>
                             <th>I/O</th>
+                            <th>Value</th>
+                            <th>Total Value</th>
                             <th>Cost of Sales</th>
                             <th>Remaining Stock</th>
                             <th>Remaining Value</th>
@@ -47,6 +49,8 @@
                             <td>{{ $opening_inventory ? $opening_inventory->formulir->form_number : '-'}}</td>
                             <td>{{date_format_view($date_from)}}</td>
                             <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
                             <td>{{number_format_quantity($cogs)}}</td>
                             <td>{{number_format_quantity($total_quantity)}}</td>
                             <td>{{number_format_quantity($total_value)}}</td>
@@ -59,6 +63,8 @@
                                 <td>{{$inventory->formulir->form_number}}</td>
                                 <td>{{date_format_view($inventory->form_date)}}</td>
                                 <td>{{number_format_quantity($inventory->quantity)}}</td>
+                                <td>{{number_format_quantity($inventory->price)}}</td>
+                                <td>{{number_format_quantity($inventory->quantity * $inventory->price)}}</td>
                                 <td>{{number_format_quantity($inventory->cogs)}}</td>
                                 <td>{{number_format_quantity($inventory->total_quantity)}}</td>
                                 <td>{{number_format_quantity($inventory->total_value)}}</td>
