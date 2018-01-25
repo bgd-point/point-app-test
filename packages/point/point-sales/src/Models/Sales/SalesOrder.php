@@ -152,9 +152,11 @@ class SalesOrder extends Model
 
     public function createDeliveryFromExpedition()
     {
-        if (! self::getTotalRemainingDownpayment($this->id) > 0) {
-            self::checkDownpayment();
-            return false;
+        if ($this->is_cash) {
+            if (! self::getTotalRemainingDownpayment($this->id) > 0) {
+                self::checkDownpayment();
+                return false;
+            }
         }
 
         if ($this->include_expedition) {
