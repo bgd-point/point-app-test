@@ -112,7 +112,7 @@ class DeliveryOrderHelper
             $delivery_order_item->price = number_format_db($request->input('item_price')[$i]);
             $delivery_order_item->discount = number_format_db($request->input('item_discount')[$i]);
             $delivery_order_item->unit = $request->input('item_unit_name')[$i];
-            $delivery_order_item->allocation_id = $request->input('allocation_id')[$i];
+            $delivery_order_item->allocation_id = $request->input('allocation_id')[$i] ?: 1;
             $delivery_order_item->converter = number_format_db($request->input('item_unit_converter')[$i]);
             $delivery_order_item->save();
 
