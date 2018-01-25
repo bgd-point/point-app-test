@@ -68,7 +68,6 @@ class CashAdvanceController extends Controller
         $this->validate($request, [
             'form_date' => 'required',
             'employee_id' => 'required',
-            'coa_id' => 'required',
             'amount' => 'required|min:1',
             'approval_to' => 'required',
         ]);
@@ -81,8 +80,13 @@ class CashAdvanceController extends Controller
 
         $cash_advance = new CashAdvance;
         $cash_advance->formulir_id = $formulir->id;
-        $cash_advance->coa_id = $request->input('coa_id');
         $cash_advance->payment_type = $request->input('payment_type');
+        if($cash_advance->payment_type == 'cash') {
+            $cash_advance->coa_id = $request->input('coa_cash_id');
+        } else {
+            $cash_advance->coa_id = $request->input('coa_bank_id');
+        }
+
         $cash_advance->employee_id = $request->input('employee_id');
         $cash_advance->amount = number_format_db($request->input('amount'));
         $cash_advance->remaining_amount = number_format_db($request->input('amount'));
@@ -186,7 +190,11 @@ class CashAdvanceController extends Controller
         $cash_advance->amount = number_format_db($request->input('amount'));
         $cash_advance->remaining_amount = number_format_db($request->input('amount'));
         $cash_advance->payment_type = $request->input('payment_type');
-        $cash_advance->coa_id = $request->input('coa_id');
+        if($cash_advance->payment_type == 'cash') {
+            $cash_advance->coa_id = $request->input('coa_cash_id');
+        } else {
+            $cash_advance->coa_id = $request->input('coa_bank_id');
+        }
         $cash_advance->is_payed = false;
         $cash_advance->save();
 
