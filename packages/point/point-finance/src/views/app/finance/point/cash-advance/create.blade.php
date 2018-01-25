@@ -51,8 +51,9 @@
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label">Cash / Bank Account *</label>
+
                         <div id="account-cash" class="col-md-6" style="display: none;">
-                            <select id="coa-id-cash" name="coa_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                            <select id="coa-id-cash" name="coa_cash_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
                                 @foreach($list_cash_account as $coa)
                                     @if($coa->category->name == 'Petty Cash')
                                         <option value="{{ $coa->id }}">{{ $coa->account }}</option>
@@ -61,7 +62,7 @@
                             </select>
                         </div>
                         <div id="account-bank" class="col-md-6" style="display: none;">
-                            <select id="coa-id-bank" name="coa_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                            <select id="coa-id-bank" name="coa_bank_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
                                 @foreach($list_cash_account as $coa)
                                     @if($coa->category->name == 'Bank Account')
                                         <option value="{{ $coa->id }}">{{ $coa->account }}</option>
