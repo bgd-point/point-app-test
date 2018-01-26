@@ -288,20 +288,20 @@
             var tax = 0;
 
             if ($('#tax-choice-exclude-tax').prop('checked')) {
-                tax = tax_base * 10 / 100;
+                tax = (tax_base * 10 / 100);
                 $("#tax-choice-non-tax").val("exclude");
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
-                tax_base = tax_base * 100 / 110;
-                tax = tax_base * 10 / 100;
+                tax_base = (tax_base * 100 / 110);
+                tax = (tax_base * 10 / 100);
                 $("#tax-choice-non-tax").val("include");
             }
 
             $('#tax_base').val(appNum(tax_base));
             $('#tax').val(appNum(tax));
             var expedition_fee = dbNum($('#expedition-fee').val());
-            $('#total').val(appNum(tax_base + tax + expedition_fee));
+            $('#total').val(appNum((tax_base.toFixed(2) / 1) + (tax.toFixed(2)/1) + (expedition_fee.toFixed(2)/1)));
         }
     </script>
 @stop
