@@ -4,7 +4,7 @@
         <a href="{{url('purchasing/point')}}" class="widget widget-button">
             <div class="widget-content text-right clearfix">
                 <i class="fa fa-4x fa-check-square-o push-bit pull-left"></i>
-                <h4 class="widget-heading"><strong>Purchase Inventory</strong></h4>
+                <h4 class="widget-heading"><strong>Goods Purchase</strong></h4>
                 <span class="text-muted"></span>
             </div>
         </a>
@@ -17,7 +17,7 @@
             <a href="{{url('purchasing/point/service')}}" class="widget widget-button">
                 <div class="widget-content text-right clearfix">
                     <i class="fa fa-4x fa-briefcase push-bit pull-left"></i>
-                    <h4 class="widget-heading"><strong>Purchase Service</strong></h4>
+                    <h4 class="widget-heading"><strong>Service Purchase</strong></h4>
                     <span class="text-muted"></span>
                 </div>
             </a>
