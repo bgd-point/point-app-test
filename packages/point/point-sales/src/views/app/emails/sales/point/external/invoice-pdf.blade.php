@@ -32,6 +32,11 @@
         <td>:</td>
         <td>{{ ucwords($invoice->person->name) }}</td>
     </tr>
+    <tr>
+        <td>Address</td>
+        <td>:</td>
+        <td>{{ ucwords($invoice->person->address) }}</td>
+    </tr>
 @stop
 
 @section('content')
