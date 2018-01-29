@@ -21,6 +21,13 @@
         <td>:</td>
         <td>{{ ucwords($invoice->person->name) }}</td>
     </tr>
+    @if($invoice->person->address)
+        <tr>
+            <td>Address</td>
+            <td>:</td>
+            <td>{{ ucwords($invoice->person->address) }}</td>
+        </tr>
+    @endif
 @stop
 
 @section('content')
@@ -75,19 +82,23 @@
     @endif
     </tbody>
     <tfoot>
+    @if($invoice->subtotal != $invoice->total)
     <tr>
         <td colspan="6" class="text-right">Subtotal</td>
         <td class="text-right">{{ number_format_quantity($invoice->subtotal) }}</td>
     </tr>
+    @endif
+    @if($invoice->discount > 0)
     <tr>
         <td colspan="6" class="text-right">Discount (%)</td>
         <td class="text-right">{{ number_format_quantity($invoice->discount) }}</td>
     </tr>
+    @endif
+    @if($invoice->type_of_tax != 'non')
     <tr>
         <td colspan="6" class="text-right">Tax Base</td>
         <td class="text-right">{{ number_format_quantity($invoice->tax_base) }}</td>
     </tr>
-    @if($invoice->type_of_tax != 'non')
         <tr>
             <td colspan="6" class="text-right">Tax ({{ ucwords($invoice->type_of_tax) }})</td>
             <td class="text-right">{{ number_format_quantity($invoice->tax) }}</td>
