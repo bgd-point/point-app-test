@@ -69,7 +69,7 @@ class BankInController extends Controller
         $view->list_person = Person::active()->get();
         $view->list_allocation = Allocation::active()->get();
         $view->list_bank_account = Coa::where('coa_category_id', 2)->active()->get();
-        $view->list_coa = Coa::active()->hasNotSubledger()->get();
+        $view->list_coa = Coa::getNonSubledgerAndNotInSettingJournal();
 
         $view->coa_revenue = CoaPosition::where("name", "Revenue")->first();
         $view->list_coa_category_revenue = CoaCategory::where('coa_position_id', $view->coa_revenue->id)->get();
