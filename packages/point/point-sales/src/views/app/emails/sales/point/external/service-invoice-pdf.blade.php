@@ -21,6 +21,13 @@
         <td>:</td>
         <td>{{ ucwords($invoice->person->name) }}</td>
     </tr>
+    @if($invoice->person->address)
+    <tr>
+        <td>Address</td>
+        <td>:</td>
+        <td>{{ ucwords($invoice->person->address) }}</td>
+    </tr>
+    @endif
 @stop
 
 @section('content')
@@ -71,13 +78,13 @@
     @endif
     </tbody>
     <tfoot>
-    @if($invoice->subtotal == $invoice->total)
+    @if($invoice->subtotal != $invoice->total)
     <tr>
         <td colspan="5" class="text-right">Subtotal</td>
         <td class="text-right">{{ number_format_quantity($invoice->subtotal) }}</td>
     </tr>
     @endif
-    @if($invoice->discount)
+    @if($invoice->discount > 0)
     <tr>
         <td colspan="5" class="text-right">Discount (%)</td>
         <td class="text-right">{{ number_format_quantity($invoice->discount) }}</td>
@@ -106,15 +113,15 @@
 
 @section('signature')
     <td>
-        Disetujui,
-        <div class="signature-date">{{ \DateHelper::formatView($invoice->formulir->approval_at) }}</div>
-        <div class="signature">____________________</div>
+
+        <div class="signature-date">Disetujui,<br/>{{ \DateHelper::formatView($invoice->formulir->approval_at) }}</div>
+        <div class="signature">_______________________</div>
         <div class="signature-person">({{strtoupper($invoice->formulir->approvalTo->name)}})</div>
     </td>
     <td>
-        Peminta,
-        <div class="signature-date">{{ \DateHelper::formatView($invoice->formulir->form_date) }}</div>
-        <div class="signature">____________________</div>
+
+        <div class="signature-date">Peminta,<br/>{{ \DateHelper::formatView($invoice->formulir->form_date) }}</div>
+        <div class="signature">_______________________</div>
         <div class="signature-person">({{strtoupper($invoice->person->name)}})</div>
     </td>
 @stop
