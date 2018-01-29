@@ -21,6 +21,13 @@
         <td>:</td>
         <td>{{ ucwords($invoice->supplier->name) }}</td>
     </tr>
+    @if($invoice->person->address)
+        <tr>
+            <td>Address</td>
+            <td>:</td>
+            <td>{{ ucwords($invoice->supplier->address) }}</td>
+        </tr>
+    @endif
 @stop
 
 @section('content')
