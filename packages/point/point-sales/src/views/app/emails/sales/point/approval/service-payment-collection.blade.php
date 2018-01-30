@@ -216,10 +216,10 @@
                     {{ $payment_collection_other->coa->account }}
                 </td>
                 <td >
-                    {{$payment_collection_other->other_notes}}
+                    {{ $payment_collection_other->other_notes }}
                 </td>
                 <td >
-                    {{number_format_quantity($payment_collection_other->amount)}}
+                    {{ number_format_quantity($payment_collection_other->amount) }}
                 </td>
             </tr>
             @endforeach

@@ -184,17 +184,26 @@
             </tr>
 
            @foreach($payment_order->details as $payment_order_detail)
-                <tr class="item">
-                    <td >
-                        {{\Point\Framework\Helpers\ReferHelper::getReferBy(get_class($payment_order_detail),$payment_order_detail->id,get_class($payment_order),$payment_order->id)->formulir->form_number}}
-                    </td>
-                    <td >
-                        {{$payment_order_detail->detail_notes}}
-                    </td>
-                    <td >
-                        {{number_format_quantity($payment_order_detail->amount)}}
-                    </td>
-                </tr>
+               <?php
+                $model = $payment_order_detail->reference->formulirable_type;
+                $reference = $model::find($payment_order_detail->reference->formulirable_id);
+                ?>
+
+               @if (get_class($reference) == 'Point\PointPurchasing\Models\Service\Invoice')
+                   @foreach($reference->services as $invoice_service)
+                    <tr class="item">
+                        <td>
+                            {{\Point\Framework\Helpers\ReferHelper::getReferBy(get_class($payment_order_detail),$payment_order_detail->id,get_class($payment_order),$payment_order->id)->formulir->form_number}}
+                        </td>
+                        <td style="text-align: left">
+                            {{$invoice_service->service_notes}} (Qty: {{number_format_quantity($invoice_service->quantity)}})
+                        </td>
+                        <td style="text-align: right">
+                            {{number_format_quantity($invoice_service->quantity * ($invoice_service->price - ($invoice_service->price * $invoice_service->discount / 100)))}}
+                        </td>
+                    </tr>
+                   @endforeach
+               @endif
             @endforeach
             <tr></tr>
             @if(count($payment_order->others) > 0)
@@ -215,10 +224,10 @@
                 <td >
                     {{ $payment_order_other->coa->account }}
                 </td>
-                <td >
+                <td style="text-align: left">
                     {{$payment_order_other->other_notes}}
                 </td>
-                <td >
+                <td style="text-align: right">
                     {{number_format_quantity($payment_order_other->amount)}}
                 </td>
             </tr>
@@ -229,7 +238,7 @@
                 </td>
                 <td>
                 </td>
-                <td>
+                <td style="text-align: right">
                     {{number_format_quantity($payment_order->total_payment)}}
                 </td>
             </tr>
