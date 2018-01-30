@@ -83,20 +83,18 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Cash Sales</label>
+                        <label class="col-md-3 control-label">Require downpayment before delivering the order</label>
                         <div class="col-md-6 content-show">
                             <input type="checkbox" id="cash_selling" name="is_cash" @if($sales_order->is_cash == 1) checked @endif value="1">
-                            <span class="help-block">If checked, you need to make a downpayment before deliver the order</span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Include Expedition</label>
+                        <label class="col-md-3 control-label">Order Expedition Service</label>
 
                         <div class="col-md-6 content-show">
                             <input type="checkbox" id="include-expedition" name="include_expedition"
                                    onchange="includeExpedition()"
-                                   {{$sales_order->include_expedition == 1 ? 'checked' : ''}} value="true">
-                            <span class="help-block">Uncheck this if you want to order expedition service</span>
+                                   {{$sales_order->include_expedition == 0 ? 'checked' : ''}} value="true">
                         </div>
                     </div>
                     <fieldset>
@@ -380,10 +378,10 @@
 
         function includeExpedition() {
             if (document.getElementById("include-expedition").checked) {
-                $('#fee-expedition').show();
+              $('#fee-expedition').val(0);
+              $('#fee-expedition').hide();
             } else {
-                $('#fee-expedition').val(0);
-                $('#fee-expedition').hide();
+              $('#fee-expedition').show();
             }
             calculate();
         }

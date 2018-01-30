@@ -45,10 +45,10 @@ class SalesOrderHelper
     private static function getIncludeExpedition(Request $request)
     {
         if ($request->input('include_expedition')) {
-            return 1;
+            return 0;
         }
 
-        return 0;
+        return 1;
     }
 
     private static function getExpeditionFee(Request $request)
@@ -137,7 +137,7 @@ class SalesOrderHelper
         }
 
         $discount = number_format_db($request->input('discount'));
-        $tax_base = $subtotal -($subtotal/100 * $discount);
+        $tax_base = $subtotal - ($subtotal/100 * $discount);
         $tax = 0;
 
         if ($request->input('type_of_tax') == 'exclude') {

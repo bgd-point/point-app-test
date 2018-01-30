@@ -75,20 +75,18 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Cash Sales</label>
+                        <label class="col-md-3 control-label">Require downpayment before delivering the order</label>
 
                         <div class="col-md-6 content-show">
                             <input type="checkbox" id="cash-selling" name="is_cash" checked value="true">
-                            <span class="help-block">If checked, you need to make a downpayment before delivering the order</span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Include Expedition</label>
+                        <label class="col-md-3 control-label">Order Expedition Service</label>
 
                         <div class="col-md-6 content-show">
                             <input type="checkbox" id="include-expedition" name="include_expedition"
                                    onchange="includeExpedition()" checked value="true">
-                            <span class="help-block">Uncheck this if you want to order expedition service</span>
                         </div>
                     </div>
                     <fieldset>
@@ -359,10 +357,10 @@
 
         function includeExpedition() {
             if (document.getElementById("include-expedition").checked) {
-                $('#fee-expedition').show();
+              $('#fee-expedition').val(0);
+              $('#fee-expedition').hide();
             } else {
-                $('#fee-expedition').val(0);
-                $('#fee-expedition').hide();
+              $('#fee-expedition').show();
             }
             calculate();
         }
