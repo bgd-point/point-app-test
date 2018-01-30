@@ -18,7 +18,7 @@
             <a href="{{url('sales/point/indirect')}}" class="widget widget-button">
                 <div class="widget-content text-right clearfix">
                     <i class="fa fa-4x fa-clipboard push-bit pull-left"></i>
-                    <h4 class="widget-heading"><strong>Sales</strong></h4>
+                    <h4 class="widget-heading"><strong>Goods Sales</strong></h4>
                     <span class="text-muted"></span>
                 </div>
             </a>
