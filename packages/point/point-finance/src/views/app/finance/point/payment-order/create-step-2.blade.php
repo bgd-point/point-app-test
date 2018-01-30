@@ -164,7 +164,7 @@ $('#addItemRow').on( 'click', function () {
         @endif
         +'</div>',
         '<input type="text" name="detail_notes[]" required="" class="form-control" value="" />',
-        '<input type="text" id="amount-'+counter+'" required="" name="amount[]" class="form-control format-quantity row-total text-right calculate" value="0" class="amountId" />',
+        '<input type="text" id="amount-'+counter+'" required="" name="amount[]" class="form-control format-price-alt row-total text-right calculate" value="0" class="amountId" />',
         '<div class="@if(access_is_allowed_to_view("create.allocation")) input-group @endif"><select required="" id="allocation-id-'+counter+'" name="allocation_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
             @foreach($list_allocation as $allocation)
             +'<option value="{{$allocation->id}}">{{$allocation->name}}</option>'
