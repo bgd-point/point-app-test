@@ -100,11 +100,10 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Cash Sales</label>
+                        <label class="col-md-3 control-label">Require downpayment before delivering the order</label>
 
                         <div class="col-md-6 content-show">
                             <input type="checkbox" id="credit-selling" name="is_cash" checked value="true">
-                            <span class="help-block">If checked, you need to make a downpayment before delivering the order</span>
                         </div>
                     </div>
 

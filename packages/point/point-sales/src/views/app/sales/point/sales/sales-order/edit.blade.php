@@ -111,23 +111,19 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Cash Sales</label>
+                        <label class="col-md-3 control-label">Require downpayment before delivering the order</label>
 
                         <div class="col-md-6 content-show">
-                            @if($sales_order->is_cash == 1)
-                                <input type="checkbox" id="cash-selling" name="is_cash" checked value="true">
-                            @else
-                                <input type="checkbox" id="cash-selling" name="is_cash" value="false">
-                            @endif
-                                <span class="help-block">If checked, you need to make a downpayment before delivering the order</span>
+                            <input type="checkbox" id="cash-selling" name="is_cash" @if($sales_order->is_cash == 1) checked @endif value="{{ $sales_order->is_cash ? 'true' : 'false' }}">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Include Expedition</label>
+                        <label class="col-md-3 control-label">Order Expedition Service</label>
 
                         <div class="col-md-6 content-show">
-                            <input type="checkbox" id="include-expedition" name="include_expedition" value="true">
-                            <span class="help-block">Uncheck this if you want to order expedition service</span>
+                            <input type="checkbox" id="include-expedition" name="include_expedition"
+                                    onchange="includeExpedition()"
+                                    {{$sales_order->include_expedition == 0 ? 'checked' : ''}} value="true">
                         </div>
                     </div>
                     <fieldset>

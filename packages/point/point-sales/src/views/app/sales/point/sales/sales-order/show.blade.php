@@ -116,21 +116,19 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Cash Sales</label>
+                            <label class="col-md-3 control-label">Require downpayment before delivering the order</label>
 
                             <div class="col-md-6 content-show">
                                 <input disabled type="checkbox" id="credit-selling"
                                        name="is_cash" {{ $sales_order->is_cash == 1 ? 'checked' : '' }}>
-                                <span class="help-block">If checked, you need to make a downpayment before deliver the order</span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Include Expedition</label>
+                            <label class="col-md-3 control-label">Order Expedition Service</label>
 
                             <div class="col-md-6 content-show">
                                 <input disabled type="checkbox"
-                                       name="include_expedition" {{ $sales_order->include_expedition == 1 ? 'checked' : '' }}>
-                                <span class="help-block">Uncheck this if you want to order expedition service</span>
+                                       name="include_expedition" {{ $sales_order->include_expedition == 0 ? 'checked' : '' }}>
                             </div>
                         </div>
                         <fieldset>
