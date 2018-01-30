@@ -109,7 +109,7 @@
                                                             </div>
                                                         </td>
                                                         <td><input type="text" name="detail_notes[]" class="form-control" value="{{$detail->notes_detail}}" /></td>
-                                                        <td><input type="text" id="amount-{{$counter}}" name="amount[]" class="form-control format-quantity row-amount text-right calculate" value="{{$detail->amount}}" /></td>
+                                                        <td><input type="text" id="amount-{{$counter}}" name="amount[]" class="form-control format-price-alt row-amount text-right calculate" value="{{$detail->amount}}" /></td>
                                                         <td>
                                                             <div class="@if(access_is_allowed_to_view('create.allocation')) input-group @endif">
                                                                 <select id="allocation-id-{{$counter}}" name="allocation_id[]" class="selectize" style="width: 100%;" data-placeholder=" Choose..">
@@ -213,7 +213,7 @@
                 @endif
                 +'</div>',
                 '<input type="text" name="detail_notes[]" class="form-control" value="" />',
-                '<input type="text" id="amount-'+counter+'" name="amount[]" class="form-control format-quantity row-amount text-right calculate" value="0" />',
+                '<input type="text" id="amount-'+counter+'" name="amount[]" class="form-control format-price-alt row-amount text-right calculate" value="0" />',
                 '<div class="@if(access_is_allowed_to_view("create.allocation")) input-group @endif"><select id="allocation-id-'+counter+'" name="allocation_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
                 @foreach($list_allocation as $allocation)
                 +'<option value="{{$allocation->id}}">{{$allocation->name}}</option>'
