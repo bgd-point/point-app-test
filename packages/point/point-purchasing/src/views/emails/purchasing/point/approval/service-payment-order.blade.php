@@ -175,7 +175,7 @@
                 <td>
                     Reference Number
                 </td>
-                <td>
+                <td style="text-align: left">
                     Notes
                 </td>
                 <td>
@@ -211,7 +211,7 @@
                 <td>
                     Reference Number
                 </td>
-                <td>
+                <td style="text-align: left">
                     Notes
                 </td>
                 <td>
