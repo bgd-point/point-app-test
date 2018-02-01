@@ -101,6 +101,7 @@
                                                 <input type="text"
                                                        name="product_quantity[]"
                                                        class="form-control format-quantity text-right"
+                                                        onkeyup="calculateFormula(this.value)"
                                                        value="{{ $product->quantity }}"/>
                                             </td>
                                             <td>
@@ -140,6 +141,9 @@
                                     </tr>
                                     </thead>
                                     <tbody class="manipulate-row">
+                                    <?php
+                                        $index=0;
+                                    ?>
                                     @foreach($formula->material as $material)
                                         <tr>
                                             <td></td>
@@ -148,10 +152,14 @@
                                                 {{ $material->item->codeName }}
                                             </td>
                                             <td class="text-right">
-                                                <input type="text"
+                                                <input type="text" id="material_qty_{{$index}}"
                                                        name="material_quantity[]"
                                                        class="form-control format-quantity text-right"
                                                        value="{{ $material->quantity }}"/>
+
+                                                <input type="hidden" id="material_ori_qty_{{$index}}"
+                                                        class="form-control"
+                                                        value="{{ $material->quantity }}"/>
                                             </td>
                                             <td>
                                                 <input type="hidden" name="material_unit[]" value="{{ \Point\Framework\Models\Master\Item::defaultUnit($material->material_id)->name }}">
@@ -162,6 +170,9 @@
                                                 {{ $material->warehouse->codeName }}
                                             </td>
                                         </tr>
+                                        <?php
+                                            $index++;
+                                        ?>
                                     @endforeach
                                     </tbody>
                                 </table>
@@ -210,6 +221,17 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function calculateFormula(total) {
+          var table = $('#item-datatable').DataTable();
+
+          var data = table.rows().data();
+          data.each(function (value, index) {
+            $('#material_qty_'+index).val(appNum($('#material_ori_qty_'+index).val()* dbNum(total)));
+          });
+        }
+    </script>
 @stop
 
 @extends('point-manufacture::app.manufacture.point.input._script')
