@@ -46,7 +46,18 @@
                         ?>
                         <tr>
                             @if(!$warehouse) <td>{{$opening_inventory ? $opening_inventory->warehouse->name : '-' }}</td> @endif
-                            <td>{{ $opening_inventory ? $opening_inventory->formulir->form_number : '-'}}</td>
+                            <td>
+                                @if($opening_inventory)
+                                <?php
+                                    $model = $opening_inventory->formulir->formulirable_type;
+                                ?>
+                                <a href="{{$model::showUrl($opening_inventory->formulir->formulirable_id)}}">
+                                    {{ $opening_inventory->formulir->form_number }}
+                                </a>
+                                    @else
+                                    -
+                                @endif
+                            </td>
                             <td>{{date_format_view($date_from)}}</td>
                             <td>-</td>
                             <td>-</td>
@@ -60,7 +71,10 @@
                             <?php $total_value += $inventory->quantity * $inventory->cogs ?>
                             <tr @if($inventory->recalculate == 1) style="background: red;color:white;" @endif>
                                 @if(!$warehouse) <td>{{$inventory->warehouse->name}}</td> @endif
-                                <td>{{$inventory->formulir->form_number}}</td>
+                                <?php
+                                    $model = $inventory->formulir->formulirable_type;
+                                ?>
+                                <td>{!! formulir_url($inventory->formulir) !!}</td>
                                 <td>{{date_format_view($inventory->form_date)}}</td>
                                 <td>{{number_format_quantity($inventory->quantity)}}</td>
                                 <td>{{number_format_quantity($inventory->price)}}</td>

@@ -56,4 +56,15 @@ class TransferItem extends Model
     {
         return 'point-expedition::emails.expedition.point.approval.downpayment';
     }
+
+    public static function showUrl($id)
+    {
+        $class = self::find($id);
+
+        if ($class->formulir->form_number) {
+            return '/inventory/point/transfer-item/send/' . $id;
+        }
+
+        return '/inventory/point/transfer-item/send/' . $id . '/archived';
+    }
 }
