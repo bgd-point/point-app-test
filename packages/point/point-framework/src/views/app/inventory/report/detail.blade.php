@@ -59,8 +59,7 @@
                         <?php $total_quantity += $inventory->quantity ?>
                             <tr>
                                 @if(!$warehouse) <td>{{$inventory->warehouse->name}}</td> @endif
-                                <td>{{ $inventory->formulir->form_number }}</td>
-                                {{--<td>{!! formulir_url($inventory->formulir) !!}</td>--}}
+                                <td>{!! formulir_url($inventory->formulir) !!}</td>
                                 <td>{{date_format_view($inventory->form_date)}}</td>
                                 <td>{{number_format_quantity($inventory->quantity)}}</td>
                                 <td>{{number_format_quantity($total_quantity)}}</td>
