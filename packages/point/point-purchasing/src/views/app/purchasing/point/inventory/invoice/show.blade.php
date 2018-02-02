@@ -98,6 +98,19 @@
                                 @endforeach
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Reference</label>
+                            <div class="col-md-6 content-show">
+                                @foreach($list_reference as $reference)
+                                    <?php
+                                    $model = $reference->locking->formulirable_type;
+                                    $url = $model::showUrl($reference->lockedForm->formulirable_id);
+                                    ?>
+                                    {!! formulir_url($reference->lockedForm) !!}<br/>
+
+                                @endforeach
+                            </div>
+                        </div>
                         <fieldset>
                             <div class="form-group">
                                 <div class="col-md-12">

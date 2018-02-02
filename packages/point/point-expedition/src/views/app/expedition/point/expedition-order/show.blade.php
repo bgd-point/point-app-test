@@ -135,20 +135,26 @@
                                                 </tbody>
                                             @endforeach
                                             <tfoot>
+                                            @if($expedition_order->expedition_fee != $expedition_order->total)
                                             <tr>
                                                 <td colspan="2" class="text-right">
                                                     <strong>Subtotal</strong>
                                                 </td>
                                                 <td class="text-right">{{ number_format_quantity($expedition_order->expedition_fee) }}</td>
                                             </tr>
+                                            @endif
+                                            @if ($expedition_order->discount >0)
                                             <tr>
                                                 <td colspan="2" class="text-right"><strong>Discount</strong></td>
                                                 <td class="text-right">{{ number_format_quantity($expedition_order->discount) }}</td>
                                             </tr>
+                                            @endif
+                                            @if($expedition_order->type_of_tax != 'non')
                                             <tr>
                                                 <td colspan="2" class="text-right"><strong>Tax Base</strong></td>
                                                 <td class="text-right">{{ number_format_quantity($expedition_order->tax_base) }}</td>
                                             </tr>
+
                                             <tr>
                                                 <td colspan="2" class="text-right">
                                                     <strong>Tax</strong>
@@ -156,6 +162,7 @@
                                                 </td>
                                                 <td class="text-right">{{ number_format_quantity($expedition_order->tax) }}</td>
                                             </tr>
+                                            @endif
                                             <tr>
                                                 <td colspan="2" class="text-right"><h4><strong>Total</h4></strong></td>
                                                 <td class="text-right">
