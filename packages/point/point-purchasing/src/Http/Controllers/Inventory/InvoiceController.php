@@ -157,6 +157,7 @@ class InvoiceController extends Controller
         $view->list_invoice_archived = Invoice::joinFormulir()->archived($view->invoice->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_invoice_archived->count();
         $view->list_referenced = FormulirLock::where('locked_id', '=', $view->invoice->formulir_id)->get();
+        $view->list_reference = FormulirLock::where('locking_id', '=', $view->invoice->formulir_id)->get();
         return $view;
     }
 

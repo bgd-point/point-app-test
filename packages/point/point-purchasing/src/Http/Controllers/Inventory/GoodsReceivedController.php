@@ -146,7 +146,7 @@ class GoodsReceivedController extends Controller
         $view->revision = $view->list_goods_received_archived->count();
 
         $view->list_referenced = FormulirLock::where('locked_id', '=', $view->goods_received->formulir_id)->get();
-
+        $view->list_reference = FormulirLock::where('locking_id', '=', $view->goods_received->formulir_id)->get();
         return $view;
     }
 
