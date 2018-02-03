@@ -103,7 +103,7 @@
                             <div class="col-md-6 content-show">
                                 @foreach($list_reference as $reference)
                                     <?php
-                                    $model = $reference->locking->formulirable_type;
+                                    $model = $reference->lockedForm->formulirable_type;
                                     $url = $model::showUrl($reference->lockedForm->formulirable_id);
                                     ?>
                                     {!! formulir_url($reference->lockedForm) !!}<br/>
