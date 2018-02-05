@@ -168,11 +168,10 @@
                                 <input type="hidden" readonly="" id="tax" name="foot_tax" class="form-control format-quantity calculate text-right" value="0" />
                             </div>
                         </div>
-                        <div class="col-md-6"></div>
+                        <div class="col-md-6 content-show"><input tabindex="-1" type="checkbox" id="tax-choice-include-tax" class="tax" name="tax_type" {{ $pos->tax_type == 'include' ? 'checked'  : '' }} onchange="calculate()" value="include"> Tax Included <br/></div>
                         <div class="col-md-6 content-show">
-                            <input type="checkbox" id="tax-choice-include-tax" class="tax" name="tax_type" {{ $pos->tax_type == 'include' ? 'checked'  : '' }} onchange="calculate()" value="include"> Tax Included <br/>
-                            <input type="checkbox" id="tax-choice-exclude-tax" class="tax" name="tax_type" {{ $pos->tax_type == 'exclude' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
-                            <input type="checkbox" id="tax-choice-non-tax" class="tax" name="tax_type" {{ $pos->tax_type == 'non' ? 'checked'  : '' }} onchange="calculate()" value="non" style="display:none">
+                            <input tabindex="-1" type="checkbox" id="tax-choice-exclude-tax" class="tax" name="tax_type" {{ $pos->tax_type == 'exclude' ? 'checked'  : '' }} onchange="calculate()" value="exclude"> Tax Excluded
+                            <input tabindex="-1" type="checkbox" id="tax-choice-non-tax" class="tax" name="tax_type" {{ $pos->tax_type == 'non' ? 'checked'  : '' }} onchange="calculate()" value="non" style="display:none">
                         </div>
                     </div>
                     <div class="col-sm-3">
@@ -210,10 +209,12 @@
                         </div>
                     </div>
                     <div class="col-sm-3" style="padding-right: 30px;">
-                        <a href="{{url('sales/point/pos/clear')}}" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-danger btn-block" style="padding:10px">Cancel</a>
-                        <input type="submit" onclick="setAction('draft')" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-info btn-block" id="submit" value="draft" style="padding:10px"/>
-                        <input type="hidden" name="action" id="action">
+
                         <button type="submit" onclick="setAction('save')" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-primary btn-block" id="submit" style="padding:30px 0;"><font style="font-size:20px; font-weight:bold">Close</font> <br>Transaction</button>
+                        <input type="submit" onclick="setAction('draft')" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-info btn-block" id="submit" value="draft" style="padding:10px"/>
+                        <a href="{{url('sales/point/pos/clear')}}" class="btn btn-lg btn-effect-ripple btn-effect-ripple btn-danger btn-block" style="padding:10px">Cancel</a>
+                        <input type="hidden" name="action" id="action">
+
                         <input type="checkbox" name="print" id="print" value="true" checked="" style="visibility: hidden;"/>
                     </div>
                 </div>
