@@ -34,6 +34,7 @@ class PosReportController extends Controller
 
         $list_sales = PosHelper::searchList($list_sales, 'point_sales_pos.id', 'asc', \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'), 1);
         $view = view('point-sales::app.sales.point.pos.report.index');
+        $view->grand_sales = $list_sales->get()->sum('total');
         $view->list_sales = $list_sales->paginate(100);
         return $view;
     }
