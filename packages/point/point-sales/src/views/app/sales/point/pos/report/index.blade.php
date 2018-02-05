@@ -67,6 +67,10 @@
                             <td colspan="4" class="text-right"><strong>Total</strong></td>
                             <td class="text-right"><strong>{{ number_format_accounting($total_sales) }}</strong></td>
                         </tr>
+                        <tr>
+                            <td colspan="4" class="text-right"><strong>Grand Total</strong></td>
+                            <td class="text-right"><strong>{{ number_format_accounting($grand_sales) }}</strong></td>
+                        </tr>
                         </tfoot>
                     </table>
                     {!! $list_sales->appends(['search'=>app('request')->get('search'), 'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
