@@ -65,6 +65,14 @@
                                 {{$person->phone}}
                             </div>
                         </div>
+                        @if($person_type->slug == 'customer')
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Credit Ceiling</label>
+                            <div class="col-md-6 content-show">
+                                {{number_format_accounting($person->credit_ceiling)}}
+                            </div>
+                        </div>
+                        @endif
                         <div class="form-group">
                             <label class="col-md-3 control-label">Notes</label>
                             <div class="col-md-6">

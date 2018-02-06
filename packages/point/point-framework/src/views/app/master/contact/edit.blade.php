@@ -69,6 +69,15 @@
                             <input type="text" name="phone" class="form-control" value="{{$person->phone}}">
                         </div>
                     </div>
+                    @if($person_type->slug == 'customer')
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Credit Ceiling</label>
+                        <div class="col-md-6">
+                            <input type="text" name="credit_ceiling" class="form-control format-quantity" value="{{$person->credit_ceiling}}">
+                            <span class="help-block">Prevent customer to make an order when reach this limit</span>
+                        </div>
+                    </div>
+                    @endif
                     <div class="form-group">
                         <label class="col-md-3 control-label">Notes</label>
                         <div class="col-md-6">

@@ -32,6 +32,7 @@ class CreatePersonTable extends Migration
             $table->string('email')->nullable();
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
+            $table->decimal('credit_ceiling', 16, 4)->default(0);
             $table->text('notes')->nullable();
 
             $table->nullableTimestamps();

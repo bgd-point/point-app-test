@@ -5,6 +5,7 @@ namespace Point\Framework\Http\Controllers\Master;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Point\Core\Exceptions\PointException;
+use Point\Core\Helpers\NumberHelper;
 use Point\Core\Models\Master\History;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\AccessHelper;
@@ -86,6 +87,9 @@ class ContactController extends Controller
         $person->address = $request->input('address');
         $person->phone = $request->input('phone');
         $person->notes = $request->input('notes');
+        if($request->input('credit_ceiling')) {
+            $person->credit_ceiling = NumberHelper::formatDB($request->input('credit_ceiling'));
+        }
         $person->created_by = auth()->user()->id;
         $person->updated_by = auth()->user()->id;
 
@@ -227,6 +231,10 @@ class ContactController extends Controller
         $person->address = $request->input('address');
         $person->phone = $request->input('phone');
         $person->notes = $request->input('notes');
+        if($request->input('credit_ceiling')) {
+            $person->credit_ceiling = NumberHelper::formatDB($request->input('credit_ceiling'));
+        }
+
         $person->updated_by = auth()->user()->id;
 
         if (!$person->save()) {
