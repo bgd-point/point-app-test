@@ -172,9 +172,6 @@
         <table cellpadding="0" cellspacing="0">
             <tr class="heading">
                 <td>
-                    Reference Number
-                </td>
-                <td>
                     Notes
                 </td>
                 <td>
@@ -183,27 +180,27 @@
             </tr>
 
            @foreach($payment_order->details as $payment_order_detail)
-                <tr class="item">
-                    <td >
-                        {{\Point\Framework\Helpers\ReferHelper::getReferBy(get_class($payment_order_detail),$payment_order_detail->id,get_class($payment_order),$payment_order->id)->formulir->form_number}}
-                    </td>
-                    <td >
-                        {{$payment_order_detail->detail_notes}}
-                    </td>
-                    <td >
-                        {{number_format_quantity($payment_order_detail->amount)}}
-                    </td>
-                </tr>
+                <?php
+                $model = $payment_order_detail->reference->formulirable_type;
+                $reference = $model::find($payment_order_detail->reference->formulirable_id);
+                ?>
+
+                @if (get_class($reference) == 'Point\PointPurchasing\Models\Inventory\Invoice')
+                    @foreach($reference->items as $invoice_service)
+                        <tr class="item">
+                            <td style="text-align: left">
+                                {{$invoice_service->item->codeName}} (Qty: {{number_format_quantity($invoice_service->quantity)}})
+                            </td>
+                            <td style="text-align: right">
+                                {{number_format_quantity($invoice_service->quantity * ($invoice_service->price - ($invoice_service->price * $invoice_service->discount / 100)))}}
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
             @endforeach
             <tr></tr>
             @if(count($payment_order->others) > 0)
             <tr class="heading">
-                <td>
-                    Reference Number
-                </td>
-                <td>
-                    Allocation
-                </td>
                 <td>
                     Notes
                 </td>
@@ -215,13 +212,7 @@
             @foreach($payment_order->others as $payment_order_other)
             <tr class="item">
                 <td >
-                    {{ $payment_order_other->coa->account }}
-                </td>
-                <td >
-                    {{ $payment_order_other->allocation->name }}
-                </td>
-                <td >
-                    {{$payment_order_other->other_notes}}
+                    {{ $payment_order_other->coa->account }} | {{$payment_order_other->other_notes}}
                 </td>
                 <td >
                     {{number_format_quantity($payment_order_other->amount)}}
@@ -230,8 +221,6 @@
             @endforeach
             <tr></tr>
             <tr class="heading">
-                <td>
-                </td>
                 <td>
                 </td>
                 <td>
