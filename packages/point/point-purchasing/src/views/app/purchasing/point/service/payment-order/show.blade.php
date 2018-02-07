@@ -65,6 +65,18 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-md-3 control-label">Referenced By</label>
+                            <div class="col-md-6 content-show">
+                                @foreach($list_referenced as $referenced)
+                                    <?php
+                                    $model = $referenced->locking->formulirable_type;
+                                    $url = $model::showUrl($referenced->locking->formulirable_id);
+                                    ?>
+                                    <a href="{{ url($url) }}">{{ $referenced->locking->form_number }}</a> <br/>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-md-3 control-label">Notes</label>
                             <div class="col-md-6 content-show">
                                 {{$payment_order->formulir->notes}}
