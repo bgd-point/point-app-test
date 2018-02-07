@@ -71,7 +71,7 @@
                         <label class="col-md-3 control-label">Credit Ceiling</label>
                         <div class="col-md-6">
                             <input type="text" name="credit_ceiling" class="form-control format-quantity" value="{{old('credit_ceiling')}}">
-                            <span class="help-block">Prevent customer to make an order when reach this limit</span>
+                            <span class="help-block">Preventing delivery to customer when this limit is reached</span>
                         </div>
                     </div>
                     @endif
