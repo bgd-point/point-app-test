@@ -5,9 +5,11 @@ namespace Point\PointSales\Http\Controllers\Sales;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Point\Core\Exceptions\PointException;
 use Point\Core\Helpers\UserHelper;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
+use Point\Framework\Models\AccountPayableAndReceivable;
 use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
@@ -113,6 +115,39 @@ class DeliveryOrderController extends Controller
         DB::beginTransaction();
 
         FormulirHelper::isAllowedToCreate('create.point.sales.delivery.order', date_format_db($request->input('form_date'), $request->input('time')), [$reference_sales->formulir_id]);
+
+        $total = 0;
+        for ($i=0 ; $i<count($request->input('item_id')) ; $i++) {
+            $quantity = number_format_db($request->input('item_quantity')[$i]);
+            $price = number_format_db($request->input('item_price')[$i]);
+            $discount = number_format_db($request->input('item_discount')[$i]);
+
+            $total += $quantity * ($price - $price * $discount / 100);
+        }
+
+
+        $reference_type = $request->input('reference_sales_order');
+        $reference_id = $request->input('reference_sales_order_id');
+        $customer = $reference_type::find($reference_id)->person;
+
+        $list_report = AccountPayableAndReceivable::where('done', 0)
+            ->where('person_id', $customer->id)
+            ->get();
+
+        $remaining = 0;
+        foreach($list_report as $report) {
+            $sum=0;
+            if ($report->detail) {
+                $sum = $report->detail->sum('amount');
+            }
+
+            $remaining += $report->amount - $sum;
+        }
+
+        if ($customer->credit_ceiling > 0 && $remaining + $total > $customer->credit_ceiling) {
+            throw new PointException('Credit ceiling reached, Unable to deliver');
+        }
+
         $formulir = FormulirHelper::create($request->input(), 'point-sales-delivery-order');
         $delivery_order = DeliveryOrderHelper::create($request, $formulir);
         timeline_publish('create.sales.order', 'added new delivery order '  . $delivery_order->formulir->form_number);
