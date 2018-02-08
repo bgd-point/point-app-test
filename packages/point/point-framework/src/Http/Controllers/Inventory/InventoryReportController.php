@@ -22,19 +22,25 @@ class InventoryReportController extends Controller
     {
         WarehouseHelper::isAvailable();
 
-        $item_search = \Input::get('search');
+        $array_of_search = explode(' ',\Input::get('search'));
         $view = view('framework::app.inventory.report.index');
         $view->search_warehouse = \Input::get('warehouse_id') ? Warehouse::find(\Input::get('warehouse_id')) : 0;
         $view->list_warehouse = Warehouse::active()->get();
         $view->date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : date('Y-m-01 00:00:00');
         $view->date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : date('Y-m-d 23:59:59');
         $view->inventory = Inventory::joinItem()
-            ->where('item.name', 'like', '%' . $item_search . '%')
             ->groupBy('inventory.item_id')
             ->where('inventory.total_quantity', '>', 0)
-            ->where(function ($query) use ($view) {
+            ->where(function ($query) use ($view, $array_of_search) {
                 if ($view->search_warehouse) {
                     $query->where('inventory.warehouse_id', $view->search_warehouse->id);
+                }
+                foreach ($array_of_search as $search) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('item.name', 'like', '%'.$search.'%')
+                            ->orWhere('item.code', 'like', '%'.$search.'%')
+                            ->orWhere('item.notes', 'like', '%'.$search.'%');
+                    });
                 }
             })
             ->where(function ($query) use ($view) {
