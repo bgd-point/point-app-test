@@ -232,7 +232,7 @@ class PaymentOrderController extends Controller
 
         access_is_allowed('create.point.expedition.payment.order',
             date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
-
+        FormulirHelper::isAllowedToCreate('create.point.expedition.payment.order', date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
         $formulir = FormulirHelper::create($request->input(), 'point-expedition-payment-order');
         $payment_order = PaymentOrderHelper::create($request, $formulir, $references, $references_type, $references_id,
             $references_account, $references_amount, $references_amount_original, $references_notes, $references_detail_id, $references_detail_type);
