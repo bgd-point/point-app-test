@@ -199,7 +199,7 @@ class PaymentCollectionController extends Controller
         $request['form_date'] = date('Y-m-d', strtotime($request->input('payment_date')));
         access_is_allowed('create.point.sales.service.payment.collection', date_format_db($request->input('form_date'),
             $request->input('time')), $formulir_id);
-        
+        FormulirHelper::isAllowedToCreate('create.point.service.payment.collection', date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
         $formulir = FormulirHelper::create($request->input(), 'point-sales-service-payment-collection');
         $payment_collection = ServicePaymentCollectionHelper::create($request, $formulir, $references, $references_account, $references_type, $references_id, $references_amount, $references_amount_original, $references_notes);
         timeline_publish('create.point.sales.service.payment.collection', 'added new payment collection '  . $payment_collection->formulir->form_number);

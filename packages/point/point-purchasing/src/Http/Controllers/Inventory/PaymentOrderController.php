@@ -281,6 +281,9 @@ class PaymentOrderController extends Controller
         }
 
         $request['form_date'] = date('Y-m-d', strtotime($request->input('payment_date')));
+
+        FormulirHelper::isAllowedToCreate('create.point.purchasing.payment.order', date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
+
         access_is_allowed('create.point.purchasing.payment.order', date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
         $formulir = FormulirHelper::create($request->input(), 'point-purchasing-payment-order');
         $payment_order = PaymentOrderHelper::create($request, $formulir, $references, $references_account, $references_type, $references_id,
