@@ -31,6 +31,11 @@ class PaymentOrder extends Model
         return $this;
     }
 
+    public function scopeJoinPerson($q)
+    {
+        $q->join('person', 'person.id', '=', 'point_finance_payment_order.person_id');
+    }
+
     public function scopeSearch($q)
     {
         if (app('request')->input('date_from')) {
