@@ -348,6 +348,8 @@ class ItemController extends Controller
 
         self::insertTempEdit($id);
         $view = view('framework::app.master.item.edit');
+        $inventories_account = CoaCategory::where('name', 'Inventories')->first();
+        $view->list_account_asset = $inventories_account->coa;
         $view->list_item_category = ItemCategory::active()->get();
         $view->item = Item::find($id);
         $view->unit_default = ItemUnit::where('item_id', $id)->where('as_default', '1')->get();
@@ -390,7 +392,8 @@ class ItemController extends Controller
 
         DB::beginTransaction();
         $this->validate($request, [
-            'name' => 'required|unique:item,name,' . $id
+            'name' => 'required|unique:item,name,' . $id,
+            'account_asset_id' => 'required'
         ]);
 
         $item = Item::find($id);
@@ -400,6 +403,7 @@ class ItemController extends Controller
         $item->reminder_quantity_minimum = number_format_db($request->input('reminder_quantity_minimum'));
         $item->created_by = auth()->user()->id;
         $item->updated_by = auth()->user()->id;
+        $item->account_asset_id = $request->input('account_asset_id');
 
         if (!$item->save()) {
             gritter_error(trans('framework::framework/master.item.update.failed', ['name' => $item->name]));

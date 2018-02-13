@@ -167,9 +167,7 @@ class PaymentOrderController extends Controller
             array_push($references, $reference_type::find($downpayment_id[$i]));
         }
         $request['form_date'] = date('Y-m-d', strtotime($request->input('payment_date')));
-        access_is_allowed('create.point.purchasing.service.payment.order', date_format_db($request->input('form_date'),
-            $request->input('time')), $formulir_id);
-        
+        FormulirHelper::isAllowedToCreate('create.point.purchasing.service.payment.order', date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
         $formulir = FormulirHelper::create($request->input(), 'point-purchasing-service-payment-order');
         $payment_order = ServicePaymentOrderHelper::create($request, $formulir, $references, $references_account, $references_type, $references_id, $references_amount, $references_amount_original, $references_notes);
         timeline_publish('create.point.purchasing.service.payment.order', 'added new payment order '  . $payment_order->formulir->form_number);
