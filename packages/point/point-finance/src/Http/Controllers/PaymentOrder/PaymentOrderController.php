@@ -34,7 +34,7 @@ class PaymentOrderController extends Controller
         access_is_allowed('read.point.finance.payment.order');
 
         $view = view('point-finance::app.finance.point.payment-order.index');
-        $list_payment_order = PaymentOrder::joinFormulir()->notArchived()->selectOriginal();
+        $list_payment_order = PaymentOrder::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         $view->list_payment_order = PaymentOrderHelper::searchList($list_payment_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
         $view->list_payment_order = $list_payment_order->paginate(100);
         return $view;
