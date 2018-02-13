@@ -9,7 +9,7 @@ class PaymentOrderVesaController extends Controller
 {
     public function create()
     {
-        access_is_allowed('create.point.purchasing.payment.oder');
+        access_is_allowed('create.point.purchasing.payment.order');
 
         $view = view('app.index');
         $view->array_vesa = PaymentOrder::getVesaCreate();
@@ -18,7 +18,7 @@ class PaymentOrderVesaController extends Controller
 
     public function approval()
     {
-        access_is_allowed('approval.point.purchasing.payment.oder');
+        access_is_allowed('approval.point.purchasing.payment.order');
 
         $view = view('app.index');
         $view->array_vesa = PaymentOrder::getVesaApproval();
@@ -27,7 +27,7 @@ class PaymentOrderVesaController extends Controller
 
     public function rejected()
     {
-        access_is_allowed('update.point.purchasing.payment.oder');
+        access_is_allowed('update.point.purchasing.payment.order');
 
         $view = view('app.index');
         $view->array_vesa = PaymentOrder::getVesaReject();
