@@ -22,8 +22,22 @@
 
                 <div class="form-group">
                     <label class="col-md-3 control-label">Asset Account</label>
-                    <div class="col-md-6 content-show">
-                        {{$item->accountAsset->account}}
+                    <div class="col-md-6">
+                        <div class="@if(access_is_allowed_to_view('create.coa')) input-group @endif">
+                            <select id="account_asset_id" name="account_asset_id" class="selectize">
+                                <option value="">Choose your asset account</option>
+                                @foreach($list_account_asset as $item_account)
+                                    <option value="{{ $item_account->id }}" @if($item->accountAsset->id==$item_account->id) selected @endif>{{ $item_account->name }}</option>
+                                @endforeach
+                            </select>
+                            @if(access_is_allowed_to_view('create.coa'))
+                                <span class="input-group-btn">
+                                <a href="#modal-coa" onclick="resetForm()" class="btn btn-effect-ripple btn-primary" data-toggle="modal">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </span>
+                            @endif
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -186,6 +200,7 @@
         </div>
     </div>  
 </div>
+@include('framework::app.master.coa.__create')
 @include('framework::app.master.item.unit.__create')
 @stop
 
