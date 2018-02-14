@@ -170,4 +170,18 @@ class InventoryUsageController extends Controller
         gritter_success('Form inventory usage "'. $formulir->form_number .'" Success to update', 'false');
         return redirect('inventory/point/inventory-usage/'.$inventory_usage->id);
     }
+
+    public function exportPDF($id)
+    {
+        $inventory_usage = InventoryUsage::find($id);
+        $warehouse = Warehouse::find($inventory_usage->warehouse_id);
+
+        $data = array(
+            'inventory_usage' => $inventory_usage,
+            'warehouse' => $warehouse
+        );
+
+        $pdf = \PDF::loadView('point-inventory::emails.inventory.point.external.inventory-usage', $data);
+        return $pdf->stream($inventory_usage->formulir->form_number.'.pdf');
+    }
 }

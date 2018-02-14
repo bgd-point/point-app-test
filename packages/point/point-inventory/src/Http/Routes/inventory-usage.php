@@ -13,6 +13,7 @@ Route::group(['prefix' => 'inventory/point', 'namespace' => 'Point\PointInventor
         Route::post('inventory-usage/send-request-approval', 'InventoryUsageApprovalController@sendRequestApproval');
 
         // Item Quantity Ajax Request
+        Route::get('inventory-usage/{id}/export', 'InventoryUsageController@exportPDF');
         Route::get('inventory-usage/get-item', 'InventoryUsageController@_getItemHasAvailableStock');
         Route::get('inventory-usage/quantity', 'InventoryUsageController@_quantity');
         Route::get('inventory-usage/{id}/archived', 'InventoryUsageController@archived');
