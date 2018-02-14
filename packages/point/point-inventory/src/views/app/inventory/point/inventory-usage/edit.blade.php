@@ -45,6 +45,17 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-md-3 control-label">Employee *</label>
+                    <div class="col-md-6">
+                        <select id="employee-id" name="employee_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                            <option ></option>
+                            @foreach($list_employee as $employee)
+                                <option value="{{$employee->id}}" @if($inventory_usage->employee_id==$employee->id) selected @endif> {{$employee->codeName}} </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-md-3 control-label">Warehouse *</label>
                     <div class="col-md-6 content-show">
                         {{ Point\Framework\Models\Master\Warehouse::find($inventory_usage->warehouse_id)->name}}

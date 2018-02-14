@@ -8,6 +8,7 @@ use Point\Core\Helpers\UserHelper;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\InventoryHelper;
+use Point\Framework\Helpers\PersonHelper;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Master\Allocation;
@@ -62,6 +63,7 @@ class InventoryUsageController extends Controller
         access_is_allowed('create.point.inventory.usage');
 
         $view = view('point-inventory::app.inventory.point.inventory-usage.create');
+        $view->list_employee = PersonHelper::getByType(['employee']);
         $view->list_item = Item::active()->paginate(2);
         $view->list_warehouse = Warehouse::all();
         $view->list_allocation = Allocation::active()->get();
@@ -120,6 +122,7 @@ class InventoryUsageController extends Controller
 
         $view = view('point-inventory::app.inventory.point.inventory-usage.edit');
         $view->inventory_usage = InventoryUsage::find($id);
+        $view->list_employee = PersonHelper::getByType(['employee']);
         $view->list_item = Item::active()->paginate(100);
         $view->list_warehouse = Warehouse::active()->get();
         $view->list_allocation = Allocation::active()->get();

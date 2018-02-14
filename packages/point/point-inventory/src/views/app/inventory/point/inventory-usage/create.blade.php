@@ -38,6 +38,17 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-md-3 control-label">Employee *</label>
+                    <div class="col-md-6">
+                        <select id="employee-id" name="employee_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                        <option ></option>
+                        @foreach($list_employee as $employee)
+                            <option value="{{$employee->id}}" @if(old('employee_id')==$employee->id) selected @endif> {{$employee->codeName}} </option>
+                        @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-md-3 control-label">Warehouse *</label>
                     <div class="col-md-6">
                         <div id="content-warehouse">

@@ -46,6 +46,11 @@ class InventoryUsage extends Model
         return $this->belongsTo('\Point\Framework\Models\Master\Warehouse', 'warehouse_id');
     }
 
+    public function employee()
+    {
+        return $this->belongsTo('\Point\Framework\Models\Master\Person', 'employee_id');
+    }
+
     public static function bladeEmail()
     {
         return 'point-inventory::emails.inventory.point.approval.inventory-usage-email';
