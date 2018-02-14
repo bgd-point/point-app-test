@@ -161,6 +161,8 @@
                                     '{{ $inventory_usage->formulir_id }}',
                                     'delete.point.inventory.usage')"><i class="fa fa-times"></i> Cancel Form</a>
                             @endif
+                                <a class="btn btn-effect-ripple btn-info"
+                                        href="{{url('inventory/point/inventory-usage/'.$inventory_usage->id.'/export')}}">Print</a>
                         </div>
                     </div>
                 </fieldset>
