@@ -49,6 +49,7 @@ class InventoryUsageHelper
         $inventory_usage = new InventoryUsage;
         $inventory_usage->formulir_id = $formulir->id;
         $inventory_usage->warehouse_id = app('request')->input('warehouse_id');
+        $inventory_usage->employee_id = app('request')->input('employee_id');
         $inventory_usage->save();
 
         for ($i=0 ; $i<count(app('request')->input('item_id')) ; $i++) {

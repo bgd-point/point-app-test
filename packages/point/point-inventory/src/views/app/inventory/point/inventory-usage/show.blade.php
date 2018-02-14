@@ -63,6 +63,14 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-md-3 control-label">Employee</label>
+                        <div class="col-md-6 content-show">
+                            @if($inventory_usage->employee_id != null)
+                            {{ $inventory_usage->employee->codeName }}
+                            @endif
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-md-3 control-label">Warehouse</label>
                         <div class="col-md-6 content-show">
                             {{ $inventory_usage->warehouse->codeName }}
