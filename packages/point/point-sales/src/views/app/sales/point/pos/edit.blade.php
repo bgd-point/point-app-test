@@ -322,12 +322,15 @@
         var subtotal = 0;
         var total_item = 0;
         var total_quantity = 0;
-        for(var i=0; i<rows_length; i++) {
-            var total_per_row = dbNum($('#item-quantity-'+i).val()) * dbNum($('#item-price-'+i).val()) - ( dbNum($('#item-discount-'+i).val()) / 100 * dbNum($('#item-quantity-'+i).val()) * dbNum($('#item-price-'+i).val()) );
-            subtotal += total_per_row;
-            $('#item-total-'+i).val(appNum(total_per_row));
-            total_quantity += dbNum($('#item-quantity-'+i).val());
-            total_item += 1;
+        console.log('counter: ' + counter);
+        for(var i=0; i<counter; i++) {
+            if($('#item-quantity-'+i).length != 0){
+                var total_per_row = dbNum($('#item-quantity-'+i).val()) * dbNum($('#item-price-'+i).val()) - ( dbNum($('#item-discount-'+i).val()) / 100 * dbNum($('#item-quantity-'+i).val()) * dbNum($('#item-price-'+i).val()) );
+                subtotal += total_per_row;
+                $('#item-total-'+i).val(appNum(total_per_row));
+                total_quantity += dbNum($('#item-quantity-'+i).val());
+                total_item += 1;
+            }
         }
 
         $('#subtotal').val(appNum(subtotal));
