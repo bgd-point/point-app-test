@@ -1,38 +1,10 @@
-<style>
-
-    .paper {
-        width: 99px;
-        font-size: 11px;
-    }
-
-    .paper-block-1 {
-        position: absolute;
-    }
-
-    .paper-block-2 {
-        position: absolute;
-        left: 99px;
-    }
-</style>
-<?php
-
-use Milon\Barcode\DNS1D;
-
-$barcode = new DNS1D;
-?>
-
-<div class="paper">
-    <span class="paper-block-1">
-        <?php
-        echo $barcode->getBarcodeSVG("123456", "c128", 1);
-        echo '<br> Test';
-        ?>
-    </span>
-    <span class="paper-block-2">
-        <?php
-        echo $barcode->getBarcodeSVG("123456", "C128", 1);
-        echo '<br> Test';
-        ?>
-    </span>
-</div>
-
+<html>
+<body>
+<h1>Gong Xi Fat Cai</h1>
+<p>Redeem your Rp 100.000,- ewallet voucher from Pin Checkpoint</p>
+<p>
+    <b>CODE:</b> GXFC2018 <br>
+    <b>EXPIRED:</b> 23 February 2018
+</p>
+</body>
+</html>
