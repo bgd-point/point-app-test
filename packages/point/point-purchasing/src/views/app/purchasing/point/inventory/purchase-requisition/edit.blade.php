@@ -83,7 +83,7 @@
                         {{--<label class="col-md-3 control-label">Include Cash Advance</label>--}}
                         {{--<div class="col-md-6 content-show">--}}
                             <input type="hidden" id="include-cash-advance" name="include_cash_advance" value="false">
-                            <span class="help-block">Check for create cash advance</span>
+                            {{--<span class="help-block">Check for create cash advance</span>--}}
                         {{--</div>--}}
                     {{--</div>--}}
 
