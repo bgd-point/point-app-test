@@ -89,6 +89,7 @@ class GoodsReceivedController extends Controller
     {
         $view = view('point-purchasing::app.purchasing.point.inventory.goods-received.create-step-4');
         $view->reference_purchase_order = PurchaseOrder::find($purchase_order_id);
+        // TODO: FIX WRONG CALCULATION OF MULTIPLE EXPEDITION ORDER
         $view->reference_expedition_order = $group_expedition ? ExpeditionOrder::joinFormulir()->notArchived()->notCanceled()->approvalApproved()->where('done', 0)->where('group', $group_expedition)->where('form_reference_id', $view->reference_purchase_order->formulir_id)->selectOriginal()->first() : '';
         $view->list_item = $view->reference_expedition_order ? : $view->reference_purchase_order;
         $view->list_warehouse = Warehouse::all();
@@ -108,12 +109,6 @@ class GoodsReceivedController extends Controller
             'warehouse_id' => 'required',
         ]);
 
-        for ($i=0; $i < count(\Input::get('item_quantity')); $i++) {
-            if (! \Input::get('item_quantity')[$i] > 0) {
-                gritter_error('Failed, quantity delivery must be more than zero', false);
-                return redirect()->back();
-            }
-        }
         $reference_purchase_order = $request->input('reference_purchase_order');
         $reference_purchase_id = $request->input('reference_purchase_order_id');
         $reference_purchase = $reference_purchase_order::find($reference_purchase_id);
