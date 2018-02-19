@@ -67,13 +67,13 @@
                 @if($agent->isMobile())
                     @if(app('request')->cookie('is-responsive') == 1)
                         <li>
-                            <a href="desktop-version">
+                            <a href="{{ url('/desktop-version') }}">
                                 Desktop Version
                             </a>
                         </li>
                     @else
                         <li>
-                            <a href="mobile-version">
+                            <a href="{{ url('/mobile-version') }}">
                                 Mobile Version
                             </a>
                         </li>
