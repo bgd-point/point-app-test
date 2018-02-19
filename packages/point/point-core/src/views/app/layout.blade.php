@@ -14,7 +14,7 @@
         <?php
         $agent = new Jenssegers\Agent\Agent;
         ?>
-        @if(!$agent->isMobile())
+        @if($agent->isMobile())
             @if(cookie('is-responsive'))
                 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0">
             @endif
