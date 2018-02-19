@@ -61,6 +61,24 @@
                         Bug Report
                     </a>
                 </li>
+                <?php
+                $agent = new Jenssegers\Agent\Agent;
+                ?>
+                @if($agent->isMobile())
+                    @if(app('request')->cookie('is-responsive') == 1)
+                        <li>
+                            <a href="desktop-version">
+                                Desktop Version
+                            </a>
+                        </li>
+                    @else
+                        <li>
+                            <a href="mobile-version">
+                                Mobile Version
+                            </a>
+                        </li>
+                    @endif
+                @endif
 
                 <li class="divider"><li>
                                 

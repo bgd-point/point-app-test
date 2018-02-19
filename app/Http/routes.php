@@ -19,3 +19,11 @@ Route::group(['middleware' => 'auth'], function () {
 Route::get('barcode', function () {
     return view('barcode');
 });
+
+Route::get('mobile-version', function () {
+    return redirect()->back()->withCookie(cookie('is-responsive', 1, 3600));
+});
+
+Route::get('desktop-version', function () {
+    return redirect()->back()->withCookie(cookie('is-responsive', 0, 3600));
+});
