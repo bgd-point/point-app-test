@@ -116,7 +116,7 @@
                                                                     {{ $item ? $item->codeName : ''}}
                                                                 </option>
                                                             </select>
-                                                            @if(access_is_allowed_to_view('create.coa'))
+                                                            @if(access_is_allowed_to_view('create.item'))
                                                             <span class="input-group-btn">
                                                                 <a href="#modal-item" onclick="openModalItem('selectize', '#item-id-{{$counter}}', 'codeName')" class="btn btn-effect-ripple btn-primary" data-toggle="modal">
                                                                     <i class="fa fa-plus"></i>
