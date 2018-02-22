@@ -12,6 +12,7 @@ use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\ItemUnit;
 use Point\Framework\Models\Master\UserWarehouse;
+use Point\PointSales\Models\Sales\DeliveryOrder;
 use Point\PointSales\Models\Sales\Invoice;
 use Point\PointSales\Models\Sales\InvoiceItem;
 
@@ -110,9 +111,16 @@ class InvoiceHelper
         $invoice->type_of_tax = $request->input('type_of_tax');
         $invoice->total = $total;
         $invoice->save();
-        
+
         $cost_of_sales = 0;
         foreach ($invoice->items as $invoice_detail) {
+            $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
+            $delivery_order_item = ReferHelper::getReferBy(get_class($invoice_detail), $invoice_detail->id, get_class($invoice), $invoice->id);
+
+            if ($delivery_order_item) {
+                $delivery_order = DeliveryOrder::find($delivery_order_item->point_sales_delivery_order_id);
+                $warehouse_id = $delivery_order->warehouse_id;
+            }
             // insert new inventory
             $item = Item::find($invoice_detail->item_id);
             $inventory = new Inventory();
@@ -121,7 +129,7 @@ class InvoiceHelper
             $inventory->quantity = $invoice_detail->quantity * $invoice_detail->converter;
             $inventory->price = $invoice_detail->price / $invoice_detail->converter;
             $inventory->form_date = $formulir->form_date;
-            $inventory->warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
+            $inventory->warehouse_id = $warehouse_id;
 
             $inventory_helper = new InventoryHelper($inventory);
             $inventory_helper->out();
