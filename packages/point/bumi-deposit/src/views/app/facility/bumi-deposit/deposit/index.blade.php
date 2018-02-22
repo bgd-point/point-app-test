@@ -85,7 +85,7 @@
                             <a href="{{url('facility/bumi-deposit/deposit/'.$deposit->id)}}"
                                @if(!empty($deposit->important_notes))style="background-color: red;color:white"@endif
                                @if(formulir_is_close($deposit->formulir_id))style="background-color: dimgrey;color:white"
-                               @elseif(date('Y-m-d H:i:s') > $deposit->due_date)style="background-color: yellow;"@endif
+                               @elseif(date('Y-m-d H:i:s', strtotime("+7 day")) > $deposit->due_date)style="background-color: yellow;"@endif
                             >{{ $deposit->formulir->form_number }}</a>
                         </td>
                         <td>{{ date_format_view($deposit->formulir->form_date) }} - {{ date_format_view($deposit->due_date) }}</td>
