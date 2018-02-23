@@ -173,9 +173,6 @@
         <table cellpadding="0" cellspacing="0">
             <tr class="heading">
                 <td>
-                    Reference Number
-                </td>
-                <td>
                     Notes
                 </td>
                 <td>
@@ -184,24 +181,37 @@
             </tr>
 
            @foreach($payment_collection->details as $payment_collection_detail)
-                <tr class="item">
-                    <td >
-                        {{\Point\Framework\Helpers\ReferHelper::getReferBy(get_class($payment_collection_detail),$payment_collection_detail->id,get_class($payment_collection),$payment_collection->id)->formulir->form_number}}
-                    </td>
-                    <td >
-                        {{$payment_collection_detail->detail_notes}}
-                    </td>
-                    <td >
-                        {{number_format_quantity($payment_collection_detail->amount)}}
-                    </td>
-                </tr>
+                <?php
+                $model = $payment_collection_detail->reference->formulirable_type;
+                $reference = $model::find($payment_collection_detail->reference->formulirable_id);
+                ?>
+
+                @if (get_class($reference) == 'Point\PointSales\Models\Service\Invoice')
+                    @foreach($reference->items as $invoice_item)
+                        <tr class="item">
+                            <td style="text-align: left">
+                                {{$invoice_item->item->codeName}} (Qty: {{number_format_quantity($invoice_item->quantity)}})
+                            </td>
+                            <td style="text-align: right">
+                                {{number_format_quantity($invoice_item->quantity * ($invoice_item->price - ($invoice_item->price * $invoice_item->discount / 100)))}}
+                            </td>
+                        </tr>
+                    @endforeach
+                    @foreach($reference->services as $invoice_service)
+                        <tr class="item">
+                            <td style="text-align: left">
+                                {{$invoice_service->service->name}} (Qty: {{number_format_quantity($invoice_service->quantity)}}) : {{$invoice_service->service_notes}}
+                            </td>
+                            <td style="text-align: right">
+                                {{number_format_quantity($invoice_service->quantity * ($invoice_service->price - ($invoice_service->price * $invoice_service->discount / 100)))}}
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
             @endforeach
             <tr></tr>
             @if(count($payment_collection->others) > 0)
             <tr class="heading">
-                <td>
-                    Reference Number
-                </td>
                 <td>
                     Notes
                 </td>
@@ -213,10 +223,7 @@
             @foreach($payment_collection->others as $payment_collection_other)
             <tr class="item">
                 <td >
-                    {{ $payment_collection_other->coa->account }}
-                </td>
-                <td >
-                    {{ $payment_collection_other->other_notes }}
+                    {{ $payment_collection_other->coa->account }} - {{ $payment_collection_other->other_notes }}
                 </td>
                 <td >
                     {{ number_format_quantity($payment_collection_other->amount) }}
@@ -225,8 +232,6 @@
             @endforeach
             <tr></tr>
             <tr class="heading">
-                <td>
-                </td>
                 <td>
                 </td>
                 <td>
