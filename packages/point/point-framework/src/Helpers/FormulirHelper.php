@@ -49,7 +49,15 @@ class FormulirHelper
 
             // check if form referencen already closed
             if (self::isClose($formulir->id)) {
-                throw new PointException('DUPLICATE FORM CREATE');
+                if ($formulir->formulirable_type != 'Point\PointSales\Models\Sales\Downpayment'
+                    || 'Point\PointExpedition\Models\Downpayment'
+                    || 'Point\PointPurchasing\Models\Inventory\Downpayment'
+                    || 'Point\PointPurchasing\Models\Service\Downpayment'
+                    || 'Point\PointSales\Models\Service\Downpayment') {
+
+                } else {
+                    throw new PointException('DUPLICATE FORM CREATE');
+                }
             }
 
             // check if formulir references not canceled
