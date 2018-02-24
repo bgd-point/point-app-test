@@ -34,6 +34,12 @@
                         <input type="password" name="password" class="form-control">
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Password Confirmation</label>
+                    <div class="col-md-6">
+                        <input type="password" name="password_confirmation" class="form-control">
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label class="col-md-3 control-label">Photo</label>
