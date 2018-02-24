@@ -39,6 +39,9 @@
                                 <th width="100px" class="text-center"></th>
                                 <th>Name</th>
                                 <th>Group</th>
+                                @if ($person_type->name == 'customer')
+                                    <th>Credit Ceiling</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -56,6 +59,9 @@
                                 </td>
                                 <td><a href="{{ url('master/contact/'. $person_type->slug .'/'.$contact->id) }}">{{ $contact->codeName}}</a></td>
                                 <td>{{ $contact->group->name }}</td>
+                                @if ($person_type->name == 'customer')
+                                    <td>{{ number_format($contact->credit_ceiling) }}</td>
+                                @endif
                             </tr>
                         @endforeach
                         </tbody>
