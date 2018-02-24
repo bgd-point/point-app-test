@@ -15,7 +15,7 @@ class BalanceSheetController extends Controller
      */
     public function index()
     {
-        $date_from = date('Y-m-01 00:00:00');
+        $date_from = '2000-01-01 00:00:00';
         $date_to = date('Y-m-d 23:59:59');
         $view = view('framework::app.accounting.balance-sheet.index');
         $view->coa_asset = CoaPosition::find(1);
@@ -24,7 +24,7 @@ class BalanceSheetController extends Controller
         $view->total_asset = 0;
         $view->total_liability = 0;
         $view->total_equity = 0;
-        $view->date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : $date_from;
+        $view->date_from = $date_from;
         $view->date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : $date_to;
         return $view;
     }
@@ -32,7 +32,7 @@ class BalanceSheetController extends Controller
     public function export()
     {
         $file_name = 'Balance Sheet '.auth()->user()->id . '' . date('Y-m-d_His');
-        $date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : date('Y-m-01 00:00:00');
+        $date_from = '2000-01-01 00:00:00';
         $date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : date('Y-m-d 23:59:59');
         \Excel::create($file_name, function ($excel) use ($date_from, $date_to) {
             $excel->sheet('Balance Sheet', function ($sheet) use ($date_from, $date_to) {

@@ -108,10 +108,12 @@ class JournalHelper
 
     public static function journalValue($journal)
     {
-        if ($journal->coa->category->position->debit) {
-            return $journal->debit - $journal->credit;
-        } else {
-            return $journal->credit - $journal->debit;
+        if ($journal->coa) {
+            if ($journal->coa->category->position->debit) {
+                return $journal->debit - $journal->credit;
+            } else {
+                return $journal->credit - $journal->debit;
+            }
         }
     }
 
@@ -145,10 +147,6 @@ class JournalHelper
             ->where('form_date', '<=', $date_to)
             ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
             ->first();
-
-        if (!$journal || $journal->coa_id == null || !$journal_open || $journal_open->coa_id == null) {
-            return 0;
-        }
 
         return static::journalValue($journal_open) + static::journalValue($journal);
     }
