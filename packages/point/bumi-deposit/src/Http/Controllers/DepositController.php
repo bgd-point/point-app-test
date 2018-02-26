@@ -198,7 +198,7 @@ class DepositController extends Controller
      */
     public function withdraw($id)
     {
-        access_is_allowed('update.bumi.deposit');
+        access_is_allowed('create.bumi.deposit');
 
         return view('bumi-deposit::app.facility.bumi-deposit.deposit.withdraw', array(
             'deposit' => Deposit::find($id)
