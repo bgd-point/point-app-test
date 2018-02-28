@@ -23,6 +23,7 @@ class DebtsAgingReportController extends Controller
             ->get();
 
         $view->list_person = Person::active()->get();
+        $view->date = date('Y-m-d');
 
         return $view;
     }
@@ -34,8 +35,9 @@ class DebtsAgingReportController extends Controller
         }
 
         $subledger_id = \Input::get('subledger_id') ? : 0;
-        $report = AccountPayableAndReceivable::where('done', 0)
-            ->where('account_id', \Input::get('coa_id'))
+        $date = \Input::get('date');
+        $report = AccountPayableAndReceivable::where('account_id', \Input::get('coa_id'))
+            ->where('form_date', '<=', date_format_db($date, 'end'))
             ->where(function ($query) use ($subledger_id) {
                 if ($subledger_id) {
                     $query->where('person_id', $subledger_id);
@@ -45,6 +47,7 @@ class DebtsAgingReportController extends Controller
 
         $view = view('point-finance::app.finance.point.debts-aging-report._detail');
         $view->list_report = $report;
+        $view->date = date_format_db($date, 'end');
         return $view;
     }
 }
