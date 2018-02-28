@@ -10,7 +10,7 @@
         }
 
         @page {
-            margin: 3px;
+            margin: 3px 10px;
         }
 
         table {
