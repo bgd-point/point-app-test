@@ -6,6 +6,11 @@
         * {
             font-size: 10px;
             text-transform: uppercase;
+            line-height: 9px;
+        }
+
+        @page {
+            margin: 3px;
         }
 
         table {
