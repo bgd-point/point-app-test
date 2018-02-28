@@ -21,15 +21,23 @@
 		<?php
             $sum=0;
             if ($report->detail) {
-                $sum=$report->detail->sum('amount');
+                foreach($report->detail as $detail) {
+                    if ($detail->form_date <= $date) {
+                        $sum+=$detail->amount;
+					}
+				}
             }
 
             $remaining = $report->amount - $sum;
             $datediff = date_diff(\Carbon::now(), date_create($report->form_date));
             $position = $datediff->format("%R%a") * -1;
-            $amount = $amount + $report->amount;
+
             $remain = $remain + $remaining;
         ?>
+		@if($remaining > 0)
+			<?php
+            $amount = $amount + $report->amount;
+			?>
 		<tr>
 			<td>{{$i}}</td>
 			<td>{{$report->person->name}}</td>
@@ -42,7 +50,8 @@
 			<td class="text-right">@if($position > 15 && $position <= 30){{number_format_price($remaining)}} <?php $b=$b+$remaining; ?> @endif</td>
 			<td class="text-right">@if($position > 30 && $position <= 60){{number_format_price($remaining)}} <?php $c=$c+$remaining; ?> @endif</td>
 			<td class="text-right">@if($position > 60){{number_format_price($remaining)}} <?php $d=$d+$remaining; ?> @endif</td>
-		</tr>	
+		</tr>
+		@endif
 		<?php $i++; ?>
 		@endforeach
 		</tbody>

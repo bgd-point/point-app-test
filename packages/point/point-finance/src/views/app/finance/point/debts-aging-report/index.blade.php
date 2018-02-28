@@ -13,6 +13,12 @@
             <form id="search" action="#" method="post" class="form-horizontal form-bordered">
                 {!! csrf_field() !!}
                 <div class="form-group">
+                    <label class="col-md-3 control-label">Date</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="date" id="date-from" class="form-control date input-datepicker" data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}"  placeholder="From"  value="{{\Input::get('date') ? \Input::get('date') : date(date_format_get(), strtotime($date))}}">
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-md-3 control-label">Account</label>
                     <div class="col-md-6">
                         <select id="coa-id" name="coa_id" class="selectize" >
@@ -34,6 +40,7 @@
                     </div>
                     <div class="col-md-3">
                         <button type="button" id="button" onclick="view()" class="btn btn-effect-ripple btn-primary">View</button>
+                        
                     </div>
                 </div>
             </div>

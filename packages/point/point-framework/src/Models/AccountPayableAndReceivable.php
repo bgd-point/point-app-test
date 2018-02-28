@@ -26,6 +26,6 @@ class AccountPayableAndReceivable extends Model
 
     public function detail()
     {
-        return $this->belongsTo('\Point\Framework\Models\AccountPayableAndReceivableDetail', 'account_payable_and_receivable_id');
+        return $this->hasMany('\Point\Framework\Models\AccountPayableAndReceivableDetail', 'account_payable_and_receivable_id');
     }
 }
