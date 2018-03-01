@@ -80,6 +80,7 @@ class Recalculate extends Command
                         \Log::info('cogs: ' . $l_inventory->total_value .' / '. $l_inventory->total_quantity . ' = '. $l_inventory->cogs);
                     }
                 }
+                $l_inventory->recalculate = false;
                 $l_inventory->total_quantity = $total_quantity;
                 $l_inventory->total_value = $l_inventory->total_quantity ? $total_value : 0;
                 $l_inventory->save();
