@@ -117,6 +117,7 @@ class MemoJournalApprovalController extends Controller
         foreach ($array_formulir_id as $id) {
             $memo_journal = MemoJournal::where('formulir_id', $id)->first();
             FormulirHelper::approve($memo_journal->formulir, $approval_message, 'approval.point.accounting.memo.journal', $token);
+            MemoJournalHelper::addToJournal($memo_journal);
             timeline_publish('approve', $memo_journal->formulir->form_number . ' approved', $memo_journal->formulir->approval_to);
         }
         DB::commit();
