@@ -269,7 +269,7 @@
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCancelForm('{{url('formulir/cancel')}}',
                                                '{{ $invoice->formulir_id }}',
-                                               'delete.point.purchasing.invoice')"><i class="fa fa-times"></i> Cancel
+                                               'delete.point.purchasing.service.invoice')"><i class="fa fa-times"></i> Cancel
                                         Form</a>
                                 @endif
                                 @if(formulir_view_close($invoice->formulir, 'update.point.purchasing.service.invoice'))
