@@ -29,7 +29,7 @@
             }
 
             $remaining = $report->amount - $sum;
-            $datediff = date_diff(\Carbon::now(), date_create($report->form_date));
+            $datediff = date_diff(date_create($date), date_create($report->form_date));
             $position = $datediff->format("%R%a") * -1;
 
             $remain = $remain + $remaining;
