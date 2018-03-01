@@ -50,4 +50,31 @@ class DebtsAgingReportController extends Controller
         $view->date = date_format_db($date, 'end');
         return $view;
     }
+
+    public function export()
+    {
+        $file_name = 'Debts Aging Report '.auth()->user()->id . '' . date('Y-m-d_His');
+        $date = \Input::get('date');
+        $coa_id = \Input::get('coa_id');
+        $subledger_id = \Input::get('subledger_id') ? : 0;
+        $report = AccountPayableAndReceivable::where('account_id', $coa_id)
+            ->where('form_date', '<=', date_format_db($date, 'end'))
+            ->where(function ($query) use ($subledger_id) {
+                if ($subledger_id) {
+                    $query->where('person_id', $subledger_id);
+                }
+            })
+            ->get();
+        \Log::info($report);
+        \Excel::create($file_name, function ($excel) use ($date,$subledger_id,$report) {
+            $excel->sheet('Debts Aging Report', function ($sheet) use ($date,$subledger_id,$report) {
+                $data = array(
+                    'list_report' => $report,
+                    'date' => date_format_db($date, 'end')
+                );
+
+                $sheet->loadView('point-finance::app.finance.point.debts-aging-report._detail', $data);
+            });
+        })->export('xls');
+    }
 }

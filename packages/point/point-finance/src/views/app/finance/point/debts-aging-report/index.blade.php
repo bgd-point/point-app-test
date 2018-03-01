@@ -15,7 +15,7 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Date</label>
                     <div class="col-sm-6">
-                        <input type="text" name="date" id="date-from" class="form-control date input-datepicker" data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}"  placeholder="From"  value="{{\Input::get('date') ? \Input::get('date') : date(date_format_get(), strtotime($date))}}">
+                        <input type="text" name="date" id="date" class="form-control date input-datepicker" data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}"  placeholder="Date"  value="{{\Input::get('date') ? \Input::get('date') : date(date_format_get(), strtotime($date))}}">
                     </div>
                 </div>
                 <div class="form-group">
@@ -40,7 +40,7 @@
                     </div>
                     <div class="col-md-3">
                         <button type="button" id="button" onclick="view()" class="btn btn-effect-ripple btn-primary">View</button>
-                        
+                        <a class="btn btn-effect-ripple btn-effect-ripple btn-info" onclick="exportExcel()"> Export to excel</a>
                     </div>
                 </div>
             </div>
@@ -55,6 +55,16 @@
 @stop
 
 @section('scripts')
+    <script type="text/javascript">
+      function exportExcel() {
+        var date = $("#date").val();
+        var subledger_id = $("#subledger-id").val();
+        var coa_id = $("#coa-id").val();
+        var url = '{{url()}}/finance/point/debts-aging-report/export/?date='+date+'&subledger_id='+subledger_id+'&coa_id='+coa_id;
+        location.href = url;
+      }
+
+    </script>
 <script>
 $(function() {
     $('#coa-id', '#subledger-id' ).selectize({
