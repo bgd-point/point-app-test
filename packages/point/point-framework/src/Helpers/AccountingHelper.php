@@ -54,6 +54,10 @@ class AccountingHelper
             return 0;
         }
 
-        return $journal->debit - $journal->credit;
+        if ($journal->coa->category->position->debit == true) {
+            return $journal->debit - $journal->credit;
+        }
+
+        return $journal->credit - $journal->debit;
     }
 }
