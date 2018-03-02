@@ -76,6 +76,7 @@
                     </thead>
                     <tbody>
                     @foreach( $deposits as $deposit )
+                        @if(auth()->user()->id < 4 || $deposit->formulir->created_by == auth()->user()->id)
                     <tr
                         @if(!empty($deposit->important_notes))style="background-color: red;color:white"@endif
                         @if(formulir_is_close($deposit->formulir_id))style="background-color: dimgrey;color:white"
@@ -101,6 +102,7 @@
                             @endif
                         </td>
                     </tr>
+
                     @if($deposit->important_notes)
                         <tr>
                             <td colspan="9" style="background-color: red;color:white"> IMPORTANT NOTES : {!! nl2br(e($deposit->important_notes)) !!}</td>
@@ -114,6 +116,7 @@
                             <td style="display:none"></td>
                         </tr>
                     @endif
+                        @endif
                     @endforeach
                     </tbody>
                 </table>
