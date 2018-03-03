@@ -61,10 +61,12 @@ class Downpayment extends Model
 
     public function scopeAvailableToEditPaymentCollection($q, $person_id, $downpayment_edit)
     {
-        $q->open()
-            ->approvalApproved()
+        $q->approvalApproved()
+            ->notArchived()
+            ->close()
             ->where('person.id', '=', $person_id)
             ->orWhereIn('point_sales_downpayment.id', $downpayment_edit)
+            ->selectOriginal()
             ->orderByStandard();
     }
 
