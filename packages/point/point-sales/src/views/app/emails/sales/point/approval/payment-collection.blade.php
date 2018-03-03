@@ -187,17 +187,42 @@
                 ?>
 
                 @if (get_class($reference) == 'Point\PointSales\Models\Sales\Invoice')
+                    <?php $index = 1;?>
                     @foreach($reference->items as $invoice_item)
-                        <tr class="item">
-                            <td style="text-align: left">
-                                {{$invoice_item->item->codeName}} (Qty: {{number_format_quantity($invoice_item->quantity)}})
-                            </td>
-                            <td style="text-align: right">
-                                {{number_format_quantity($invoice_item->quantity * ($invoice_item->price - ($invoice_item->price * $invoice_item->discount / 100)))}}
-                            </td>
-                        </tr>
+                        @if ($index == 1)
+                            <tr class="item">
+                                <td style="text-align: left;font-weight: bold;">
+                                    {{$invoice_item->invoice->formulir->form_number}}
+                                </td>
+                                <td style="text-align: right">
+                                    {{number_format_quantity($payment_collection_detail->amount)}}
+                                </td>
+                            </tr>
+                                <tr class="item">
+                                    <td style="text-align: left" colspan="2">
+                                        {{$invoice_item->item->codeName}} (Qty: {{number_format_quantity($invoice_item->quantity)}})
+                                    </td>
+                                </tr>
+                            @else
+                                <tr class="item">
+                                    <td style="text-align: left" colspan="2">
+                                        {{$invoice_item->item->codeName}} (Qty: {{number_format_quantity($invoice_item->quantity)}})
+                                    </td>
+                                </tr>
+                        @endif
+                        <?php $index++;?>
                     @endforeach
                 @endif
+                    @if (get_class($reference) == 'Point\PointSales\Models\Sales\Downpayment')
+                        <tr class="item">
+                            <td style="text-align: left;font-weight: bold;">
+                                {{$reference->formulir->form_number}}
+                            </td>
+                            <td style="text-align: right">
+                                {{number_format_quantity($reference->amount)}}
+                            </td>
+                        </tr>
+                    @endif
             @endforeach
             <tr></tr>
             @if(count($payment_collection->others) > 0)
