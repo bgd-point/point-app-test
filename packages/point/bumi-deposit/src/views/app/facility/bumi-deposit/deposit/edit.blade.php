@@ -97,7 +97,7 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label">Bilyet Number</label>
                             <div class="col-md-9">
-                                <input type="text" name="deposit_number" id="deposit_number" class="form-control" value="{{ $deposit->deposit_number }}">
+                                <input type="text" name="deposit_number" id="deposit_number" class="form-control" value="{{ $deposit->deposit_number }}" @if(!auth()->user()->may('read.bumi.deposit.report')) readonly @endif>
                             </div>
                         </div>
                         <div class="form-group">
