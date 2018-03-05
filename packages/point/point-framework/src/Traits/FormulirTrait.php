@@ -73,6 +73,12 @@ trait FormulirTrait
             ->orderBy('form_raw_number', 'desc');
     }
 
+    public function scopeOrderByStandardAsc($q)
+    {
+        $q->orderBy(\DB::raw('CAST(form_date as date)'), 'asc')
+            ->orderBy('form_raw_number', 'asc');
+    }
+
     public function scopeNotArchived($q, $form_number = 0)
     {
         $q->whereNotNull('formulir.form_number');
