@@ -30,6 +30,10 @@ class DepositController extends Controller
         $deposits = Deposit::joinFormulir()->joinDependencies()->selectOriginal()->notArchived()->active();
         $deposits = DepositHelper::searchList($deposits, \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'), \Input::get('select_field'));
 
+        if (auth()->user()->id > 3) {
+            $deposits = $deposits->where('formulir.created_by', auth()->user()->id);
+        }
+
         return view('bumi-deposit::app.facility.bumi-deposit.deposit.index', array(
             'deposits' => $deposits->paginate(100)
         ));
