@@ -28,15 +28,19 @@ class DepositController extends Controller
         access_is_allowed('read.bumi.deposit');
 
         $deposits = Deposit::joinFormulir()->joinDependencies()->selectOriginal()->notArchived()->active();
-        $deposits = DepositHelper::searchList($deposits, \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'), \Input::get('select_field'));
+
 
         if (auth()->user()->id > 3) {
-            $deposits = $deposits->where('bumi_deposit_group.name', 'P')
-                ->orWhere('bumi_deposit_group.name', 'BI')
-                ->orWhere('bumi_deposit_group.name', 'BNS')
-                ->orWhere('bumi_deposit_group.name', 'BIJ')
-                ->orWhere('bumi_deposit_group.name', 'BIM');
+            $deposits = $deposits->where(function ($q) {
+                $q->where('bumi_deposit_group.name', 'P')
+                    ->orWhere('bumi_deposit_group.name', 'BI')
+                    ->orWhere('bumi_deposit_group.name', 'BNS')
+                    ->orWhere('bumi_deposit_group.name', 'BIJ')
+                    ->orWhere('bumi_deposit_group.name', 'BIM');
+            });
         }
+
+        $deposits = DepositHelper::searchList($deposits, \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'), \Input::get('select_field'));
 
         return view('bumi-deposit::app.facility.bumi-deposit.deposit.index', array(
             'deposits' => $deposits->paginate(100)
