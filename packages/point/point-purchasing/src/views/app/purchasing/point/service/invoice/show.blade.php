@@ -131,6 +131,7 @@
                                         <tr>
                                             <th>SERVICE</th>
                                             <th>NOTES</th>
+                                            <th>ALLOCATION</th>
                                             <th class="text-right">QUANTITY</th>
                                             <th class="text-right">PRICE</th>
                                             <th class="text-right">DISCOUNT (%)</th>
@@ -144,6 +145,7 @@
                                                     <a href="{{ url('master/item/'.$invoice_service->item_id) }}">{{ $invoice_service->service->name }}</a>
                                                 </td>
                                                 <td>{{$invoice_service->service_notes}}</td>
+                                                <td>@if($invoice_service->allocation){{$invoice_service->allocation->name}}@endif</td>
                                                 <td class="text-right">{{ number_format_quantity($invoice_service->quantity) }} {{ $invoice_service->unit }}</td>
                                                 <td class="text-right">{{ number_format_quantity($invoice_service->price) }}</td>
                                                 <td class="text-right">{{ number_format_quantity($invoice_service->discount) }}</td>
