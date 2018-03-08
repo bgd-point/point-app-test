@@ -16,4 +16,9 @@ class InvoiceService extends Model
     {
         return $this->belongsTo('\Point\Framework\Models\Master\Service', 'service_id');
     }
+
+    public function allocation()
+    {
+        return $this->belongsTo('\Point\Framework\Models\Master\Allocation', 'allocation_id');
+    }
 }
