@@ -148,7 +148,7 @@ class MemoJournalHelper
             $journal = new Journal;
             $journal->form_date = $memo_journal->formulir->form_date;
             $journal->coa_id = $memo_journal_item->coa_id;
-            $journal->description = 'Memo Journal with '.$memo_journal->formulir->form_number;
+            $journal->description = $memo_journal_item->description;
             $journal->debit = $memo_journal_item->debit;
             $journal->credit = $memo_journal_item->credit;
             $journal->form_journal_id = $memo_journal->formulir_id;
