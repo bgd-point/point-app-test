@@ -9,6 +9,7 @@ use Point\Core\Helpers\UserHelper;
 use Point\Core\Http\Controllers\Controller;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\PersonHelper;
+use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\Master\Coa;
 use Point\PointFinance\Models\Bank\Bank;
 use Point\PointFinance\Models\Cash\Cash;
@@ -118,6 +119,8 @@ class CashAdvanceController extends Controller
             ->get();
 
         $view->revision = $view->list_cash_advance_archived->count();
+
+        $view->list_referenced = CashCashAdvance::where('cash_advance_id', '=', $view->cash_advance->id)->get();
 
         return $view;
     }

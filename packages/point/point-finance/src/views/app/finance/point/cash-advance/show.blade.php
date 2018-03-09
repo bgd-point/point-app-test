@@ -91,7 +91,18 @@
                                 {{ number_format_quantity($cash_advance->remaining_amount) }}
                             </div>
                         </div>
-
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Referenced By</label>
+                            <div class="col-md-6 content-show">
+                                @foreach($list_referenced as $referenced)
+                                    <?php
+                                        $model = $referenced->used->formulirable_type;
+                                        $url = $model::showUrl($referenced->used->formulirable_id);
+                                    ?>
+                                    <a href="{{ url($url) }}">{{ $referenced->used->form_number }}</a> <br/>
+                                @endforeach
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label">Notes</label>
                             <div class="col-md-6 content-show">
