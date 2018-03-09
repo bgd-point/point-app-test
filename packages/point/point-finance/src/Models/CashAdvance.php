@@ -30,6 +30,11 @@ class CashAdvance extends Model
         $q->join('person', 'person.id', '=', 'point_finance_cash_advance.employee_id');
     }
 
+    public function cashCashAdvance()
+    {
+        return $this->hasMany('\Point\PointFinance\Models\Cash\CashCashAdvance', 'cash_advance_id');
+    }
+
     public function employee()
     {
         return $this->belongsTo('\Point\Framework\Models\Master\Person', 'employee_id');
