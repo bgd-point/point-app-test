@@ -2,6 +2,8 @@
 
 use Illuminate\Database\Seeder;
 use Point\Framework\Helpers\AllocationHelper;
+use Point\Framework\Models\Formulir;
+use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\Person;
@@ -13,26 +15,37 @@ class FixSeeder extends Seeder
     {
         \DB::beginTransaction();
 
-        $memoJournals = MemoJournal::all();
+        $dps = Formulir::where('formulirable_type', 'like', '%DOWNPAYMENT%')->where('form_status', '!=', 1)->get();
 
-        foreach($memoJournals as $memo_journal) {
-            Journal::where('form_journal_id', $memo_journal->formulir_id)->delete();
-
-            foreach ($memo_journal->detail as $memo_journal_item) {
-                $journal = new Journal;
-                $journal->form_date = $memo_journal->formulir->form_date;
-                $journal->coa_id = $memo_journal_item->coa_id;
-                $journal->description = $memo_journal_item->description;
-                $journal->debit = $memo_journal_item->debit;
-                $journal->credit = $memo_journal_item->credit;
-                $journal->form_journal_id = $memo_journal->formulir_id;
-                $journal->form_reference_id = $memo_journal_item->form_reference_id ?: null;
-                $journal->subledger_id = $memo_journal_item->subledger_id ?: null;
-                $journal->subledger_type = $memo_journal_item->subledger_type ?: null;
-
-                $journal->save();
+        foreach ($dps as $dp) {
+            $locked = FormulirLock::where('locked_id', $dp->id)->where('locked', true)->first();
+            if ($locked) {
+                \Log::info($dp->form_number);
+                $dp->form_status = 1;
+                $dp->save();
             }
         }
+
+//        $memoJournals = MemoJournal::all();
+
+//        foreach($memoJournals as $memo_journal) {
+//            Journal::where('form_journal_id', $memo_journal->formulir_id)->delete();
+//
+//            foreach ($memo_journal->detail as $memo_journal_item) {
+//                $journal = new Journal;
+//                $journal->form_date = $memo_journal->formulir->form_date;
+//                $journal->coa_id = $memo_journal_item->coa_id;
+//                $journal->description = $memo_journal_item->description;
+//                $journal->debit = $memo_journal_item->debit;
+//                $journal->credit = $memo_journal_item->credit;
+//                $journal->form_journal_id = $memo_journal->formulir_id;
+//                $journal->form_reference_id = $memo_journal_item->form_reference_id ?: null;
+//                $journal->subledger_id = $memo_journal_item->subledger_id ?: null;
+//                $journal->subledger_type = $memo_journal_item->subledger_type ?: null;
+//
+//                $journal->save();
+//            }
+//        }
 
 
 //        $items = Item::all();
