@@ -152,11 +152,11 @@
                                     <a href="{{url('purchasing/point/service/payment-order/'.$payment_order->id.'/edit')}}"
                                        class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                 @endif
-                                @if(formulir_view_cancel($payment_order->formulir, 'delete.point.purchasing.payment.order'))
+                                @if(formulir_view_cancel($payment_order->formulir, 'delete.point.purchasing.service.payment.order'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCancelForm('{{url('purchasing/point/service/payment-order/cancel')}}',
                                                '{{ $payment_order->formulir_id }}',
-                                               'delete.point.purchasing.payment.order')"><i class="fa fa-times"></i>
+                                               'delete.point.purchasing.service.payment.order')"><i class="fa fa-times"></i>
                                         Cancel Form</a>
                                 @endif
                                 @if(formulir_view_close($payment_order->formulir, 'update.point.purchasing.service.payment.order'))
@@ -169,7 +169,7 @@
                                        onclick="secureReopenForm({{$payment_order->formulir_id}},'{{url('formulir/reopen')}}')">Reopen
                                         Form</a>
                                 @endif
-                                @if(formulir_view_email_vendor($payment_order->formulir, 'create.point.purchasing.payment.order'))
+                                @if(formulir_view_email_vendor($payment_order->formulir, 'create.point.purchasing.service.payment.order'))
                                     <form action="{{url('purchasing/point/service/payment-order/send-email-payment')}}" method="post">
                                         {!! csrf_field() !!}
                                         <input type="hidden" readonly="" name="payment_order_id" value="{{$payment_order->id}}">
