@@ -129,6 +129,7 @@ class DeliveryOrderController extends Controller
         $reference_type = $request->input('reference_sales_order');
         $reference_id = $request->input('reference_sales_order_id');
         $customer = $reference_type::find($reference_id)->person;
+        $so = $reference_type::find($reference_id);
 
         $list_report = AccountPayableAndReceivable::where('done', 0)
             ->where('person_id', $customer->id)
@@ -144,7 +145,9 @@ class DeliveryOrderController extends Controller
             $remaining += $report->amount - $sum;
         }
 
-        if ($customer->credit_ceiling > 0 && $remaining + $total > $customer->credit_ceiling) {
+        if ($customer->credit_ceiling > 0
+            && $remaining + $total > $customer->credit_ceiling
+            && $so->is_cash == false) {
             throw new PointException('Credit ceiling reached, Unable to deliver');
         }
 
