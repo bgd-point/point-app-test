@@ -26,7 +26,7 @@ trait DownpaymentVesa
 
     private static function vesaApproval($array = [], $merge_into_group = true)
     {
-        $list_downpayment = self::joinFormulir()->open()->approvalPending()->selectOriginal()->orderByStandard();
+        $list_downpayment = self::joinFormulir()->open()->notArchived()->notCanceled()->approvalPending()->selectOriginal()->orderByStandard();
         // Grouping vesa
         if ($merge_into_group && $list_downpayment->get()->count() > 5) {
             array_push($array, [
@@ -54,7 +54,7 @@ trait DownpaymentVesa
 
     private static function vesaReject($array = [], $merge_into_group = true)
     {
-        $list_downpayment = self::joinFormulir()->open()->approvalRejected()->selectOriginal()->orderByStandard();
+        $list_downpayment = self::joinFormulir()->open()->notArchived()->notCanceled()->approvalRejected()->selectOriginal()->orderByStandard();
 
         // Grouping vesa
         if ($merge_into_group && $list_downpayment->get()->count() > 5) {

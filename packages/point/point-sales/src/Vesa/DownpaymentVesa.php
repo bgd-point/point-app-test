@@ -32,13 +32,13 @@ trait DownpaymentVesa
 
     private static function vesaCreate($array = [], $merge_into_group = true)
     {
-        $list_downpayment = Downpayment::joinFormulir()->whereNotNull('sales_order_id')->notArchived()->selectOriginal()->orderByStandard();
+        $list_downpayment = Downpayment::joinFormulir()->whereNotNull('sales_order_id')->notArchived()->notCanceled()->selectOriginal()->orderByStandard();
         $array_sales_order_in_downpayment = [];
         foreach ($list_downpayment as $downpayment) {
             array_push($array_sales_order_in_downpayment, $downpayment->sales_order_id);
         }
 
-        $list_sales_order = SalesOrder::joinFormulir()->approvalApproved()->open()->where('is_cash', true)->whereNotIn('point_sales_order.id', $array_sales_order_in_downpayment)->notArchived()->selectOriginal()->orderByStandard();
+        $list_sales_order = SalesOrder::joinFormulir()->approvalApproved()->open()->where('is_cash', true)->whereNotIn('point_sales_order.id', $array_sales_order_in_downpayment)->notArchived()->notCanceled()->selectOriginal()->orderByStandard();
 
         // Grouping vesa
         if ($merge_into_group && $list_sales_order->count() > 5) {
@@ -69,7 +69,7 @@ trait DownpaymentVesa
 
     private static function vesaApproval($array = [], $merge_into_group = true)
     {
-        $list_downpayment = self::joinFormulir()->open()->approvalPending()->notArchived()->selectOriginal()->orderByStandard();
+        $list_downpayment = self::joinFormulir()->open()->approvalPending()->notArchived()->notCanceled()->selectOriginal()->orderByStandard();
 
         // Grouping vesa
         if ($merge_into_group && $list_downpayment->get()->count() > 5) {
@@ -98,7 +98,7 @@ trait DownpaymentVesa
 
     private static function vesaReject($array = [], $merge_into_group = true)
     {
-        $list_downpayment = self::joinFormulir()->open()->approvalRejected()->notArchived()->selectOriginal()->orderByStandard();
+        $list_downpayment = self::joinFormulir()->open()->approvalRejected()->notArchived()->notCanceled()->selectOriginal()->orderByStandard();
         // Grouping vesa
         if ($merge_into_group && $list_downpayment->get()->count() > 5) {
             array_push($array, [

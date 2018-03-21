@@ -37,13 +37,13 @@ trait DownpaymentVesa
 
     private static function vesaCreate($array = [], $merge_into_group = true)
     {
-        $list_downpayment = Downpayment::joinFormulir()->whereNotNull('purchasing_order_id')->notArchived()->selectOriginal()->get();
+        $list_downpayment = Downpayment::joinFormulir()->whereNotNull('purchasing_order_id')->notArchived()->notCanceled()->selectOriginal()->get();
         $array_purchase_order_in_downpayment = [];
         foreach ($list_downpayment as $downpayment) {
             array_push($array_purchase_order_in_downpayment, $downpayment->purchasing_order_id);
         }
 
-        $list_purchasing_order = PurchaseOrder::joinFormulir()->approvalApproved()->open()->where('is_cash', true)->whereNotIn('point_purchasing_order.id', $array_purchase_order_in_downpayment)->notArchived()->selectOriginal()->orderByStandard();
+        $list_purchasing_order = PurchaseOrder::joinFormulir()->approvalApproved()->open()->where('is_cash', true)->whereNotIn('point_purchasing_order.id', $array_purchase_order_in_downpayment)->notArchived()->notCanceled()->selectOriginal()->orderByStandard();
 
         // Grouping vesa
         if ($merge_into_group && $list_purchasing_order->get()->count() > 5) {
@@ -74,7 +74,7 @@ trait DownpaymentVesa
 
     private static function vesaApproval($array = [], $merge_into_group = true)
     {
-        $list_downpayment = self::joinFormulir()->open()->approvalPending()->notArchived()->selectOriginal()->orderByStandard();
+        $list_downpayment = self::joinFormulir()->open()->approvalPending()->notArchived()->notCanceled()->selectOriginal()->orderByStandard();
 
         // Grouping vesa
         if ($merge_into_group && $list_downpayment->get()->count() > 5) {
@@ -103,7 +103,7 @@ trait DownpaymentVesa
 
     private static function vesaReject($array = [], $merge_into_group = true)
     {
-        $list_downpayment = self::joinFormulir()->open()->approvalRejected()->notArchived()->selectOriginal()->orderByStandard();
+        $list_downpayment = self::joinFormulir()->open()->approvalRejected()->notArchived()->notCanceled()->selectOriginal()->orderByStandard();
         // Grouping vesa
         if ($merge_into_group && $list_downpayment->get()->count() > 5) {
             array_push($array, [
