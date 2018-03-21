@@ -81,7 +81,7 @@ class InventoryHelper
         return Inventory::where('item_id', '=', $item_id)
             ->where('form_date', '<', $date_from)
             ->where('warehouse_id', '=', $warehouse_id)
-            ->sum('quantity');
+            ->select(DB::raw('SUM(quantity * price) as value'))->first()->value;
     }
 
     public static function getValueIn($date_from, $date_to, $item_id, $warehouse_id)
@@ -91,7 +91,7 @@ class InventoryHelper
             ->where('form_date', '<=', $date_to)
             ->where('quantity', '>=', 0)
             ->where('warehouse_id', '=', $warehouse_id)
-            ->sum('quantity');
+            ->select(DB::raw('SUM(quantity * price) as value'))->first()->value;
     }
 
     public static function getValueOut($date_from, $date_to, $item_id, $warehouse_id)
@@ -101,7 +101,7 @@ class InventoryHelper
             ->where('form_date', '<=', $date_to)
             ->where('quantity', '<', 0)
             ->where('warehouse_id', '=', $warehouse_id)
-            ->sum('quantity');
+            ->select(DB::raw('SUM(quantity * price) as value'))->first()->value;
     }
 
     public static function getClosingStockAll($date_from, $date_to, $item_id)
