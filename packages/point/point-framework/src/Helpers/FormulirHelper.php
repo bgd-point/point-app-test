@@ -359,6 +359,10 @@ class FormulirHelper
             throw new PointException('RESTRICTED ACCESS, FORM ALREADY EDITED');
         }
 
+        if ($formulir->form_status == -1) {
+            throw new PointException('RESTRICTED ACCESS, FORM ALREADY CANCELED');
+        }
+
         if (auth()->check()) {
             // if the user have permission access to approval
             if (!auth()->user()->may($permission_slug)) {
