@@ -208,11 +208,11 @@
                                 <label class="col-md-3 control-label">FORM CREATOR</label>
 
                                 <div class="col-md-6 content-show">
-                                    {{ $retur->formulir->createdBy->name }}
+                                    {{ $retur->formulir->createdBy->name }} ({{ date_format_view($retur->formulir->created_at) }})
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-md-3 control-label">ARK APPROVAL TO</label>
+                                <label class="col-md-3 control-label">ASK APPROVAL TO</label>
 
                                 <div class="col-md-6 content-show">
                                     {{ $retur->formulir->approvalTo->name }}
