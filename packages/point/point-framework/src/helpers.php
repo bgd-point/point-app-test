@@ -347,6 +347,30 @@ if (! function_exists('inventory_get_opening_stock_all')) {
     }
 }
 
+if (! function_exists('inventory_get_opening_value')) {
+
+    /**
+     * @param $person_type_slug
+     * @return string|void
+     */
+    function inventory_get_opening_value($date_from, $item_id, $warehouse_id)
+    {
+        return InventoryHelper::getOpeningValue($date_from, $item_id, $warehouse_id);
+    }
+}
+
+if (! function_exists('inventory_get_opening_value_all')) {
+
+    /**
+     * @param $person_type_slug
+     * @return string|void
+     */
+    function inventory_get_opening_value_all($date_from, $item_id)
+    {
+        return InventoryHelper::getOpeningValueAll($date_from, $item_id);
+    }
+}
+
 if (! function_exists('get_url_person')) {
     /**
      * Get link to person
@@ -382,6 +406,30 @@ if (! function_exists('inventory_get_stock_in_all')) {
     }
 }
 
+if (! function_exists('inventory_get_value_in')) {
+
+    /**
+     * @param $person_type_slug
+     * @return string|void
+     */
+    function inventory_get_value_in($date_from, $date_to, $item_id, $warehouse_id)
+    {
+        return InventoryHelper::getValueIn($date_from, $date_to, $item_id, $warehouse_id);
+    }
+}
+
+if (! function_exists('inventory_get_value_in_all')) {
+
+    /**
+     * @param $person_type_slug
+     * @return string|void
+     */
+    function inventory_get_value_in_all($date_from, $date_to, $item_id)
+    {
+        return InventoryHelper::getValueInAll($date_from, $date_to, $item_id);
+    }
+}
+
 if (! function_exists('inventory_get_stock_out')) {
 
     /**
@@ -406,6 +454,30 @@ if (! function_exists('inventory_get_stock_out_all')) {
     }
 }
 
+if (! function_exists('inventory_get_value_out')) {
+
+    /**
+     * @param $person_type_slug
+     * @return string|void
+     */
+    function inventory_get_value_out($date_from, $date_to, $item_id, $warehouse_id)
+    {
+        return InventoryHelper::getValueOut($date_from, $date_to, $item_id, $warehouse_id);
+    }
+}
+
+if (! function_exists('inventory_get_value_out_all')) {
+
+    /**
+     * @param $person_type_slug
+     * @return string|void
+     */
+    function inventory_get_value_out_all($date_from, $date_to, $item_id)
+    {
+        return InventoryHelper::getValueOutAll($date_from, $date_to, $item_id);
+    }
+}
+
 if (! function_exists('inventory_get_closing_stock')) {
 
     /**
@@ -427,6 +499,30 @@ if (! function_exists('inventory_get_closing_stock_all')) {
     function inventory_get_closing_stock_all($date_from, $date_to, $item_id)
     {
         return InventoryHelper::getClosingStockAll($date_from, $date_to, $item_id);
+    }
+}
+
+if (! function_exists('inventory_get_closing_value')) {
+
+    /**
+     * @param $person_type_slug
+     * @return string|void
+     */
+    function inventory_get_closing_value($date_from, $date_to, $item_id, $warehouse_id)
+    {
+        return InventoryHelper::getClosingValue($date_from, $date_to, $item_id, $warehouse_id);
+    }
+}
+
+if (! function_exists('inventory_get_closing_value_all')) {
+
+    /**
+     * @param $person_type_slug
+     * @return string|void
+     */
+    function inventory_get_closing_value_all($date_from, $date_to, $item_id)
+    {
+        return InventoryHelper::getClosingValueAll($date_from, $date_to, $item_id);
     }
 }
 

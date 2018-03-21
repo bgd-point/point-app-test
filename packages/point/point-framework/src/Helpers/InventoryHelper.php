@@ -69,6 +69,41 @@ class InventoryHelper
             ->sum('quantity');
     }
 
+    public static function getClosingValue($date_from, $date_to, $item_id, $warehouse_id)
+    {
+        return static::getOpeningValue($date_from, $item_id, $warehouse_id)
+            + static::getValueIn($date_from, $date_to, $item_id, $warehouse_id)
+            + static::getValueOut($date_from, $date_to, $item_id, $warehouse_id);
+    }
+
+    public static function getOpeningValue($date_from, $item_id, $warehouse_id)
+    {
+        return Inventory::where('item_id', '=', $item_id)
+            ->where('form_date', '<', $date_from)
+            ->where('warehouse_id', '=', $warehouse_id)
+            ->sum('quantity');
+    }
+
+    public static function getValueIn($date_from, $date_to, $item_id, $warehouse_id)
+    {
+        return Inventory::where('item_id', '=', $item_id)
+            ->where('form_date', '>=', $date_from)
+            ->where('form_date', '<=', $date_to)
+            ->where('quantity', '>=', 0)
+            ->where('warehouse_id', '=', $warehouse_id)
+            ->sum('quantity');
+    }
+
+    public static function getValueOut($date_from, $date_to, $item_id, $warehouse_id)
+    {
+        return Inventory::where('item_id', '=', $item_id)
+            ->where('form_date', '>=', $date_from)
+            ->where('form_date', '<=', $date_to)
+            ->where('quantity', '<', 0)
+            ->where('warehouse_id', '=', $warehouse_id)
+            ->sum('quantity');
+    }
+
     public static function getClosingStockAll($date_from, $date_to, $item_id)
     {
         return static::getOpeningStockAll($date_from, $item_id)
@@ -99,6 +134,38 @@ class InventoryHelper
             ->where('form_date', '<=', $date_to)
             ->where('quantity', '<', 0)
             ->sum('quantity');
+    }
+
+    public static function getClosingValueAll($date_from, $date_to, $item_id)
+    {
+        return static::getOpeningValueAll($date_from, $item_id)
+            + static::getValueInAll($date_from, $date_to, $item_id)
+            + static::getValueOutAll($date_from, $date_to, $item_id);
+    }
+
+    public static function getOpeningValueAll($date_from, $item_id)
+    {
+        return Inventory::where('item_id', '=', $item_id)
+            ->where('form_date', '<', $date_from)
+            ->select(DB::raw('SUM(quantity * price) as value'))->first()->value;
+    }
+
+    public static function getValueInAll($date_from, $date_to, $item_id)
+    {
+        return Inventory::where('item_id', '=', $item_id)
+            ->where('form_date', '>=', $date_from)
+            ->where('form_date', '<=', $date_to)
+            ->where('quantity', '>=', 0)
+            ->select(DB::raw('SUM(quantity * price) as value'))->first()->value;
+    }
+
+    public static function getValueOutAll($date_from, $date_to, $item_id)
+    {
+        return Inventory::where('item_id', '=', $item_id)
+            ->where('form_date', '>=', $date_from)
+            ->where('form_date', '<=', $date_to)
+            ->where('quantity', '<', 0)
+            ->select(DB::raw('SUM(quantity * price) as value'))->first()->value;
     }
 
     /**

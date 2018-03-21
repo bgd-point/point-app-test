@@ -44,10 +44,21 @@
                         <thead>
                         <tr>
                             <th>Item</th>
-                            <th>Opening Stock <br/> <span style="font-size:12px">({{date_format_view($date_from)}})</span></th>
-                            <th>Stock In <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
-                            <th>Stock Out <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
-                            <th>Closing Stock <br/> <span style="font-size:12px"> ({{date_format_view($date_to)}})</th>
+                            <th colspan="2">Opening Stock <br/> <span style="font-size:12px">({{date_format_view($date_from)}})</span></th>
+                            <th colspan="2">Stock In <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
+                            <th colspan="2">Stock Out <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
+                            <th colspan="2">Closing Stock <br/> <span style="font-size:12px"> ({{date_format_view($date_to)}})</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th style="text-align: center">QTY</th>
+                            <th style="text-align: center">VALUE</th>
+                            <th style="text-align: center">QTY</th>
+                            <th style="text-align: center">VALUE</th>
+                            <th style="text-align: center">QTY</th>
+                            <th style="text-align: center">VALUE</th>
+                            <th style="text-align: center">QTY</th>
+                            <th style="text-align: center">VALUE</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -58,12 +69,20 @@
                                 $stock_in = inventory_get_stock_in($date_from, $date_to, $item->item_id, $search_warehouse->id);
                                 $stock_out = inventory_get_stock_out($date_from, $date_to, $item->item_id, $search_warehouse->id);
                                 $closing_stock = inventory_get_closing_stock($date_from, $date_to, $item->item_id, $search_warehouse->id);
+                                $opening_value = inventory_get_opening_value($date_from, $item->item_id, $search_warehouse->id);
+                                $value_in = inventory_get_value_in($date_from, $date_to, $item->item_id, $search_warehouse->id);
+                                $value_out = inventory_get_value_out($date_from, $date_to, $item->item_id, $search_warehouse->id);
+                                $closing_value = inventory_get_closing_value($date_from, $date_to, $item->item_id, $search_warehouse->id);
                                 $warehouse_id = $search_warehouse->id;
                             } else {
                                 $opening_stock = inventory_get_opening_stock_all($date_from, $item->item_id);
                                 $stock_in = inventory_get_stock_in_all($date_from, $date_to, $item->item_id);
                                 $stock_out = inventory_get_stock_out_all($date_from, $date_to, $item->item_id);
                                 $closing_stock = inventory_get_closing_stock_all($date_from, $date_to, $item->item_id);
+                                $opening_value = inventory_get_opening_value_all($date_from, $item->item_id);
+                                $value_in = inventory_get_value_in_all($date_from, $date_to, $item->item_id);
+                                $value_out = inventory_get_value_out_all($date_from, $date_to, $item->item_id);
+                                $closing_value = inventory_get_closing_value_all($date_from, $date_to, $item->item_id);
                                 $warehouse_id = 0;
                             }
                             $recalculate_stock = \Point\Framework\Models\Inventory::where('item_id', '=', $item->item_id)->where('recalculate', '=', 1)->orderBy('form_date', 'asc')->count() > 0;
@@ -81,10 +100,14 @@
                                         @endif
                                     </a>
                                 </td>
-                                <td>{{number_format_quantity($opening_stock)}}</td>
-                                <td>{{number_format_quantity($stock_in)}}</td>
-                                <td>{{number_format_quantity($stock_out)}}</td>
-                                <td>{{number_format_quantity($closing_stock)}}</td>
+                                <td style="text-align: right">{{number_format_quantity($opening_stock)}}</td>
+                                <td style="text-align: right">{{number_format_quantity($opening_value)}}</td>
+                                <td style="text-align: right">{{number_format_quantity($stock_in)}}</td>
+                                <td style="text-align: right">{{number_format_quantity($value_in)}}</td>
+                                <td style="text-align: right">{{number_format_quantity($stock_out)}}</td>
+                                <td style="text-align: right">{{number_format_quantity($value_out)}}</td>
+                                <td style="text-align: right">{{number_format_quantity($closing_stock)}}</td>
+                                <td style="text-align: right">{{number_format_quantity($closing_value)}}</td>
                             </tr>
                         @endforeach
                         </tbody>
