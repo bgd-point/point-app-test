@@ -121,7 +121,7 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label">Form Creator</label>
                             <div class="col-md-6 content-show">
-                                {{ $bank->formulir->createdBy->name }}
+                                {{ $bank->formulir->createdBy->name }}  ({{ date_format_view($bank->formulir->created_at) }})
                             </div>
                         </div>                  
                     </fieldset>

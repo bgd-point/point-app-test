@@ -120,7 +120,7 @@
                                 <label class="col-md-3 control-label">Form Creator</label>
 
                                 <div class="col-md-6 content-show">
-                                    {{ $cash_advance->formulir->createdBy->name }}
+                                    {{ $cash_advance->formulir->createdBy->name }} ({{ date_format_view($cash_advance->formulir->created_at) }})
                                 </div>
                             </div>
                             <div class="form-group">
