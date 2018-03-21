@@ -3,6 +3,7 @@
 namespace Point\PointInventory\Helpers;
 
 use Point\Core\Models\Vesa;
+use Point\Framework\Helpers\AllocationHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Inventory;
@@ -81,6 +82,8 @@ class InventoryUsageHelper
 
             $inventory_helper = new InventoryHelper($inventory);
             $inventory_helper->out();
+
+            AllocationHelper::save($inventory_usage->formulir->id, $inventory_usage_item->allocation_id, $inventory->quantity * $inventory->price, $inventory_usage_item->usage_notes);
         }
     }
 
