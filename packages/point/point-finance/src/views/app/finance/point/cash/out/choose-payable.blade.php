@@ -31,6 +31,7 @@
                             </thead>
                             <tbody>
                             @foreach($payment_references as $payment_reference)
+                                @if($payment_reference->reference->form_status != -1)
                                 <tr>
                                     <td class="text-center">
                                         <a href="{{ url('finance/point/cash/'.$payment_reference->payment_flow.'/create/'.$payment_reference->id) }}" class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-external-link"></i> Create</a>
@@ -57,6 +58,7 @@
                                     <td colspan="3">
                                     <td class="text-right"><b>{{ number_format_price($payment_reference->total) }}</b></td>
                                 </tr>
+                                @endif
                             @endforeach
                             </tbody>
                         </table>
