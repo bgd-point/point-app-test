@@ -38,7 +38,7 @@
                     </thead>
                     <tbody>
                         @foreach($users as $user)
-                        <tr id="list-{{$user->id}}">
+                        <tr id="list-{{$user->id}}" @if($user->disabled) style="color:white;background: red;" @endif>
                             <td class="text-center">
                                 <a href="{{ url('master/user/'.$user->id) }}" data-toggle="tooltip" title="Show" class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-file"></i></a>
                                 @if($user->id > 2)
@@ -52,7 +52,7 @@
                                 @endif
                             </td> 
                             <td><img src="@include('core::app._avatar', ['user_id' => $user->id])" alt="avatar" style="width:40px;height:40px"></td>
-                            <td><a href="{{ url('master/user/'.$user->id) }}">{{ $user->name }}</a></td>
+                            <td><a @if($user->disabled) style="color:white;" @endif href="{{ url('master/user/'.$user->id) }}">{{ $user->name }}</a></td>
                             <td>{{ $user->email }}</td>
                             <td>
                                 @foreach($user->allRoles($user->id) as $roleUser)
