@@ -42,9 +42,11 @@ class Authenticate
             }
         }
 
-        if (auth()->user()->disabled) {
-            auth()->logout();
-            return redirect()->guest('auth/login');
+        if (auth()) {
+            if (auth()->user()->disabled) {
+                auth()->logout();
+                return redirect()->guest('auth/login');
+            }
         }
 
         return $next($request);
