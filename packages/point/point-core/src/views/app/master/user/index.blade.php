@@ -42,6 +42,12 @@
                             <td class="text-center">
                                 <a href="{{ url('master/user/'.$user->id) }}" data-toggle="tooltip" title="Show" class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-file"></i></a>
                                 <a href="javascript:void(0)" data-toggle="tooltip" title="Delete" class="btn btn-effect-ripple btn-xs btn-danger" onclick="secureDelete({{$user->id}}, '{{url('master/user/delete')}}')"><i class="fa fa-times"></i></a>
+                                <a id="link-state-{{$user->id}}" href="javascript:void(0)" data-toggle="tooltip"
+                                    title="{{$user->disabled == 0 ? 'disable' : 'enable' }}"
+                                    class="btn btn-effect-ripple btn-xs {{$user->disabled == 0 ? 'btn-success' : 'btn-default' }}"
+                                    onclick="state({{$user->id}})">
+                                    <i id="icon-state-{{$user->id}}" class="{{$user->disabled == 0 ? 'fa fa-pause' : 'fa fa-play' }}"></i>
+                                </a>
                             </td> 
                             <td><img src="@include('core::app._avatar', ['user_id' => $user->id])" alt="avatar" style="width:40px;height:40px"></td>
                             <td><a href="{{ url('master/user/'.$user->id) }}">{{ $user->name }}</a></td>
@@ -63,4 +69,39 @@
         </div>
     </div>  
 </div>
+@stop
+
+@section('scripts')
+    <script>
+      function state(index) {
+        $.ajax({
+          type:'post',
+          url: "{{URL::to('master/user/state')}}",
+          data: {
+            index: index
+          },
+          success: function(result){
+            if(result.status === "failed"){
+              swal(result.status, result.message);
+              return false;
+            }
+
+            var status = result.data_value == 0 ? 'enable' : 'disable';
+            $("#link-state-"+index).attr('title', status);
+
+            if(result.data_value == 0 ){
+              $("#link-state-"+index).removeClass("btn-default").addClass("btn-success");
+              $("#icon-state-"+index).removeClass("fa fa-play").addClass("fa fa-pause");
+            } else {
+              $("#link-state-"+index).removeClass("btn-success").addClass("btn-default");
+              $("#icon-state-"+index).removeClass("fa fa-pause").addClass("fa fa-play");
+            }
+
+            swal(result.status, result.message,"success");
+          }, error: function(e){
+            swal('Failed', 'Something went wrong', 'error');
+          }
+        });
+      }
+    </script>
 @stop

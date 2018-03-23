@@ -33,6 +33,32 @@ class UserController extends Controller
         return $view;
     }
 
+    public function _state(Request $request)
+    {
+        if (!$this->validateCSRF()) {
+            return response()->json($this->restrictionAccessMessage());
+        }
+
+        if (!auth()->user()->may('update.user')) {
+            $response = array('status' => 'failed', 'message' => 'permission denied');
+            return response()->json($response);
+        }
+
+        $user = User::find($request->input('index'));
+
+        if (!$user) {
+            $response = array('status' => 'failed', 'message' => $request->input('index'));
+            return response()->json($response);
+        }
+
+        $user->disabled = $user->disabled == 0 ? 1 : 0;
+        $user->save();
+
+        $response = array('status' => 'success', 'message' => 'update data finished', 'data_value' => $user->disabled);
+
+        return response()->json($response);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
