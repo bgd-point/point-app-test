@@ -5,6 +5,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'master', 'namespace' => 'Poin
     });
     
     // User
+    Route::post('/user/state', 'UserController@_state');
     Route::post('/user/delete', 'UserController@delete');
     Route::get('/user/role/toggle', 'UserController@toggleRole');
     Route::get('/user/{user_id}/role', 'UserController@role');
