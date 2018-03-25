@@ -192,7 +192,7 @@
                                 {{$invoice_service->item->codeName}} (Qty: {{number_format_quantity($invoice_service->quantity)}})
                             </td>
                             <td style="text-align: right">
-                                {{number_format_quantity($invoice_service->quantity * ($invoice_service->price - ($invoice_service->price * $invoice_service->discount / 100)))}}
+                                {{number_format_quantity($payment_order_detail->amount)}}
                             </td>
                         </tr>
                     @endforeach
