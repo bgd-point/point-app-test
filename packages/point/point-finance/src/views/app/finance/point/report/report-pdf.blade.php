@@ -27,6 +27,7 @@
         $i=1;
         ?>
         @foreach($list_report as $report)
+            @foreach($report->detail as $report_detail)
             <tr>
                 <td>
                     {{$i}}
@@ -34,25 +35,26 @@
                 <td>{{ date_format_view($report->formulir->form_date) }}</td>
                 <td>{{ $report->formulir->form_number}}</td>
                 <td>{{ $report->person->codeName }}</td>
-                <td>{{ $report->formulir->notes }}</td>
+                <td>{{ $report_detail->notes_detail }}</td>
                 <td class="text-right">
                     @if($report->payment_flow == 'in')
-                    <b>{{ number_format_price($report->total) }}</b>
-                    <?php $total_received += $report->total ; ?>
+                    <b>{{ number_format_price($report_detail->amount) }}</b>
+                    <?php $total_received += $report_detail->amount; ?>
                     @else
                     0.00
                     @endif
                 </td>
                 <td class="text-right">
                     @if($report->payment_flow == 'out')
-                    <b>{{ number_format_price($report->total) }}</b>
-                    <?php $total_disbursed += $report->total ; ?>
+                    <b>{{ number_format_price($report_detail->amount) }}</b>
+                    <?php $total_disbursed += $report_detail->amount * -1; ?>
                     @else
                     0.00
                     @endif
                 </td>
             </tr>
             <?php $i++;?>
+            @endforeach
         @endforeach  
         <tr>
             <td colspan="5" class="text-right">Total</td>
