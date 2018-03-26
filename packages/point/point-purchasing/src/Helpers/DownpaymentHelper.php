@@ -45,7 +45,7 @@ class DownpaymentHelper
         $downpayment->supplier_id = $request->input('supplier_id');
         $downpayment->amount = number_format_db($request->input('amount'));
         $downpayment->purchasing_order_id = $request->input('order_reference') ? : "";
-        $downpayment->remaining_amount = number_format_db($request->input('amount'));
+        $downpayment->remaining_amount = 0;
         $downpayment->payment_type = $request->input('payment_type');
         $downpayment->save();
 
