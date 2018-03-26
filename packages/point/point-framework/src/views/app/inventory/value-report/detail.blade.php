@@ -76,7 +76,6 @@
                                 <td>{{number_format_quantity($inventory->total_quantity)}}</td>
                                 <td>{{number_format_quantity($inventory->total_value)}}</td>
                             </tr>
-
                         @endforeach
                         </tbody>
                     </table>

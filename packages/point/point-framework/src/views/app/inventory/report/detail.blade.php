@@ -44,6 +44,7 @@
                                     }
                                 })
                                 ->orderBy('form_date', '=', 'desc')
+                                ->orderBy('formulir_id', '=', 'asc')
                                 ->first();
                         $total_quantity = $opening_inventory ? $opening_inventory->total_quantity : 0;
 
