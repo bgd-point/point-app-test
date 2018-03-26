@@ -1,3 +1,6 @@
+@if($coa)
+<h1>{{ $coa->account }}</h1>
+@endif
 <table class="table table-striped table-bordered">
     <thead>
         <tr>

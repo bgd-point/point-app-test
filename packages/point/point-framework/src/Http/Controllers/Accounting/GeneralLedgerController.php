@@ -40,6 +40,7 @@ class GeneralLedgerController extends Controller
                 $data = array(
                     'list_coa' => Coa::active()->orderBy('coa_number')->orderBy('name')->get(),
                     'coa_id' => $coa_id,
+                    'coa' => null,
                     'journals' => $journals,
                     'date_to' => $date_to,
                     'date_from' => $date_from
@@ -47,6 +48,33 @@ class GeneralLedgerController extends Controller
                 
                 $sheet->loadView('framework::app.accounting.general-ledger._data', $data);
             });
+        })->export('xls');
+    }
+
+    public function exportAll()
+    {
+        $file_name = 'General Ledger '.auth()->user()->id . '' . date('Y-m-d_His');
+        $date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : date('Y-m-01 00:00:00');
+        $date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : date('Y-m-d 23:59:59');
+        $coa_id = unserialize(urldecode(\Input::get('coa_filter'))) ? : 0;
+        \Excel::create($file_name, function ($excel) use ($date_from, $date_to, $coa_id) {
+            foreach (Coa::orderBy('coa_number')->get() as $coa) {
+                $journals = AccountingHelper::queryGeneralLedgerAll($date_from, $date_to, $coa->id);
+                if ($journals) {
+                    $excel->sheet($coa->coa_number ? $coa->coa_number : 'COA', function ($sheet) use ($date_from, $date_to, $coa_id, $journals, $coa) {
+                        $data = array(
+                            'list_coa' => Coa::active()->orderBy('coa_number')->orderBy('name')->get(),
+                            'coa' => $coa,
+                            'coa_id' => $coa_id,
+                            'journals' => $journals,
+                            'date_to' => $date_to,
+                            'date_from' => $date_from
+                        );
+
+                        $sheet->loadView('framework::app.accounting.general-ledger._data', $data);
+                    });
+                }
+            }
         })->export('xls');
     }
 }

@@ -31,14 +31,33 @@ class AccountingHelper
     public static function queryGeneralLedger($date_from, $date_to, $coa_id)
     {
         if ($coa_id < 1) {
-            return [];
-        }
-
-        return Journal::whereIn('coa_id', $coa_id)
-                ->where('form_date', '>=', $date_from)
+            return null;
+        } else {
+            return Journal::where('form_date', '>=', $date_from)
                 ->where('form_date', '<=', $date_to)
+                ->whereIn('coa_id', $coa_id)
                 ->orderBy('form_date')
                 ->get();
+        }
+    }
+
+    public static function queryGeneralLedgerAll($date_from, $date_to, $coa_id)
+    {
+        if ($coa_id < 1) {
+            return null;
+        } else {
+            $journals = Journal::where('form_date', '>=', $date_from)
+                ->where('form_date', '<=', $date_to)
+                ->where('coa_id', $coa_id)
+                ->orderBy('form_date')
+                ->get();
+
+            if ($journals->count()) {
+                return $journals;
+            } else {
+                return null;
+            }
+        }
     }
 
     public static function coaOpeningBalance($coa_id, $date_from)
