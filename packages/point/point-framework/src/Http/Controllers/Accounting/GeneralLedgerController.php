@@ -45,8 +45,17 @@ class GeneralLedgerController extends Controller
                     'date_to' => $date_to,
                     'date_from' => $date_from
                  );
-                
-                $sheet->loadView('framework::app.accounting.general-ledger._data', $data);
+                $sheet->setColumnFormat(array(
+                    'D' => '#,##0.00',
+                    'E' => '#,##0.00',
+                    'F' => '#,##0.00'
+                ));
+                $sheet->loadView('framework::app.accounting.general-ledger._data-export', $data);
+                $sheet->setColumnFormat(array(
+                    'D' => '#,##0.00',
+                    'E' => '#,##0.00',
+                    'F' => '#,##0.00'
+                ));
             });
         })->export('xls');
     }
@@ -70,8 +79,17 @@ class GeneralLedgerController extends Controller
                             'date_to' => $date_to,
                             'date_from' => $date_from
                         );
-
-                        $sheet->loadView('framework::app.accounting.general-ledger._data', $data);
+                        $sheet->setColumnFormat(array(
+                            'D' => '#,##0.00',
+                            'E' => '#,##0.00',
+                            'F' => '#,##0.00'
+                        ));
+                        $sheet->loadView('framework::app.accounting.general-ledger._data-export', $data);
+                        $sheet->setColumnFormat(array(
+                            'D' => '#,##0.00',
+                            'E' => '#,##0.00',
+                            'F' => '#,##0.00'
+                        ));
                     });
                 }
             }
