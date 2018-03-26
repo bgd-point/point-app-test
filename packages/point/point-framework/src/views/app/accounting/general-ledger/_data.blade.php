@@ -1,5 +1,3 @@
-<h1>{{ $coa->account }}</h1>
-
 <table class="table table-striped table-bordered">
     <thead>
         <tr>
