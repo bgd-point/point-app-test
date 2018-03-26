@@ -38,7 +38,8 @@
                                     $query->where('warehouse_id', '=', $warehouse->id);
                                 }
                             })
-                            ->orderBy('form_date', '=', 'desc')
+                            ->orderBy('form_date', '=', 'asc')
+                            ->orderBy('formulir_id', '=', 'asc')
                             ->first();
                         $total_quantity = $opening_inventory ? $opening_inventory->total_quantity : 0;
                         $total_value = $opening_inventory ? $opening_inventory->total_value : 0;
@@ -47,16 +48,7 @@
                         <tr>
                             @if(!$warehouse) <td>{{$opening_inventory ? $opening_inventory->warehouse->name : '-' }}</td> @endif
                             <td>
-                                @if($opening_inventory)
-                                <?php
-                                    $model = $opening_inventory->formulir->formulirable_type;
-                                ?>
-                                <a href="{{$model::showUrl($opening_inventory->formulir->formulirable_id)}}">
-                                    {{ $opening_inventory->formulir->form_number }}
-                                </a>
-                                    @else
-                                    -
-                                @endif
+                                -
                             </td>
                             <td>{{date_format_view($date_from)}}</td>
                             <td>-</td>
@@ -69,6 +61,7 @@
                         @foreach($list_inventory as $inventory)
                             <?php $total_quantity += $inventory->quantity ?>
                             <?php $total_value += $inventory->quantity * $inventory->cogs ?>
+
                             <tr @if($inventory->recalculate == 1) style="background: red;color:white;" @endif>
                                 @if(!$warehouse) <td>{{$inventory->warehouse->name}}</td> @endif
                                 <?php
@@ -83,6 +76,7 @@
                                 <td>{{number_format_quantity($inventory->total_quantity)}}</td>
                                 <td>{{number_format_quantity($inventory->total_value)}}</td>
                             </tr>
+
                         @endforeach
                         </tbody>
                     </table>
