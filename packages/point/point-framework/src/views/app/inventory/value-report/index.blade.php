@@ -62,6 +62,7 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <?php $total_closing_value = 0; ?>
                         @foreach($inventory as $item)
                             <?php
                             if ($search_warehouse) {
@@ -85,6 +86,7 @@
                                 $closing_value = inventory_get_closing_value_all($date_from, $date_to, $item->item_id);
                                 $warehouse_id = 0;
                             }
+                            $total_closing_value += $closing_value;
                             $recalculate_stock = \Point\Framework\Models\Inventory::where('item_id', '=', $item->item_id)->where('recalculate', '=', 1)->orderBy('form_date', 'asc')->count() > 0;
                             ?>
                             <tr>
@@ -110,6 +112,17 @@
                                 <td style="text-align: right">{{number_format_quantity($closing_value)}}</td>
                             </tr>
                         @endforeach
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td style="text-align: right;font-weight: bold">{{ number_format_accounting($total_closing_value) }}</td>
+                        </tr>
                         </tbody>
                     </table>
                     {!! $inventory->appends(['search'=>app('request')->get('search')])->render() !!}
