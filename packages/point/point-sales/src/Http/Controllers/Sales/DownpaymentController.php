@@ -10,6 +10,7 @@ use Point\Core\Helpers\UserHelper;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\PersonHelper;
+use Point\Framework\Models\FormulirLock;
 use Point\PointFinance\Models\PaymentReference;
 use Point\PointSales\Helpers\DownpaymentHelper;
 use Point\PointSales\Models\Sales\Downpayment;
@@ -134,6 +135,7 @@ class DownpaymentController extends Controller
         $view->downpayment = Downpayment::find($id);
         $view->list_downpayment_archived = Downpayment::joinFormulir()->archived($view->downpayment->formulir->form_number)->get();
         $view->revision = $view->list_downpayment_archived->count();
+        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->downpayment->formulir_id)->where('locked', true)->get();
         return $view;
     }
 

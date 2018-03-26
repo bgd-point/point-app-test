@@ -140,8 +140,8 @@ class GoodsReceivedController extends Controller
         $view->list_goods_received_archived = GoodsReceived::joinFormulir()->archived($view->goods_received->formulir->form_number)->get();
         $view->revision = $view->list_goods_received_archived->count();
 
-        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->goods_received->formulir_id)->get();
-        $view->list_reference = FormulirLock::where('locking_id', '=', $view->goods_received->formulir_id)->get();
+        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->goods_received->formulir_id)->where('locked', true)->get();
+        $view->list_reference = FormulirLock::where('locking_id', '=', $view->goods_received->formulir_id)->where('locked', true)->get();
         return $view;
     }
 

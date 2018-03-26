@@ -114,7 +114,7 @@ class DownpaymentController extends Controller
         $view->downpayment = Downpayment::find($id);
         $view->list_downpayment_archived = Downpayment::joinFormulir()->archived($view->downpayment->formulir->form_number)->get();
         $view->revision = $view->list_downpayment_archived->count();
-        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->downpayment->formulir_id)->get();
+        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->downpayment->formulir_id)->where('locked', true)->get();
         return $view;
     }
 

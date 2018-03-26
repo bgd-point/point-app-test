@@ -173,7 +173,7 @@ class SalesOrderController extends Controller
             return redirect(SalesOrder::showUrl($id));
         }
 
-        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->sales_order->formulir_id)->get();
+        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->sales_order->formulir_id)->where('locked', true)->get();
 
         return $view;
     }

@@ -155,7 +155,7 @@ class ExpeditionOrderController extends Controller
             return redirect(ExpeditionOrder::showUrl($id));
         }
 
-        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->expedition_order->formulir_id)->get();
+        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->expedition_order->formulir_id)->where('locked', true)->get();
 
         return $view;
     }
