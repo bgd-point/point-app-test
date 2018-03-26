@@ -224,27 +224,28 @@ class ReportController extends Controller
                 $total_disbursed = 0;
                 // $received = 0;
                 for ($i=0; $i < $total_data; $i++) {
-                    $received = '0.00';
-                    if ($data_report['report'][$i]->payment_flow == 'in') {
-                        $received = number_format_price($data_report['report'][$i]->total);
-                        $total_received += $data_report['report'][$i]->total;
-                    }
-                    
-                    $disbursed = '0.00';
-                    if ($data_report['report'][$i]->payment_flow == 'out') {
-                        $disbursed = number_format_price($data_report['report'][$i]->total);
-                        $total_disbursed += $data_report['report'][$i]->total;
-                    }
-                    
+                    foreach ($data_report['report'][$i]->detail as $report_detail) {
+                        $received = '0.00';
+                        if ($data_report['report'][$i]->payment_flow == 'in') {
+                            $received = $report_detail->amount;
+                            $total_received += $report_detail->amount;
+                        }
 
-                    array_push($header, [$i + 1,
-                        date_format_view($data_report['report'][$i]->formulir->form_date),
-                        $data_report['report'][$i]->formulir->form_number,
-                        $data_report['report'][$i]->person->codeName,
-                        $data_report['report'][$i]->formulir->notes,
-                        $received,
-                        $disbursed
-                    ]);
+                        $disbursed = '0.00';
+                        if ($data_report['report'][$i]->payment_flow == 'out') {
+                            $disbursed = $report_detail->amount;
+                            $total_disbursed += $report_detail->amount;
+                        }
+
+                        array_push($header, [$i + 1,
+                            date_format_view($data_report['report'][$i]->formulir->form_date),
+                            $data_report['report'][$i]->formulir->form_number,
+                            $data_report['report'][$i]->person->codeName,
+                            $report_detail->notes_detail,
+                            $received,
+                            $disbursed
+                        ]);
+                    }
                 }
 
                 $total_data = $total_data+6;
