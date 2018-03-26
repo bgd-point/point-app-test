@@ -38,7 +38,7 @@ class ServiceDownpaymentHelper
         $downpayment->formulir_id = $formulir->id;
         $downpayment->person_id = $request->input('person_id');
         $downpayment->amount = number_format_db($request->input('amount'));
-        $downpayment->remaining_amount = number_format_db($request->input('amount'));
+        $downpayment->remaining_amount = 0;
         $downpayment->payment_type = $request->input('payment_type');
         $downpayment->save();
 
