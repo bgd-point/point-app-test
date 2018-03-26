@@ -215,11 +215,11 @@ class InvoiceHelper
         // JOURNAL #1 of #2 - ACCOUNT PAYABLE - EXPEDITION
         $expedition = new Person;
 
-        $account_payable_expedition = Coa::where('name', 'Account Payable - Expedition')->first();
-        $position = JournalHelper::position($account_payable_expedition->id);
+        $account_payable_expedition = JournalHelper::getAccount('point expedition', 'account payable - expedition');
+        $position = JournalHelper::position($account_payable_expedition);
         $journal = new Journal;
         $journal->form_date = $invoice->formulir->form_date;
-        $journal->coa_id = $account_payable_expedition->id;
+        $journal->coa_id = $account_payable_expedition;
         $journal->description = 'invoice expedition "' . $invoice->formulir->form_number . '"';
         $journal->$position = $invoice->total;
         $journal->form_journal_id = $invoice->formulir_id;
@@ -229,11 +229,11 @@ class InvoiceHelper
         $journal->save();
 
         # JOURNAL #2 of #2 EXPEDITION EXPENSE
-        $account_payable_expedition = Coa::where('name', 'Expedition Cost')->first();
-        $position = JournalHelper::position($account_payable_expedition->id);
+        $account_payable_expedition = JournalHelper::getAccount('point expedition', 'expedition cost');
+        $position = JournalHelper::position($account_payable_expedition);
         $journal = new Journal;
         $journal->form_date = $invoice->formulir->form_date;
-        $journal->coa_id = $account_payable_expedition->id;
+        $journal->coa_id = $account_payable_expedition;
         $journal->description = 'invoice expedition "' . $invoice->formulir->form_number . '"';
         $journal->$position = $invoice->total;
         $journal->form_journal_id = $invoice->formulir_id;
