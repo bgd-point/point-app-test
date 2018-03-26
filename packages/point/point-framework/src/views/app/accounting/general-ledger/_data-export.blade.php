@@ -1,5 +1,6 @@
+@if($coa)
 <h1>{{ $coa->account }}</h1>
-
+@endif
 <table class="table table-striped table-bordered">
     <thead>
         <tr>
@@ -19,7 +20,7 @@
             <td>OPENING BALANCE</td>
             <td></td>
             <td></td>
-            <td>{{ number_format_accounting($balance)}}</td>
+            <td>{{ $balance }}</td>
         </tr>
 
         @foreach($journals as $journal)
@@ -39,9 +40,9 @@
                 <td>{{ date_format_view($journal->form_date) }}</td>
                 <td><a href="{{ $class::showUrl($journal->formulir->formulirable_id) }}">{{ $journal->formulir->form_number }}</a></td>
                 <td>{{ $journal->description }}</td>
-                <td>{{ number_format_accounting($journal->debit) }}</td>
-                <td>{{ number_format_accounting($journal->credit) }}</td>
-                <td>{{ number_format_accounting($balance) }}</td>
+                <td>{{ $journal->debit }}</td>
+                <td>{{ $journal->credit }}</td>
+                <td>{{ $balance }}</td>
             </tr>
         @endforeach
     </tbody>
