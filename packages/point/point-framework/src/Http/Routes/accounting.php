@@ -8,6 +8,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'accounting', 'namespace' => '
     Route::get('/cashflow/export', 'CashFlowController@export');
     Route::get('/cashflow', 'CashFlowController@index');
     Route::get('/general-ledger/export', 'GeneralLedgerController@export');
+    Route::get('/general-ledger/export-all', 'GeneralLedgerController@exportAll');
     Route::get('/general-ledger', 'GeneralLedgerController@index');
     Route::get('/sub-ledger/export', 'SubLedgerController@export');
     Route::get('/sub-ledger', 'SubLedgerController@index');
