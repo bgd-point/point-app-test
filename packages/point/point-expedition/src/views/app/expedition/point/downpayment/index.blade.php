@@ -96,7 +96,7 @@
                                 </td>
                                 <td>{{ number_format_quantity($downpayment->amount) }}</td>
                                 <td>{{ number_format_quantity($downpayment_remaining) }}</td>
-                                <td>{{ $downpayment->formulir->notes ? $downpayment->formulir->notes : '-'}}</td>
+                                <td>{{ $downpayment->formulir->notes ? $downpayment->formulir->notes : '-' }}</td>
                                 <td>
                                     @include('framework::app.include._approval_status_label', ['approval_status' => $downpayment->formulir->approval_status])
                                     @include('framework::app.include._form_status_label', ['form_status' => $downpayment->formulir->form_status])

@@ -308,7 +308,7 @@ class PaymentOrderController extends Controller
         $view->payment_order = PaymentOrder::find($id);
         $view->list_payment_order_archived = PaymentOrder::joinFormulir()->archived($view->payment_order->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_payment_order_archived->count();
-        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->payment_order->formulir_id)->get();
+        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->payment_order->formulir_id)->where('locked', true)->get();
         return $view;
     }
 

@@ -179,7 +179,7 @@ class DeliveryOrderController extends Controller
         $view->reference = $reference;
         $view->list_delivery_order_archived = DeliveryOrder::joinFormulir()->archived($view->delivery_order->formulir->form_number)->get();
         $view->revision = $view->list_delivery_order_archived->count();
-        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->delivery_order->formulir_id)->get();
+        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->delivery_order->formulir_id)->where('locked', true)->get();
         return $view;
     }
 

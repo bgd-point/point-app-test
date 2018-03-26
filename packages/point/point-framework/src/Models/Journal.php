@@ -215,4 +215,9 @@ class Journal extends Model
     {
         return $this->belongsTo('\Point\Framework\Models\Formulir', 'form_journal_id');
     }
+
+    public function reference()
+    {
+        return $this->belongsTo('\Point\Framework\Models\Formulir', 'form_reference_id');
+    }
 }

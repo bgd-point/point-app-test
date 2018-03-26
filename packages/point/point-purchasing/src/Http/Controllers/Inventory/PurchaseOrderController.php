@@ -135,7 +135,7 @@ class PurchaseOrderController extends Controller
         $view->reference = $view->purchase_order->checkHaveReference() ? : null;
         $view->list_purchase_order_archived = PurchaseOrder::joinFormulir()->archived($view->purchase_order->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_purchase_order_archived->count();
-        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->purchase_order->formulir_id)->get();
+        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->purchase_order->formulir_id)->where('locked', true)->get();
         if (! $view->purchase_order->formulir->form_number) {
             return redirect(PurchaseOrder::showUrl($id));
         }
