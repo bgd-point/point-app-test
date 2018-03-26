@@ -26,6 +26,7 @@
                         <div class="col-sm-6">
                             <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
                             <a class="btn btn-effect-ripple btn-effect-ripple btn-info" onclick="exportExcel()"> Export to excel</a>
+                            <a class="btn btn-effect-ripple btn-effect-ripple btn-info" onclick="exportExcelAllAccount()"> Export All Account</a>
                         </div>
                     </div>
                 </form>
@@ -48,6 +49,13 @@
         var date_from = $("#date-from").val();
         var date_to = $("#date-to").val();
         var url = '{{url()}}/accounting/general-ledger/export/?date_from='+date_from+'&date_to='+date_to+'&coa_filter={{$coa}}';
+        location.href = url;
+    }
+
+    function exportExcelAllAccount() {
+        var date_from = $("#date-from").val();
+        var date_to = $("#date-to").val();
+        var url = '{{url()}}/accounting/general-ledger/export-all/?date_from='+date_from+'&date_to='+date_to;
         location.href = url;
     }
 </script>
