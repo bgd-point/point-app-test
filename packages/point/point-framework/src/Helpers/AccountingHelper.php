@@ -79,4 +79,24 @@ class AccountingHelper
 
         return $journal->credit - $journal->debit;
     }
+
+    public static function coaOpeningBalanceAll($coa_id, $date_from)
+    {
+        \Log::info("LARAVEL: " . $date_from .' === '.$coa_id);
+        $journal = Journal::where('coa_id', $coa_id)
+            ->where('form_date', '<', $date_from)
+            ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+            ->groupBy('coa_id')
+            ->first();
+
+        if (!$journal) {
+            return 0;
+        }
+
+        if ($journal->coa->category->position->debit == true) {
+            return $journal->debit - $journal->credit;
+        }
+
+        return $journal->credit - $journal->debit;
+    }
 }
