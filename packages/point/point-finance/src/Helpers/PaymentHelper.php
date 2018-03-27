@@ -14,6 +14,7 @@ use Point\PointFinance\Models\Cash\CashCashAdvance;
 use Point\PointFinance\Models\Cash\CashDetail;
 use Point\PointFinance\Models\CashAdvance;
 use Point\PointFinance\Models\PaymentReference;
+use Point\PointSales\Models\Sales\Downpayment;
 
 class PaymentHelper
 {
@@ -114,6 +115,18 @@ class PaymentHelper
             if ($cash_detail->form_reference_id == NULL) {
                 AllocationHelper::save($cash->formulir_id, $cash_detail->allocation_id, $cash_detail->amount * -1, $cash_detail->notes_detail);
             }
+
+            if ($cash_detail->reference) {
+                if ($cash_detail->reference->formulirable_type == 'Point\PointPurchasing\Models\Inventory\Downpayment'
+                    || $cash_detail->reference->formulirable_type == 'Point\PointPurchasing\Models\Service\Downpayment'
+                    || $cash_detail->reference->formulirable_type == 'Point\PointExpedition\Models\Downpayment') {
+
+                    $model = $cash_detail->reference->formulirable_type;
+                    $dp = $model::find($cash_detail->reference->formulirable_id);
+                    $dp->remaining_amount = $cash_detail->amount;
+                    $dp->save();
+                }
+            }
         }
 
         FormulirHelper::close($payment_reference->payment_reference_id);
@@ -157,6 +170,16 @@ class PaymentHelper
 
             if ($cash_detail->form_reference_id == NULL) {
                 AllocationHelper::save($cash->formulir_id, $cash_detail->allocation_id, $cash_detail->amount, $cash_detail->notes_detail);
+            }
+
+            if ($cash_detail->reference) {
+                if ($cash_detail->reference->formulirable_type == 'Point\PointSales\Models\Sales\Downpayment'
+                    || $cash_detail->reference->formulirable_type == 'Point\PointSales\Models\Service\Downpayment') {
+                    $model = $cash_detail->reference->formulirable_type;
+                    $dp = $model::find($cash_detail->reference->formulirable_id);
+                    $dp->remaining_amount = $cash_detail->amount;
+                    $dp->save();
+                }
             }
 
             $count++;
@@ -247,6 +270,17 @@ class PaymentHelper
             if ($bank_detail->form_reference_id == NULL) {
                 AllocationHelper::save($bank->formulir_id, $bank_detail->allocation_id, $bank_detail->amount * -1, $bank_detail->notes_detail);
             }
+
+            if ($bank_detail->reference) {
+                if ($bank_detail->reference->formulirable_type == 'Point\PointPurchasing\Models\Inventory\Downpayment'
+                    || $bank_detail->reference->formulirable_type == 'Point\PointPurchasing\Models\Service\Downpayment'
+                    || $bank_detail->reference->formulirable_type == 'Point\PointExpedition\Models\Downpayment') {
+                    $model = $bank_detail->reference->formulirable_type;
+                    $dp = $model::find($bank_detail->reference->formulirable_id);
+                    $dp->remaining_amount = $bank_detail->amount;
+                    $dp->save();
+                }
+            }
         }
 
         FormulirHelper::close($payment_reference->payment_reference_id);
@@ -288,6 +322,16 @@ class PaymentHelper
 
             if ($bank_detail->form_reference_id == NULL) {
                 AllocationHelper::save($bank->formulir_id, $bank_detail->allocation_id, $bank_detail->amount, $bank_detail->notes_detail);
+            }
+
+            if ($bank_detail->reference) {
+                if ($bank_detail->reference->formulirable_type == 'Point\PointSales\Models\Sales\Downpayment'
+                    || $bank_detail->reference->formulirable_type == 'Point\PointSales\Models\Service\Downpayment') {
+                    $model = $bank_detail->reference->formulirable_type;
+                    $dp = $model::find($bank_detail->reference->formulirable_id);
+                    $dp->remaining_amount = $bank_detail->amount;
+                    $dp->save();
+                }
             }
 
             $count++;
