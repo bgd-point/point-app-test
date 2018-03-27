@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\Journal;
 use Point\PointPurchasing\Models\Inventory\Downpayment as DP1;
 use Point\PointPurchasing\Models\Service\Downpayment as DP2;
@@ -68,6 +69,51 @@ class FixDownpaymentSeeder extends Seeder
         foreach ($downpayments as $downpayment) {
             $downpayment->remaining_amount = 0;
             $downpayment->save();
+        }
+
+        $downpayments = DP1::joinFormulir()->where('formulir.form_status', '==', 0)->selectOriginal()->get();
+        foreach ($downpayments as $downpayment) {
+            $locks = FormulirLock::where('locked', true)->where('locked_id', $downpayment->formulir_id)->get();
+            if (!$locks->count()) {
+                $downpayment->remaining_amount = 0;
+                $downpayment->save();
+            }
+        }
+
+        $downpayments = DP2::joinFormulir()->where('formulir.form_status', '==', 0)->selectOriginal()->get();
+        foreach ($downpayments as $downpayment) {
+            $locks = FormulirLock::where('locked', true)->where('locked_id', $downpayment->formulir_id)->get();
+            if (!$locks->count()) {
+                $downpayment->remaining_amount = 0;
+                $downpayment->save();
+            }
+        }
+
+        $downpayments = DP3::joinFormulir()->where('formulir.form_status', '==', 0)->selectOriginal()->get();
+        foreach ($downpayments as $downpayment) {
+            $locks = FormulirLock::where('locked', true)->where('locked_id', $downpayment->formulir_id)->get();
+            if (!$locks->count()) {
+                $downpayment->remaining_amount = 0;
+                $downpayment->save();
+            }
+        }
+
+        $downpayments = DP4::joinFormulir()->where('formulir.form_status', '==', 0)->selectOriginal()->get();
+        foreach ($downpayments as $downpayment) {
+            $locks = FormulirLock::where('locked', true)->where('locked_id', $downpayment->formulir_id)->get();
+            if (!$locks->count()) {
+                $downpayment->remaining_amount = 0;
+                $downpayment->save();
+            }
+        }
+
+        $downpayments = DP5::joinFormulir()->where('formulir.form_status', '==', 0)->selectOriginal()->get();
+        foreach ($downpayments as $downpayment) {
+            $locks = FormulirLock::where('locked', true)->where('locked_id', $downpayment->formulir_id)->get();
+            if (!$locks->count()) {
+                $downpayment->remaining_amount = 0;
+                $downpayment->save();
+            }
         }
 
         \DB::commit();
