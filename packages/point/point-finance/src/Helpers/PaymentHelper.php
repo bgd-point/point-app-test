@@ -379,6 +379,17 @@ class PaymentHelper
                 $cash_advance->formulir->form_status = 0;
                 $cash_advance->formulir->save();
             }
+
+            if ($payment_reference->reference->formulirable_type == 'Point\PointPurchasing\Models\Inventory\Downpayment'
+                || $payment_reference->reference->formulirable_type == 'Point\PointPurchasing\Models\Service\Downpayment'
+                || $payment_reference->reference->formulirable_type == 'Point\PointSales\Models\Sales\Downpayment'
+                || $payment_reference->reference->formulirable_type == 'Point\PointSales\Models\Service\Downpayment'
+                || $payment_reference->reference->formulirable_type == 'Point\PointExpedition\Models\Downpayment') {
+                $model = $payment_reference->reference->formulirable_type;
+                $dp = $model::find($payment_reference->reference->formulirable_id);
+                $dp->remaining_amount = 0;
+                $dp->save();
+            }
         }
     }
 
