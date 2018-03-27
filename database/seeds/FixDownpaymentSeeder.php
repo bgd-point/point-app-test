@@ -77,6 +77,9 @@ class FixDownpaymentSeeder extends Seeder
             if (!$locks->count()) {
                 $downpayment->remaining_amount = 0;
                 $downpayment->save();
+            } else {
+                $downpayment->formulir->form_status = 1;
+                $downpayment->formulir->save();
             }
         }
 
@@ -86,6 +89,9 @@ class FixDownpaymentSeeder extends Seeder
             if (!$locks->count()) {
                 $downpayment->remaining_amount = 0;
                 $downpayment->save();
+            } else {
+                $downpayment->formulir->form_status = 1;
+                $downpayment->formulir->save();
             }
         }
 
@@ -95,6 +101,9 @@ class FixDownpaymentSeeder extends Seeder
             if (!$locks->count()) {
                 $downpayment->remaining_amount = 0;
                 $downpayment->save();
+            } else {
+                $downpayment->formulir->form_status = 1;
+                $downpayment->formulir->save();
             }
         }
 
@@ -104,6 +113,9 @@ class FixDownpaymentSeeder extends Seeder
             if (!$locks->count()) {
                 $downpayment->remaining_amount = 0;
                 $downpayment->save();
+            } else {
+                $downpayment->formulir->form_status = 1;
+                $downpayment->formulir->save();
             }
         }
 
@@ -113,6 +125,9 @@ class FixDownpaymentSeeder extends Seeder
             if (!$locks->count()) {
                 $downpayment->remaining_amount = 0;
                 $downpayment->save();
+            } else {
+                $downpayment->formulir->form_status = 1;
+                $downpayment->formulir->save();
             }
         }
 
