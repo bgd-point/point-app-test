@@ -34,7 +34,7 @@
                 </td>
                 <td>{{ date_format_view($report->formulir->form_date) }}</td>
                 <td>{{ $report->formulir->form_number}}</td>
-                <td>{{ strtoupper($report->person->codeName) }}</td>
+                <td>{{ strtoupper($report->person->name) }}</td>
                 <td>{{ strtoupper($report_detail->notes_detail) }}</td>
                 <td class="text-right">
                     @if($report->payment_flow == 'in')
