@@ -29,8 +29,8 @@
                     <td>
                         <a href="{{ url('finance/point/'.$type.'/'. $report->payment_flow .'/'.$report->id) }}" @if($report->formulir->form_status == -1) style="background:red;color:white !important" @endif>{{ $report->formulir->form_number}}</a>
                     </td>
-                    <td>{{ $report->person->codeName }}</td>
-                    <td>{{ $report_detail->notes_detail }}</td>
+                    <td>{{ strtoupper($report->person->codeName) }}</td>
+                    <td>{{ strtoupper($report_detail->notes_detail) }}</td>
                     <td class="text-right">
                         @if($report->payment_flow == 'in')
                             <b>{{ number_format_price($report_detail->amount) }}</b>
