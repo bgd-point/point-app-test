@@ -29,6 +29,9 @@
                         </div>
                         <div class="col-sm-3">
                             <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
+                            @if(app('request')->get('allocation_id') > 0)
+                                <a class="btn btn-effect-ripple btn-effect-ripple btn-info" onclick="exportExcel()"> Export to excel</a>
+                            @endif
                         </div>
                     </div>
                 </form>
@@ -92,6 +95,14 @@
         {{--var allocation_id = $("#allocation_id option:selected").val();--}}
         {{--var url = '{{url()}}/finance/point/allocation-report/?allocation_id='+allocation_id;--}}
         {{--location.href = url;--}}
+      }
+
+      function exportExcel() {
+        var allocation_id = $("#allocation_id").val();
+        var date_from = $("#date-from").val();
+        var date_to = $("#date-to").val();
+        var url = '{{url()}}/finance/point/allocation-report/export?date_from='+date_from+'&date_to='+date_to+'&allocation_id='+ allocation_id;
+        location.href = url;
       }
     </script>
 @stop
