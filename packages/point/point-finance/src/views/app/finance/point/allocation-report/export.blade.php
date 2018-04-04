@@ -28,8 +28,8 @@
             <td>{!! formulir_url($report->formulir) !!}</td>
             <td>{{ date_format_view($report->formulir->form_date) }}</td>
             <td>{{ $report->notes }}</td>
-            <td class="text-right">{{ $report->amount >= 0 ? number_format_price($report->amount, 0) : ''}}</td>
-            <td class="text-right">{{ $report->amount < 0 ? number_format_price(abs($report->amount), 0) : ''}}</td>
+            <td class="text-right">{{ $report->amount >= 0 ? $report->amount : ''}}</td>
+            <td class="text-right">{{ $report->amount < 0 ? abs($report->amount) : ''}}</td>
         </tr>
     @endforeach
     </tbody>
