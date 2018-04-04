@@ -48,10 +48,12 @@ class AccountingHelper
         if ($coa_id < 1) {
             return null;
         } else {
-            $journals = Journal::where('form_date', '>=', $date_from)
-                ->where('form_date', '<=', $date_to)
+            $journals = Journal::join('formulir','formulir.id', '=', 'journal.form_journal_id')
+                ->where('journal.form_date', '>=', $date_from)
+                ->where('journal.form_date', '<=', $date_to)
                 ->where('coa_id', $coa_id)
-                ->orderBy('form_date')
+                ->where('formulir.form_status', '!=', -1)
+                ->orderBy('journal.form_date')
                 ->get();
 
             if ($journals->count()) {
