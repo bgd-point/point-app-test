@@ -1,9 +1,9 @@
-@if(auth()->user()->may('read.point.sales.pos.pricing'))
+@if(auth()->user()->may('read.point.sales.pos'))
 <a href="{{ url('sales/point/pos') }}" class="btn {{\Request::segment(4)==''?'btn-primary':'btn-info'}}">
     List
 </a>
 @endif
-@if(auth()->user()->may('create.point.sales.pos.pricing'))
+@if(auth()->user()->may('create.point.sales.pos'))
 <a href="{{ url('sales/point/pos/create#posview') }}" class="btn {{\Request::segment(4)=='create'?'btn-primary':'btn-info'}}">
     Create
 </a>
