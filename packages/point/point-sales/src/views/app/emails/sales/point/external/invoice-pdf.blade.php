@@ -44,7 +44,7 @@
 @section('content')
     <thead>
     <tr>
-        <td width="10px">#</td>
+        <td width="10px">No</td>
         <td width="70%">Item</td>
         <td class="text-right">Quantity</td>
         <td class="text-right">Price</td>
@@ -57,7 +57,7 @@
     @foreach($invoice->items as $invoice_item)
         <tr>
             <td>{{$no}}</td>
-            <td style="text-transform: lowercase !important;">{{ strtolower($invoice_item->item->name) }}</td>
+            <td>{{ $invoice_item->item->name }}</td>
             <td class="text-right">{{number_format_quantity($invoice_item->quantity, 0). ' ' .$invoice_item->unit}}</td>
             <td class="text-right">{{number_format_quantity($invoice_item->price)}}</td>
             <td class="text-right">{{number_format_quantity($invoice_item->discount)}}</td>
