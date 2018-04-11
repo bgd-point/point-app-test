@@ -49,7 +49,8 @@ class BankController extends Controller
         if (\Input::has('search')) {
             $view->list_bank = $view->list_bank->where(function ($q) {
                 $q->where('formulir.notes', 'like', '%'.\Input::get('search').'%')
-                   ->orWhere('formulir.form_number', 'like', '%'.\Input::get('search').'%');
+                    ->orWhere('formulir.form_number', 'like', '%'.\Input::get('search').'%')
+                    ->orWhere('person.name', 'like', '%'.\Input::get('search').'%');
             });
         }
 

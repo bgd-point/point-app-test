@@ -56,7 +56,8 @@ class CashController extends Controller
         if (\Input::has('search')) {
             $view->list_cash = $view->list_cash->where(function ($q) {
                 $q->where('formulir.notes', 'like', '%'.\Input::get('search').'%')
-                   ->orWhere('formulir.form_number', 'like', '%'.\Input::get('search').'%');
+                    ->orWhere('formulir.form_number', 'like', '%'.\Input::get('search').'%')
+                    ->orWhere('person.name', 'like', '%'.\Input::get('search').'%');
             });
         }
 
