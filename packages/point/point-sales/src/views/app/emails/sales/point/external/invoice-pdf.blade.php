@@ -18,7 +18,7 @@
     </tr>
     @if($invoice->lockingForm)
     <tr>
-        <td># Delivery Order</td>
+        <td>Delivery Order</td>
         <td>:</td>
         <td>
             @foreach($invoice->lockingForm as $lockingForm)
@@ -44,7 +44,7 @@
 @section('content')
     <thead>
     <tr>
-        <td width="10px">No</td>
+        <td width="15px">No</td>
         <td width="70%">Item</td>
         <td class="text-right">Quantity</td>
         <td class="text-right">Price</td>
