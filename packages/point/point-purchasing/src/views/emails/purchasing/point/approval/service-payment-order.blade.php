@@ -208,10 +208,7 @@
             <tr></tr>
             @if(count($payment_order->others) > 0)
             <tr class="heading">
-                <td>
-                    Reference Number
-                </td>
-                <td style="text-align: left">
+                <td style="text-align: left" colspan="2">
                     Notes
                 </td>
                 <td>
@@ -221,11 +218,8 @@
             @endif
             @foreach($payment_order->others as $payment_order_other)
             <tr class="item">
-                <td >
-                    {{ $payment_order_other->coa->account }}
-                </td>
-                <td style="text-align: left">
-                    {{$payment_order_other->other_notes}}
+                <td style="text-align: left" colspan="2">
+                    {{ $payment_order_other->coa->account }} {{$payment_order_other->other_notes}}
                 </td>
                 <td style="text-align: right">
                     {{number_format_quantity($payment_order_other->amount)}}

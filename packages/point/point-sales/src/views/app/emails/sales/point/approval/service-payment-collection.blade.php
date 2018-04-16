@@ -173,6 +173,9 @@
         <table cellpadding="0" cellspacing="0">
             <tr class="heading">
                 <td>
+                    Date
+                </td>
+                <td>
                     Notes
                 </td>
                 <td>
@@ -189,6 +192,9 @@
                 @if (get_class($reference) == 'Point\PointSales\Models\Service\Invoice')
                     @foreach($reference->items as $invoice_item)
                         <tr class="item">
+                            <td style="text-align: left;font-weight: bold;">
+                                {{date_format_view($invoice_item->invoice->formulir->form_date)}}
+                            </td>
                             <td style="text-align: left">
                                 {{$invoice_item->item->codeName}} (Qty: {{number_format_quantity($invoice_item->quantity)}})
                             </td>
@@ -199,6 +205,9 @@
                     @endforeach
                     @foreach($reference->services as $invoice_service)
                         <tr class="item">
+                            <td style="text-align: left;font-weight: bold;">
+                                {{date_format_view($invoice_service->invoice->formulir->form_date)}}
+                            </td>
                             <td style="text-align: left">
                                 {{$invoice_service->service->name}} (Qty: {{number_format_quantity($invoice_service->quantity)}}) : {{$invoice_service->service_notes}}
                             </td>
@@ -212,7 +221,7 @@
             <tr></tr>
             @if(count($payment_collection->others) > 0)
             <tr class="heading">
-                <td>
+                <td colspan="2">
                     Notes
                 </td>
                 <td>
@@ -222,7 +231,7 @@
             @endif
             @foreach($payment_collection->others as $payment_collection_other)
             <tr class="item">
-                <td >
+                <td colspan="2">
                     {{ $payment_collection_other->coa->account }} - {{ $payment_collection_other->other_notes }}
                 </td>
                 <td >
@@ -232,7 +241,7 @@
             @endforeach
             <tr></tr>
             <tr class="heading">
-                <td>
+                <td colspan="2">
                 </td>
                 <td>
                     {{number_format_quantity($payment_collection->total_payment)}}

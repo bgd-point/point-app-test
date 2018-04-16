@@ -171,6 +171,7 @@
 
         <table cellpadding="0" cellspacing="0">
             <tr class="heading">
+                <td>Date</td>
                 <td>
                     Notes
                 </td>
@@ -189,6 +190,9 @@
                     @foreach($reference->items as $invoice_service)
                         <tr class="item">
                             <td style="text-align: left">
+                                {{date_format_view($invoice_service->invoice->formulir->form_date)}}
+                            </td>
+                            <td style="text-align: left">
                                 {{$invoice_service->item->codeName}} (Qty: {{number_format_quantity($invoice_service->quantity)}})
                             </td>
                             <td style="text-align: right">
@@ -201,7 +205,7 @@
             <tr></tr>
             @if(count($payment_order->others) > 0)
             <tr class="heading">
-                <td>
+                <td colspan="2">
                     Notes
                 </td>
                 <td>
@@ -211,7 +215,7 @@
             @endif
             @foreach($payment_order->others as $payment_order_other)
             <tr class="item">
-                <td >
+                <td colspan="2">
                     {{ $payment_order_other->coa->account }} | {{$payment_order_other->other_notes}}
                 </td>
                 <td >
@@ -221,8 +225,7 @@
             @endforeach
             <tr></tr>
             <tr class="heading">
-                <td>
-                </td>
+                <td colspan="2"></td>
                 <td>
                     {{number_format_quantity($payment_order->total_payment)}}
                 </td>
