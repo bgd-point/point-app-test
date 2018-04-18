@@ -220,11 +220,13 @@ class ReportController extends Controller
                 $data_report = self::dataReport($type, $date_from, $date_to, $coa_id, $subledger_id);
 
                 $total_data = count($data_report['report']);
+                $total_row = 0;
                 $total_received = 0;
                 $total_disbursed = 0;
                 // $received = 0;
                 for ($i=0; $i < $total_data; $i++) {
                     foreach ($data_report['report'][$i]->detail as $report_detail) {
+                        $total_row++;
                         $received = '0.00';
                         if ($data_report['report'][$i]->payment_flow == 'in') {
                             $received = $report_detail->amount;
@@ -237,7 +239,7 @@ class ReportController extends Controller
                             $total_disbursed += $report_detail->amount;
                         }
 
-                        array_push($header, [$i + 1,
+                        array_push($header, [$total_row,
                             date_format_view($data_report['report'][$i]->formulir->form_date),
                             $data_report['report'][$i]->formulir->form_number,
                             $data_report['report'][$i]->person->codeName,
@@ -248,11 +250,11 @@ class ReportController extends Controller
                     }
                 }
 
-                $total_data = $total_data+6;
+                $total_row = $total_row + 6;
                 $sheet->fromArray($header, null, 'A6', false, false);
-                $sheet->setBorder('A6:G'.$total_data, 'thin');
+                $sheet->setBorder('A6:G'.$total_row, 'thin');
 
-                $next_row = $total_data + 1;
+                $next_row = $total_row + 1;
                 $sheet->cell('E'.$next_row, function ($cell) {
                     $cell->setValue('TOTAL');
                     $cell->setFont(array(
@@ -295,7 +297,7 @@ class ReportController extends Controller
                 });
 
                 $sheet->cell('F'.$next_row, function ($cell) use ($data_report, $total_received, $total_disbursed) {
-                    $cell->setValue(number_format_quantity(($data_report['journal_debit'] - $data_report['journal_credit']) + $total_disbursed + $total_received));
+                    $cell->setValue(number_format_quantity(($data_report['journal_debit'] - $data_report['journal_credit']) + $total_received - $total_disbursed));
                 });
             });
         })->export('xls');
