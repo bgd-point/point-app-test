@@ -49,12 +49,12 @@ class MemoJournalHelper
         $memo_journal->debit = number_format_db($request->input('foot_debit'));
         $memo_journal->credit = number_format_db($request->input('foot_credit'));
         $memo_journal->save();
-
+        
         $items = [
             'coa_id'=>$request->input('coa_id'),
             'subledger'=>$request->input('master'),
             'form_journal_id'=>$formulir_id,
-            'form_reference_id'=>$request->input('invoice'),
+            'form_reference_id'=>$request->input('form-reference'),
             'description'=>$request->input('desc'),
             'debit'=>$request->input('debit'),
             'credit'=>$request->input('credit'),
@@ -100,6 +100,7 @@ class MemoJournalHelper
             if ($subledger[$i]) {
                 $memo_journal_detail->subledger_id = $subledger_id;
                 $memo_journal_detail->subledger_type = $subledger_type;
+
                 ReferHelper::create(
                     $ref->formulirable_type,
                     $ref->formulirable_id,
