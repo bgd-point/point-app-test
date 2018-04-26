@@ -118,7 +118,7 @@
                                 <label class="col-md-3 control-label">Request Approval To</label>
 
                                 <div class="col-md-6 content-show">
-                                    {{ $cash_advance->formulir->approvalTo->name }}
+                                    {{ $cash_advance->formulir->approvalTo->name }} ({{ date_format_view($cash_advance->formulir->created_at, true) }})
                                 </div>
                             </div>
                         </fieldset>

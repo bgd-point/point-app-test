@@ -188,7 +188,7 @@
                                 <label class="col-md-3 control-label">Form Creator</label>
 
                                 <div class="col-md-6 content-show">
-                                    {{ $invoice->formulir->createdBy->name }} ({{ date_format_view($invoice->formulir->created_at) }})
+                                    {{ $invoice->formulir->createdBy->name }} ({{ date_format_view($invoice->formulir->created_at, true) }})
                                 </div>
                             </div>
 

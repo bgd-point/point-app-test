@@ -189,7 +189,7 @@
                                 <label class="col-md-3 control-label">Form Creator</label>
 
                                 <div class="col-md-6 content-show">
-                                    {{ $goods_received->formulir->createdBy->name }} ({{ date_format_view($goods_received->formulir->created_at) }})
+                                    {{ $goods_received->formulir->createdBy->name }} ({{ date_format_view($goods_received->formulir->created_at, true) }})
                                 </div>
                             </div>
                         </fieldset>
