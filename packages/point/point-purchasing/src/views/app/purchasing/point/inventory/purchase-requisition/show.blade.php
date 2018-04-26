@@ -154,7 +154,7 @@
                                     <label class="col-md-3 control-label">Form Creator</label>
 
                                     <div class="col-md-6 content-show">
-                                        {{ $purchase_requisition->formulir->createdBy->name }}
+                                        {{ $purchase_requisition->formulir->createdBy->name }} ({{ date_format_view($purchase_requisition->formulir->created_at, true) }})
                                     </div>
                                 </div>
                                 <div class="form-group">

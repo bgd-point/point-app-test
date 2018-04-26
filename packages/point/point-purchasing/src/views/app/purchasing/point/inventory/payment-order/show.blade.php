@@ -142,6 +142,20 @@
                                 </div>
                             </div>
                         </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <legend><i class="fa fa-angle-right"></i> Person In Charge</legend>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Form Creator</label>
+
+                                <div class="col-md-6 content-show">
+                                    {{ $payment_order->formulir->createdBy->name }} ({{ date_format_view($payment_order->formulir->created_at, true) }})
+                                </div>
+                            </div>
+                        </fieldset>
                     </div>
                 </div>
 
@@ -202,9 +216,9 @@
                                         <div class="input-group">
                                             <input type="text" name="approval_message" class="form-control"
                                                    placeholder="Message">
-                                        <span class="input-group-btn">
-                                        <input type="submit" class="btn btn-primary" value="Approve">
-                                    </span>
+                                            <span class="input-group-btn">
+                                                <input type="submit" class="btn btn-primary" value="Approve">
+                                            </span>
                                         </div>
                                     </form>
                                 </div>
@@ -216,9 +230,9 @@
                                         <div class="input-group">
                                             <input type="text" name="approval_message" class="form-control"
                                                    placeholder="Message">
-                                        <span class="input-group-btn">
-                                        <input type="submit" class="btn btn-danger" value="Reject">
-                                    </span>
+                                            <span class="input-group-btn">
+                                                <input type="submit" class="btn btn-danger" value="Reject">
+                                            </span>
                                         </div>
                                     </form>
                                 </div>
