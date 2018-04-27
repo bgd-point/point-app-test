@@ -375,15 +375,15 @@
 
                 autosize($('.autosize'));
 
-                $(function() {
-                    $( document ).idleTimer( 86400000 );
-                });
+                {{--$(function() {--}}
+                    {{--$( document ).idleTimer( 86400000 );--}}
+                {{--});--}}
 
-                $(function() {
-                    $( document ).on( "idle.idleTimer", function(event, elem, obj){
-                        window.location.href="{{url('/auth/logout')}}";
-                    });
-                });
+                {{--$(function() {--}}
+                    {{--$( document ).on( "idle.idleTimer", function(event, elem, obj){--}}
+                        {{--window.location.href="{{url('/auth/logout')}}";--}}
+                    {{--});--}}
+                {{--});--}}
 
                 @if(\Point\Core\Models\Setting::where('name','=','date-input')->first()->value == 'd-m-y')
                     $('.date').inputmask("99-99-99");
