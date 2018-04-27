@@ -1,9 +1,6 @@
 <?php
 
 Route::group(['prefix' => 'sales/point/service', 'namespace' => 'Point\PointSales\Http\Controllers\Service'], function () {
-    Route::get('/', function () {
-        return view('point-sales::app.sales.point.service.menu');
-    });
 
     Route::get('/report/export', 'ServiceReportController@export');
     Route::get('/report/{service_id}', 'ServiceReportController@detail');
@@ -11,6 +8,9 @@ Route::group(['prefix' => 'sales/point/service', 'namespace' => 'Point\PointSale
 
     // INVOICE
     Route::group(['middleware' => 'auth'], function () {
+        Route::get('/', function () {
+            return view('point-sales::app.sales.point.service.menu');
+        });
         Route::post('/invoice/send-email', 'InvoiceController@sendEmail');
         Route::get('/invoice/{id}/export', 'InvoiceController@exportPDF');
         Route::get('/invoice/vesa-create', 'ServiceInvoiceVesaController@create');
