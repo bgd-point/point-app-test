@@ -175,6 +175,10 @@
                     <td>
                         Amount
                     </td>
+
+                    <td>
+                        Allocation
+                    </td>
                 </tr>
 
                 @foreach($payment_order->detail as $payment_order_detail)
@@ -186,6 +190,10 @@
                         <td>
                             {{ number_format_price($payment_order_detail->amount) }}
                         </td>
+
+                        <td>
+                            {{ $payment_order_detail->allocation->name }}
+                        </td>
                     </tr>
                 @endforeach
                 
@@ -195,10 +203,12 @@
                     <td>
                        Total: {{ number_format_price($payment_order->total) }}
                     </td>
+
+                    <td></td>
                 </tr>
                 
                 <tr>
-                    <td colspan="2">
+                    <td colspan="3">
                        <a href="{{ $url . '/formulir/'.$payment_order->formulir_id.'/approval/check-status/'.$token }}"><input type="button" class="btn btn-check" value="Check"></a>
                        <a href="{{ $url . '/finance/point/payment-order/'.$payment_order->id.'/approve?token='.$token }}"><input type="button" class="btn btn-success" value="Approve"></a>
                        <a href="{{ $url . '/finance/point/payment-order/'.$payment_order->id.'/reject?token='.$token }}"><input type="button" class="btn btn-danger" value="Reject"></a>
