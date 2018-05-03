@@ -122,7 +122,7 @@
                                     </tr>
                                     </thead>
                                     <tbody class="manipulate-row">
-                                    @if(count(old('item_id')) > 0)
+                                    @if(old('item_id') && count(old('item_id')) > 0)
                                         @for($counter=0; $counter < count(old('item_id')); $counter++ )
                                             <tr>
                                                 <td><a href="javascript:void(0)" class="remove-row btn btn-danger"><i
