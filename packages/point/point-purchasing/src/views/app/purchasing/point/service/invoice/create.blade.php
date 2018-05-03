@@ -108,7 +108,7 @@
                                     <tbody class="manipulate-row">
                                     <?php $service_counter = 0; ?>
 
-                                    @if(count(old('service_id')) > 0)
+                                    @if(old('service_id') && count(old('service_id')) > 0)
                                         @foreach( old('service_id') as $service_id)
                                             @if($service_id)
                                             <tr>
@@ -208,7 +208,7 @@
                                     </thead>
                                     <tbody class="manipulate-row">
                                     <?php $counter = 0; ?>
-                                    @if(count(old('item_id')) > 0)
+                                    @if(old('item_id') && count(old('item_id')) > 0)
                                         @foreach( old('item_id') as $delivery_order_item)
                                             @if($delivery_order_item)
                                             <tr>
