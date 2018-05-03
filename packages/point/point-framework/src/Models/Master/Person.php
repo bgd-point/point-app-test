@@ -43,7 +43,7 @@ class Person extends Model
      */
     public function scopeSearchByType($q, $person_type_id, $disabled, $search)
     {
-        $group = PersonGroup::where('name', $search)->where('person_type_id', $person_type_id)->first();
+        $group = PersonGroup::where('person_type_id', $person_type_id)->first();
         return $q->where('person_type_id', '=', $person_type_id)
             ->where(function ($query) use ($search, $group, $disabled) {
                 $query->where('disabled', '=', $disabled ? : 0);
