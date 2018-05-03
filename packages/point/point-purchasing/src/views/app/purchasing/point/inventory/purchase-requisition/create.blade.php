@@ -104,7 +104,7 @@
                                         </thead>
                                         <tbody class="manipulate-row">
                                         <?php $counter = 0;?>
-                                        @if(count(old('item_id')) > 0)
+                                        @if(old('item_id') && count(old('item_id')) > 0)
                                             @for($counter; $counter < count(old('item_id')); $counter++ )
                                                 <tr>
                                                     <?php $item = Point\Framework\Models\Master\Item::find(old('item_id')[$counter]);?>
