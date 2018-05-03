@@ -105,7 +105,7 @@
                                     </thead>
                                     <tbody class="manipulate-row">
                                     <?php $counter = 0;?>
-                                    @if(count(old('item_id')) > 0)
+                                    @if(old('item_id') && count(old('item_id')) > 0)
                                         @for($counter; $counter < count(old('item_id')); $counter++)
                                             <tr>
                                                 <td><a href="javascript:void(0)" class="remove-row btn btn-danger pull-right"><i class="fa fa-trash"></i></a></td>
