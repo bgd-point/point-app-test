@@ -33,10 +33,6 @@
             
         }
 
-        .invoice-box table tr td:nth-child(2) {
-            text-align: right;
-        }
-
         .invoice-box table tr.top table td {
             padding-bottom: 20px;
         }
@@ -175,7 +171,7 @@
                 <td>
                     Notes
                 </td>
-                <td>
+                <td style="text-align: right">
                     Amount
                 </td>
                 <td>
@@ -214,7 +210,7 @@
                 <td colspan="2">
                     Notes
                 </td>
-                <td>
+                <td style="text-align: right">
                     Amount
                 </td>
                 <td>
@@ -227,7 +223,7 @@
                 <td colspan="2">
                     {{ $payment_order_other->coa->account }} | {{$payment_order_other->other_notes}}
                 </td>
-                <td >
+                <td style="text-align: right">
                     {{number_format_quantity($payment_order_other->amount)}}
                 </td>
                 <td>
@@ -238,9 +234,10 @@
             <tr></tr>
             <tr class="heading">
                 <td colspan="2"></td>
-                <td>
+                <td style="text-align: right">
                     {{number_format_quantity($payment_order->total_payment)}}
                 </td>
+                <td></td>
             </tr>
             <tr>
                 <td colspan="6" >
