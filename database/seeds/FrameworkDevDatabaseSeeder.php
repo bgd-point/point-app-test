@@ -39,6 +39,9 @@ class FrameworkDevDatabaseSeeder extends Seeder
         DB::table('person')->insert(['person_type_id' => 4, 'person_group_id' => 4, 'code' => 'EXJ-1','name' => 'Irma', 'created_by' => 1, 'updated_by' => 1]);
         DB::table('person')->insert(['person_type_id' => 4, 'person_group_id' => 4, 'code' => 'EXJ-2','name' => 'Juan', 'created_by' => 1, 'updated_by' => 1]);
 
+        // user warehouse
+        DB::table('user_warehouse')->insert(['user_id' => 2, 'warehouse_id' => 1]);
+
         Model::reguard();
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
