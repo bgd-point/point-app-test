@@ -178,6 +178,9 @@
                 <td>
                     Amount
                 </td>
+                <td>
+                    Allocation
+                </td>
             </tr>
 
            @foreach($payment_order->details as $payment_order_detail)
@@ -198,6 +201,9 @@
                             <td style="text-align: right">
                                 {{number_format_quantity($payment_order_detail->amount)}}
                             </td>
+                            <td style="text-align: left">
+                                {{$invoice_service->allocation->name}}
+                            </td>
                         </tr>
                     @endforeach
                 @endif
@@ -211,6 +217,9 @@
                 <td>
                     Amount
                 </td>
+                <td>
+                    Allocation
+                </td>
             </tr>
             @endif
             @foreach($payment_order->others as $payment_order_other)
@@ -220,6 +229,9 @@
                 </td>
                 <td >
                     {{number_format_quantity($payment_order_other->amount)}}
+                </td>
+                <td>
+                    {{$payment_order_other->allocation->name}}
                 </td>
             </tr>
             @endforeach
