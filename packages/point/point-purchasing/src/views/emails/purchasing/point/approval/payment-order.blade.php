@@ -231,6 +231,22 @@
                 </td>
             </tr>
             @endforeach
+            @foreach($payment_order->details as $payment_order_detail)
+                @if($payment_order_detail->reference_type == "Point\\PointPurchasing\\Models\\Inventory\\Downpayment")
+                    <tr>
+                        <td>
+                            {{date_format_view($payment_order_detail->reference->form_date)}}
+                        </td>
+                        <td>
+                            Downpayment
+                        </td>
+                        <td style="text-align: right">
+                            {{number_format_quantity($payment_order_detail->amount)}}
+                        </td>
+                        <td></td>
+                    </tr>
+                @endif
+            @endforeach
             <tr></tr>
             <tr class="heading">
                 <td colspan="2"></td>
