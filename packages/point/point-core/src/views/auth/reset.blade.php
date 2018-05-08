@@ -36,12 +36,12 @@
             </div>
             <div class="form-group">
                 <div class="col-xs-12">
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Your password..">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="New password..">
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-xs-12">
-                    <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Your password..">
+                    <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Confirm password..">
                 </div>
             </div>
             <div class="form-group form-actions">
