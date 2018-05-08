@@ -414,7 +414,8 @@ class PaymentHelper
         $journal->subledger_type;
         $journal->save();
 
-        if ($journal->debit > 0) {
+
+        if (str_contains($payment->formulir->form_number, '-IN')) {
             $position = 'credit';
         } else {
             $position = 'debit';
@@ -422,6 +423,7 @@ class PaymentHelper
 
         // JOURNAL #2 of #2 - PAYMENT DETAIL
         foreach ($payment->detail as $payment_detail) {
+
             $journal = new Journal();
             $journal->form_date = $payment->formulir->form_date;
             $journal->coa_id = $payment_detail->coa_id;
