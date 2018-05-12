@@ -109,7 +109,7 @@ var App = function() {
         $('.input-timepicker24').timepicker({minuteStep: 1,showSeconds: true,showMeridian: false});
 
         // Initialize Datepicker
-        $('.input-datepicker, .input-daterange').datepicker({weekStart: 1}).on('changeDate', function(e){ $(this).datepicker('hide'); });
+        $('.input-datepicker, .input-daterange').datepicker({weekStart: 1});
 
         // Initialize Bootstrap Colorpicker
         $('.input-colorpicker').colorpicker({format: 'hex'});
