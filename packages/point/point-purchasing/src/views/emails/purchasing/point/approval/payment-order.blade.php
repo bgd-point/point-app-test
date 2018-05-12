@@ -178,15 +178,27 @@
                     Allocation
                 </td>
             </tr>
-
+            <?php 
+                $subtotal = 0;
+                $tax = 0;
+            ?>
            @foreach($payment_order->details as $payment_order_detail)
                 <?php
-                $model = $payment_order_detail->reference->formulirable_type;
-                $reference = $model::find($payment_order_detail->reference->formulirable_id);
+                    $model = $payment_order_detail->reference->formulirable_type;
+                    $reference = $model::find($payment_order_detail->reference->formulirable_id);
+                    if($subtotal === 0) $subtotal = $reference->tax_base;
+                    if($tax === 0) $tax = $reference->tax;
                 ?>
 
                 @if (get_class($reference) == 'Point\PointPurchasing\Models\Inventory\Invoice')
                     @foreach($reference->items as $invoice_service)
+                        <?php
+                            $base_price = $invoice_service->price;
+                            if($invoice_service->invoice->type_of_tax == "include"){
+                                $base_price /= 1.1;
+                            }
+                            $amount = $base_price * $invoice_service->quantity * $invoice_service->converter;
+                        ?>
                         <tr class="item">
                             <td style="text-align: left">
                                 {{date_format_view($invoice_service->invoice->formulir->form_date)}}
@@ -195,7 +207,7 @@
                                 {{$invoice_service->item->codeName}} (Qty: {{number_format_quantity($invoice_service->quantity)}})
                             </td>
                             <td style="text-align: right">
-                                {{number_format_quantity($payment_order_detail->amount)}}
+                                {{number_format_quantity($amount)}}
                             </td>
                             <td style="text-align: left">
                                 {{$invoice_service->allocation->name}}
@@ -231,9 +243,46 @@
                 </td>
             </tr>
             @endforeach
+            <tr class="heading">
+                <td></td>
+                <td style="text-align: right; font-weight: normal;">
+                    SUBTOTAL
+                </td>
+                <td style="text-align: right; font-weight: normal;">
+                    {{number_format_quantity($subtotal)}}
+                </td>
+                <td></td>
+            </tr>
+            <tr class="heading">
+                <td></td>
+                <td style="text-align: right; font-weight: normal;">
+                    GST
+                </td>
+                <td style="text-align: right; font-weight: normal;">
+                    {{number_format_quantity($tax)}}
+                </td>
+                <td></td>
+            </tr>
+            @foreach($payment_order->details as $payment_order_detail)
+                @if($payment_order_detail->reference_type == "Point\\PointPurchasing\\Models\\Inventory\\Downpayment")
+                    <tr class="heading">
+                        <td></td>
+                        <td style="text-align: right; font-weight: normal;">
+                            DOWNPAYMENT
+                        </td>
+                        <td style="text-align: right; font-weight: normal;">
+                            {{number_format_quantity($payment_order_detail->amount)}}
+                        </td>
+                        <td></td>
+                    </tr>
+                @endif
+            @endforeach
             <tr></tr>
             <tr class="heading">
-                <td colspan="2"></td>
+                <td></td>
+                <td style="text-align: right;">
+                    TOTAL
+                </td>
                 <td style="text-align: right">
                     {{number_format_quantity($payment_order->total_payment)}}
                 </td>
