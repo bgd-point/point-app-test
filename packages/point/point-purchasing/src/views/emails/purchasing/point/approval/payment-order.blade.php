@@ -166,31 +166,33 @@
         </table>
 
         <table cellpadding="0" cellspacing="0">
-            <tr class="heading">
-                <td>Date</td>
-                <td>
-                    Notes
-                </td>
-                <td style="text-align: right">
-                    Amount
-                </td>
-                <td>
-                    Allocation
-                </td>
-            </tr>
-            <?php 
-                $subtotal = 0;
-                $tax = 0;
-            ?>
-           @foreach($payment_order->details as $payment_order_detail)
+            @foreach($payment_order->details as $payment_order_detail)
                 <?php
                     $model = $payment_order_detail->reference->formulirable_type;
                     $reference = $model::find($payment_order_detail->reference->formulirable_id);
-                    if($subtotal === 0) $subtotal = $reference->tax_base;
-                    if($tax === 0) $tax = $reference->tax;
+                    $subtotal = $reference->tax_base;
+                    $tax = $reference->tax;
+                    $total = $subtotal - $tax;
                 ?>
 
                 @if (get_class($reference) == 'Point\PointPurchasing\Models\Inventory\Invoice')
+                    <tr class="heading">
+                        <td>
+                            Date
+                        </td>
+                        <td>
+                            Notes
+                        </td>
+                        <td style="text-align: right">
+                            Amount
+                        </td>
+                        <td style="text-align: right">
+                            Total
+                        </td>
+                        <td>
+                            Allocation
+                        </td>
+                    </tr>
                     @foreach($reference->items as $invoice_service)
                         <?php
                             $base_price = $invoice_service->price;
@@ -209,65 +211,105 @@
                             <td style="text-align: right">
                                 {{number_format_quantity($amount)}}
                             </td>
+                            <td></td>
                             <td style="text-align: left">
                                 {{$invoice_service->allocation->name}}
                             </td>
                         </tr>
                     @endforeach
+
+                    <tr class="heading">
+                        <td style="text-align: right; font-weight: normal;" colspan="2">
+                            SUBTOTAL
+                        </td>
+                        <td style="text-align: right; font-weight: normal;">
+                            {{number_format_quantity($subtotal)}}
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="heading">
+                        <td style="text-align: right; font-weight: normal;" colspan="2">
+                            GST
+                        </td>
+                        <td style="text-align: right; font-weight: normal;">
+                            {{number_format_quantity($tax)}}
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="heading">
+                        <td style="text-align: right;" colspan="2">
+                            TOTAL
+                        </td>
+                        <td style="text-align: right;">
+                            {{number_format_quantity($total)}}
+                        </td>
+                        <td style="text-align: right;">
+                            {{number_format_quantity($total)}}
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr><td colspan="6"></td></tr>
                 @endif
             @endforeach
-            <tr></tr>
+            
             @if(count($payment_order->others) > 0)
-            <tr class="heading">
-                <td colspan="2">
-                    Notes
-                </td>
-                <td style="text-align: right">
-                    Amount
-                </td>
-                <td>
-                    Allocation
-                </td>
-            </tr>
+                <tr class="heading">
+                    <td colspan="2">
+                        Notes
+                    </td>
+                    <td style="text-align: right">
+                        Amount
+                    </td>
+                    <td></td>
+                    <td>
+                        Allocation
+                    </td>
+                </tr>
+
+                <?php
+                    $subtotal = 0;
+                ?>
+
+                @foreach($payment_order->others as $payment_order_other)
+                <tr class="item">
+                    <td colspan="2">
+                        {{ $payment_order_other->coa->account }} | {{$payment_order_other->other_notes}}
+                    </td>
+                    <td style="text-align: right">
+                        {{number_format_quantity($payment_order_other->amount)}}
+                    </td>
+                    <td></td>
+                    <td>
+                        {{$payment_order_other->allocation->name}}
+                    </td>
+                </tr>
+                <?php
+                    $subtotal += $payment_order_other->amount;
+                ?>
+                @endforeach
+
+                <tr class="heading">
+                    <td style="text-align: right;" colspan="2">
+                        TOTAL
+                    </td>
+                    <td style="text-align: right;">
+                        {{number_format_quantity($subtotal)}}
+                    </td>
+                    <td style="text-align: right;">
+                        {{number_format_quantity($subtotal)}}
+                    </td>
+                    <td></td>
+                </tr>
+
+                <tr><td colspan="6"></td></tr>
             @endif
-            @foreach($payment_order->others as $payment_order_other)
-            <tr class="item">
-                <td colspan="2">
-                    {{ $payment_order_other->coa->account }} | {{$payment_order_other->other_notes}}
-                </td>
-                <td style="text-align: right">
-                    {{number_format_quantity($payment_order_other->amount)}}
-                </td>
-                <td>
-                    {{$payment_order_other->allocation->name}}
-                </td>
-            </tr>
-            @endforeach
-            <tr class="heading">
-                <td></td>
-                <td style="text-align: right; font-weight: normal;">
-                    SUBTOTAL
-                </td>
-                <td style="text-align: right; font-weight: normal;">
-                    {{number_format_quantity($subtotal)}}
-                </td>
-                <td></td>
-            </tr>
-            <tr class="heading">
-                <td></td>
-                <td style="text-align: right; font-weight: normal;">
-                    GST
-                </td>
-                <td style="text-align: right; font-weight: normal;">
-                    {{number_format_quantity($tax)}}
-                </td>
-                <td></td>
-            </tr>
+           
             @foreach($payment_order->details as $payment_order_detail)
                 @if($payment_order_detail->reference_type == "Point\\PointPurchasing\\Models\\Inventory\\Downpayment")
                     <tr class="heading">
-                        <td></td>
-                        <td style="text-align: right; font-weight: normal;">
+                        <td style="text-align: right; font-weight: normal;" colspan="3">
                             DOWNPAYMENT
                         </td>
                         <td style="text-align: right; font-weight: normal;">
@@ -277,17 +319,19 @@
                     </tr>
                 @endif
             @endforeach
-            <tr></tr>
+            
             <tr class="heading">
-                <td></td>
-                <td style="text-align: right;">
-                    TOTAL
+                <td style="text-align: right;" colspan="3">
+                    TOTAL PAYMENT
                 </td>
-                <td style="text-align: right">
+                <td style="text-align: right;">
                     {{number_format_quantity($payment_order->total_payment)}}
                 </td>
                 <td></td>
             </tr>
+            
+            <tr><td colspan="6"></td></tr>
+            
             <tr>
                 <td colspan="6" >
                     <a href="{{ $url . '/formulir/'.$payment_order->formulir_id.'/approval/check-status/'.$token }}"><input
