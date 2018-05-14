@@ -127,7 +127,7 @@
     Hi, you have an Request approval payment order from {{ $username }}. We would like to inform the
     details as follows :
 
-   @foreach($list_data as $payment_order)
+    @foreach($list_data as $payment_order)
 
         <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
             <tr>
@@ -165,6 +165,10 @@
             </tr>
         </table>
 
+        <?php
+            $total = 0;
+        ?>
+
         <table cellpadding="0" cellspacing="0">
             @foreach($payment_order->details as $payment_order_detail)
                 <?php
@@ -172,7 +176,8 @@
                     $reference = $model::find($payment_order_detail->reference->formulirable_id);
                     $subtotal = $reference->tax_base;
                     $tax = $reference->tax;
-                    $total = $subtotal - $tax;
+                    $total_invoice = $subtotal + $tax;
+                    $total += $total_invoice;
                 ?>
 
                 @if (get_class($reference) == 'Point\PointPurchasing\Models\Inventory\Invoice')
@@ -243,10 +248,10 @@
                             TOTAL
                         </td>
                         <td style="text-align: right;">
-                            {{number_format_quantity($total)}}
+                            {{number_format_quantity($total_invoice)}}
                         </td>
                         <td style="text-align: right;">
-                            {{number_format_quantity($total)}}
+                            {{number_format_quantity($total_invoice)}}
                         </td>
                         <td></td>
                     </tr>
@@ -287,6 +292,7 @@
                 </tr>
                 <?php
                     $subtotal += $payment_order_other->amount;
+                    $total += $subtotal;
                 ?>
                 @endforeach
 
@@ -305,12 +311,20 @@
 
                 <tr><td colspan="6"></td></tr>
             @endif
-           
+            <tr class="heading">
+                    <td style="text-align: right;" colspan="3">
+                        TOTAL
+                    </td>
+                    <td style="text-align: right;">
+                        {{number_format_quantity($total)}}
+                    </td>
+                    <td></td>
+                </tr>
             @foreach($payment_order->details as $payment_order_detail)
                 @if($payment_order_detail->reference_type == "Point\\PointPurchasing\\Models\\Inventory\\Downpayment")
                     <tr class="heading">
                         <td style="text-align: right; font-weight: normal;" colspan="3">
-                            DOWNPAYMENT
+                            DOWN PAYMENT
                         </td>
                         <td style="text-align: right; font-weight: normal;">
                             {{number_format_quantity($payment_order_detail->amount)}}
