@@ -6,7 +6,7 @@
         * {
             font-size: 12px;
             text-transform: uppercase;
-            line-height: 9px;
+            line-height: 14px;
         }
 
         @page {
@@ -30,7 +30,7 @@
         .detail-table th,
         .detail-table td {
             border:0.2px solid black;
-            padding: 2px;
+            padding: 4px;
         }
 
         .footer-table {
