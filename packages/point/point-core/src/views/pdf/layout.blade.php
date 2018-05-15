@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <style>
         * {
-            font-size: 10px;
+            font-size: 12px;
             text-transform: uppercase;
             line-height: 9px;
         }
