@@ -16,6 +16,10 @@ class InvoiceItem extends Model
     {
         return $this->belongsTo('\Point\Framework\Models\Master\Item', 'item_id');
     }
+    public function allocation()
+    {
+        return $this->belongsTo('\Point\Framework\Models\Master\Allocation', 'allocation_id');
+    }
     public function scopeJoinAllocation($q){
         $q->join('allocation', 'allocation.id', '=', $this->table.'.allocation_id');
     }
