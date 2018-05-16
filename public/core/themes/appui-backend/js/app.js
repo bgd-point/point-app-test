@@ -115,40 +115,23 @@ var App = function() {
             .unbind('changeDate')
             .on('input', function(e){
                 var strDate = e.currentTarget.value;
-
-                var isValidDate = false;
-                if (/^\d{2}-\d{2}-\d{2}$/.test(strDate)){
-                    var array = strDate.split('-');
-                    var day   = Number(array[0]);
-                    var month = Number(array[1]);
-                    var year  = Number('20'+array[2]);
-
-                    var date = new Date(year, month -1, day); // month - 1 since the month index is 0-based (0 = January)
-                    
-                    if ((date.getFullYear() == year) && (date.getMonth() == month-1) && (date.getDate() == day))
-                        isValidDate = true;
-                }
-
-                if(isValidDate){
+                if (/^\d{2}(-|\/)\d{2}(-|\/)(?:\d{2}){1,2}$/.test(strDate))
                     $(this).datepicker('setDate', strDate);
-                    syncDatepicker(e.currentTarget.id);                    
-                }
             })
             .on('change', function(e){
-                syncDatepicker(e.currentTarget.id);                    
+                var id = e.currentTarget.id;
+                var dateTo = $('#date-to').datepicker('getDate');
+                var dateFrom = $('#date-from').datepicker('getDate');
+                if(id == 'date-from'){
+                    if(dateTo == null || dateTo < dateFrom)
+                        $('#date-to').datepicker('setDate', dateFrom);
+                }
+                else if(id == 'date-to'){
+                    if(dateFrom == null || dateFrom > dateTo)
+                        $('#date-from').datepicker('setDate', dateTo);
+                }                 
                 $(this).datepicker('hide');
             });
-
-        function syncDatepicker(id){
-            if(id == 'date-from'){
-                if($('#date-to').val() == '' || $('#date-to').datepicker('getDate') < $('#date-from').datepicker('getDate'))
-                    $('#date-to').datepicker('setDate', $('#date-from').datepicker('getDate'));
-            }
-            else if(id == 'date-to'){
-                if($('#date-from').val() == '' || $('#date-from').datepicker('getDate') > $('#date-to').datepicker('getDate'))
-                    $('#date-from').datepicker('setDate', $('#date-to').datepicker('getDate'));
-            }
-        }
 
         // Initialize Bootstrap Colorpicker
         $('.input-colorpicker').colorpicker({format: 'hex'});
