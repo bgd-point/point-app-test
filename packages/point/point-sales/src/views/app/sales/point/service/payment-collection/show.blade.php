@@ -141,28 +141,28 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-12">
-                                @if(formulir_view_edit($payment_collection->formulir, 'update.point.sales.payment.collection'))
+                                @if(formulir_view_edit($payment_collection->formulir, 'update.point.sales.service.payment.collection'))
                                     <a href="{{url('sales/point/service/payment-collection/'.$payment_collection->id.'/edit')}}"
                                        class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                 @endif
-                                @if(formulir_view_cancel($payment_collection->formulir, 'delete.point.sales.payment.collection'))
+                                @if(formulir_view_cancel($payment_collection->formulir, 'delete.point.sales.service.payment.collection'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCancelForm('{{url('sales/point/service/payment-collection/cancel')}}',
                                                '{{ $payment_collection->formulir_id }}',
                                                'delete.point.sales.payment.collection')"><i class="fa fa-times"></i>
                                         Cancel Form</a>
                                 @endif
-                                @if(formulir_view_close($payment_collection->formulir, 'update.point.sales.payment.collection'))
+                                @if(formulir_view_close($payment_collection->formulir, 'update.point.sales.service.payment.collection'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCloseForm({{$payment_collection->formulir_id}},'{{url('formulir/close')}}')">Close
                                         Form</a>
                                 @endif
-                                @if(formulir_view_reopen($payment_collection->formulir, 'update.point.sales.payment.collection'))
+                                @if(formulir_view_reopen($payment_collection->formulir, 'update.point.sales.service.payment.collection'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureReopenForm({{$payment_collection->formulir_id}},'{{url('formulir/reopen')}}')">Reopen
                                         Form</a>
                                 @endif
-                                @if(formulir_view_email_vendor($payment_collection->formulir, 'create.point.sales.payment.collection'))
+                                @if(formulir_view_email_vendor($payment_collection->formulir, 'create.point.sales.service.payment.collection'))
                                     <form action="{{url('sales/point/service/payment-collection/send-email-payment')}}" method="post">
                                         {!! csrf_field() !!}
                                         <input type="hidden" readonly="" name="payment_collection_id" value="{{$payment_collection->id}}">
@@ -173,7 +173,7 @@
                         </div>
                     </fieldset>
 
-                    @if(formulir_view_approval($payment_collection->formulir, 'approval.point.sales.payment.collection'))
+                    @if(formulir_view_approval($payment_collection->formulir, 'approval.point.sales.service.payment.collection'))
                         <fieldset>
                             <div class="form-group">
                                 <div class="col-md-12">
