@@ -75,6 +75,11 @@ class Invoice extends Model
         return $this->belongsTo('\Point\Framework\Models\Master\Person', 'supplier_id');
     }
 
+    public function person()
+    {
+        return $this->belongsTo('\Point\Framework\Models\Master\Person', 'supplier_id');
+    }
+
     public function items()
     {
         return $this->hasMany('\Point\PointPurchasing\Models\Inventory\InvoiceItem', 'point_purchasing_invoice_id');
