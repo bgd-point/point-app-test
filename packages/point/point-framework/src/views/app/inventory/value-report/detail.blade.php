@@ -20,6 +20,7 @@
                         <tr>
                             @if(!$warehouse) <th>Warehouse</th> @endif
                             <th>Reference</th>
+                            <th>Vendor</th>
                             <th>Date</th>
                             <th>I/O</th>
                             <th>Value</th>
@@ -50,6 +51,7 @@
                             <td>
                                 -
                             </td>
+                            <td>-</td>
                             <td>{{date_format_view($date_from)}}</td>
                             <td>-</td>
                             <td>-</td>
@@ -68,9 +70,18 @@
                                     $model = $inventory->formulir->formulirable_type;
                                 ?>
                                 <td>{!! formulir_url($inventory->formulir) !!}</td>
+                                <td>
+                                    <?php
+                                    $model = $inventory->formulir->formulirable_type;
+                                    $class = $model::find($inventory->formulir->formulirable_id);
+                                    ?>
+                                    @if ($class->person)
+                                    {{ $class->person->name }}
+                                    @endif
+                                </td>
                                 <td>{{date_format_view($inventory->form_date)}}</td>
                                 <td>{{number_format_quantity($inventory->quantity)}}</td>
-                                <td>{{number_format_quantity($inventory->price)}}</td>
+                                <td>@if($inventory->quantity > 0) {{number_format_quantity(round($inventory->price))}} @else {{number_format_quantity(round($inventory->cogs))}} @endif</td>
                                 <td>{{number_format_quantity($inventory->quantity * $inventory->price)}}</td>
                                 <td>{{number_format_quantity($inventory->cogs)}}</td>
                                 <td>{{number_format_quantity($inventory->total_quantity)}}</td>
