@@ -108,13 +108,13 @@
 @section('signature')
     <td style="padding-left:20px">
         <div class="signature-date">Tanda terima,</div>
-        <div class="signature">__________________________</div>
+        {{--<div class="signature">__________________________</div>--}}
         <div class="signature-person"></div>
     </td>
     <td>
 
         <div class="signature-date">Hormat kami,<br/>{{ \DateHelper::formatView($invoice->formulir->form_date) }}</div>
-        <div class="signature">__________________________</div>
+        {{--<div class="signature">__________________________</div>--}}
         <div class="signature-person"></div>
     </td>
 @stop
