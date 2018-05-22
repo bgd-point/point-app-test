@@ -4,11 +4,8 @@ namespace Point\PointPurchasing\Models\Service;
 
 use Illuminate\Database\Eloquent\Model;
 use Point\Core\Traits\ByTrait;
-use Point\Framework\Models\Formulir;
 use Point\Framework\Models\FormulirLock;
 use Point\Framework\Traits\FormulirTrait;
-use Point\PointPurchasing\Models\Service\Invoice;
-use Point\PointPurchasing\Models\Service\PaymentOrder;
 
 class Invoice extends Model
 {
@@ -53,10 +50,7 @@ class Invoice extends Model
 
     public function scopeAvailableToPaymentOrder($q)
     {
-        $invoice_locked = Invoice::getLockedInvoice();
-
         $q->open()
-            ->whereNotIn('point_purchasing_service_invoice.formulir_id', $invoice_locked)
             ->approvalApproved()
             ->notArchived()
             ->orderByStandard();
@@ -64,10 +58,7 @@ class Invoice extends Model
 
     public function scopeAvailableToCreatePaymentOrder($q, $person_id)
     {
-        $invoice_locked = Invoice::getLockedInvoice();
-        
         $q->open()
-            ->whereNotIn('point_purchasing_service_invoice.formulir_id', $invoice_locked)
             ->approvalApproved()
             ->notArchived()
             ->where('person.id', '=', $person_id)
