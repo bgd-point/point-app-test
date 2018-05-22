@@ -45,6 +45,7 @@ class Downpayment extends Model
         $q->joinFormulir()
             ->joinSupplier()
             ->where('point_purchasing_service_downpayment.supplier_id', $supplier_id)
+            ->where('remaining_amount', '>', 0)
             ->notArchived()
             ->close()
             ->approvalApproved()
