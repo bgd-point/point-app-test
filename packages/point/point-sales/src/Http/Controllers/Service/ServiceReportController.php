@@ -22,8 +22,8 @@ class ServiceReportController extends Controller
         $list_invoice = Invoice::joinFormulir()->notArchived()->selectOriginal()->orderByStandard();
 
         if ($date_from != null && $date_to != null) {
-            $list_invoice->where('formulir.form_date', '>=', date_format_db($date_from))
-                ->where('formulir.form_date', '<=', date_format_db($date_to));
+            $list_invoice->where('formulir.form_date', '>=', date_format_db($date_from,'start'))
+                ->where('formulir.form_date', '<=', date_format_db($date_to, 'end'));
         }
 
         $view->list_invoice = $list_invoice->paginate(100);
@@ -87,9 +87,9 @@ class ServiceReportController extends Controller
                         ));
                         $period = 'All Time';
                         if ($date_from && $date_to) {
-                            $period = date_format_view($date_from);
+                            $period = $date_from;
                             if ($date_from != $date_to) {
-                                $period = date_format_view($date_from) .' - '. date_format_view($date_to);
+                                $period = $date_from .' - '. $date_to;
                             }
                         }
 
@@ -123,7 +123,7 @@ class ServiceReportController extends Controller
                         array_push($content, [++$i,
                             strtoupper($service->name),
                             strtoupper(number_format_quantity($data->quantity, 0)),
-                            strtoupper(number_format_quantity($data->price))
+                            strtoupper(number_format_quantity($data->price * $data->quantity))
                         ]);
                     }
 
