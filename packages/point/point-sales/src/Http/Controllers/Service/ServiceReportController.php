@@ -122,8 +122,8 @@ class ServiceReportController extends Controller
                         }
                         array_push($content, [++$i,
                             strtoupper($service->name),
-                            strtoupper(number_format_quantity($data->quantity, 0)),
-                            strtoupper(number_format_quantity($data->price * $data->quantity))
+                            number_format_quantity($data->quantity, 0),
+                            number_format_quantity($data->price)
                         ]);
                     }
 
