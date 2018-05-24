@@ -13,7 +13,7 @@ class ServiceReportHelper
     public static function detailByService($service_id, $date_from, $date_to)
     {
         $data = InvoiceService::getDetail($service_id, $date_from, $date_to)
-            ->selectRaw('sum(point_sales_service_invoice_service.quantity) as quantity, sum(point_sales_service_invoice_service.price) as price')
+            ->selectRaw('sum(point_sales_service_invoice_service.quantity) as quantity, sum(point_sales_service_invoice_service.price * point_sales_service_invoice_service.quantity) as price')
             ->first();
 
         if ($data) {
