@@ -225,7 +225,7 @@ class PurchaseOrderController extends Controller
             QueueHelper::reconnectAppDatabase($request['database_name']);
             \Mail::send('point-purchasing::emails.purchasing.point.external.purchase-order', $data, function ($message) use ($purchase_order, $warehouse, $data, $name) {
                 $message->to($purchase_order->supplier->email)->subject($name);
-                $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.purchase-order-pdf', $data);
+                $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.purchase-order-standard-pdf', $data);
                 $message->attachData($pdf->output(), $name. ".pdf");
             });
             $job->delete();
@@ -242,8 +242,8 @@ class PurchaseOrderController extends Controller
             'purchase_order' => $purchase_order
         );
 
-        $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.purchase-order-pdf', $data);
-        return $pdf->download($purchase_order->formulir->form_number.'.pdf');
+        $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.purchase-order-standard-pdf', $data);
+        return $pdf->stream($purchase_order->formulir->form_number.'.pdf');
     }
 
 }
