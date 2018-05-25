@@ -163,11 +163,13 @@
                 <td>:</td>
                 <td>{{ $invoice->supplier->name }}</td>
             </tr>
+            @if($invoice->formulir->notes)
             <tr>
                 <td style="width: 20%">Notes</td>
                 <td>:</td>
                 <td>{{ $invoice->formulir->notes }}</td>
             </tr>
+            @endif
         </table>
 
         <table cellpadding="0" cellspacing="0">
@@ -190,29 +192,36 @@
                     </td>
                 </tr>
             @endforeach
+            @if($invoice->subtotal != $invoice->total)
             <tr>
                 <td colspan="4" align="right">Subtotal</td>
                 <td align="right">{{ number_format_quantity($invoice->subtotal) }}</td>
             </tr>
+            @endif
+            @if($invoice->discount > 0)
             <tr>
                 <td colspan="4" align="right">Discount (%)</td>
                 <td align="right">{{ number_format_quantity($invoice->discount) }}</td>
             </tr>
+            @endif
+            @if($invoice->type_of_tax != 'non')
             <tr>
                 <td colspan="4" align="right">Tax Base</td>
                 <td align="right">{{ number_format_quantity($invoice->tax_base) }}</td>
             </tr>
-            @if($invoice->type_of_tax != 'non')
+
             <tr>
                 <td colspan="4" align="right">Tax ({{ $invoice->type_of_tax }})
                 </td>
                 <td align="right">{{ number_format_quantity($invoice->tax) }}</td>
             </tr>
             @endif
+            @if($invoice->expedition_fee > 0)
             <tr>
                 <td colspan="4" align="right">Expedition Fee</td>
                 <td align="right">{{ number_format_quantity($invoice->expedition_fee) }}</td>
             </tr>
+            @endif
             <tr>
                 <td colspan="4" align="right">Total</td>
                 <td align="right">{{ number_format_quantity($invoice->total) }}</td>
