@@ -159,16 +159,6 @@
                 <td>{{ $purchase_order->supplier->name }}</td>
             </tr>
             @endif
-            <tr>
-                <td style="width: 20%">Cash Purchase</td>
-                <td>:</td>
-                <td>{{ $purchase_order->is_cash == 1 ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <td style="width: 20%">Include Expedition</td>
-                <td>:</td>
-                <td>{{ $purchase_order->include_expedition == 1 ? 'Yes' : 'No' }}</td>
-            </tr>
         </table>
 
         <table cellpadding="0" cellspacing="0">
@@ -189,29 +179,36 @@
 
                 </tr>
             @endforeach
+            @if($purchase_order->subtotal != $purchase_order->total)
             <tr>
                 <td colspan="4" align="right">SUBTOTAL</td>
                 <td align="right">{{ number_format_quantity($purchase_order->subtotal) }}</td>
             </tr>
+            @endif
+            @if($purchase_order->discount > 0)
             <tr>
                 <td colspan="4" align="right">DISCOUNT (%)</td>
                 <td align="right">{{ number_format_quantity($purchase_order->discount) }}</td>
             </tr>
+            @endif
+            @if($purchase_order->type_of_tax != 'non')
             <tr>
                 <td colspan="4" align="right">TAX BASE</td>
                 <td align="right">{{ number_format_quantity($purchase_order->tax_base) }}</td>
             </tr>
-            @if($purchase_order->type_of_tax != 'non')
+
             <tr>
                 <td colspan="4" align="right">TAX ({{ $purchase_order->type_of_tax }})
                 </td>
                 <td align="right">{{ number_format_quantity($purchase_order->tax) }}</td>
             </tr>
             @endif
+            @if($purchase_order->expedition_fee > 0)
             <tr>
                 <td colspan="4" align="right">EXPEDITION FEE</td>
                 <td align="right">{{ number_format_quantity($purchase_order->expedition_fee) }}</td>
             </tr>
+            @endif
             <tr>
                 <td colspan="4" align="right">TOTAL</td>
                 <td align="right">{{ number_format_quantity($purchase_order->total) }}</td>
