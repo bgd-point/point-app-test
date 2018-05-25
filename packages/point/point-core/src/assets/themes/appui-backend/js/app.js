@@ -109,7 +109,29 @@ var App = function() {
         $('.input-timepicker24').timepicker({minuteStep: 1,showSeconds: true,showMeridian: false});
 
         // Initialize Datepicker
-        $('.input-datepicker, .input-daterange').datepicker({weekStart: 1}).on('changeDate', function(e){ $(this).datepicker('hide'); });
+        $('.input-datepicker, .input-daterange').datepicker({weekStart: 1});
+
+        $('.input-daterange .input-datepicker')
+            .unbind('changeDate')
+            .on('input', function(e){
+                var strDate = e.currentTarget.value;
+                if (/^\d{2}(-|\/)\d{2}(-|\/)(?:\d{2}){1,2}$/.test(strDate)) //if strdate is completed
+                    $(this).datepicker('setDate', strDate); //set the datepicker to trigger onchange
+            })
+            .on('change', function(e){
+                var id = e.currentTarget.id;
+                var dateTo = $('#date-to').datepicker('getDate');
+                var dateFrom = $('#date-from').datepicker('getDate');
+                if(id == 'date-from'){
+                    if(dateTo == null || dateTo < dateFrom)
+                        $('#date-to').datepicker('setDate', dateFrom);
+                }
+                else if(id == 'date-to'){
+                    if(dateFrom == null || dateFrom > dateTo)
+                        $('#date-from').datepicker('setDate', dateTo);
+                }                 
+                $(this).datepicker('hide');
+            });
 
         // Initialize Bootstrap Colorpicker
         $('.input-colorpicker').colorpicker({format: 'hex'});
