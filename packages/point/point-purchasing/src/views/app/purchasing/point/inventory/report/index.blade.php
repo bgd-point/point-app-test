@@ -77,7 +77,7 @@
                             </tr>
                         @endforeach
                         <tr>
-                            <td class="text-right" colspan="7"><h4><strong>{{number_format_quantity($total_value)}}</strong></h4></td>
+                            <td class="text-right" colspan="8"><h4><strong>{{number_format_quantity($total_value)}}</strong></h4></td>
                         </tr>
                         </tbody>
                     </table>
