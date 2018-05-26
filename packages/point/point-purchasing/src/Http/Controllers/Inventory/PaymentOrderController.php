@@ -676,4 +676,12 @@ class PaymentOrderController extends Controller
         gritter_success('Success send email payment order', 'false');
         return redirect()->back();
     }
+
+    public function report()
+    {
+        $view = "purchasing payment-order report";
+        // $view = view('point-purchasing::app.purchasing.point.inventory.payment-order.report');
+        // WIP
+        return $view;
+    }
 }
