@@ -679,8 +679,8 @@ class PaymentOrderController extends Controller
 
     public function report()
     {
-        $view = "purchasing payment-order report";
-        // $view = view('point-purchasing::app.purchasing.point.inventory.payment-order.report');
+        // $view = "purchasing payment-order report";
+        $view = view('point-purchasing::app.purchasing.point.inventory.payment-order.report');
         // WIP
         return $view;
     }
