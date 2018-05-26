@@ -118,7 +118,7 @@
                     @endforeach
                     </tbody>
                 </table>
-                {!! $deposits->render() !!}
+                {!! $deposits->appends(['date_from'=> app('request')->get('date_from'), 'date_to'=> app('request')->get('date_to'),'select_field' => app('request')->get('select_field'), 'search'=> app('request')->get('search')]) !!}
             </div>
         </div>
     </div>  
