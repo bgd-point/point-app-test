@@ -168,6 +168,7 @@ Route::group(['prefix' => 'purchasing/point', 'namespace' => 'Point\PointPurchas
         Route::post('/payment-order/send-email-payment', 'PaymentOrderController@sendEmailPayment');
         Route::post('/payment-order/{id}/edit-review', 'PaymentOrderController@editReview');
         Route::post('/payment-order/{id}/store', 'PaymentOrderController@storePb');
+        Route::get('/payment-order/report', 'PaymentOrderController@report');
         Route::resource('/payment-order', 'PaymentOrderController');
     });
 });
