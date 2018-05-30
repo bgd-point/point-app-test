@@ -177,6 +177,17 @@
                     {{ number_format_price($downpayment->amount) }}
                 </td>
             </tr>
+            <tr>
+                <td style="width: 20%">
+                    Notes
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    {{ ucfirst($downpayment->formulir->notes) }}
+                </td>
+            </tr>
         </table>
         <table cellpadding="0" cellspacing="0">
             <tr>
