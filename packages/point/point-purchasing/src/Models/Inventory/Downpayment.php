@@ -66,9 +66,9 @@ class Downpayment extends Model
         $class = self::find($id);
 
         if ($class->formulir->form_number) {
-            return '/purchasing/point/indirect/downpayment/'.$class->id;
+            return '/purchasing/point/downpayment/'.$class->id;
         } else {
-            return '/purchasing/point/indirect/downpayment/'.$class->id.'/archived';
+            return '/purchasing/point/downpayment/'.$class->id.'/archived';
         }
     }
 
