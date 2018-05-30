@@ -8,6 +8,7 @@ use Point\Core\Exceptions\PointException;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Models\Formulir;
+use Point\PointFinance\Models\CashAdvance;
 
 class FormulirController extends Controller
 {
@@ -72,8 +73,18 @@ class FormulirController extends Controller
             $formulir->form_status = 1;
             $formulir->save();
 
-            timeline_publish('close.formulir', trans('framework::framework/global.formulir.close.timeline', ['form_number' => $formulir->form_number]));
+            \Log::info(get_class(new CashAdvance()));
 
+
+
+            if ($formulir->formulirable_type == get_class(new CashAdvance())) {
+                $cashAdvance = CashAdvance::find($formulir->formulirable_id);
+                $cashAdvance->remaining_amount = 0;
+                $cashAdvance->save();
+            }
+
+            timeline_publish('close.formulir', trans('framework::framework/global.formulir.close.timeline', ['form_number' => $formulir->form_number]));
+            
             DB::commit();
         } catch (\Exception $e) {
             return response()->json($this->errorMessage());
