@@ -48,11 +48,11 @@
                                 $permission = Point\Core\Models\Master\Permission::where('slug', $vesa['permission_slug'])->first();
                                 $permission = str_replace('POINT', '', $permission->group);
                                 ?>
-                                <tr bgcolor="#e25757" style="color:#FFF">
-                                    <td style="vertical-align: top"><a href="{{ $vesa['url'] }}"><i class="fa fa-share-square-o" style="color:#fff"></i></a></td>
+                                <tr>
+                                    <td style="vertical-align: top"><a href="{{ $vesa['url'] }}"><i class="fa fa-share-square-o"></i></a></td>
                                     <td style="vertical-align: top">{{ date_format_view($vesa['deadline']) }}</td>
                                     <td><b>{{ $permission }}</b></td>
-                                    <td>{!! $vesa['message'] !!}</td>
+                                    <td><button class="btn btn-xs btn-danger"><i class="fa fa-warning"></i> DUE</button> {!! $vesa['message'] !!}</td>
                                 </tr>
                             @endif
                         @endforeach
