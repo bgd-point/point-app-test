@@ -23,7 +23,7 @@
 
     // update permission by action {
     $('.select-by-action input').on('change', function(e) {
-        var selected = e.currentTarget.checked;
+        var selected = e.currentTarget.checked ? 1 : 0;
         var toUpdate = $(e.currentTarget).data('permission');
         var permissions = [];
         $("input[type='checkbox'][data-action='" + toUpdate +"']").prop('checked', selected).each(function(index, el) {
