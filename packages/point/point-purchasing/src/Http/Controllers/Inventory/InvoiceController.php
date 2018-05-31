@@ -244,6 +244,8 @@ class InvoiceController extends Controller
         $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
         if ($warehouse_id > 0) {
             $warehouse = Warehouse::find($warehouse_id);
+        } else {
+            $warehouse = Warehouse::where('id', '>', 0)->first();
         }
 
         if (! $invoice) {
