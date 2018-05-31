@@ -23,6 +23,7 @@ class MonitoringController extends Controller
     {
         $user_id = \Input::get('user_id');
         $date_input = \Input::get('date_input');
+        $search = \Input::get('search');
         $timelines = Timeline::where('id', '<', \Input::get('last_id'));
 
         if ($user_id > 0) {
@@ -35,6 +36,8 @@ class MonitoringController extends Controller
         if ($date_input && !strpos($date_input, '_')) {
             $timelines = $timelines->where('created_at', '>=', date_format_db($date_input, 'start'))->where('created_at', '<=', date_format_db($date_input, 'end'));
         }
+
+        if ($search) $timelines = $timelines->where('message', 'like', '%'. $search . '%');
 
         $timelines = $timelines->orderBy('id', 'desc')->take(20)->get();
 
@@ -56,6 +59,7 @@ class MonitoringController extends Controller
     public function search()
     {
         $user_id = \Input::get('user_id');
+        $search = \Input::get('search');
         $date_input = \Input::get('date_input');
         $timelines = Timeline::orderBy('id', 'desc');
 
@@ -66,6 +70,8 @@ class MonitoringController extends Controller
         if ($date_input && !strpos($date_input, '_')) {
             $timelines = $timelines->where('created_at', '>=', date_format_db($date_input, 'start'))->where('created_at', '<=', date_format_db($date_input, 'end'));
         }
+
+        if ($search) $timelines = $timelines->where('message', 'like', '%'. $search . '%');
 
         $timelines = $timelines->take(20)->get();
 

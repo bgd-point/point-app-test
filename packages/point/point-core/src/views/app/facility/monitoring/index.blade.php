@@ -17,6 +17,7 @@
             data: {
                 date_input: $('#date-input').val(),
                 user_id: $('#user-id').val(),
+                search: $('#search').val(),
                 last_id: $('#last-id').val()
             },
             success: function(data) {
@@ -38,6 +39,7 @@
             data: {
                 date_input: $('#date-input').val(),
                 user_id: $('#user-id').val(),
+                search: $('#search').val(),
                 last_id: $('#last-id').val()
             },
             success: function(data) {
@@ -78,7 +80,12 @@
                                 @endforeach
                             </select>
 	                    </div>
-	                    <div class="col-sm-6">
+						<div class="col-sm-3">
+							<input type="text" name="search" id="search" class="form-control"
+									placeholder="Search" value="{{\Input::get('search')}}"
+									value="{{\Input::get('search') ? \Input::get('search') : ''}}">
+						</div>
+	                    <div class="col-sm-3">
 	                        <button type="button" class="btn btn-effect-ripple btn-effect-ripple btn-primary" onclick="search()"><i class="fa fa-search"></i> Search</button> 
 	                    </div>
 	                </div>
