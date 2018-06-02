@@ -715,6 +715,14 @@ class PaymentOrderController extends Controller
         
         usort($reports, function($a, $b) use($order_by, $order_type)
         {
+            if($order_by == "status")
+            {
+                if($order_type == "asc")
+                    return $a->approval_status >= $b->approval_status && $a->form_status >= $b->form_status;
+                
+                return $a->approval_status <= $b->approval_status && $a->form_status <= $b->form_status;
+            }
+
             if($order_type == "asc")
                 return $a->{$order_by} > $b->{$order_by};
 

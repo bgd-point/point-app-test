@@ -77,8 +77,12 @@
                                         <i class="fa fa-fw @if($order_by == 'supplier_id' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'supplier_id' && $order_type == 'desc') fa-sort-desc @endif"></i>
                                     </span>
                                 </th>
-                                <th>
+                                <th style="cursor:pointer;"
+                                    onclick="selectData('status', @if($order_by == 'status' && $order_type == 'asc') 'desc' @elseif($order_by == 'status' && $order_type == 'desc') 'asc' @else 'desc' @endif)">
                                     status
+                                    <span class="pull-right">
+                                        <i class="fa fa-fw @if($order_by == 'status' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'status' && $order_type == 'desc') fa-sort-desc @endif"></i>
+                                    </span>
                                 </th>
                                 <th style="cursor:pointer; text-align: right;"
                                     onclick="selectData('invoice_remaining', @if($order_by == 'invoice_remaining' && $order_type == 'asc') 'desc' @elseif($order_by == 'invoice_remaining' && $order_type == 'desc') 'asc' @else 'desc' @endif)">
