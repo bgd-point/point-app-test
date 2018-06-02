@@ -50,72 +50,65 @@
 
                 <div class="table-responsive">
                     <?php 
-                        $order_by = \Input::get('order_by') ? : 0;
-                        $order_type = \Input::get('order_type') ? : 0;
+                        $order_by = \Input::get('order_by') ? : "form_date";
+                        $order_type = \Input::get('order_type') ? : "asc";
                     ?>
                     <table class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th style="cursor:pointer;"
                                     onclick="selectData('form_date', @if($order_by == 'form_date' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_date' && $order_type == 'desc') 'asc' @else 'desc' @endif)">
-                                    date
+                                    form date
                                     <span class="pull-right">
-                                        <i class="fa @if($order_by == 'form_date' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_date' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i>
+                                        <i class="fa fa-fw @if($order_by == 'form_date' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_date' && $order_type == 'desc') fa-sort-desc @endif"></i>
                                     </span>
                                 </th>
                                 <th style="cursor:pointer;"
-                                    onclick="selectData()">
+                                    onclick="selectData('form_number', @if($order_by == 'form_number' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_number' && $order_type == 'desc') 'asc' @else 'desc' @endif)">
                                     from invoice
                                     <span class="pull-right">
-                                        <i class="fa fa-sort-asc fa-fw"></i>
+                                        <i class="fa fa-fw @if($order_by == 'form_number' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_number' && $order_type == 'desc') fa-sort-desc @endif"></i>
                                     </span>
                                 </th>
                                 <th style="cursor:pointer;"
-                                    onclick="selectData()">
+                                    onclick="selectData('supplier_id', @if($order_by == 'supplier_id' && $order_type == 'asc') 'desc' @elseif($order_by == 'supplier_id' && $order_type == 'desc') 'asc' @else 'desc' @endif)">
                                     supplier
                                     <span class="pull-right">
-                                        <i class="fa fa-sort-asc fa-fw"></i>
+                                        <i class="fa fa-fw @if($order_by == 'supplier_id' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'supplier_id' && $order_type == 'desc') fa-sort-desc @endif"></i>
                                     </span>
                                 </th>
-                                <th style="cursor:pointer;"
-                                    onclick="selectData()">
+                                <th>
                                     status
-                                    <span class="pull-right">
-                                        <i class="fa fa-sort-asc fa-fw"></i>
-                                    </span>
                                 </th>
                                 <th style="cursor:pointer; text-align: right;"
-                                    onclick="selectData()">
+                                    onclick="selectData('invoice_remaining', @if($order_by == 'invoice_remaining' && $order_type == 'asc') 'desc' @elseif($order_by == 'invoice_remaining' && $order_type == 'desc') 'asc' @else 'desc' @endif)">
                                     remaining
                                     <span class="pull-right">
-                                        <i class="fa fa-sort-asc fa-fw"></i>
+                                        <i class="fa fa-fw @if($order_by == 'invoice_remaining' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'invoice_remaining' && $order_type == 'desc') fa-sort-desc @endif"></i>
                                     </span>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($list_invoice as $invoice)
-                            <?php
-                                $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice), $invoice->id, $invoice->total);
-                            ?>
+                            @foreach($reports as $report)
                                 <tr>
                                     <td>
-                                        {{ date_Format_view($invoice->formulir->form_date) }}
+                                        {{ date_Format_view($report->form_date) }}
                                     </td>
                                     <td>
-                                        <a href="{{ url('purchasing/point/invoice/'.$invoice->id) }}">
-                                            {{ $invoice->formulir->form_number }}
+                                        <a href="{{ url('purchasing/point/invoice/'.$report->invoice_id) }}">
+                                            {{ $report->form_number }}
                                         </a>
                                     </td>
                                     <td>
-                                        {!! get_url_person($invoice->supplier_id) !!}
+                                        {!! get_url_person($report->supplier_id) !!}
                                     </td>
                                     <td>
-                                        @include('framework::app.include._approval_status_label', ['approval_status' => $invoice->formulir->approval_status])
-                                        @include('framework::app.include._form_status_label', ['form_status' => $invoice->formulir->form_status])
+                                        @include('framework::app.include._approval_status_label', ['approval_status' => $report->approval_status])
+                                        @include('framework::app.include._form_status_label', ['form_status' => $report->form_status])
                                     </td>
                                     <td style="text-align: right;">
-                                        {{ number_format_price($invoice_remaining) }}
+                                        {{ number_format_price($report->invoice_remaining) }}
                                     </td>
                                 </tr>
                             @endforeach                            
@@ -132,6 +125,7 @@
     <script type="text/javascript">
         function selectData(order_by, order_type) {
             var status = $("#status option:selected").val();
+            console.log(status);
             var date_from = $("#date-from").val();
             var date_to = $("#date-to").val();
             var search = $("#search").val();
