@@ -16,7 +16,7 @@
                 <form method="get" class="form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-4">
-                            <select class="selectize" name="status" id="status" onchange="selectData('form_date', 'desc')">
+                            <select class="selectize" name="status" id="status" onchange="selectData('form_date', 'asc')">
                                 <option value="0" @if(\Input::get('status') == 0) selected @endif>open</option>
                                 <option value="1" @if(\Input::get('status') == 1) selected @endif>closed</option>
                                 <option value="-1" @if(\Input::get('status') == -1) selected @endif>canceled</option>
@@ -125,7 +125,6 @@
     <script type="text/javascript">
         function selectData(order_by, order_type) {
             var status = $("#status option:selected").val();
-            console.log(status);
             var date_from = $("#date-from").val();
             var date_to = $("#date-to").val();
             var search = $("#search").val();
