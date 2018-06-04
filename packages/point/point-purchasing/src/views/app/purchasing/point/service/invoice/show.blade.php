@@ -111,7 +111,7 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label">Notes</label>
                             <div class="col-md-6 content-show">
-                                {{ $invoice->formulir->notes }}
+                                {!! $invoice->formulir->notes !!}
                             </div>
                         </div>
 
