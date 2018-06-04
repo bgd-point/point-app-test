@@ -67,7 +67,7 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label">Notes</label>
                             <div class="col-md-6 content-show">
-                                {{$payment_collection->formulir->notes}}
+                                {!! replace_links($payment_collection->formulir->notes) !!}
                             </div>
                         </div>
 

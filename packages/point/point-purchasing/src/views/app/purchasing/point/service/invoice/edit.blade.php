@@ -69,7 +69,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Notes</label>
                         <div class="col-md-6">
-                            <input type="text" name="notes" class="form-control" value="">
+                            <input type="text" name="notes" class="form-control" value="{{ $invoice->formulir->notes }}">
                         </div>
                     </div>
                     <fieldset>

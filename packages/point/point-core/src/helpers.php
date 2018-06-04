@@ -267,3 +267,10 @@ if (! function_exists('permission_check_all')) {
         return PermissionHelper::checkAll($role_id, $permission_type);
     }
 }
+
+if (! function_exists('replace_links')) {
+    function replace_links($s) {
+        return preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.%-=#]*(\?\S+)?)?)?)@', '<a href="$1">$1</a>', $s);
+    }
+}
+
