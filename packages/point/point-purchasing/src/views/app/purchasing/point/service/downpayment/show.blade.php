@@ -105,7 +105,7 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label">Notes</label>
                             <div class="col-md-6 content-show">
-                                {{ $downpayment->formulir->notes }}
+                                {!! replace_links($downpayment->formulir->notes) !!}
                             </div>
                         </div>
                         @if($list_referenced->count() > 0)
