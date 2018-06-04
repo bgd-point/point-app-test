@@ -109,9 +109,8 @@ var App = function() {
         $('.input-timepicker24').timepicker({minuteStep: 1,showSeconds: true,showMeridian: false});
 
         // Initialize Datepicker
-        $('.input-datepicker, .input-daterange').datepicker({weekStart: 1});
-
-        $('.input-daterange .input-datepicker')
+        $('.input-datepicker, .input-daterange')
+            .datepicker({weekStart: 1})
             .unbind('changeDate')
             .on('input', function(e){
                 var strDate = e.currentTarget.value;
