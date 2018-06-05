@@ -10,6 +10,7 @@ use Point\Core\Helpers\UserHelper;
 use Point\Core\Models\User;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
+use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\Master\Permission;
 use Point\Framework\Models\Master\Person;
 use Point\Framework\Models\Master\UserWarehouse;
@@ -154,6 +155,7 @@ class InvoiceController extends Controller
         $view->invoice = Invoice::find($id);
         $view->list_invoice_archived = Invoice::joinFormulir()->archived($view->invoice->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_invoice_archived->count();
+        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->invoice->formulir_id)->where('locked', true)->get();
         return $view;
     }
 
