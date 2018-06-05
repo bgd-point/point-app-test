@@ -135,6 +135,9 @@
         <?php
             $payment_order = \Point\PointPurchasing\Models\Service\PaymentOrder::find($payment_order['id']);
             $total = 0;
+            $total_remaining = 0;
+            $total_payment = 0;
+            $row = 0;
         ?>
 
         <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
@@ -182,6 +185,7 @@
                     $tax = $reference->tax;
                     $total_invoice = $subtotal+$tax;
                     $total += $total_invoice;
+                    $row++;
                 ?>
 
                 @if (get_class($reference) == 'Point\PointPurchasing\Models\Service\Invoice')
@@ -206,6 +210,9 @@
                         </td>
                     </tr>
                     @foreach($reference->services as $invoice_service)
+                        <?php
+                            $total_remaining += \Point\Framework\Helpers\ReferHelper::remaining(get_class($reference), $reference->id, $reference->total) + $payment_order_detail->amount;
+                        ?>
                         <tr class="item">
                             <td>
                                 {{$invoice_service->service->name}} (Qty: {{number_format_quantity($invoice_service->quantity)}})
@@ -213,8 +220,12 @@
                             <td style="text-align: right;">
                                 {{number_format_quantity($invoice_service->price * $invoice_service->quantity - ($invoice_service->price * $invoice_service->quantity * $invoice_service->discount / 100))}}
                             </td>
-                            <td></td>
-                            <td></td>
+                            <td style="text-align: right;">
+                                {{number_format_quantity(\Point\Framework\Helpers\ReferHelper::remaining(get_class($reference), $reference->id, $reference->total) + $payment_order_detail->amount)}}
+                            </td>
+                            <td style="text-align: right;">
+                                {{number_format_quantity($payment_order_detail->amount)}}
+                            </td>
                             <td>
                                 {{$invoice_service->allocation->name}}
                             </td>
@@ -260,15 +271,8 @@
                     </tr>
                     @endif
                     <tr class="heading">
-                        <td style="text-align: right;">
-                            TOTAL
-                        </td>
-                        <td style="text-align: right;">
-                            {{number_format_quantity($total_invoice)}}
-                        </td>
-                        <td style="text-align: right;">
-                            {{number_format_quantity(\Point\Framework\Helpers\ReferHelper::remaining(get_class($reference),
-                            $reference->id, $reference->total) + $payment_order_detail->amount)}}
+                        <td style="text-align: right;" colspan="3">
+                            TOTAL PAYMENT
                         </td>
                         <td style="text-align: right;">
                             {{number_format_quantity($payment_order_detail->amount)}}
@@ -283,6 +287,7 @@
             @if(count($payment_order->others) > 0)
                 <?php
                     $total_invoice = 0;
+                    $row++;
                 ?>
                 <tr class="heading">
                     <td>
@@ -299,6 +304,9 @@
                 </tr>
 
                 @foreach($payment_order->others as $payment_order_other)
+                    <?php
+                        $row++;
+                    ?>
                     <tr class="item">
                         <td>
                             {{ $payment_order_other->coa->account }} {{$payment_order_other->other_notes}}
@@ -331,17 +339,20 @@
                 ?>
             @endif
 
+
             <tr><td colspan="6"></td></tr>
 
+            
             <tr class="heading">
                 <td style="text-align: right; font-weight: normal;" colspan="3">
-                    <b>TOTAL</b>
+                    <b>TOTAL PAYMENT</b>
                 </td>
                 <td style="text-align: right; font-weight: normal;">
                     {{number_format_quantity($payment_order->total_payment)}}
                 </td>
                 <td></td>
             </tr>
+
             <?php $is_dp = 0; ?>
             @foreach($payment_order->details as $payment_order_detail)
                 @if($payment_order_detail->reference->formulirable_type == "Point\\PointPurchasing\\Models\\Service\\Downpayment")
