@@ -58,6 +58,7 @@ Route::group(['prefix' => 'purchasing/point/service', 'namespace' => 'Point\Poin
         Route::post('/payment-order/{id}/edit-review', 'PaymentOrderController@editReview');
         Route::post('/payment-order/{id}/store', 'PaymentOrderController@storePb');
         Route::post('/payment-order/send-email-payment', 'PaymentOrderController@sendEmailPayment');
+        Route::get('/payment-order/report', 'PaymentOrderController@report');
         Route::resource('/payment-order', 'PaymentOrderController');
     });
 });

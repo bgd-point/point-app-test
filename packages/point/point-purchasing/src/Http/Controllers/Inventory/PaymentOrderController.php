@@ -676,4 +676,60 @@ class PaymentOrderController extends Controller
         gritter_success('Success send email payment order', 'false');
         return redirect()->back();
     }
+
+    public function report()
+    {
+        $view = view('point-purchasing::app.purchasing.point.inventory.payment-order.report');
+        $invoices = Invoice::all();
+        
+        $reports = array();
+
+        foreach ($invoices as $key => $invoice) {
+            $report = new \stdClass();
+            $report->invoice_id = $invoice->id;
+            $report->form_date = $invoice->formulir->form_date;
+            $report->form_number = $invoice->formulir->form_number;
+            $report->supplier_id = $invoice->supplier_id;
+            $report->supplier_name = '[' . $invoice->supplier->code . ']' . $invoice->supplier->name;
+            $report->approval_status = $invoice->formulir->approval_status;
+            $report->form_status = $invoice->formulir->form_status;
+            $report->invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice), $invoice->id, $invoice->total);
+            array_push($reports, $report);
+        }
+
+        $status = \Input::get('status') ? : '0'; //0 = open
+        $date_from = \Input::get('date_from');
+        $date_to = \Input::get('date_to');
+        $search = \Input::get('search');
+        
+        $reports = array_filter($reports, function($value) use ($status, $date_from, $date_to, $search)
+        {
+            $filter_status = ($status == 'all' ? true : ($value->form_status == $status));
+            $filter_date = ($date_from ? ($value->form_date >= date_format_db($date_from, 'start') && $value->form_date <= date_format_db($date_to, 'end')) : true);
+            $filter_search = preg_match('/' . $search . '/i', $value->supplier_name) || preg_match('/' . $search . '/i', $value->form_number);
+
+            return ($filter_status && $filter_date && $filter_search);
+        });
+        $order_by = \Input::get('order_by') ? \Input::get('order_by') : "form_date";
+        $order_type = \Input::get('order_type') ? \Input::get('order_type') : "asc";
+        
+        usort($reports, function($a, $b) use($order_by, $order_type)
+        {
+            if($order_by == "status")
+            {
+                if($order_type == "asc")
+                    return $a->approval_status >= $b->approval_status && $a->form_status >= $b->form_status;
+                
+                return $a->approval_status <= $b->approval_status && $a->form_status <= $b->form_status;
+            }
+
+            if($order_type == "asc")
+                return $a->{$order_by} > $b->{$order_by};
+
+            return $a->{$order_by} < $b->{$order_by};
+        });
+
+        $view->reports = $reports;
+        return $view;
+    }
 }

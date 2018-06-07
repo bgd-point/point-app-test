@@ -76,11 +76,13 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td class="text-right" colspan="3"><b>Total</b></td>
                                 <td class="text-right"><b>{{ number_format_price($total_in, 0) }}</b></td>
                                 <td class="text-right"><b>{{ number_format_price($total_out, 0) }}</b></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-right"><b>Balance</b></td>
+                                <td colspan="2" class="text-right"><b>{{ number_format_price(($total_in - $total_out),0) }}</b></td>
                             </tr>
                         </tfoot>
                     </table>
