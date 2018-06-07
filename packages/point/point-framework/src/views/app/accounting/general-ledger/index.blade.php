@@ -16,12 +16,11 @@
                                 <span class="input-group-addon"><i class="fa fa-chevron-right"></i></span>
                                 <input type="text" name="date_to" id="date-to" class="form-control date input-datepicker" placeholder="To" value="{{\Input::get('date_to') ? \Input::get('date_to') : date(date_format_get(), strtotime($date_to))}}">
                             </div>
-                            <select id="example-chosen-multiple" name="coa_filter[]" class="select-chosen" data-placeholder="Choose one.." style="width: 250px;" multiple>
+                            <select id="example-chosen-multiple" name="coa_filter[]" class="selectize" data-placeholder="Choose one.." style="width: 250px;" multiple>
                                 @foreach($list_coa as $coa)
                                     <option value="{{$coa->id}}" {{ in_array($coa->id, $coa_id) ? 'selected' : '' }}>{{$coa->account}}</option>
                                 @endforeach
                             </select>
-
                         </div>
                         <div class="col-sm-6">
                             <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
