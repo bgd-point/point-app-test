@@ -13,5 +13,7 @@
    class="btn {{\Request::segment(4)=='request-approval'?'btn-primary':'btn-info'}}">
     Request Approval
 </a>
-
+<a href="{{ url('purchasing/point/payment-order/report') }}" class="btn {{\Request::segment(4)=='report'?'btn-primary':'btn-info'}}">
+    Report
+</a>
 <br/><br/>
