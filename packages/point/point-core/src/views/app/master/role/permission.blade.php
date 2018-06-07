@@ -2,7 +2,9 @@
 
 @section('scripts') 
 <script>
-    function updatePermission(role_id, permission_id)
+    var role_id = <?php echo $role->id; ?>;
+
+    function updatePermission(permission_id)
     { 
         $.ajax({
             url: "{{URL::to('master/role/permission/toggle')}}",
@@ -12,11 +14,24 @@
                 permission_id: permission_id
             },
             success: function(data) {
+                notification(data['title'], data['msg']);
             }, error: function(data) {
                 notification(data['title'], data['msg']);
             }
         });
     }
+
+    // update permission by action {
+    $('.select-by-action input').on('change', function(e) {
+        var selected = e.currentTarget.checked ? 1 : 0;
+        var toUpdate = $(e.currentTarget).data('permission');
+        var permissions = [];
+        $("input[type='checkbox'][data-action='" + toUpdate +"']").prop('checked', selected).each(function(index, el) {
+            permissions.push($(el).attr('id').split('-')[1]);
+        });
+        permissions = permissions.join(',');
+        updatePermissionAll(permissions, role_id, selected);
+    });
 
     // Permission Toggle
     $(document).ready(function () {
@@ -35,7 +50,7 @@
                 checked = 0;
             }
 
-            updatePermissionAll('{{$array_permission}}', {{ $role->id }}, checked);
+            updatePermissionAll('{{$array_permission}}', role_id, checked);
         });
 
         @endforeach
@@ -57,6 +72,7 @@
             }
         })
     }
+
 </script>
 @stop
 
@@ -89,6 +105,40 @@
     <br/><br/>
 
     <div class="panel panel-default">
+        <div class="panel-body select-by-action">
+            <?php
+                // save unique permission
+                $unique_permission = array();
+                // save value if that permission is checked all or not
+                $unique_permission_value = array();
+
+                foreach($list_permission_type as $permission_type) {
+                    foreach(permission_get_by_type($permission_type->type) as $permission) {
+                        // add permission to array if it is not yet in the array
+                        if (!in_array($permission->action, $unique_permission)) {
+                            $unique_permission[] = $permission->action;
+                            $unique_permission_value[] = true;
+                        }
+
+                        // get index of current permission
+                        if(!permission_check($role->id, $permission->id)) {
+                            $index = array_search($permission->action,$unique_permission);
+                            $unique_permission_value[$index] = false;
+                        }
+                    }
+                }
+            ?>
+            <h2 class="sub-header">Select all</h2>
+            @foreach($unique_permission as $key=>$value)
+                <span style="margin-right: 20px;">
+                    <input type="checkbox" id="p-{{ $key }}" {{ $unique_permission_value[$key] ? 'checked' : ''}} data-permission="{{ $value }}">
+                    <label for="p-{{$key}}">{{ $value }}</label>
+                </span>
+            @endforeach
+        </div>
+    </div>
+
+    <div class="panel panel-default">
         <div class="panel-body">
             <div class="table-responsive">
                 <table class="table table-striped table-bordered">
@@ -110,7 +160,7 @@
                             <td><input type="checkbox" id="check-all-{{$permission_type->id}}" {{permission_check_all($role->id, $permission_type->type) ? 'checked' : ''}}></td>
                             <td><b>{{$permission_type->type}}</b></td>
                             @foreach(permission_get_by_type($permission_type->type) as $permission)
-                            <td class="text-center"><input type="checkbox" id="permission-{{$permission->id}}" onclick="updatePermission({{ $role->id }}, {{ $permission->id }})" {{ permission_check($role->id, $permission->id) ? 'checked':'' }}></td>
+                            <td class="text-center"><input type="checkbox" id="permission-{{$permission->id}}" onclick="updatePermission({{ $permission->id }})" {{ permission_check($role->id, $permission->id) ? 'checked':'' }} data-action="{{$permission->action}}"></td>
                             @endforeach
                         </tr>  
                         @endforeach
