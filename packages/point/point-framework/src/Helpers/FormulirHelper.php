@@ -728,6 +728,24 @@ class FormulirHelper
         timeline_publish('cancel form', 'cancel form ' . $formulir->form_number . ' success');
     }
 
+    /**
+     * for cancellation through email approval
+     * @param $permission_slug
+     * @param $formulir_id
+     */
+    public static function cancelWithoutPermission($formulir_id)
+    {
+        $formulir = Formulir::find($formulir_id);
+        $formulir->form_status = -1;
+        $formulir->canceled_at = date('Y-m-d H:i:s');
+        $formulir->canceled_by = auth()->user()->id;
+        $formulir->save();
+
+        self::clearRelation($formulir);
+
+        timeline_publish('cancel form', 'cancel form ' . $formulir->form_number . ' success');
+    }
+
     public static function cancelPaymentReference($payment_reference_id)
     {
         $payment_reference = PaymentReference::where('payment_reference_id', '=', $payment_reference_id)->first();
