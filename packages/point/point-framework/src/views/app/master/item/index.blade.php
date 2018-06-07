@@ -42,6 +42,7 @@
                         <tr>
                             <th width="75px" class="text-center"></th>
                             <th>NAME</th>
+                            <th>ACCOUNT</th>
                             <th>NOTES</th>
                         </tr>
                     </thead>
@@ -54,6 +55,7 @@
                                         <i id="icon-state-{{$item->id}}" class="{{$item->disabled == 0 ? 'fa fa-pause' : 'fa fa-play' }}"></i>
                                     </a>
                                 </td>
+                                <td> {{ $item->accountAsset->account }}</td>
                                 <td><a href="{{url('master/item/'.$item->id)}}">{{ $item->codeName }}</a></td>
                                 <td>{{ $item->notes }}</td>
                             </tr>
