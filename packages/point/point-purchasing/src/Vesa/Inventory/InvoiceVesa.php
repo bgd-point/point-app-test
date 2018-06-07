@@ -27,7 +27,7 @@ trait InvoiceVesa
         if ($merge_into_group && $list_goods_received->count() > 5) {
             array_push($array, [
                 'url' => url('purchasing/point/invoice/vesa-create'),
-                'deadline' => $list_goods_received->orderBy('form_date')->first()->formulir->form_date,
+                'deadline' => $list_goods_received->first()->formulir->form_date,
                 'message' => 'Please create invoice',
                 'permission_slug' => 'create.point.purchasing.invoice'
             ]);
