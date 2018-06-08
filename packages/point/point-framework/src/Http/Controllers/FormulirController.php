@@ -9,16 +9,18 @@ use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Models\Formulir;
 use Point\PointFinance\Models\CashAdvance;
+use Point\Core\Models\User;
+use Point\Core\Helpers\QueueHelper;
 
 class FormulirController extends Controller
 {
     use ValidationTrait;
 
     /**
-     * Cancel form
+     * User pressed CANCEL button on the app
      * @return array|\Illuminate\Http\JsonResponse
      */
-    public function cancel()
+    public function cancel(Request $request)
     {
         if (!$this->validateCSRF()) {
             return response()->json($this->restrictionAccessMessage());
@@ -48,6 +50,162 @@ class FormulirController extends Controller
         );
 
         return $response;
+    }
+
+    /**
+     * User pressed REQUEST CANCEL button on the app
+     * User pressed CANCEL button but doesn't have enough previlege
+     * App then will send email to ask for approval
+     * @return array|\Illuminate\Http\JsonResponse
+     */
+    public function requestCancel(Request $request) {
+        if (!$this->validateCSRF()) {
+            return response()->json($this->restrictionAccessMessage());
+        }
+
+        $formulir_id = \Input::get('formulir_id');
+        $permission_slug = \Input::get('permission_slug');
+        $formulir = Formulir::find($formulir_id);
+        try {
+            FormulirHelper::isAllowedToCancel($permission_slug, $formulir);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()]);
+        }
+        // code to send email
+        $approver = User::find($formulir->approval_to);
+        $token = md5(date('ymdhis'));
+
+        $formulir->cancel_token = $token;
+        $formulir->cancel_requested_at = \Carbon::now();
+        $formulir->cancel_request_status = 0;
+        $formulir->save();
+
+        $data = array(
+            'formulir' => $formulir,
+            'token' => $token,
+            'username' => auth()->user()->name,
+            'url' => url('/'),
+            'approver' => $approver,
+        );
+        $request = $request->input();
+
+        \Queue::push(function ($job) use ($data, $request) {
+            QueueHelper::reconnectAppDatabase($request['database_name']);
+            \Mail::send(
+                'framework::email.cancel-formulir',
+                $data,
+                function ($message) use ($data) {
+                    $message
+                        ->to($data['approver']->email)
+                        ->subject('request approval form cancellation #' . $data['formulir']->form_number);
+                }
+            );
+            $job->delete();
+        });
+        gritter_success('Success send email purchase order', 'false');
+
+        $response = array(
+            'status' => 'success',
+            'title' => 'Email sent',
+            'msg' => 'You have sent email for deletion approval'
+        );
+
+        return $response;
+    }
+
+    /**
+     * Admin approve cancellation form from email
+     * @param $formulir_id
+     * @param $token
+     *
+     * @return $this
+     * @throws \Point\Core\Exceptions\PointException
+     */
+    public function cancelApproved($formulir_id, $token) {
+        // code when admin approve the request
+        // cancel the formulir without user auth check
+
+        $formulir = Formulir::find($formulir_id);
+        
+        if (!$formulir) {
+            throw new PointException('FORM NOT FOUND');
+        }
+
+        if ($formulir->cancel_token != $token) {
+            throw new PointException('TOKEN EXPIRED');
+        }
+        
+        DB::beginTransaction();
+
+        try {
+            FormulirHelper::cancelWithoutPermission($formulir_id);
+            $formulir->cancel_request_status = 1;
+            $formulir->save();
+        } catch (\Exception $e) {
+            return response()->json($this->errorDeleteMessage());
+        }
+
+        DB::commit();
+
+        return view('framework::app.approval-cancellation-status')->with('formulir', $formulir);
+    }
+
+    /**
+     * Admin reject cancellation form from email
+     * @param $formulir_id
+     * @param $token
+     *
+     * @return $this
+     * @throws \Point\Core\Exceptions\PointException
+     */
+    public function cancelRejected($formulir_id, $token)
+    {
+        $formulir = Formulir::find($formulir_id);
+
+        if (!$formulir) {
+            throw new PointException('FORM NOT FOUND');
+        }
+
+        if ($formulir->cancel_token != $token) {
+            throw new PointException('TOKEN EXPIRED');
+        }
+        
+        DB::beginTransaction();
+
+        try {
+            $formulir->cancel_token = "";
+            $formulir->cancel_rejected_at = \Carbon::now();
+            $formulir->cancel_request_status = -1;
+            $formulir->save();
+        } catch (\Exception $e) {
+            return response()->json($this->errorDeleteMessage());
+        }
+
+        DB::commit();
+
+        return view('framework::app.approval-cancellation-status')->with('formulir', $formulir);
+    }
+
+    /**
+     * @param $formulir_id
+     * @param $token
+     *
+     * @return $this
+     * @throws \Point\Core\Exceptions\PointException
+     */
+    public function checkCancelStatus($formulir_id, $token)
+    {
+        $formulir = Formulir::find($formulir_id);
+
+        if (!$formulir) {
+            throw new PointException('FORM NOT FOUND');
+        }
+
+        if ($formulir->cancel_token != $token) {
+            throw new PointException('TOKEN EXPIRED');
+        }
+
+        return view('framework::app.approval-cancellation-status')->with('formulir', $formulir);
     }
 
     /**
