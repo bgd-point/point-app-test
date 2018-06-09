@@ -120,7 +120,7 @@
                 :
             </td>
             <td>
-                {{ \DateHelper::formatView($formulir->cancel_requested_at) }}
+                {{ \DateHelper::formatView($formulir->cancel_requested_at) }} {{ explode(" ", $formulir->cancel_requested_at)[1] }}
             </td>
         </tr>
     </table>
