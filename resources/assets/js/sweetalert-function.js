@@ -95,10 +95,10 @@ function secureRequestCancelForm(url, formulir_id, permission_slug)
         data: {
             formulir_id: formulir_id,
             permission_slug: permission_slug
-        },
-        always: function(data){
-            notification(data['title'], data['msg']);
         }
+    })
+    .always(function(data){
+        notification(data['title'], data['msg']);
     });
 }
 
