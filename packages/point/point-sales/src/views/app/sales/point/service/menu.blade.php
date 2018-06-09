@@ -23,8 +23,8 @@
                     </a>
                 </div>
             @endif
-            @if(client_has_addon('pro') && auth()->user()->may('read.point.sales.service.invoice') ||
-                client_has_addon('premium') && auth()->user()->may('read.point.sales.service.invoice') )
+            @if(client_has_addon('pro') && auth()->user()->may('read.point.sales.service.downpayment') ||
+                client_has_addon('premium') && auth()->user()->may('read.point.sales.service.downpayment') )
                 <div class="col-md-4 col-lg-3">
                     <a href="{{url('sales/point/service/downpayment')}}" class="widget widget-button">
                         <div class="widget-content text-right clearfix">
