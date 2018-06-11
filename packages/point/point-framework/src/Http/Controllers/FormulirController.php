@@ -97,12 +97,11 @@ class FormulirController extends Controller
                 function ($message) use ($data) {
                     $message
                         ->to($data['approver']->email)
-                        ->subject('request approval form cancellation #' . $data['formulir']->form_number);
+                        ->subject('Request approval form cancellation #' . $data['formulir']->form_number);
                 }
             );
             $job->delete();
         });
-        gritter_success('Success send email purchase order', 'false');
 
         $response = array(
             'status' => 'success',
