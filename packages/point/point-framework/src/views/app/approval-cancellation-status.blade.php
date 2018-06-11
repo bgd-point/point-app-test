@@ -19,7 +19,13 @@
           
             <div class="form-group">
                 <div class="col-xs-12 text-center">
-                    <h3>{{ $formulir->form_number ? $formulir->form_number : $formulir->archived }}</h3>
+                    <h3>
+                        @if($formulir->form_number)
+                            {!! \FormulirHelper::formulirUrl($formulir) !!}
+                        @else
+                            {{ $formulir->archived }}
+                        @endif
+                    </h3>
                 </div>
             </div>
             <div class="form-group">

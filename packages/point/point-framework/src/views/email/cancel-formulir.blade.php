@@ -98,7 +98,7 @@
                 :
             </td>
             <td>
-                {{ $formulir->form_number }}</a>
+                {!! \FormulirHelper::formulirUrl($formulir) !!}
             </td>
         </tr>
         <tr>
