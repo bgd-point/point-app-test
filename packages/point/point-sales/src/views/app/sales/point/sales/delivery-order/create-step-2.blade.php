@@ -248,7 +248,7 @@
                                                        value="{{ $reference_item->price }}"/>
                                                 <input type="hidden" id="item-discount-{{$counter}}"
                                                        name="item_discount[]" class="form-control text-right"
-                                                       value="{{ $reference_item->discount }}"/>
+                                                       value="{{ $reference_item->discount ? : 0 }}"/>
                                             </td>
                                         </tr>
                                         <?php  $counter++;?>
