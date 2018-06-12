@@ -157,23 +157,24 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-12">
-                                @if(formulir_view_edit($downpayment->formulir, 'update.point.purchasing.downpayment'))
+                                @if(formulir_view_edit($downpayment->formulir, 'update.point.purchasing.service.downpayment'))
                                     <a href="{{url('purchasing/point/service/downpayment/'.$downpayment->id.'/edit')}}"
                                        class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                 @endif
-                                @if(formulir_view_cancel($downpayment->formulir, 'delete.point.purchasing.downpayment'))
+                                @if(formulir_view_cancel($downpayment->formulir, 'delete.point.purchasing.service.downpayment'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCancelForm('{{url('formulir/cancel')}}',
                                                '{{ $downpayment->formulir_id }}',
-                                               'delete.point.purchasing.downpayment')"><i class="fa fa-times"></i> Cancel
+                                               'delete.point.purchasing.service.downpayment')"><i class="fa fa-times"></i> Cancel
                                         Form</a>
                                 @endif
-                                @if(formulir_view_close($downpayment->formulir, 'update.point.purchasing.downpayment'))
+                                
+                                @if(formulir_view_close($downpayment->formulir, 'update.point.purchasing.service.downpayment'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCloseForm({{$downpayment->formulir_id}},'{{url('formulir/close')}}')">Close
                                         Form</a>
                                 @endif
-                                @if(formulir_view_reopen($downpayment->formulir, 'update.point.purchasing.downpayment'))
+                                @if(formulir_view_reopen($downpayment->formulir, 'update.point.purchasing.service.downpayment'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureReopenForm({{$downpayment->formulir_id}},'{{url('formulir/reopen')}}')">Reopen Form</a>
                                 @endif
                             </div>
@@ -181,7 +182,7 @@
                     </fieldset>
 
 
-                    @if(formulir_view_approval($downpayment->formulir, 'approval.point.purchasing.downpayment'))
+                    @if(formulir_view_approval($downpayment->formulir, 'approval.point.purchasing.service.downpayment'))
                         <fieldset>
                             <div class="form-group">
                                 <div class="col-md-12">
