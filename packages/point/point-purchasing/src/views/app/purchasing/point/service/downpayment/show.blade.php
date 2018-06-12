@@ -161,12 +161,17 @@
                                     <a href="{{url('purchasing/point/service/downpayment/'.$downpayment->id.'/edit')}}"
                                        class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                 @endif
-                                @if(formulir_view_cancel($downpayment->formulir, 'delete.point.purchasing.service.downpayment'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCancelForm('{{url('formulir/cancel')}}',
-                                               '{{ $downpayment->formulir_id }}',
-                                               'delete.point.purchasing.service.downpayment')"><i class="fa fa-times"></i> Cancel
-                                        Form</a>
+                                
+                                @if(formulir_view_cancel_or_request_cancel($downpayment->formulir, 'delete.point.purchasing.service.downpayment', 'approval.point.purchasing.service.downpayment') == 1)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $downpayment->formulir_id }}','approval.point.purchasing.service.downpayment')">
+                                        <i class="fa fa-times"></i> 
+                                        Cancel Form
+                                    </a>
+                                @elseif(formulir_view_cancel_or_request_cancel($downpayment->formulir, 'delete.point.purchasing.service.downpayment', 'approval.point.purchasing.service.downpayment') == 2)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm('{{url('formulir/requestCancel')}}', '{{ $downpayment->formulir_id }}', 'delete.point.purchasing.service.downpayment')">
+                                        <i class="fa fa-times"></i> 
+                                        Request Cancel Form
+                                    </a>
                                 @endif
                                 
                                 @if(formulir_view_close($downpayment->formulir, 'update.point.purchasing.service.downpayment'))
