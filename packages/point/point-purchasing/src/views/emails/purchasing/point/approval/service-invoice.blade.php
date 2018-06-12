@@ -163,7 +163,7 @@
                     :
                 </td>
                 <td>
-                    {{ $invoice->supplier->codeName }}
+                    {!! get_url_person($invoice->person->id) !!}
                 </td>
             </tr>
             <tr>
@@ -174,7 +174,7 @@
                     :
                 </td>
                 <td>
-                    {{ number_format_price($invoice->amount) }}
+                    {{ number_format_price($invoice->total) }}
                 </td>
             </tr>
             <tr>
