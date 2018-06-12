@@ -82,6 +82,7 @@ class InvoiceController extends Controller
         $view = view('point-purchasing::app.purchasing.point.service.invoice.create');
         $view->list_person = PersonHelper::getByType(['supplier']);
         $view->list_allocation = Allocation::active()->get();
+        $view->list_user_approval = UserHelper::getAllUser();
         $person_type = PersonType::where('slug', 'supplier')->first();
         $view->list_group = PersonGroup::where('person_type_id', '=', $person_type->id)->get();
         $view->code_contact = PersonHelper::getCode($person_type);

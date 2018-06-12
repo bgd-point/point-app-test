@@ -147,7 +147,7 @@
                                 <select name="approval_to" class="selectize" style="width: 100%;"
                                         data-placeholder="Choose one..">
                                     @foreach($list_user_approval as $user_approval)
-                                        @if($user_approval->may('approval.point.purchasing.downpayment'))
+                                        @if($user_approval->may('approval.point.purchasing.service.downpayment'))
                                             <option value="{{$user_approval->id}}"
                                                     @if(old('approval_to') == $user_approval->id) selected @endif>{{$user_approval->name}}</option>
                                         @endif
