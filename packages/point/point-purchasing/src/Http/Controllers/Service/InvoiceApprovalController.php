@@ -26,7 +26,7 @@ class InvoiceApprovalController extends Controller
         return $view;
     }
 
-    public function sendRequestApproval()
+    public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.purchasing.service.invoice');
 
@@ -56,7 +56,7 @@ class InvoiceApprovalController extends Controller
             \Queue::push(function ($job) use ($approver, $data, $request) {
                 QueueHelper::reconnectAppDatabase($request['database_name']);
                 \Mail::send('point-purchasing::emails.purchasing.point.approval.service-invoice', $data, function ($message) use ($approver) {
-                    $message->to($approver->email)->subject('request approval invoice #' . date('ymdHi'));
+                    $message->to($approver->email)->subject('Request approval invoice #' . date('ymdHi'));
                 });
                 $job->delete();
             });
@@ -66,27 +66,84 @@ class InvoiceApprovalController extends Controller
             }
         }
 
-        gritter_success('send approval success');
+        gritter_success('You have sent email for invoice approval');
         return redirect()->back();
     }
 
-    public function approve()
+    public function approve(Request $request, $id)
     {
+        $invoice = Invoice::find($id);
+        $approval_message = \Input::get('approval_message') ? : '';
+        $token = \Input::get('token');
+
+        DB::beginTransaction();
+
+        FormulirHelper::approve($invoice->formulir, $approval_message, 'approval.point.purchasing.service.invoice', $token);
+        timeline_publish('approve', $invoice->formulir->form_number . ' approved', $this->getUserForTimeline($request, $invoice->formulir->approval_to));
+
+        DB::commit();
+     
+        gritter_success('Form approved', false);
+        return $this->getRedirectLink($request, $invoice->formulir);
 
     }
 
-    public function reject()
+    public function reject(Request $request, $id)
     {
+        $invoice = Invoice::find($id);
+        $approval_message = \Input::get('approval_message') ? : '';
+        $token = \Input::get('token');
 
+        DB::beginTransaction();
+
+        FormulirHelper::reject($invoice->formulir, $approval_message, 'approval.point.purchasing.service.invoice', $token);
+        timeline_publish('reject', 'invoice ' . $invoice->formulir->form_number . ' rejected', $this->getUserForTimeline($request, $invoice->formulir->approval_to));
+
+        DB::commit();
+
+        gritter_success('Form rejected', false);
+        return $this->getRedirectLink($request, $invoice->formulir);
     }
 
     public function approveAll()
     {
+        $token = \Input::get('token');
+        $array_formulir_id = explode(',', \Input::get('formulir_id'));
+        $approval_message = '';
 
+        DB::beginTransaction();
+        foreach ($array_formulir_id as $id) {
+            $invoice = Invoice::where('formulir_id', $id)->first();
+            FormulirHelper::approve($invoice->formulir, $approval_message, 'approval.point.purchasing.service.invoice', $token);
+            timeline_publish('approve', $invoice->formulir->form_number . ' approved', $invoice->formulir->approval_to);
+        }
+        DB::commit();
+
+        $view = view('framework::app.approval-all-status');
+        $view->array_formulir_id = $array_formulir_id;
+        $view->formulir = \Input::get('formulir_id');
+
+        return $view;
     }
 
     public function rejectAll()
     {
-        
+        $token = \Input::get('token');
+        $array_formulir_id = explode(',', \Input::get('formulir_id'));
+        $approval_message = '';
+
+        DB::beginTransaction();
+        foreach ($array_formulir_id as $id) {
+            $invoice = Invoice::where('formulir_id', $id)->first();
+            FormulirHelper::reject($invoice->formulir, $approval_message, 'approval.point.purchasing.service.invoice', $token);
+            timeline_publish('reject', $invoice->formulir->form_number . ' rejected', $invoice->formulir->approval_to);
+        }
+        DB::commit();
+
+        $view = view('framework::app.approval-all-status');
+        $view->array_formulir_id = $array_formulir_id;
+        $view->formulir = \Input::get('formulir_id');
+
+        return $view;
     }
 }
