@@ -24,6 +24,7 @@ use Point\PointPurchasing\Models\Inventory\PurchaseOrder;
 use Point\PointPurchasing\Models\Inventory\PurchaseRequisition;
 use Point\PointPurchasing\Models\Service\Downpayment as PurchaseServiceDownpayment;
 use Point\PointPurchasing\Models\Service\PaymentOrder as PurchaseServicePaymentOrder;
+use Point\PointPurchasing\Models\Service\Invoice as PurchaseServiceInvoice;
 use Point\PointSales\Models\Sales\DeliveryOrder;
 use Point\PointSales\Models\Sales\Downpayment as DownpaymentSales;
 use Point\PointSales\Models\Sales\Invoice as InvoiceSales;
@@ -79,6 +80,7 @@ class DashboardController extends Controller
         $array_vesa = array_merge($array_vesa, CashAdvance::getVesa());
 
         // PURCHASING SERVICE
+        $array_vesa = array_merge($array_vesa, PurchaseServiceInvoice::getVesa());
         $array_vesa = array_merge($array_vesa, PurchaseServicePaymentOrder::getVesa());
         $array_vesa = array_merge($array_vesa, PurchaseServiceDownpayment::getVesa());
 

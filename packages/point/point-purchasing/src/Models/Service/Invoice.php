@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Point\Core\Traits\ByTrait;
 use Point\Framework\Models\FormulirLock;
 use Point\Framework\Traits\FormulirTrait;
+use Point\PointPurchasing\Vesa\Service\ServiceInvoiceVesa;
 
 class Invoice extends Model
 {
-    use ByTrait, FormulirTrait;
+    use ByTrait, FormulirTrait, ServiceInvoiceVesa;
 
     protected $table = 'point_purchasing_service_invoice';
     public $timestamps = false;
