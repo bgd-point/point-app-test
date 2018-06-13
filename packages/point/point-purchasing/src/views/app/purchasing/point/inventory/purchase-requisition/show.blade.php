@@ -182,13 +182,19 @@
                                     <a href="{{url('purchasing/point/purchase-requisition/'.$purchase_requisition->id.'/edit')}}"
                                        class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                 @endif
-                                @if(formulir_view_cancel($purchase_requisition->formulir, 'delete.point.purchasing.requisition'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCancelForm('{{url('formulir/cancel')}}',
-                                               '{{ $purchase_requisition->formulir_id }}',
-                                               'delete.point.purchasing.requisition')"><i class="fa fa-times"></i>
-                                        Cancel Form</a>
+
+                                @if(formulir_view_cancel_or_request_cancel($purchase_requisition->formulir, 'delete.point.purchasing.requisition', 'approval.point.purchasing.requisition') == 1)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $purchase_requisition->formulir_id }}','approval.point.purchasing.requisition')">
+                                        <i class="fa fa-times"></i> 
+                                        Cancel Form
+                                    </a>
+                                @elseif(formulir_view_cancel_or_request_cancel($purchase_requisition->formulir, 'delete.point.purchasing.requisition', 'approval.point.purchasing.requisition') == 2)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm('{{url('formulir/requestCancel')}}', '{{ $purchase_requisition->formulir_id }}', 'delete.point.purchasing.requisition')">
+                                        <i class="fa fa-times"></i> 
+                                        Request Cancel Form
+                                    </a>
                                 @endif
+
                                 @if(formulir_view_close($purchase_requisition->formulir, 'update.point.purchasing.requisition'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCloseForm({{$purchase_requisition->formulir_id}},'{{url('formulir/close')}}')">Close

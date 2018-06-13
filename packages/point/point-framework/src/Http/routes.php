@@ -23,6 +23,10 @@ Route::group(['namespace' => 'Point\Framework\Http\Controllers'], function () {
     });
 
     Route::get('formulir/{id}/approval/check-status/{token}', 'FormulirController@checkApprovalStatus');
+    
+    Route::get('formulir/{id}/cancel/status/{token}', 'FormulirController@checkCancelStatus');
+    Route::get('formulir/{id}/cancel/approve/{token}', 'FormulirController@cancelApproved');
+    Route::get('formulir/{id}/cancel/reject/{token}', 'FormulirController@cancelRejected');
 
     Route::group(['middleware' => 'auth'], function () {
 
@@ -30,6 +34,7 @@ Route::group(['namespace' => 'Point\Framework\Http\Controllers'], function () {
         Route::group(['prefix' => 'formulir'], function () {
             // default formulir managemenet ajax request
             Route::post('cancel', 'FormulirController@cancel');
+            Route::post('requestCancel', 'FormulirController@requestCancel');
             Route::post('close', 'FormulirController@close');
             Route::post('reopen', 'FormulirController@reopen');
             Route::get('access/{title}/{permission_type}', 'FormulirController@access');

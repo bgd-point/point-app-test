@@ -248,12 +248,22 @@
                                     <a href="{{url('sales/point/service/invoice/'.$invoice->id.'/edit')}}"
                                        class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                 @endif
-                                @if(formulir_view_cancel($invoice->formulir, 'delete.point.sales.service.invoice'))
+                                @if(formulir_view_cancel_or_request_cancel($invoice->formulir, 'delete.point.sales.service.invoice', 'approval.point.sales.service.invoice') == 1)
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCancelForm('{{url('formulir/cancel')}}',
                                                '{{ $invoice->formulir_id }}',
-                                               'delete.point.sales.invoice')"><i class="fa fa-times"></i> Cancel
-                                        Form</a>
+                                               'approval.point.sales.invoice')">
+                                        <i class="fa fa-times"></i> 
+                                        Cancel Form
+                                    </a>
+                                @elseif(formulir_view_cancel_or_request_cancel($invoice->formulir, 'delete.point.sales.service.invoice', 'approval.point.sales.service.invoice') == 2)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
+                                       onclick="secureRequestCancelForm('{{url('formulir/requestCancel')}}',
+                                                '{{ $invoice->formulir_id }}',
+                                                'delete.point.sales.invoice')">
+                                        <i class="fa fa-times"></i> 
+                                        Request Cancel Form
+                                    </a>
                                 @endif
                                 @if(formulir_view_close($invoice->formulir, 'update.point.sales.service.invoice'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"

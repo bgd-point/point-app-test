@@ -87,6 +87,21 @@ function secureCancelForm(url, formulir_id, permission_slug)
     });
 }
 
+function secureRequestCancelForm(url, formulir_id, permission_slug)
+{
+    $.ajax({
+        url: url,
+        type: 'post',
+        data: {
+            formulir_id: formulir_id,
+            permission_slug: permission_slug
+        }
+    })
+    .always(function(data){
+        notification(data['title'], data['msg']);
+    });
+}
+
 function secureCloseForm(id, url)
 {
     swal({   
