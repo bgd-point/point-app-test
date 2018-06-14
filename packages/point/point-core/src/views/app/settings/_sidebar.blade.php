@@ -26,7 +26,7 @@
                     </a>
                 </li>
             </ul>
-            @if(auth()->user()->hasRole(1))
+            @if(auth()->user()->may('menu.setting'))
             <h4 class="inner-sidebar-header">
                 Administrator
             </h4>
