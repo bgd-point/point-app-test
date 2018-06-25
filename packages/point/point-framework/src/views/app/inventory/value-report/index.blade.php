@@ -14,13 +14,13 @@
                     <div class="form-group">
                         <div class="col-sm-6">
                             <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
-                                <input type="text" name="date_from" class="form-control date input-datepicker" placeholder="From"  value="{{\Input::get('date_from') ? \Input::get('date_from') : date(date_format_get(), strtotime($date_from))}}">
+                                <input type="text" name="date_from" id="date_from" class="form-control date input-datepicker" placeholder="From"  value="{{\Input::get('date_from') ? \Input::get('date_from') : date(date_format_get(), strtotime($date_from))}}">
                                 <span class="input-group-addon"><i class="fa fa-chevron-right"></i></span>
-                                <input type="text" name="date_to" class="form-control date input-datepicker" placeholder="To" value="{{\Input::get('date_to') ? \Input::get('date_to') : date(date_format_get(), strtotime($date_to))}}">
+                                <input type="text" name="date_to" id="date_to" class="form-control date input-datepicker" placeholder="To" value="{{\Input::get('date_to') ? \Input::get('date_to') : date(date_format_get(), strtotime($date_to))}}">
                             </div>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" name="search" class="form-control" placeholder="Search Item..." value="{{\Input::get('search')}}" value="{{\Input::get('search') ? \Input::get('search') : ''}}">
+                            <input type="text" name="search" id="search" class="form-control" placeholder="Search Item..." value="{{\Input::get('search')}}" value="{{\Input::get('search') ? \Input::get('search') : ''}}">
                         </div>
                         <div class="col-sm-3">
                             <select name="warehouse_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
@@ -32,6 +32,12 @@
                         </div>
                         <div class="col-sm-3">
                             <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
+                            @if(access_is_allowed_to_view('export.inventory.value.report'))
+                                <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" onclick="exportExcel()">Export to excel</a>
+                            @endif
+                            @if(auth()->user()->may('export.inventory.value.report'))
+                                <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" href=""> export to PDF</a>
+                            @endif
                         </div>
                     </div>
                 </form>
@@ -130,4 +136,35 @@
             </div>
         </div>
     </div>
+@stop
+
+@section('scripts')
+<script type="text/javascript">
+    function exportExcel() {
+        var spinner = ' <i class="fa fa-spinner fa-spin" style="font-size:16px;"></i>';
+        var date_from = $("#date-from").val();
+        var date_to = $("#date-to").val();
+        var search = $('#search').val();
+        $(".button-export").html(spinner);
+        $(".button-export").addClass('disabled');
+        $.ajax({
+            url: '{{url("purchasing/point/report/export")}}',
+            data: {
+                date_from: date_from,
+                date_to: date_to,
+                search: search
+            },
+            success: function(result) {
+                $(".button-export").removeClass('disabled');
+                $(".button-export").html('Export to excel');
+                notification('export data success, please check your email in a few moments');
+            }, error:  function (result) {
+                $(".button-export").removeClass('disabled');
+                $(".button-export").html('Export to excel');
+                notification('export data failed, please try again');
+            }
+
+        });
+    }
+</script>
 @stop
