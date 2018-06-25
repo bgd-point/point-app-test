@@ -96,6 +96,6 @@ class FrameworkPermissionTableSeeder extends Seeder
         $group = 'INVENTORY';
 
         PermissionHelper::create('INVENTORY REPORT', ['read'], $group);
-        PermissionHelper::create('INVENTORY VALUE REPORT', ['read'], $group);
+        PermissionHelper::create('INVENTORY VALUE REPORT', ['read', 'export'], $group);
     }
 }
