@@ -7,5 +7,6 @@ Route::group(['middleware' => 'auth', 'prefix' => 'inventory', 'namespace' => 'P
     Route::get('/report/detail/{item_id}', 'InventoryReportController@detail');
 
     Route::get('/value-report', 'InventoryValueReportController@index');
+    Route::get('/value-report/export', 'InventoryValueReportController@export');
     Route::get('/value-report/detail/{item_id}', 'InventoryValueReportController@detail');
 });
