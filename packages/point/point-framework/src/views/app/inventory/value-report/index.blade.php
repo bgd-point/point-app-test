@@ -162,7 +162,6 @@
                 notification('export data success, please check your email in a few moments');
             },
             error:  function (result) {
-                console.log(result);
                 notification('export data failed, please try again');
             },
             complete: function(result) {
