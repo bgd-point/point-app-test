@@ -23,17 +23,17 @@
                             <input type="text" name="search" id="search" class="form-control" placeholder="Search Item..." value="{{\Input::get('search')}}" value="{{\Input::get('search') ? \Input::get('search') : ''}}">
                         </div>
                         <div class="col-sm-3">
-                            <select name="warehouse_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                            <select name="warehouse_id" id="warehouse_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
                                 <option value="0" @if($search_warehouse) selected @endif>All</option>
                                 @foreach($list_warehouse as $warehouse)
                                     <option value="{{$warehouse->id}}" @if( $search_warehouse && $search_warehouse->id == $warehouse->id) selected @endif>{{$warehouse->codeName}}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-12">
                             <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
                             @if(access_is_allowed_to_view('export.inventory.value.report'))
-                                <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" onclick="exportExcel()">Export to excel</a>
+                                <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-excel">Export to excel</a>
                             @endif
                             @if(auth()->user()->may('export.inventory.value.report'))
                                 <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" href=""> export to PDF</a>
@@ -140,31 +140,35 @@
 
 @section('scripts')
 <script type="text/javascript">
-    function exportExcel() {
+    $("#btn-excel").click(function(e) {
         var spinner = ' <i class="fa fa-spinner fa-spin" style="font-size:16px;"></i>';
-        var date_from = $("#date-from").val();
-        var date_to = $("#date-to").val();
+        // because .val() returns 01-06-18 which printed in excel as 18 Jun 2001
+        var date_from = $("#date_from").data('datepicker').getFormattedDate('yyyy-mm-dd');
+        var date_to = $("#date_to").data('datepicker').getFormattedDate('yyyy-mm-dd');
         var search = $('#search').val();
-        $(".button-export").html(spinner);
-        $(".button-export").addClass('disabled');
+        var warehouse = $('#warehouse_id').val();
+        
+        $(e.currentTarget).html(spinner).addClass('disabled');
+
         $.ajax({
-            url: '{{url("purchasing/point/report/export")}}',
+            url: '{{url("inventory/value-report/export")}}',
             data: {
                 date_from: date_from,
                 date_to: date_to,
-                search: search
+                search: search,
+                warehouse: warehouse
             },
             success: function(result) {
-                $(".button-export").removeClass('disabled');
-                $(".button-export").html('Export to excel');
                 notification('export data success, please check your email in a few moments');
-            }, error:  function (result) {
-                $(".button-export").removeClass('disabled');
-                $(".button-export").html('Export to excel');
+            },
+            error:  function (result) {
+                console.log(result);
                 notification('export data failed, please try again');
+            },
+            complete: function(result) {
+                $(e.currentTarget).removeClass('disabled').html('Export to excel');
             }
-
         });
-    }
+    });
 </script>
 @stop
