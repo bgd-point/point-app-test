@@ -163,11 +163,6 @@
                 <td>:</td>
                 <td>{{ $invoice->person->name }}</td>
             </tr>
-            <tr>
-                <td style="width: 20%">Notes</td>
-                <td>:</td>
-                <td>{{ $invoice->formulir->notes }}</td>
-            </tr>
         </table>
 
         <table cellpadding="0" cellspacing="0">
