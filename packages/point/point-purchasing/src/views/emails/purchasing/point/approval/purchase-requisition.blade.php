@@ -161,25 +161,31 @@
             <tr class="heading">
                 <td>Item</td>
                 <td>Quantity</td>
-                <td>Price</td>
+                <td style="text-align: right;">Price</td>
                 <td>Allocation</td>
-                <td>Total</td>
+                <td style="text-align: right;">Total</td>
             </tr>
-
-           @foreach($purchase_requisition->items as $purchase_requisition_item)
+            <?php
+                $purchase_requisition_total = 0;
+            ?>
+            @foreach($purchase_requisition->items as $purchase_requisition_item)
+                <?php
+                    $item_total = $purchase_requisition_item->quantity * $purchase_requisition_item->price;
+                    $purchase_requisition_total += $item_total;
+                ?>
                 <tr class="item">
                     <td>{{$purchase_requisition_item->item->codeName}}</td>
                     <td>{{number_format_quantity($purchase_requisition_item->quantity). ' ' .$purchase_requisition_item->unit}}</td>
-                    <td>{{number_format_quantity($purchase_requisition_item->price)}}</td>
+                    <td style="text-align: right;">{{number_format_quantity($purchase_requisition_item->price)}}</td>
                     <td>{{$purchase_requisition_item->allocation->name}}</td>
-                    <td>{{number_format_quantity($purchase_requisition_item->quantity * $purchase_requisition_item->price)}}</td>
+                    <td style="text-align: right;">{{number_format_quantity($item_total)}}</td>
                 </tr>
             @endforeach
             
             <tr class="heading">
-                <td colspan="4">Total</td>
+                <td colspan="4" style="text-align: right;">Total</td>
                 <td>
-                    {{number_format_quantity($purchase_requisition->total)}}
+                    {{number_format_quantity($purchase_requisition_total)}}
                 </td>
             </tr>
             <tr>
