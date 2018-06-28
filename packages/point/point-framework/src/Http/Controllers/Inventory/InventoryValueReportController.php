@@ -262,7 +262,7 @@ class InventoryValueReportController extends Controller
         ];
 
         \Queue::push(function ($job) use ($data_email, $request) {
-            \Mail::send('point-purchasing::emails.purchasing.point.external.purchasing-report', $data_email, function ($message) use ($data_email) {
+            \Mail::send('framework::email.inventory-report', $data_email, function ($message) use ($data_email) {
                 $message->to($data_email['email'])->subject('INVENTORY VALUE REPORT ' . date('ymdHi'));
             });
             $job->delete();
