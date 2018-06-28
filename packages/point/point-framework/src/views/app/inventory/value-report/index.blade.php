@@ -35,7 +35,7 @@
                             @if(access_is_allowed_to_view('export.inventory.value.report'))
                                 <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-excel">Export to excel</a>
                             @endif
-                            @if(auth()->user()->may('export.inventory.value.report'))
+                            @if(auth()->user()->may('export.inventory.value.report') && false)
                                 <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-pdf" href=""> export to PDF</a>
                             @endif
                         </div>
