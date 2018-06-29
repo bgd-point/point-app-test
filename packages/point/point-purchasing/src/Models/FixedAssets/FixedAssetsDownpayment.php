@@ -67,9 +67,9 @@ class FixedAssetsDownpayment extends Model
         $downpayment = FixedAssetsDownpayment::find($id);
 
         if ($downpayment->formulir->form_number) {
-            return '/purchasing/point/downpayment/'.$id;
+            return '/purchasing/point/fixed-assets/downpayment/'.$id;
         } else {
-            return '/purchasing/point/downpayment/'.$id.'/archived';
+            return '/purchasing/point/fixed-assets/downpayment/'.$id.'/archived';
         }
     }
 
