@@ -232,14 +232,11 @@ class FormulirController extends Controller
 
             \Log::info(get_class(new CashAdvance()));
 
-
-
             if ($formulir->formulirable_type == get_class(new CashAdvance())) {
                 $cashAdvance = CashAdvance::find($formulir->formulirable_id);
                 $cashAdvance->remaining_amount = 0;
                 $cashAdvance->save();
             }
-
             timeline_publish('close.formulir', trans('framework::framework/global.formulir.close.timeline', ['form_number' => $formulir->form_number]));
             
             DB::commit();

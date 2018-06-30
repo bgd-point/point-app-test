@@ -128,84 +128,86 @@
 
 <body>
 <div class="invoice-box">
-    Hi, you have an request approval purchase requisition from {{ $username }}. We would like to inform the
+    Hi, you have an request approval purchase service invoice from {{ $username }}. We would like to inform the
     details as follows :
 
-   @foreach($list_data as $purchase_requisition)
+   @foreach($list_invoice as $invoice)
         <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
             <tr>
-                <td style="width: 20%">Form Number</td>
-                <td>:</td>
-                <td>{{ $purchase_requisition->formulir->form_number }}</a></td>
-            </tr>
-            <tr>
-                <td style="width: 20%">Form Date</td>
-                <td>:</td>
-                <td>{{ \DateHelper::formatView($purchase_requisition->formulir->form_date) }}</td>
-            </tr>
-            @if($purchase_requisition->supplier_id)
-            <tr>
-                <td style="width: 20%">Supplier</td>
-                <td>:</td>
-                <td>{{ $purchase_requisition->supplier->codeName }}</td>
-            </tr>
-            @endif
-            <tr>
-                <td style="width: 20%">Employee</td>
-                <td>:</td>
-                <td>{{ $purchase_requisition->employee->codeName }}</td>
-            </tr>
-        </table>
-
-        <table cellpadding="0" cellspacing="0">
-            <tr class="heading">
-                <td>Item</td>
-                <td>Quantity</td>
-                <td style="text-align: right;">Price</td>
-                <td>Allocation</td>
-                <td style="text-align: right;">Total</td>
-            </tr>
-            <?php
-                $purchase_requisition_total = 0;
-            ?>
-            @foreach($purchase_requisition->items as $purchase_requisition_item)
-                <?php
-                    $item_total = $purchase_requisition_item->quantity * $purchase_requisition_item->price;
-                    $purchase_requisition_total += $item_total;
-                ?>
-                <tr class="item">
-                    <td>{{$purchase_requisition_item->item->codeName}}</td>
-                    <td>{{number_format_quantity($purchase_requisition_item->quantity). ' ' .$purchase_requisition_item->unit}}</td>
-                    <td style="text-align: right;">{{number_format_quantity($purchase_requisition_item->price)}}</td>
-                    <td>{{$purchase_requisition_item->allocation->name}}</td>
-                    <td style="text-align: right;">{{number_format_quantity($item_total)}}</td>
-                </tr>
-            @endforeach
-            
-            <tr class="heading">
-                <td colspan="4" style="text-align: right;">Total</td>
+                <td style="width: 20%">
+                    Form Number
+                </td>
                 <td>
-                    {{number_format_quantity($purchase_requisition_total)}}
+                    :
+                </td>
+                <td>
+                    {{ $invoice->formulir->form_number }}</a>
                 </td>
             </tr>
             <tr>
-                <td colspan="5" >
-                    <a href="{{ $url . '/formulir/'.$purchase_requisition->formulir_id.'/approval/check-status/'.$token }}"><input
+                <td style="width: 20%">
+                    Form Date
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    {{ \DateHelper::formatView($invoice->formulir->form_date) }}
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20%">
+                    Supplier
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    {!! get_url_person($invoice->person->id) !!}
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20%">
+                    Amount
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    {{ number_format_price($invoice->total) }}
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20%">
+                    Notes
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    {{ ucfirst($invoice->formulir->notes) }}
+                </td>
+            </tr>
+        </table>
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td colspan="6" >
+                    <a href="{{ $url . '/formulir/'.$invoice->formulir_id.'/approval/check-status/'.$token }}"><input
                                 type="button" class="btn btn-check" value="Check"></a>
-                    <a href="{{ $url . '/purchasing/point/purchase-requisition/'.$purchase_requisition->id.'/approve?token='.$token }}"><input
+                    <a href="{{ $url . '/purchasing/point/service/invoice/'.$invoice->id.'/approve?token='.$token }}"><input
                                 type="button" class="btn btn-success" value="Approve"></a>
-                    <a href="{{ $url . '/purchasing/point/purchase-requisition/'.$purchase_requisition->id.'/reject?token='.$token }}"><input
+                    <a href="{{ $url . '/purchasing/point/service/invoice/'.$invoice->id.'/reject?token='.$token }}"><input
                                 type="button" class="btn btn-danger" value="Reject"></a>
                 </td>
             </tr>
         </table>
     @endforeach
-    @if($list_data->count() > 1)
+    @if($list_invoice->count() > 1)
     <br>
-    <a href="{{ $url . '/purchasing/point/purchase-requisition/approve-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
+    <a href="{{ $url . '/purchasing/point/service/invoice/approve-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
         <input type="button" class="btn btn-primary" value="Approve All">
     </a>
-    <a href="{{ $url . '/purchasing/point/purchase-requisition/reject-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
+    <a href="{{ $url . '/purchasing/point/service/invoice/reject-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
         <input type="button" class="btn btn-warning" value="Reject All">
     </a>
     @endif
