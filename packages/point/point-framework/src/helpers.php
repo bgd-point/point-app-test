@@ -537,3 +537,27 @@ if (! function_exists('inventory_get_available_stock')) {
         return InventoryHelper::getAvailableStock($date, $item_id, $warehouse_id);
     }
 }
+
+if (! function_exists('inventory_get_cost_of_sales_value')) {
+
+    /**
+     * @param $person_type_slug
+     * @return string|void
+     */
+    function inventory_get_cost_of_sales_value($date_from, $item_id, $warehouse_id)
+    {
+        return InventoryHelper::getCostOfSales($date_from, $item_id, $warehouse_id);
+    }
+}
+
+if (! function_exists('inventory_get_cost_of_sales_value_all')) {
+
+    /**
+     * @param $person_type_slug
+     * @return string|void
+     */
+    function inventory_get_cost_of_sales_value_all($date_from, $item_id)
+    {
+        return InventoryHelper::getAverageCostOfSales($date_from, $item_id);
+    }
+}

@@ -27,11 +27,12 @@ class PaymentController extends Controller
             if (strpos($lock->lockedForm->formulirable_type, 'Downpayment') !== false) {
                 $locks2 = FormulirLock::where('locked_id', $lock->locked_id)->where('locked', 1)->get();
                 if ($locks2->count() > 1) {
-                    gritter_error('Cannot delete this transaction');
-                    return array('status' => 'success');
+                    if ($locks2->first()->lockedForm->formulirable_type != $lock->lockedForm->formulirable_type) {
+                        gritter_error('Cannot delete this transaction');
+                        return array('status' => 'success');
+                    }
                 }
             }
-
         }
         DB::beginTransaction();
 

@@ -9,9 +9,17 @@ Route::group(['prefix' => 'purchasing/point/service', 'namespace' => 'Point\Poin
     Route::get('/report', 'ServiceReportController@index');
 
     // INVOICE
+    Route::get('/invoice/reject-all', 'InvoiceApprovalController@rejectAll');
+    Route::get('/invoice/approve-all', 'InvoiceApprovalController@approveAll');
+    Route::any('/invoice/{id}/approve', 'InvoiceApprovalController@approve');
+    Route::any('/invoice/{id}/reject', 'InvoiceApprovalController@reject');
     Route::group(['middleware' => 'auth'], function () {
+        Route::get('/invoice/request-approval', 'InvoiceApprovalController@requestApproval');
+        Route::post('/invoice/send-request-approval', 'InvoiceApprovalController@sendRequestApproval');
+
         Route::get('/invoice/vesa-create', 'ServiceInvoiceVesaController@create');
         Route::get('/invoice/vesa-rejected', 'ServiceInvoiceVesaController@create');
+
         Route::get('/invoice/{id}/export', 'InvoiceController@exportPDF');
         Route::get('/invoice/{id}/archived', 'InvoiceController@archived');
         Route::get('/invoice/pdf', 'InvoiceController@indexPDF');

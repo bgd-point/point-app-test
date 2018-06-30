@@ -14,24 +14,27 @@
                     <div class="form-group">
                         <div class="col-sm-6">
                             <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
-                                <input type="text" name="date_from" class="form-control date input-datepicker" placeholder="From"  value="{{\Input::get('date_from') ? \Input::get('date_from') : date(date_format_get(), strtotime($date_from))}}">
+                                <input type="text" name="date_from" id="date_from" class="form-control date input-datepicker" placeholder="From"  value="{{\Input::get('date_from') ? \Input::get('date_from') : date(date_format_get(), strtotime($date_from))}}">
                                 <span class="input-group-addon"><i class="fa fa-chevron-right"></i></span>
-                                <input type="text" name="date_to" class="form-control date input-datepicker" placeholder="To" value="{{\Input::get('date_to') ? \Input::get('date_to') : date(date_format_get(), strtotime($date_to))}}">
+                                <input type="text" name="date_to" id="date_to" class="form-control date input-datepicker" placeholder="To" value="{{\Input::get('date_to') ? \Input::get('date_to') : date(date_format_get(), strtotime($date_to))}}">
                             </div>
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" name="search" class="form-control" placeholder="Search Item..." value="{{\Input::get('search')}}" value="{{\Input::get('search') ? \Input::get('search') : ''}}">
+                            <input type="text" name="search" id="search" class="form-control" placeholder="Search Item..." value="{{\Input::get('search')}}" value="{{\Input::get('search') ? \Input::get('search') : ''}}">
                         </div>
                         <div class="col-sm-3">
-                            <select name="warehouse_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                            <select name="warehouse_id" id="warehouse_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
                                 <option value="0" @if($search_warehouse) selected @endif>All</option>
                                 @foreach($list_warehouse as $warehouse)
                                     <option value="{{$warehouse->id}}" @if( $search_warehouse && $search_warehouse->id == $warehouse->id) selected @endif>{{$warehouse->codeName}}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-12">
                             <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
+                            @if(access_is_allowed_to_view('export.inventory.value.report'))
+                                <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-excel">Export to excel</a>
+                            @endif
                         </div>
                     </div>
                 </form>
@@ -130,4 +133,37 @@
             </div>
         </div>
     </div>
+@stop
+
+@section('scripts')
+<script type="text/javascript">
+    $("#btn-excel").click(function(e) {
+        var spinner = ' <i class="fa fa-spinner fa-spin" style="font-size:16px;"></i>';
+        var date_from = $("#date_from").val();
+        var date_to = $("#date_to").val();
+        var search = $('#search').val();
+        var warehouse = $('#warehouse_id').val();
+        
+        $(e.currentTarget).html(spinner).addClass('disabled');
+
+        $.ajax({
+            url: '{{url("inventory/value-report/export")}}',
+            data: {
+                date_from: date_from,
+                date_to: date_to,
+                search: search,
+                warehouse: warehouse
+            },
+            success: function(result) {
+                notification('export data success, please check your email in a few moments');
+            },
+            error:  function (result) {
+                notification('export data failed, please try again');
+            },
+            complete: function(result) {
+                $(e.currentTarget).removeClass('disabled').html('Export to excel');
+            }
+        });
+    });
+</script>
 @stop
