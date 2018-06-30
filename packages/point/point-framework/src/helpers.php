@@ -90,6 +90,20 @@ if (! function_exists('formulir_view_cancel')) {
     }
 }
 
+if (! function_exists('formulir_view_cancel_or_request_cancel')) {
+
+    /**
+     * @param $formulir
+     * @param $permission_slug
+     *
+     * @return bool
+     */
+    function formulir_view_cancel_or_request_cancel($formulir, $permission_slug_delete, $permission_slug_approve)
+    {
+        return FormulirHelper::viewCancelOrRequestCancel($formulir, $permission_slug_delete, $permission_slug_approve);
+    }
+}
+
 if (! function_exists('formulir_view_email_vendor')) {
 
     /**

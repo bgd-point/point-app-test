@@ -193,12 +193,19 @@
                                     <a href="{{url('sales/point/indirect/sales-quotation/'.$sales_quotation->id.'/edit')}}"
                                        class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                 @endif
-                                @if(formulir_view_cancel($sales_quotation->formulir, 'delete.point.sales.quotation'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCancelForm('{{url('formulir/cancel')}}',
-                                               '{{ $sales_quotation->formulir_id }}',
-                                               'delete.point.sales.quotation')"><i class="fa fa-times"></i> Cancel Form</a>
+
+                                @if(formulir_view_cancel_or_request_cancel($sales_quotation->formulir, 'delete.point.sales.quotation', 'approval.point.sales.quotation') == 1)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $sales_quotation->formulir_id }}','approval.point.sales.quotation')">
+                                        <i class="fa fa-times"></i> 
+                                        Cancel Form
+                                    </a>
+                                @elseif(formulir_view_cancel_or_request_cancel($sales_quotation->formulir, 'delete.point.sales.quotation', 'approval.point.sales.quotation') == 2)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm('{{url('formulir/requestCancel')}}', '{{ $sales_quotation->formulir_id }}', 'delete.point.sales.quotation')">
+                                        <i class="fa fa-times"></i> 
+                                        Request Cancel Form
+                                    </a>
                                 @endif
+
                                 @if(formulir_view_close($sales_quotation->formulir, 'update.point.sales.quotation'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCloseForm({{$sales_quotation->formulir_id}},'{{url('formulir/close')}}')">Close

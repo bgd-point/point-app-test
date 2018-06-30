@@ -186,7 +186,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-12">
-                                @if(formulir_view_edit($invoice->formulir, 'update.point.purchasing.invoice'))
+                                @if(formulir_view_edit($invoice->formulir, 'update.point.purchasing.invoice.fixed.assets'))
                                     <?php $parent_refer = ReferHelper::getRefers(get_class($invoice), $invoice->id); ?>
                                     @if(count($parent_refer) > 0)
                                         <a href="{{url('purchasing/point/fixed-assets/invoice/'.$invoice->id.'/edit')}}"
@@ -196,19 +196,19 @@
                                            class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                     @endif
                                 @endif
-                                @if(formulir_view_cancel($invoice->formulir, 'delete.point.purchasing.invoice'))
+                                @if(formulir_view_cancel($invoice->formulir, 'delete.point.purchasing.invoice.fixed.assets'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCancelForm('{{url('formulir/cancel')}}',
                                                '{{ $invoice->formulir_id }}',
-                                               'delete.point.purchasing.invoice')"><i class="fa fa-times"></i> Cancel
+                                               'delete.point.purchasing.invoice.fixed.assets')"><i class="fa fa-times"></i> Cancel
                                         Form</a>
                                 @endif
-                                @if(formulir_view_close($invoice->formulir, 'update.point.purchasing.invoice'))
+                                @if(formulir_view_close($invoice->formulir, 'update.point.purchasing.invoice.fixed.assets'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCloseForm({{$invoice->formulir_id}},'{{url('formulir/close')}}')">Close
                                         Form</a>
                                 @endif
-                                @if(formulir_view_reopen($invoice->formulir, 'update.point.purchasing.invoice'))
+                                @if(formulir_view_reopen($invoice->formulir, 'update.point.purchasing.invoice.fixed.assets'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureReopenForm({{$invoice->formulir_id}},'{{url('formulir/reopen')}}')">Reopen
                                         Form</a>
@@ -217,7 +217,7 @@
                         </div>
                     </fieldset>
 
-                    @if(formulir_view_approval($invoice->formulir, 'approval.point.purchasing.invoice'))
+                    @if(formulir_view_approval($invoice->formulir, 'approval.point.purchasing.invoice.fixed.assets'))
                         <fieldset>
                             <div class="form-group">
                                 <div class="col-md-12">

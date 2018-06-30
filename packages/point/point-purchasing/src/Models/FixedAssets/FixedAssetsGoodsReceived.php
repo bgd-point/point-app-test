@@ -79,4 +79,15 @@ class FixedAssetsGoodsReceived extends Model
 
         return null;
     }
+
+    public static function showUrl($id)
+    {
+        $goods_received = FixedAssetsGoodsReceived::find($id);
+
+        if ($goods_received->formulir->form_number) {
+            return '/purchasing/point/fixed-assets/goods-received/'.$id;
+        } else {
+            return '/purchasing/point/fixed-assets/goods-received/'.$id.'/archived';
+        }
+    }
 }

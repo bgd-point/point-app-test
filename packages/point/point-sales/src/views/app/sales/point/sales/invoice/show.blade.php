@@ -205,13 +205,19 @@
                                            class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                     @endif
                                 @endif
-                                @if(formulir_view_cancel($invoice->formulir, 'delete.point.sales.invoice'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCancelForm('{{url('formulir/cancel')}}',
-                                               '{{ $invoice->formulir_id }}',
-                                               'delete.point.sales.invoice')"><i class="fa fa-times"></i> Cancel
-                                        Form</a>
+
+                                @if(formulir_view_cancel_or_request_cancel($invoice->formulir, 'delete.point.sales.invoice', 'approval.point.sales.invoice') == 1)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $invoice->formulir_id }}','approval.point.sales.invoice')">
+                                        <i class="fa fa-times"></i> 
+                                        Cancel Form
+                                    </a>
+                                @elseif(formulir_view_cancel_or_request_cancel($invoice->formulir, 'delete.point.sales.invoice', 'approval.point.sales.invoice') == 2)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm('{{url('formulir/requestCancel')}}', '{{ $invoice->formulir_id }}', 'delete.point.sales.invoice')">
+                                        <i class="fa fa-times"></i> 
+                                        Request Cancel Form
+                                    </a>
                                 @endif
+
                                 @if(formulir_view_close($invoice->formulir, 'update.point.sales.invoice'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCloseForm({{$invoice->formulir_id}},'{{url('formulir/close')}}')">Close
