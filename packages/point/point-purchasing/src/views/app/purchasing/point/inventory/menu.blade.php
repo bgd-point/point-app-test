@@ -104,12 +104,12 @@
             @endif
         </div>
 
-        <h2 class="sub-header">
-            Report
-        </h2>
+        @if(auth()->user()->may('read.point.purchasing.report'))
+            <h2 class="sub-header">
+                Report
+            </h2>
 
-        <div class="row">
-            @if(auth()->user()->may('read.point.purchasing.report'))
+            <div class="row">
                 <div class="col-md-4 col-lg-3">
                     <a href="{{url('purchasing/point/report')}}" class="widget widget-button">
                         <div class="widget-content text-right clearfix">
@@ -119,6 +119,7 @@
                         </div>
                     </a>
                 </div>
-            @endif
+            </div>
+        @endif
     </div>
 @stop

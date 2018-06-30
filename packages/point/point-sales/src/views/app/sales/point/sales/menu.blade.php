@@ -93,12 +93,12 @@
             @endif
         </div>
 
-        <h2 class="sub-header">
-            Report
-        </h2>
+        @if(client_has_addon('premium') && auth()->user()->may('read.point.sales.report'))
+            <h2 class="sub-header">
+                Report
+            </h2>
 
-        <div class="row">
-            @if(client_has_addon('premium') && auth()->user()->may('read.point.sales.report'))
+            <div class="row">
                 <div class="col-md-4 col-lg-3">
                     <a href="{{url('sales/point/indirect/report')}}" class="widget widget-button">
                         <div class="widget-content text-right clearfix">
@@ -108,7 +108,7 @@
                         </div>
                     </a>
                 </div>
-            @endif
-        </div>
+            </div>
+        @endif
     </div>
 @stop
