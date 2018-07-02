@@ -197,7 +197,8 @@ class InventoryValueReportController extends Controller
 
                     $content = array();
                     $total_closing_value = 0;
-                    foreach ($list_report as $report) {
+                    foreach ($list_report as $index=>$report) {
+                        
                         if ($warehouse) {
                             $opening_stock = inventory_get_opening_stock($date_from, $report->item_id, $warehouse);
                             $opening_cogs = inventory_get_cost_of_sales_value($date_from, $report->item_id, $warehouse);
@@ -236,6 +237,17 @@ class InventoryValueReportController extends Controller
                             number_format_quantity($closing_cogs),
                             number_format_quantity($closing_value)
                         ]);
+
+                        $recalculate_stock = Inventory::where('item_id', '=', $report->item_id)->where('recalculate', '=', 1)->orderBy('form_date', 'asc')->count() > 0;
+                        if($recalculate_stock === true) {
+                            $sheet->cell('A'.($index+5), function($cell) {
+                                $cell->setFont(array(
+                                    'bold' => true,
+                                    'underline' => true
+                                ));
+                                $cell->setFontColor('#F00');
+                            });
+                        }
                     }
                     // prints all list report into excel sheet
                     $sheet->fromArray($content, null, 'A5', false, false);
@@ -246,9 +258,7 @@ class InventoryValueReportController extends Controller
                     //set table border
                     $sheet->setBorder('A2:K'.$end_row, 'thin');
                     $sheet->cell('K'.$end_row, function ($cell) use ($total_closing_value) {
-                        $cell->setFont(array(
-                            'bold'       =>  true
-                        ));
+                        $cell->setFontWeight(true);
                         $cell->setValue(number_format_quantity($total_closing_value));
                     });
                     $sheet->setBorder('I'.$end_row, 'thin');
