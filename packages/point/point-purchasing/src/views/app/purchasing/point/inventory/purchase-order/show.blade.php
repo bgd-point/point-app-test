@@ -249,7 +249,7 @@
                                         Cancel Form
                                     </a>
                                 @elseif(formulir_view_cancel_or_request_cancel($purchase_order->formulir, 'delete.point.purchasing.order', 'approval.point.purchasing.order') == 2)
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm('{{url('formulir/requestCancel')}}', '{{ $purchase_order->formulir_id }}', 'delete.point.purchasing.order')">
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm(this, '{{url('formulir/requestCancel')}}', '{{ $purchase_order->formulir_id }}', 'delete.point.purchasing.order')">
                                         <i class="fa fa-times"></i> 
                                         Request Cancel Form
                                     </a>

@@ -258,7 +258,7 @@
                                     </a>
                                 @elseif(formulir_view_cancel_or_request_cancel($invoice->formulir, 'delete.point.sales.service.invoice', 'approval.point.sales.service.invoice') == 2)
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureRequestCancelForm('{{url('formulir/requestCancel')}}',
+                                       onclick="secureRequestCancelForm(this, '{{url('formulir/requestCancel')}}',
                                                 '{{ $invoice->formulir_id }}',
                                                 'delete.point.sales.invoice')">
                                         <i class="fa fa-times"></i> 
