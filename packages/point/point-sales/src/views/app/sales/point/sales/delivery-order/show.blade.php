@@ -217,13 +217,19 @@
                                     <a href="{{url('sales/point/indirect/delivery-order/'.$delivery_order->id.'/edit')}}"
                                        class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                 @endif
-                                @if(formulir_view_cancel($delivery_order->formulir, 'delete.point.sales.delivery.order'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCancelForm('{{url('formulir/cancel')}}',
-                                               '{{ $delivery_order->formulir_id }}',
-                                               'delete.point.sales.delivery.order')"><i class="fa fa-times"></i> Cancel
-                                        Form</a>
+
+                                @if(formulir_view_cancel_or_request_cancel($delivery_order->formulir, 'delete.point.sales.delivery.order', 'approval.point.sales.delivery.order') == 1)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $delivery_order->formulir_id }}','approval.point.sales.delivery.order')">
+                                        <i class="fa fa-times"></i> 
+                                        Cancel Form
+                                    </a>
+                                @elseif(formulir_view_cancel_or_request_cancel($delivery_order->formulir, 'delete.point.sales.delivery.order', 'approval.point.sales.delivery.order') == 2)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm('{{url('formulir/requestCancel')}}', '{{ $delivery_order->formulir_id }}', 'delete.point.sales.delivery.order')">
+                                        <i class="fa fa-times"></i> 
+                                        Request Cancel Form
+                                    </a>
                                 @endif
+
                                 @if(formulir_view_close($delivery_order->formulir, 'update.point.sales.delivery.order'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCloseForm({{$delivery_order->formulir_id}},'{{url('formulir/close')}}')">Close

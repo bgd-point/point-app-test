@@ -213,13 +213,15 @@
                                         <i class="fa fa-pencil"></i> Edit
                                     </a>
                                 @endif
-                                @if(formulir_view_cancel($expedition_order->formulir, 'delete.point.expedition.order'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCancelForm('{{url('formulir/cancel')}}',
-                                               '{{ $expedition_order->formulir_id }}',
-                                               'delete.point.expedition.order')">
-                                        <i class="fa fa-times"></i>
+                                @if(formulir_view_cancel_or_request_cancel($expedition_order->formulir, 'delete.point.expedition.order', 'approval.point.expedition.order') == 1)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $expedition_order->formulir_id }}','approval.point.expedition.order')">
+                                        <i class="fa fa-times"></i> 
                                         Cancel Form
+                                    </a>
+                                @elseif(formulir_view_cancel_or_request_cancel($expedition_order->formulir, 'delete.point.expedition.order', 'approval.point.expedition.order') == 2)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm('{{url('formulir/requestCancel')}}', '{{ $expedition_order->formulir_id }}', 'delete.point.expedition.order')">
+                                        <i class="fa fa-times"></i> 
+                                        Request Cancel Form
                                     </a>
                                 @endif
                                 @if(formulir_view_close($expedition_order->formulir, 'update.point.expedition.order'))
