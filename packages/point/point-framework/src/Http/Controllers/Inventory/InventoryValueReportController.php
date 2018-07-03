@@ -80,7 +80,6 @@ class InventoryValueReportController extends Controller
         return $view;
     }
 
-
     /**
      * Export inventory value report to excel
      *
@@ -93,7 +92,7 @@ class InventoryValueReportController extends Controller
         $fileName = 'INVENTORY VALUE REPORT '.date('YmdHis');
         $cRequest = $request;
         $request = $request->input();
-        // return Response()->json($request);
+
         \Queue::push(function ($job) use ($request, $fileName, $storage) {
             \Excel::create($fileName, function ($excel) use ($storage, $request) {
                 // Sheet Data
@@ -126,16 +125,13 @@ class InventoryValueReportController extends Controller
 
                     $sheet->cell('A1:K4', function ($cell) {
                         $cell->setFont(array(
-                            'family'     => 'Times New Roman',
                             'size'       => '14',
                             'bold'       =>  true
                         ));
                         $cell->setValignment('center');
                     });
-                    $sheet->cell('B2:K3', function ($cell) {
-                        $cell->setAlignment('center');
-                    });
                     
+                    // Set Header Text
                     $sheet->setCellValue('A1', 'INVENTORY VALUE REPORT');
                     $sheet->setCellValue('A2', 'ITEM');
                     $sheet->setCellValue('B2', 'OPENING STOCK');
@@ -153,7 +149,6 @@ class InventoryValueReportController extends Controller
 
                     $sheet->cell('B3:K3', function ($cell) {
                         $cell->setFont(array(
-                            'family'     => 'Times New Roman',
                             'size'       => '10',
                             'bold'       =>  true
                         ));
@@ -170,6 +165,7 @@ class InventoryValueReportController extends Controller
                     $sheet->setCellValue('J4', 'COST OF SALES');
                     $sheet->setCellValue('K4', 'TOTAL VALUE');
                     
+                    // Get inventory list
                     $warehouse = $request['warehouse'] ? : 0;
                     $array_of_search = explode(' ', $request['search']);
                     $list_report = Inventory::joinItem()
@@ -193,12 +189,12 @@ class InventoryValueReportController extends Controller
                             $query->whereBetween('inventory.form_date', [$date_from, $date_to])
                                 ->orWhere('inventory.form_date', '<', $date_from);
                         })
-                        ->paginate(100);
+                        ->get();
 
                     $content = array();
                     $total_closing_value = 0;
+
                     foreach ($list_report as $index=>$report) {
-                        
                         if ($warehouse) {
                             $opening_stock = inventory_get_opening_stock($date_from, $report->item_id, $warehouse);
                             $opening_cogs = inventory_get_cost_of_sales_value($date_from, $report->item_id, $warehouse);
@@ -224,6 +220,7 @@ class InventoryValueReportController extends Controller
                         }
                         $total_closing_value += $closing_value;
 
+                        // Store each report in array
                         array_push($content, [
                             $report->item->codeName,
                             number_format_quantity($opening_stock),
@@ -237,9 +234,9 @@ class InventoryValueReportController extends Controller
                             number_format_quantity($closing_cogs),
                             number_format_quantity($closing_value)
                         ]);
-
-                        $recalculate_stock = Inventory::where('item_id', '=', $report->item_id)->where('recalculate', '=', 1)->orderBy('form_date', 'asc')->count() > 0;
-                        if($recalculate_stock === true) {
+                        
+                        // If item needs recalculate stock
+                        if($report->recalculate === 1) {
                             $sheet->cell('A'.($index+5), function($cell) {
                                 $cell->setFont(array(
                                     'bold' => true,
@@ -249,13 +246,12 @@ class InventoryValueReportController extends Controller
                             });
                         }
                     }
-                    // prints all list report into excel sheet
+                    // Prints all list report into excel sheet
                     $sheet->fromArray($content, null, 'A5', false, false);
                     
-                    // get end row
                     $end_row = $list_report->count()+5;
 
-                    //set table border
+                    // Set table border
                     $sheet->setBorder('A2:K'.$end_row, 'thin');
                     $sheet->cell('K'.$end_row, function ($cell) use ($total_closing_value) {
                         $cell->setFontWeight(true);
@@ -263,7 +259,7 @@ class InventoryValueReportController extends Controller
                     });
                     $sheet->setBorder('I'.$end_row, 'thin');
 
-                // LEFT ALIGNMENT FOR COLUMN B TO I FROM ROW 5 TO END ROW
+                    // Right alignment for cells with number
                     $sheet->cell('B4:K'.$end_row, function($cell) {
                         $cell->setAlignment('right');
                     });
@@ -286,10 +282,6 @@ class InventoryValueReportController extends Controller
             $job->delete();
         });
 
-        $response = array(
-            'status' => 'success'
-        );
-
-        return response()->json($response);
+        return Response::HTTP_OK;
     }
 }
