@@ -87,8 +87,11 @@ function secureCancelForm(url, formulir_id, permission_slug)
     });
 }
 
-function secureRequestCancelForm(url, formulir_id, permission_slug)
+function secureRequestCancelForm(event, url, formulir_id, permission_slug)
 {
+    var spinner = ' <i class="fa fa-spinner fa-spin" style="font-size:16px;"></i>';
+    $(event).html(spinner).addClass('disabled');
+
     $.ajax({
         url: url,
         type: 'post',
@@ -99,6 +102,7 @@ function secureRequestCancelForm(url, formulir_id, permission_slug)
     })
     .always(function(data){
         notification(data['title'], data['msg']);
+        $(event).removeClass('disabled').html('REQUEST CANCEL FORM');
     });
 }
 
