@@ -28,6 +28,7 @@ use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
 use Point\Framework\Models\Refer;
 use Point\Framework\Models\SettingJournal;
+use Point\Framework\Models\EmailHistory;
 use Point\PointAccounting\Models\CutOffPayable;
 use Point\PointAccounting\Models\CutOffPayableDetail;
 use Point\PointFinance\Models\PaymentReference;
@@ -309,6 +310,7 @@ class PaymentOrderController extends Controller
         $view->list_payment_order_archived = PaymentOrder::joinFormulir()->archived($view->payment_order->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_payment_order_archived->count();
         $view->list_referenced = FormulirLock::where('locked_id', '=', $view->payment_order->formulir_id)->where('locked', true)->get();
+        $view->email_history = EmailHistory::where('formulir_id', $view->payment_order->formulir_id)->get();
         return $view;
     }
 
@@ -674,6 +676,15 @@ class PaymentOrderController extends Controller
         });
 
         gritter_success('Success send email payment order', 'false');
+
+        $email_history = new EmailHistory;
+        $email_history->sender = auth()->id();
+        $email_history->recipient = $payment_order->supplier->id;
+        $email_history->recipient_email = $payment_order->supplier->email;
+        $email_history->formulir_id = $payment_order->formulir->id;
+        $email_history->sent_at = \Carbon\Carbon::now()->toDateTimeString();
+        $email_history->save();
+        
         return redirect()->back();
     }
 
