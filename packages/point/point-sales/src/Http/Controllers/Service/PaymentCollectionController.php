@@ -17,6 +17,7 @@ use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\ReferHelper;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\FormulirLock;
+use Point\Framework\Models\EmailHistory;
 use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Master\Item;
@@ -220,6 +221,7 @@ class PaymentCollectionController extends Controller
         $view->payment_collection = PaymentCollection::find($id);
         $view->list_payment_collection_archived = PaymentCollection::joinFormulir()->archived($view->payment_collection->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_payment_collection_archived->count();
+        $view->email_history = EmailHistory::where('formulir_id', $view->payment_collection->formulir_id)->get();
         return $view;
     }
 
@@ -454,6 +456,15 @@ class PaymentCollectionController extends Controller
         });
 
         gritter_success('Success send email payment collection', 'false');
+
+        $email_history = new EmailHistory;
+        $email_history->sender = auth()->id();
+        $email_history->recipient = $payment_collection->person_id;
+        $email_history->recipient_email = $payment_collection->person->email;
+        $email_history->formulir_id = $payment_collection->formulir_id;
+        $email_history->sent_at = \Carbon\Carbon::now()->toDateTimeString();
+        $email_history->save();
+        
         return redirect()->back();
     }
 }
