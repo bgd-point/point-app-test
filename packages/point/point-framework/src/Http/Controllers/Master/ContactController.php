@@ -219,11 +219,6 @@ class ContactController extends Controller
         $person_type = PersonHelper::getType($person_type_slug);
 
         DB::beginTransaction();
-        $this->validate($request, [
-            'person_group_id' => 'required',
-            'name' => 'required|unique:person,name,' . $id
-        ]);
-
         $person = Person::find($id);
         $person->person_group_id = $request->input('person_group_id');
         $person->name = $request->input('name');
