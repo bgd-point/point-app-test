@@ -324,6 +324,44 @@
                             </div>
                         </fieldset>
                     @endif
+
+                    @if($email_history->count() > 0)
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <legend><i class="fa fa-angle-right"></i> EMAIL HISTORY</legend>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12 content-show">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align: right;">NO</th>
+                                                    <th style="text-align: center;">SENT AT</th>
+                                                    <th>SENDER</th>
+                                                    <th>RECIPIENT</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($email_history as $index=>$item)
+                                                <tr>
+                                                    <td style="text-align: right;">{{ $index+1 }}</td>
+                                                    <td style="text-align: center;">{{ date_format_view($item->sent_at, true) }}</td>
+                                                    <td><a href="/master/user/{{ $item->sender }}">{{ $item->user->name }}</a></td>
+                                                    <td>{!! get_url_person($item->recipient) !!}
+                                                        <span style="text-transform: none !important;"> ({{ $item->recipient_email }})</span>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    @endif
                 </div>
 
             </div>
