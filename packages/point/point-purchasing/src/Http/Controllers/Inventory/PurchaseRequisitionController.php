@@ -18,6 +18,7 @@ use Point\Framework\Models\Master\ItemUnit;
 use Point\Framework\Models\Master\PersonGroup;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
+use Point\Framework\Models\EmailHistory;
 use Point\PointPurchasing\Helpers\PurchaseRequisitionHelper;
 use Point\PointPurchasing\Http\Requests\PurchaseRequest;
 use Point\PointPurchasing\Models\Inventory\PurchaseRequisition;
@@ -124,7 +125,7 @@ class PurchaseRequisitionController extends Controller
         $view->purchase_requisition = $purchase_requisition;
         $view->list_purchase_requisition_archived = PurchaseRequisition::joinFormulir()->archived($purchase_requisition->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_purchase_requisition_archived->count();
-        
+        $view->email_history = EmailHistory::where('formulir_id', $purchase_requisition->formulir->id)->get();
         return $view;
     }
 
@@ -231,6 +232,15 @@ class PurchaseRequisitionController extends Controller
         });
 
         gritter_success('Success send email purchase requisition', 'false');
+
+        $email_history = new EmailHistory;
+        $email_history->sender = auth()->id();
+        $email_history->recipient = $purchase_requisition->supplier->id;
+        $email_history->recipient_email = $purchase_requisition->supplier->email;
+        $email_history->formulir_id = $purchase_requisition->formulir->id;
+        $email_history->sent_at = \Carbon\Carbon::now()->toDateTimeString();
+        $email_history->save();
+
         return redirect()->back();
     }
 }

@@ -10,6 +10,7 @@ use Point\Core\Helpers\UserHelper;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Models\FormulirLock;
+use Point\Framework\Models\EmailHistory;
 use Point\Framework\Models\Master\Gudang;
 use Point\Framework\Models\Master\Permission;
 use Point\Framework\Models\Master\Person;
@@ -158,6 +159,7 @@ class InvoiceController extends Controller
         $view->revision = $view->list_invoice_archived->count();
         $view->list_referenced = FormulirLock::where('locked_id', '=', $view->invoice->formulir_id)->where('locked', true)->get();
         $view->list_reference = FormulirLock::where('locking_id', '=', $view->invoice->formulir_id)->where('locked', true)->get();
+        $view->email_history = EmailHistory::where('formulir_id', $view->invoice->formulir_id)->get();
         return $view;
     }
 
@@ -277,6 +279,15 @@ class InvoiceController extends Controller
         });
 
         gritter_success('Success send email invoice', 'false');
+
+        $email_history = new EmailHistory;
+        $email_history->sender = auth()->id();
+        $email_history->recipient = $invoice->supplier->id;
+        $email_history->recipient_email = $invoice->supplier->email;
+        $email_history->formulir_id = $invoice->formulir->id;
+        $email_history->sent_at = \Carbon\Carbon::now()->toDateTimeString();
+        $email_history->save();
+        
         return redirect()->back();
     }
 

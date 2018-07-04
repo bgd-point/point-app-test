@@ -9,6 +9,7 @@ use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\PersonHelper;
 use Point\Framework\Models\FormulirLock;
+use Point\Framework\Models\EmailHistory;
 use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\PersonGroup;
 use Point\Framework\Models\Master\PersonType;
@@ -136,6 +137,7 @@ class PurchaseOrderController extends Controller
         $view->list_purchase_order_archived = PurchaseOrder::joinFormulir()->archived($view->purchase_order->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_purchase_order_archived->count();
         $view->list_referenced = FormulirLock::where('locked_id', '=', $view->purchase_order->formulir_id)->where('locked', true)->get();
+        $view->email_history = EmailHistory::where('formulir_id', $view->purchase_order->formulir_id)->get();
         if (! $view->purchase_order->formulir->form_number) {
             return redirect(PurchaseOrder::showUrl($id));
         }
@@ -231,6 +233,15 @@ class PurchaseOrderController extends Controller
             $job->delete();
         });
         gritter_success('Success send email purchase order', 'false');
+
+        $email_history = new EmailHistory;
+        $email_history->sender = auth()->id();
+        $email_history->recipient = $purchase_order->supplier->id;
+        $email_history->recipient_email = $purchase_order->supplier->email;
+        $email_history->formulir_id = $purchase_order->formulir->id;
+        $email_history->sent_at = \Carbon\Carbon::now()->toDateTimeString();
+        $email_history->save();
+
         return redirect()->back();
     }
 
