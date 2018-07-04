@@ -36,6 +36,11 @@ class Formulir extends Model
         return $this->morphTo();
     }
 
+    public function emailHistory()
+    {
+        return $this->hasMany('Point\Framework\Models\EmailHistory');
+    }
+
     public function scopeNotArchived($q, $form_number = 0)
     {
         $q->whereNotNull('form_number');
