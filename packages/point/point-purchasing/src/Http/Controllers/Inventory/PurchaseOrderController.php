@@ -236,9 +236,9 @@ class PurchaseOrderController extends Controller
 
         $email_history = new EmailHistory;
         $email_history->sender = auth()->id();
-        $email_history->recipient = $purchase_order->supplier->id;
+        $email_history->recipient = $purchase_order->supplier_id;
         $email_history->recipient_email = $purchase_order->supplier->email;
-        $email_history->formulir_id = $purchase_order->formulir->id;
+        $email_history->formulir_id = $purchase_order->formulir_id;
         $email_history->sent_at = \Carbon\Carbon::now()->toDateTimeString();
         $email_history->save();
 
