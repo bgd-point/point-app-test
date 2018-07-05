@@ -15,7 +15,7 @@
                 <form action="{{ url('purchasing/point/retur/create-step-1') }}" method="get" class="form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-6">
-                            <div class="input-group input-daterange" data-date-format="{{date_format_get()}}">
+                            <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
                                 <input type="text" name="date_from" class="form-control date input-datepicker"
                                        placeholder="From"
                                        value="{{\Input::get('date_from') ? \Input::get('date_from') : ''}}">
