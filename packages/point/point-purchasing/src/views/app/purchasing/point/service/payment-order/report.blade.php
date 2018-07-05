@@ -100,7 +100,7 @@
                                         {{ date_Format_view($report->form_date) }}
                                     </td>
                                     <td>
-                                        <a href="{{ url('purchasing/point/invoice/'.$report->invoice_id) }}">
+                                        <a href="{{ url('purchasing/point/service/invoice/'.$report->invoice_id) }}">
                                             {{ $report->form_number }}
                                         </a>
                                     </td>
