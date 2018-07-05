@@ -12,6 +12,7 @@ use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\PersonHelper;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\FormulirLock;
+use Point\Framework\Models\EmailHistory;
 use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\PersonGroup;
@@ -174,7 +175,7 @@ class SalesOrderController extends Controller
         }
 
         $view->list_referenced = FormulirLock::where('locked_id', '=', $view->sales_order->formulir_id)->where('locked', true)->get();
-
+        $view->email_history = EmailHistory::where('formulir_id', $view->sales_order->formulir_id)->get();
         return $view;
     }
 
@@ -297,6 +298,15 @@ class SalesOrderController extends Controller
         });
 
         gritter_success('Success send email sales order', 'false');
+
+        $email_history = new EmailHistory;
+        $email_history->sender = auth()->id();
+        $email_history->recipient = $sales_order->person_id;
+        $email_history->recipient_email = $sales_order->person->email;
+        $email_history->formulir_id = $sales_order->formulir_id;
+        $email_history->sent_at = \Carbon\Carbon::now()->toDateTimeString();
+        $email_history->save();
+
         return redirect()->back();
     }
 }
