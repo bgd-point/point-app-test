@@ -125,7 +125,7 @@ class PurchaseRequisitionController extends Controller
         $view->purchase_requisition = $purchase_requisition;
         $view->list_purchase_requisition_archived = PurchaseRequisition::joinFormulir()->archived($purchase_requisition->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_purchase_requisition_archived->count();
-        $view->email_history = EmailHistory::where('formulir_id', $purchase_requisition->formulir->id)->get();
+        $view->email_history = EmailHistory::where('formulir_id', $purchase_requisition->formulir_id)->get();
         return $view;
     }
 
@@ -235,9 +235,9 @@ class PurchaseRequisitionController extends Controller
 
         $email_history = new EmailHistory;
         $email_history->sender = auth()->id();
-        $email_history->recipient = $purchase_requisition->supplier->id;
+        $email_history->recipient = $purchase_requisition->supplier_id;
         $email_history->recipient_email = $purchase_requisition->supplier->email;
-        $email_history->formulir_id = $purchase_requisition->formulir->id;
+        $email_history->formulir_id = $purchase_requisition->formulir_id;
         $email_history->sent_at = \Carbon\Carbon::now()->toDateTimeString();
         $email_history->save();
 

@@ -282,9 +282,9 @@ class InvoiceController extends Controller
 
         $email_history = new EmailHistory;
         $email_history->sender = auth()->id();
-        $email_history->recipient = $invoice->supplier->id;
+        $email_history->recipient = $invoice->supplier_id;
         $email_history->recipient_email = $invoice->supplier->email;
-        $email_history->formulir_id = $invoice->formulir->id;
+        $email_history->formulir_id = $invoice->formulir_id;
         $email_history->sent_at = \Carbon\Carbon::now()->toDateTimeString();
         $email_history->save();
         
