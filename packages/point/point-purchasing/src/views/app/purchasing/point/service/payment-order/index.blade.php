@@ -24,7 +24,7 @@
                         </div>
                         
                         <div class="col-sm-4">
-                            <div class="input-group input-daterange" data-date-format="{{date_format_get()}}">
+                            <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
                                 <input type="text" name="date_from" id="date-from" class="form-control date input-datepicker"
                                        placeholder="From"
                                        value="{{\Input::get('date_from') ? \Input::get('date_from') : ''}}">
