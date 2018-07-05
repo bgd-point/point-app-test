@@ -162,13 +162,16 @@
                             @if(formulir_view_edit($payment_order->formulir, 'update.point.finance.payment.order'))
                             <a href="{{url('finance/point/payment-order/'.$payment_order->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i>Edit </a>
                             @endif
-                            @if(formulir_view_cancel($payment_order->formulir, 'delete.point.finance.payment.order'))
-                            <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm(
-                                '{{url('finance/point/payment-order/cancel')}}',
-                                {{$payment_order->formulir_id}}, 
-                                'delete.point.finance.payment.order')">
-                                <i class="fa fa-times"></i> 
-                                cancel</a>
+                            @if(formulir_view_cancel_or_request_cancel($payment_order->formulir, 'delete.point.finance.payment.order', 'approval.point.finance.payment.order') == 1)
+                                <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $payment_order->formulir_id }}','approval.point.finance.payment.order')">
+                                    <i class="fa fa-times"></i> 
+                                    Cancel Form
+                                </a>
+                            @elseif(formulir_view_cancel_or_request_cancel($payment_order->formulir, 'delete.point.finance.payment.order', 'approval.point.finance.payment.order') == 2)
+                                <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm(this, '{{url('formulir/requestCancel')}}', '{{ $payment_order->formulir_id }}', 'delete.point.finance.payment.order')">
+                                    <i class="fa fa-times"></i> 
+                                    Request Cancel Form
+                                </a>
                             @endif
                         </div>
                     </div>

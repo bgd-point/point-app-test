@@ -150,23 +150,33 @@
                         <div class="form-group">
                             <div class="col-md-12">
                                 @if(formulir_view_edit($downpayment->formulir, 'update.point.sales.service.downpayment'))
-                                    <a href="{{url('sales/point/service/downpayment/'.$downpayment->id.'/edit')}}"
-                                       class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
+                                    <a href="{{url('sales/point/service/downpayment/'.$downpayment->id.'/edit')}}" class="btn btn-effect-ripple btn-info">
+                                       <i class="fa fa-pencil"></i>
+                                       Edit
+                                    </a>
                                 @endif
-                                @if(formulir_view_cancel($downpayment->formulir, 'delete.point.sales.service.downpayment'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCancelForm('{{url('formulir/cancel')}}',
-                                               '{{ $downpayment->formulir_id }}',
-                                               'delete.point.sales.service.downpayment')"><i class="fa fa-times"></i> Cancel
-                                        Form</a>
+                                
+                                @if(formulir_view_cancel_or_request_cancel($downpayment->formulir, 'delete.point.sales.service.downpayment', 'approval.point.sales.service.downpayment') == 1)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $downpayment->formulir_id }}','approval.point.sales.service.downpayment')">
+                                        <i class="fa fa-times"></i> 
+                                        Cancel Form
+                                    </a>
+                                @elseif(formulir_view_cancel_or_request_cancel($downpayment->formulir, 'delete.point.sales.service.downpayment', 'approval.point.sales.service.downpayment') == 2)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm(this, '{{url('formulir/requestCancel')}}', '{{ $downpayment->formulir_id }}', 'delete.point.sales.service.downpayment')">
+                                        <i class="fa fa-times"></i> 
+                                        Request Cancel Form
+                                    </a>
                                 @endif
+
                                 @if(formulir_view_close($downpayment->formulir, 'update.point.sales.service.downpayment'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCloseForm({{$downpayment->formulir_id}},'{{url('formulir/close')}}')">Close
-                                        Form</a>
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCloseForm({{$downpayment->formulir_id}},'{{url('formulir/close')}}')">
+                                       Close Form
+                                    </a>
                                 @endif
                                 @if(formulir_view_reopen($downpayment->formulir, 'update.point.sales.service.downpayment'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureReopenForm({{$downpayment->formulir_id}},'{{url('formulir/reopen')}}')">Reopen Form</a>
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureReopenForm({{$downpayment->formulir_id}},'{{url('formulir/reopen')}}')">
+                                        Reopen Form
+                                    </a>
                                 @endif
                             </div>
                         </div>

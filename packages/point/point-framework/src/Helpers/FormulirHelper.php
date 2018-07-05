@@ -267,6 +267,36 @@ class FormulirHelper
     }
 
     /**
+     * @param $formulir
+     * @param $permission_slug
+     *
+     * @return int (0 = not showing, 1 = showing CANCEL button, 2 = showing REQUEST CANCEL button)
+     */
+    public static function viewCancelOrRequestCancel($formulir, $permission_slug_delete, $permission_slug_approve)
+    {
+        // form status is not canceled
+        if ($formulir->form_status == -1) {
+            return 0;
+        }
+
+        // formulir locked
+        if (self::isLocked($formulir->id)) {
+            return 0;
+        }
+
+        // user has permission
+        if (auth()->user()->may($permission_slug_delete)) {
+            if(auth()->user()->may($permission_slug_approve)) {
+                return 1;
+            }
+            return 2;
+        }
+
+        // user doesn't have permission
+        return 0;
+    }
+
+    /**
      * FORM APPROVAL HELPER
      * --------------------------------------------------------------------------------
      */
@@ -728,6 +758,24 @@ class FormulirHelper
         timeline_publish('cancel form', 'cancel form ' . $formulir->form_number . ' success');
     }
 
+    /**
+     * for cancellation through email approval
+     * @param $permission_slug
+     * @param $formulir_id
+     */
+    public static function cancelWithoutPermission($formulir_id)
+    {
+        $formulir = Formulir::find($formulir_id);
+        $formulir->form_status = -1;
+        $formulir->canceled_at = date('Y-m-d H:i:s');
+        $formulir->canceled_by = auth()->user()->id;
+        $formulir->save();
+
+        self::clearRelation($formulir);
+
+        timeline_publish('cancel form', 'cancel form ' . $formulir->form_number . ' success');
+    }
+
     public static function cancelPaymentReference($payment_reference_id)
     {
         $payment_reference = PaymentReference::where('payment_reference_id', '=', $payment_reference_id)->first();
@@ -753,22 +801,22 @@ class FormulirHelper
     public static function isAllowedToCancel($permission_slug, $formulir)
     {
         if (!auth()->user()->may($permission_slug)) {
-            throw new PointException('RESTRICTED ACCESS');
+            throw new PointException('RESTRICTED ACCESS 1');
         }
 
         // check locking periode
         if (Setting::where('name', '=', 'lock-periode')->first()->value >= $formulir->form_date) {
-            throw new PointException('RESTRICTED ACCESS');
+            throw new PointException('RESTRICTED ACCESS 2');
         }
 
         // check if formulir not canceled
         if ($formulir->form_status == -1) {
-            throw new PointException('RESTRICTED ACCESS');
+            throw new PointException('RESTRICTED ACCESS 3');
         }
 
         // check locked reference form
         if (self::isLocked($formulir->id)) {
-            throw new PointException('RESTRICTED ACCESS');
+            throw new PointException('RESTRICTED ACCESS 4');
         }
     }
 }

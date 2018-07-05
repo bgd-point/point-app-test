@@ -157,23 +157,27 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-12">
-                                @if(formulir_view_edit($downpayment->formulir, 'update.point.purchasing.downpayment'))
+                                @if(formulir_view_edit($downpayment->formulir, 'update.point.purchasing.downpayment.fixed.assets'))
                                     <a href="{{url('purchasing/point/fixed-assets/downpayment/'.$downpayment->id.'/edit')}}"
                                        class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                 @endif
-                                @if(formulir_view_cancel($downpayment->formulir, 'delete.point.purchasing.downpayment'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCancelForm('{{url('formulir/cancel')}}',
-                                               '{{ $downpayment->formulir_id }}',
-                                               'delete.point.purchasing.downpayment')"><i class="fa fa-times"></i> Cancel
-                                        Form</a>
+                                @if(formulir_view_cancel_or_request_cancel($downpayment->formulir, 'delete.point.purchasing.downpayment.fixed.assets', 'approval.point.purchasing.downpayment.fixed.assets') == 1)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $downpayment->formulir_id }}','approval.point.purchasing.downpayment.fixed.assets')">
+                                        <i class="fa fa-times"></i> 
+                                        Cancel Form
+                                    </a>
+                                @elseif(formulir_view_cancel_or_request_cancel($downpayment->formulir, 'delete.point.purchasing.downpayment.fixed.assets', 'approval.point.purchasing.downpayment.fixed.assets') == 2)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm(this, '{{url('formulir/requestCancel')}}', '{{ $downpayment->formulir_id }}', 'delete.point.purchasing.downpayment.fixed.assets')">
+                                        <i class="fa fa-times"></i> 
+                                        Request Cancel Form
+                                    </a>
                                 @endif
-                                @if(formulir_view_close($downpayment->formulir, 'update.point.purchasing.downpayment'))
+                                @if(formulir_view_close($downpayment->formulir, 'update.point.purchasing.downpayment.fixed.assets'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCloseForm({{$downpayment->formulir_id}},'{{url('formulir/close')}}')">Close
                                         Form</a>
                                 @endif
-                                @if(formulir_view_reopen($downpayment->formulir, 'update.point.purchasing.downpayment'))
+                                @if(formulir_view_reopen($downpayment->formulir, 'update.point.purchasing.downpayment.fixed.assets'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureReopenForm({{$downpayment->formulir_id}},'{{url('formulir/reopen')}}')">Reopen Form</a>
                                 @endif
                             </div>
@@ -181,7 +185,7 @@
                     </fieldset>
 
 
-                    @if(formulir_view_approval($downpayment->formulir, 'approval.point.purchasing.downpayment'))
+                    @if(formulir_view_approval($downpayment->formulir, 'approval.point.purchasing.downpayment.fixed.assets'))
                         <fieldset>
                             <div class="form-group">
                                 <div class="col-md-12">

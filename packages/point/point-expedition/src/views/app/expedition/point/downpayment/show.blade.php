@@ -144,12 +144,15 @@
                                     <a href="{{url('expedition/point/downpayment/'.$downpayment->id.'/edit')}}"
                                        class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                 @endif
-                                @if(formulir_view_cancel($downpayment->formulir, 'delete.point.expedition.downpayment'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCancelForm('{{url('formulir/cancel')}}',
-                                               '{{ $downpayment->formulir_id }}',
-                                               'delete.point.expedition.downpayment')">
-                                       <i class="fa fa-times"></i> Cancel Form
+                                @if(formulir_view_cancel_or_request_cancel($downpayment->formulir, 'delete.point.expedition.downpayment', 'approval.point.expedition.downpayment') == 1)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $downpayment->formulir_id }}','approval.point.expedition.downpayment')">
+                                        <i class="fa fa-times"></i> 
+                                        Cancel Form
+                                    </a>
+                                @elseif(formulir_view_cancel_or_request_cancel($downpayment->formulir, 'delete.point.expedition.downpayment', 'approval.point.expedition.downpayment') == 2)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm(this, '{{url('formulir/requestCancel')}}', '{{ $downpayment->formulir_id }}', 'delete.point.expedition.downpayment')">
+                                        <i class="fa fa-times"></i> 
+                                        Request Cancel Form
                                     </a>
                                 @endif
                                 @if(formulir_view_close($downpayment->formulir, 'update.point.expedition.downpayment'))

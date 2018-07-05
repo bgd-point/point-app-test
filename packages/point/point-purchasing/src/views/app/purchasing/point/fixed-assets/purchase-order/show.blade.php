@@ -241,12 +241,19 @@
                                        class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                     @endif
                                 @endif
-                                @if(formulir_view_cancel($purchase_order->formulir, 'delete.point.purchasing.order'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCancelForm('{{url('formulir/cancel')}}',
-                                               '{{ $purchase_order->formulir_id }}',
-                                               'delete.point.purchasing.order')"><i class="fa fa-times"></i> Cancel Form</a>
+
+                                @if(formulir_view_cancel_or_request_cancel($purchase_order->formulir, 'delete.point.purchasing.order.fixed.assets', 'approval.point.purchasing.order.fixed.assets') == 1)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $purchase_order->formulir_id }}','approval.point.purchasing.order.fixed.assets')">
+                                        <i class="fa fa-times"></i> 
+                                        Cancel Form
+                                    </a>
+                                @elseif(formulir_view_cancel_or_request_cancel($purchase_order->formulir, 'delete.point.purchasing.order.fixed.assets', 'approval.point.purchasing.order.fixed.assets') == 2)
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm(this, '{{url('formulir/requestCancel')}}', '{{ $purchase_order->formulir_id }}', 'delete.point.purchasing.order.fixed.assets')">
+                                        <i class="fa fa-times"></i> 
+                                        Request Cancel Form
+                                    </a>
                                 @endif
+
                                 @if(formulir_view_close($purchase_order->formulir, 'update.point.purchasing.order.fixed.assets'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCloseForm({{$purchase_order->formulir_id}},'{{url('formulir/close')}}')">Close
