@@ -78,7 +78,7 @@
                         <label class="col-md-3 control-label">Notes</label>
 
                         <div class="col-md-6">
-                            <input type="text" name="notes" class="form-control" value="">
+                            <input type="text" name="notes" class="form-control" value="{{ old('notes') }}">
                         </div>
                     </div>
                     <!-- LIST SERVICE -->
@@ -220,7 +220,7 @@
                                                 <td>
                                                     <select id="item-id-{{$counter}}" name="item_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one.." onchange="selectItem(this.value, {{$counter}})">
                                                         <option value="{{(old('item_id')[$counter])}}">
-                                                            <?php echo Point\Framework\Models\Master\Item::find(old('item_id')[$counter])->codeName;?>
+                                                            {{ Point\Framework\Models\Master\Item::find(old('item_id')[$counter])->codeName }}
                                                         </option>
                                                     </select>
                                                 </td>
@@ -289,10 +289,9 @@
                                         <td>
                                             <input type="text" readonly
                                                    id="subtotal"
-                                                   onclick="setToNontax()"
                                                    name="subtotal"
                                                    class="form-control format-quantity calculate text-right"
-                                                   value="{{old('subtotal')}}"/>
+                                                   value="{{ number_format_db(old('subtotal')) }}"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -333,14 +332,14 @@
                                     <tr>
                                         <td colspan="7"></td>
                                         <td>
-                                            <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
-                                                   {{ old('type_of_tax') == 'on' ? 'checked'  : '' }} onchange="calculateTotal()"
+                                            <input type="checkbox" id="tax-choice-include-tax" name="type_of_tax"
+                                                   {{ old('type_of_tax') == 'include' ? 'checked'  : '' }}
+                                                   onchange="$('#tax-choice-exclude-tax').prop('checked', false); calculateTotal();"
                                                    value="include"> Tax Included<br/>
-                                            <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
-                                                   {{ old('type_of_tax') == 'on' ? 'checked'  : '' }} onchange="calculateTotal()"
+                                            <input type="checkbox" id="tax-choice-exclude-tax" name="type_of_tax"
+                                                   {{ old('type_of_tax') == 'exclude' ? 'checked'  : '' }}
+                                                   onchange="$('#tax-choice-include-tax').prop('checked', false); calculateTotal();"
                                                    value="exclude"> Tax Excluded
-                                            <input type="hidden" id="tax-choice-non-tax" {{ old('type_of_tax') == 'on' ? 'checked'  : '' }}
-                                                   name="type_of_tax" value="non">
                                         </td>
                                     </tr>
                                     <tr>
@@ -348,7 +347,7 @@
                                         <td>
                                             <input type="text" readonly id="total" name="total"
                                                    class="form-control format-quantity calculate text-right"
-                                                   value="{{old('total')}}"/>
+                                                   value="{{ number_format_db(old('total')) }}"/>
                                         </td>
                                     </tr>
                                     </tfoot>
@@ -455,7 +454,7 @@
                 '<a href="javascript:void(0)" class="remove-row btn btn-danger pull-right"><i class="fa fa-trash"></i></a>',
                 '<select id="service-id-' + service_counter + '" name="service_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one.." onchange="selectService(this.value,' + service_counter + ')">'
                 + '</select>',
-                '<select id="service-allocation-id-' + counter + '" name="service_allocation_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
+                '<select id="service-allocation-id-' + service_counter + '" name="service_allocation_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
                 @foreach($list_allocation as $allocation)
                 + '<option value="{{$allocation->id}}">{{$allocation->name}}</option>'
                 @endforeach
@@ -508,16 +507,8 @@
         });
 
         $(function () {
-            $('#tax-choice-non-tax').hide();
             calculate();
         });
-
-        function setToNontax() {
-            $("#tax-choice-include-tax").attr("checked", false);
-            $("#tax-choice-exclude-tax").attr("checked", false);
-            $("#tax-choice-non-tax").val("non");
-            calculate();
-        }
 
         function calculate() {
             var subtotal = 0;
@@ -573,20 +564,15 @@
             }
             
             var tax_base = subtotal - (subtotal / 100 * discount);
-            $('#tax_base').val(appNum(tax_base));
             var tax = 0;
 
             if ($('#tax-choice-exclude-tax').prop('checked')) {
                 tax = tax_base * 10 / 100;
-                $("#tax-choice-non-tax").val("exclude");
-
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
                 tax_base = tax_base * 100 / 110;
                 tax = tax_base * 10 / 100;
-                $("#tax-choice-non-tax").val("include");
-
             }
 
             $('#tax_base').val(appNum(tax_base));
@@ -598,7 +584,7 @@
             for (var i = 0; i < counter; i++) {
                 id = $('#item-id-'+i).val();
                 if(id == item_id && counter != i){
-                    swal("Failed", "Item is already, please choose another item");
+                    swal("Failed", "Item is already added, please choose another item");
                     selectizeInFocus('#material-id-'+counter);
                     return false;
                     break;
@@ -611,30 +597,6 @@
         
         function selectizeInFocus(element) {
             $(element)[0].selectize.clear().focus();
-        }
-
-        if (service_counter > 0 || counter > 0) {
-            initSelectize('#contact_id');
-        }
-
-        if (service_counter > 0) {
-            for (var i=0; i < service_counter; i++) {
-                if ($('#service-id-' + i).length != 0) {
-                    initSelectize('#service-id-' + i);
-                    initSelectize('#service-allocation-id-' + i);
-                    reloadService('#service-id-' + i);
-                }
-            }
-        }
-
-        if (counter > 0) {
-            for (var i=0; i < counter; i++) {
-                if ($('#item-id-' + i).length != 0) {
-                    initSelectize('#item-id-' + i);
-                    initSelectize('#allocation-id-' + i);
-                    reloadItem('#item-id-' + i, false);
-                }
-            }
         }
     </script>
 @stop
