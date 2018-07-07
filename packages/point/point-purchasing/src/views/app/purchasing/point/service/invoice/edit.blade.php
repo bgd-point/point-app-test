@@ -270,14 +270,19 @@
                                     <tr>
                                         <td colspan="7"></td>
                                         <td>
-                                            <input type="checkbox" id="tax-choice-include-tax" name="type_of_tax"
+                                            <label>
+                                                <input type="checkbox" id="tax-choice-include-tax" name="type_of_tax"
                                                    {{ $invoice->type_of_tax == 'include' ? 'checked'  : '' }}
                                                    onchange="$('#tax-choice-exclude-tax').prop('checked', false); calculateTotal();"
-                                                   value="include"> Include Tax <br/>
-                                            <input type="checkbox" id="tax-choice-exclude-tax" name="type_of_tax"
+                                                   value="include" /> Include Tax
+                                            </label>
+                                            <br />
+                                            <label>
+                                                <input type="checkbox" id="tax-choice-exclude-tax" name="type_of_tax"
                                                    {{ $invoice->type_of_tax == 'exclude' ? 'checked'  : '' }}
                                                    onchange="$('#tax-choice-include-tax').prop('checked', false); calculateTotal();"
-                                                   value="exclude"> Exclude Tax <br/>
+                                                   value="exclude" /> Exclude Tax
+                                            </label>
                                         </td>
                                     </tr>
                                     <tr>
