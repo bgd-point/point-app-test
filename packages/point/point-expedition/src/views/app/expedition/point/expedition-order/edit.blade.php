@@ -126,7 +126,7 @@
                                         <tr>
                                             <td colspan="2" class="text-right">Subtotal</td>
                                             <td>
-                                                <input type="text" onclick="setToNontax()" id="subtotal" name="subtotal" onkeyup="calculate()" 
+                                                <input type="text" id="subtotal" name="subtotal" onkeyup="calculate()" 
                                                        class="form-control format-quantity text-right"
                                                        value="{{$expedition_order->expedition_fee }}"/>
                                             </td>
@@ -157,12 +157,19 @@
                                         <tr>
                                             <td colspan="2"></td>
                                             <td>
-                                                <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
-                                                       {{ $expedition_order->type_of_tax == 'include' ? 'checked'  : '' }}  value="include"
-                                                       onclick="calculate()"> Include Tax <br/>
-                                                <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
-                                                       {{ $expedition_order->type_of_tax == 'exclude' ? 'checked'  : '' }}  value="exclude"
-                                                       onclick="calculate()"> Exlude Tax <br/>
+                                                <label>
+                                                    <input type="checkbox" id="tax-choice-include-tax" name="type_of_tax"
+                                                       {{ $expedition_order->type_of_tax == 'include' ? 'checked'  : '' }}
+                                                       onclick="$('#tax-choice-exclude-tax').prop('checked', false); calculate();"
+                                                       value="include" /> Include Tax
+                                                </label>
+                                                <br />
+                                                <label>
+                                                    <input type="checkbox" id="tax-choice-exclude-tax" name="type_of_tax"
+                                                       {{ $expedition_order->type_of_tax == 'exclude' ? 'checked'  : '' }}
+                                                       onclick="$('#tax-choice-include-tax').prop('checked', false); calculate();"
+                                                       value="exclude" /> Exclude Tax
+                                                </label>
                                             </td>
                                         </tr>
                                         <tr>
@@ -207,9 +214,6 @@
                     </fieldset>
 
                     <div class="form-group">
-                        <div class="col-sm-6" style="visibility: hidden;">
-                            <input type="radio" id="tax-choice-non-tax" name="type_of_tax" {{ $expedition_order->type_of_tax == 'non' ? 'checked'  : '' }}  value="non" onclick="calculate()"> Non Tax
-                        </div>
                         <div class="col-md-6 col-md-offset-3">
                             <button type="submit" class="btn btn-effect-ripple btn-primary">Submit</button>
                         </div>
@@ -254,13 +258,6 @@
             $('#tax_base').val(appNum(tax_base));
             $('#tax').val(appNum(tax));
             $('#total').val(appNum(tax_base + tax));
-        }
-
-        function setToNontax() {
-            $("#tax-choice-include-tax").attr("checked", false);
-            $("#tax-choice-exclude-tax").attr("checked", false);
-            $("#tax-choice-non-tax").trigger("click");
-            calculate();
         }
     </script>
 @stop
