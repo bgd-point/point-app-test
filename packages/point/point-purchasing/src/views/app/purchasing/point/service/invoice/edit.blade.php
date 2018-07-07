@@ -241,7 +241,7 @@
                                     <tr>
                                         <td colspan="7" class="text-right">SUB TOTAL</td>
                                         <td>
-                                            <input type="text" readonly id="subtotal" onclick="setToNontax()"
+                                            <input type="text" readonly id="subtotal"
                                                    class="form-control format-quantity calculate text-right" value="0"/>
                                         </td>
                                     </tr>
@@ -270,13 +270,14 @@
                                     <tr>
                                         <td colspan="7"></td>
                                         <td>
-                                            <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
-                                                   {{ $invoice->type_of_tax == 'include' ? 'checked'  : '' }} onchange="calculateTotal()"
+                                            <input type="checkbox" id="tax-choice-include-tax" name="type_of_tax"
+                                                   {{ $invoice->type_of_tax == 'include' ? 'checked'  : '' }}
+                                                   onchange="$('#tax-choice-exclude-tax').prop('checked', false); calculateTotal();"
                                                    value="include"> Include Tax <br/>
-                                            <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
-                                                   {{ $invoice->type_of_tax == 'exclude' ? 'checked'  : '' }} onchange="calculateTotal()"
-                                                   value="exclude"> Exlude Tax <br/>
-                                            <input type="hidden" id="tax-choice-non-tax" name="type_of_tax" {{ $invoice->type_of_tax == 'non' ? 'checked'  : '' }} value="non">
+                                            <input type="checkbox" id="tax-choice-exclude-tax" name="type_of_tax"
+                                                   {{ $invoice->type_of_tax == 'exclude' ? 'checked'  : '' }}
+                                                   onchange="$('#tax-choice-include-tax').prop('checked', false); calculateTotal();"
+                                                   value="exclude"> Exclude Tax <br/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -427,24 +428,8 @@
         });
 
         $(function () {
-            var tax_status = {!! json_encode($invoice->type_of_tax) !!};
-            if (tax_status == 'include') {
-                $("#tax-choice-include-tax").trigger("click");
-            } else if (tax_status == 'exclude') {
-                $("#tax-choice-exclude-tax").trigger("click");
-            } else {
-                $("#tax-choice-non-tax").val("non");
-            }
-
             calculate();
         });
-
-        function setToNontax() {
-            $("#tax-choice-include-tax").attr("checked", false);
-            $("#tax-choice-exclude-tax").attr("checked", false);
-            $("#tax-choice-non-tax").val("non");
-            calculate();
-        }
 
         function calculate() {
             var subtotal = 0;
@@ -500,20 +485,15 @@
             }
 
             var tax_base = subtotal - (subtotal / 100 * discount);
-            $('#tax_base').val(appNum(tax_base));
             var tax = 0;
 
             if ($('#tax-choice-exclude-tax').prop('checked')) {
                 tax = tax_base * 10 / 100;
-                $("#tax-choice-non-tax").val("exclude");
-
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
                 tax_base = tax_base * 100 / 110;
                 tax = tax_base * 10 / 100;
-                $("#tax-choice-non-tax").val("include");
-
             }
 
             $('#tax_base').val(appNum(tax_base));
