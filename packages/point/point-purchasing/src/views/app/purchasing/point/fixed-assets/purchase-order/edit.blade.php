@@ -207,18 +207,18 @@
                                     <tfoot>
                                     <tr>
                                         <td colspan="7" class="text-right">SUB TOTAL</td>
-                                        <td><input type="text" readonly id="subtotal"
-                                                   class="form-control format-quantity calculate text-right" value="0"
-                                                   onclick="setToNontax()"/></td>
+                                        <td><input type="text" readonly id="subtotal" value="0"
+                                                   class="form-control format-quantity calculate text-right"/>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td colspan="7" class="text-right">DISCOUNT</td>
                                         <td>
-                                            <div class="input-group"><input style="min-width: 100px" type="text"
-                                                                            id="discount" name="discount"
-                                                                            class="form-control format-quantity calculate text-right"
-                                                                            value="{{$purchase_order->discount}}"/><span
-                                                        class="input-group-addon">%</span>
+                                            <div class="input-group">
+                                                <input style="min-width: 100px" type="text" id="discount" name="discount"
+                                                    class="form-control format-quantity calculate text-right"
+                                                    value="{{$purchase_order->discount}}"/>
+                                                <span class="input-group-addon">%</span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -236,16 +236,19 @@
                                     <tr>
                                         <td colspan="7"></td>
                                         <td>
-                                            <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
-                                                   value="include"
-                                                   {{ $purchase_order->type_of_tax == 'include' ? 'checked'  : '' }} onchange="calculate()">
-                                            Include Tax <br/>
-                                            <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
-                                                   value="exclude"
-                                                   {{ $purchase_order->type_of_tax == 'exclude' ? 'checked'  : '' }} onchange="calculate()">
-                                            Exclude Tax <br/>
-                                            <input type="text" id="tax-choice-non-tax" name="type_of_tax" value="non">
-
+                                            <label>
+                                                <input type="checkbox" id="tax-choice-include-tax" name="type_of_tax"
+                                                   {{ $purchase_order->type_of_tax == 'include' ? 'checked'  : '' }}
+                                                   onchange="$('#tax-choice-exclude-tax').prop('checked', false); calculate();"
+                                                   value="include" /> Include Tax
+                                            </label>
+                                            <br/>
+                                            <label>
+                                                <input type="checkbox" id="tax-choice-exclude-tax" name="type_of_tax"
+                                                   {{ $purchase_order->type_of_tax == 'exclude' ? 'checked'  : '' }}
+                                                   onchange="$('#tax-choice-include-tax').prop('checked', false); calculate();"
+                                                   value="exclude" /> Exclude Tax
+                                            </label>
                                         </td>
                                     </tr>
                                     <tr>
@@ -319,19 +322,6 @@
 
 
         $(function () {
-            $('#tax-choice-non-tax').hide();
-            var tax_status = {!! json_encode('$purchase_order->type_of_tax') !!};
-
-            if (tax_status == 'include') {
-                $("#tax-choice-include-tax").trigger("click");
-                $("#tax-choice-non-tax").val("include");
-            } else if (tax_status == 'exclude') {
-                $("#tax-choice-exclude-tax").trigger("click");
-                $("#tax-choice-non-tax").val("exclude");
-            } else {
-                $("#tax-choice-non-tax").val("non");
-            }
-
             calculate();
             if (!document.getElementById("include-expedition").checked) {
                 $('#fee-expedition').hide();
@@ -345,13 +335,6 @@
                 $('#fee-expedition').val(0);
                 $('#fee-expedition').hide();
             }
-            calculate();
-        }
-
-        function setToNontax() {
-            $("#tax-choice-include-tax").attr("checked", false);
-            $("#tax-choice-exclude-tax").attr("checked", false);
-            $("#tax-choice-non-tax").val("non");
             calculate();
         }
 
@@ -387,13 +370,11 @@
             var tax = 0;
             if ($('#tax-choice-exclude-tax').prop('checked')) {
                 tax = tax_base * 10 / 100;
-                $("#tax-choice-non-tax").val("exclude");
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
                 tax_base = tax_base * 100 / 110;
                 tax = tax_base * 10 / 100;
-                $("#tax-choice-non-tax").val("include");
             }
 
             $('#tax').val(appNum(tax));
