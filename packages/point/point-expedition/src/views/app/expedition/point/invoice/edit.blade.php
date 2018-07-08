@@ -124,7 +124,7 @@
                         <div class="form-group">
                             <label class="col-md-9 control-label text-right">SUB TOTAL</label>
                             <div class="col-md-3 content-show">
-                                <input type="text" id="subtotal" name="subtotal" onclick="setToNontax()" onkeyup="calculate()" 
+                                <input type="text" id="subtotal" name="subtotal" onkeyup="calculate()" 
                                        class="form-control format-quantity text-right"
                                        value="{{ $invoice->subtotal}}"/>
                             </div>
@@ -158,18 +158,22 @@
                         <div class="form-group">
                             <label class="col-md-9 control-label text-right"></label>
                             <div class="col-md-3 content-show">
-                                <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
-                                       {{ $invoice->type_of_tax == 'include' ? 'checked'  : '' }} onchange="calculate()"
-                                       value="include"> Include Tax <br/>
-                                <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
-                                       {{ $invoice->type_of_tax == 'exclude' ? 'checked'  : '' }} onchange="calculate()"
-                                       value="exclude"> Exlude Tax <br/>
+                                <label>
+                                    <input type="checkbox" id="tax-choice-include-tax" name="type_of_tax"
+                                       {{ $invoice->type_of_tax == 'include' ? 'checked'  : '' }}
+                                       onchange="$('#tax-choice-exclude-tax').prop('checked', false); calculate();"
+                                       value="include"> Include Tax
+                                </label>
+                                <br />
+                                <label>
+                                    <input type="checkbox" id="tax-choice-exclude-tax" name="type_of_tax"
+                                       {{ $invoice->type_of_tax == 'exclude' ? 'checked'  : '' }}
+                                       onchange="$('#tax-choice-include-tax').prop('checked', false); calculate();"
+                                       value="exclude"> Exclude Tax
+                                </label>
                             </div>
                         </div>
 
-                        <div class="col-sm-12">
-                            <input type="radio" id="tax-choice-non-tax" name="type_of_tax" {{ $invoice->type_of_tax == 'non' ? 'checked'  : '' }} onchange="calculate()" value="non" style="visibility: hidden;">
-                        </div>
                         <div class="form-group">
                             <label class="col-md-9 control-label text-right">TOTAL</label>
                             <div class="col-md-3 content-show">
@@ -223,13 +227,6 @@
             if (val.length >= 2) {
                 $("#discount").val("");
             }
-            calculate();
-        }
-
-        function setToNontax() {
-            $("#tax-choice-include-tax").attr("checked", false);
-            $("#tax-choice-exclude-tax").attr("checked", false);
-            $("#tax-choice-non-tax").trigger("click");
             calculate();
         }
 
