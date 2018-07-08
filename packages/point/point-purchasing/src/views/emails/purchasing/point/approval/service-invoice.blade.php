@@ -33,10 +33,6 @@
             
         }
 
-        .invoice-box table tr td:nth-child(2) {
-            text-align: right;
-        }
-
         .invoice-box table tr.top table td {
             padding-bottom: 20px;
         }
@@ -128,10 +124,13 @@
 
 <body>
 <div class="invoice-box">
-    Hi, you have an request approval purchase service invoice from {{ $username }}. We would like to inform the
-    details as follows :
+    Hi, you have a request approval purchase service invoice from {{ $username }}. We would like to inform the details as follows :
 
-   @foreach($list_invoice as $invoice)
+    <?php $total_to_pay = 0; ?>
+
+    @foreach($list_invoice as $invoice)
+        <?php $total_to_pay += $invoice->total; ?>
+
         <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
             <tr>
                 <td style="width: 20%">
@@ -141,7 +140,9 @@
                     :
                 </td>
                 <td>
-                    {{ $invoice->formulir->form_number }}</a>
+                    <a href="{{ url('purchasing/point/service/invoice/'.$invoice->id) }}">
+                        {{ $invoice->formulir->form_number}}
+                    </a>
                 </td>
             </tr>
             <tr>
@@ -168,17 +169,6 @@
             </tr>
             <tr>
                 <td style="width: 20%">
-                    Amount
-                </td>
-                <td>
-                    :
-                </td>
-                <td>
-                    {{ number_format_price($invoice->total) }}
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 20%">
                     Notes
                 </td>
                 <td>
@@ -189,9 +179,169 @@
                 </td>
             </tr>
         </table>
+
+        <table cellpadding="0" cellspacing="0">
+            <tr class="heading">
+                <td>Service</td>
+                <td>Notes</td>
+                <td>Allocation</td>
+                <td style="text-align: right;">QTY</td>
+                <td style="text-align: right;">Price</td>
+                <td style="text-align: right;">Disc (%)</td>
+                <td style="text-align: right;">Subtotal</td>
+            </tr>
+
+            <?php 
+                $total_service = 0;
+                $total_item = 0;
+            ?>
+            
+            @foreach($invoice->services as $service)
+                <?php
+                    $subtotal = ($service->quantity * $service->price);
+                    $subtotal -= ($service->quantity * $service->price * $service->discount / 100);
+                    $total_service += $subtotal;
+                ?>
+                <tr class="item">
+                    <td>
+                        {{ ucfirst($service->service->name) }}
+                    </td>
+                    <td>
+                        {{ ucfirst($service->service_notes) }}
+                    </td>
+                    <td>
+                        {{ ucwords($service->allocation->name) }}
+                    </td>
+                    <td style="text-align: right;">
+                        {{ number_format_quantity($service->quantity) }}
+                    </td>
+                    <td style="text-align: right; ">
+                        {{ number_format_quantity($service->price) }}
+                    </td>
+                    <td style="text-align: right;">
+                        {{ number_format_quantity($service->discount) }}
+                    </td>
+                    <td style="text-align: right;">
+                        {{ number_format_quantity($subtotal) }}
+                    </td>
+                </tr>
+            @endforeach
+
+            @if(count($invoice->items) > 0)
+                <tr class="heading">
+                    <td style="text-align: right;" colspan="6">
+                        TOTAL SERVICE
+                    </td>
+                    <td style="text-align: right;">
+                        {{ number_format_quantity($total_service) }}
+                    </td>
+                </tr>
+
+                <tr class="heading">
+                    <td>Item</td>
+                    <td>Notes</td>
+                    <td>Allocation</td>
+                    <td style="text-align: right;">QTY</td>
+                    <td style="text-align: right;">Price</td>
+                    <td style="text-align: right;">Disc (%)</td>
+                    <td style="text-align: right;">Subtotal</td>
+                </tr>
+
+                @foreach($invoice->items as $item)
+                    <?php
+                        $subtotal = ($item->quantity * $item->price);
+                        $subtotal -= ($item->quantity * $item->price * $item->discount / 100);
+                        $total_item += $subtotal;
+                    ?>
+                    <tr class="item">
+                        <td>
+                            {{ ucfirst($item->item->name) }}
+                        </td>
+                        <td>
+                            {{ ucfirst($item->item_notes) }}
+                        </td>
+                        <td>
+                            {{ ucwords($item->allocation->name) }}
+                        </td>
+                        <td style="text-align: right;">
+                            {{ number_format_quantity($item->quantity) }}
+                        </td>
+                        <td style="text-align: right; ">
+                            {{ number_format_quantity($item->price) }}
+                        </td>
+                        <td style="text-align: right;">
+                            {{ number_format_quantity($item->discount) }}
+                        </td>
+                        <td style="text-align: right;">
+                            {{ number_format_quantity($subtotal) }}
+                        </td>
+                    </tr>
+                @endforeach
+
+                <tr class="heading">
+                    <td style="text-align: right;" colspan="6">
+                        TOTAL ITEMS
+                    </td>
+                    <td style="text-align: right;">
+                        {{ number_format_quantity($total_item) }}
+                    </td>
+                </tr>
+            @endif
+
+            @if($invoice->discount > 0 || ($invoice->tax > 0 && $invoice->type_of_tax == "include"))
+                <tr class="heading">
+                    <td style="text-align: right;" colspan="6">
+                        SUBTOTAL
+                    </td>
+                    <td style="text-align: right;">
+                        {{ number_format_quantity($invoice->subtotal) }}
+                    </td>
+                </tr>
+            @endif
+
+            @if($invoice->discount > 0)
+                <tr class="heading">
+                    <td style="text-align: right;" colspan="6">
+                        DISCOUNT
+                    </td>
+                    <td style="text-align: right;">
+                        {{ number_format_quantity($invoice->discount) }}
+                    </td>
+                </tr>
+            @endif
+
+            @if($invoice->tax > 0)
+                <tr class="heading">
+                    <td style="text-align: right;" colspan="6">
+                        TAX BASE
+                    </td>
+                    <td style="text-align: right;">
+                        {{ number_format_quantity($invoice->tax_base) }}
+                    </td>
+                </tr>
+                <tr class="heading">
+                    <td style="text-align: right;" colspan="6">
+                        TAX
+                    </td>
+                    <td style="text-align: right;">
+                        {{ number_format_quantity($invoice->tax) }}
+                    </td>
+                </tr>
+            @endif
+
+            <tr class="heading">
+                <td style="text-align: right;" colspan="6">
+                    TOTAL INVOICE
+                </td>
+                <td style="text-align: right;">
+                    {{ number_format_quantity($invoice->total) }}
+                </td>
+            </tr>
+        </table>
+
         <table cellpadding="0" cellspacing="0">
             <tr>
-                <td colspan="6" >
+                <td colspan="6">
                     <a href="{{ $url . '/formulir/'.$invoice->formulir_id.'/approval/check-status/'.$token }}"><input
                                 type="button" class="btn btn-check" value="Check"></a>
                     <a href="{{ $url . '/purchasing/point/service/invoice/'.$invoice->id.'/approve?token='.$token }}"><input
@@ -202,15 +352,18 @@
             </tr>
         </table>
     @endforeach
+
     @if($list_invoice->count() > 1)
-    <br>
-    <a href="{{ $url . '/purchasing/point/service/invoice/approve-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
-        <input type="button" class="btn btn-primary" value="Approve All">
-    </a>
-    <a href="{{ $url . '/purchasing/point/service/invoice/reject-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
-        <input type="button" class="btn btn-warning" value="Reject All">
-    </a>
+        <div style="text-align: right;">
+            <h2>TOTAL TO PAY : {{ number_format_quantity($total_to_pay) }}</h2>
+        </div>
+
+        <a href="{{ $url . '/purchasing/point/service/invoice/approve-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
+            <input type="button" class="btn btn-primary" value="Approve All">
+        </a>
+        <a href="{{ $url . '/purchasing/point/service/invoice/reject-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
+            <input type="button" class="btn btn-warning" value="Reject All">
+        </a>
     @endif
-</div>
 </body>
 </html>
