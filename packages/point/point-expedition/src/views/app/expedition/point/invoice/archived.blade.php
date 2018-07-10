@@ -100,17 +100,6 @@
                                         <td class="text-right">{{ number_format_quantity($invoice_archived->tax) }}</td>
                                     </tr>
                                     <tr>
-                                        <td></td>
-                                        <td>
-                                            <form>
-                                                <input type="radio" id="tax-choice-include-tax" name="type_of_tax" {{ $invoice_archived->type_of_tax == 'include' ? 'checked'  : '' }}  value="include">
-                                                Include Tax <br/>
-                                                <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax" {{ $invoice_archived->type_of_tax == 'exclude' ? 'checked'  : '' }}  value="exclude">
-                                                Exlude Tax <br/>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    <tr>
                                         <td class="text-right">TOTAL</td>
                                         <td class="text-right">{{ number_format_quantity($invoice_archived->total) }}</td>
                                     </tr>
