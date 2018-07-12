@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
+use Point\PointAccounting\Models\MemoJournal;
 
 class InventoryCheck extends Command
 {
@@ -39,14 +40,28 @@ class InventoryCheck extends Command
      */
     public function handle()
     {
+        $memoJournals = MemoJournal::all();
+        foreach ($memoJournals as $memoJournal) {
+            foreach ($memoJournal->detail as $detail) {
+                if ($detail->coa->category->name === 'Inventories' || $detail->coa->name === 'BEBAN POKOK PENJUALAN') {
+                    Journal::where('form_journal_id', $memoJournal->formulir_id)->where('coa_id', $detail->coa_id)->delete();
+                    $detail->delete();
+                }
+            }
+        }
+
         $inventories = Inventory::all();
+        $sumI = 0;
         foreach ($inventories as $inventory) {
             $journal = Journal::where('form_journal_id', $inventory->formulir_id)->get();
 
             if ($journal->count() == 0) {
                 $this->line('INVENTORY: ' . $inventory->formulir->form_number . ', ID: ' . $inventory->id . ', TOTAL: ' . $inventory->total_value);
+                $sumI += $inventory->total_value;
             }
         }
+
+        $this->line('SUM INVENTORY: ' . $sumI);
 
         $journals = Journal::where('coa_id', 8)->get();
         foreach ($journals as $journal) {
