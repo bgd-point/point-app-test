@@ -12,7 +12,7 @@ class Recalculate2 extends Command
      *
      * @var string
      */
-    protected $signature = 'dev:recalculate';
+    protected $signature = 'dev:recalculate2';
 
     /**
      * The console command description.
