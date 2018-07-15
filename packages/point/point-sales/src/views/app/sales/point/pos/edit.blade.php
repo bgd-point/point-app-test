@@ -4,6 +4,8 @@
 <div id="page-content">
     <h2 class="sub-header">Point of Sales</h2>
 
+    @include('point-sales::app.sales.point.pos._menu')
+
     <div class="panel panel-default">
         <div class="panel-body" id="posview">
             <form action="{{ url('sales/point/pos/create') }}" name="addToCart" id="addToCart" method="get" class="form-horizontal row">

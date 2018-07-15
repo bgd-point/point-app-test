@@ -7,6 +7,7 @@
         <li>Create</li>
     </ul>
     <h2 class="sub-header">Point of Sales</h2>
+
     @include('point-sales::app.sales.point.pos._menu')
 
     <div class="panel panel-default">
