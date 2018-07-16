@@ -59,7 +59,7 @@
                     </div>
                 </div>
             </form>
-            <form action="{{ url('sales/point/pos') }}" method="post" class="form-horizontal row">
+            <form action="{{ url('sales/point/pos') }}" method="post" class="form-horizontal row prevent-unload">
                 {!! csrf_field() !!}
                 <input type="hidden" name="form_date" value="{{ date('d-m-y', time()) }}" />
                 <input type="hidden" readonly name="input_customer" id="input_customer" value="{{ Point\PointSales\Helpers\PosHelper::getCustomer() }}">

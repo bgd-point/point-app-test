@@ -59,7 +59,7 @@
                     </div>
                 </div>
             </form>
-            <form action="{{ url('sales/point/pos/'.$pos->id) }}" method="post" class="form-horizontal row">
+            <form action="{{ url('sales/point/pos/'.$pos->id) }}" method="post" class="form-horizontal row prevent-unload">
                 {!! csrf_field() !!}
                 <input name="_method" type="hidden" value="PUT">
                 <input type="hidden" name="form_date" value="{{ date('Y-m-d') }}" />
