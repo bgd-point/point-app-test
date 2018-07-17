@@ -7,9 +7,11 @@
         <li>{{ $pos->formulir->form_number }}</li>
     </ul>
     <h2 class="sub-header">Point of Sales</h2>
+
     <div style="float:right">
         <a href="javascript:void(0)" onclick="pagePrint('/sales/point/pos/print/{{$pos->id}}');" class="btn btn-effect-ripple btn-effect-ripple btn-danger btn-block"><i class="fa fa-print"></i> Print</a>
     </div>
+
     @include('point-sales::app.sales.point.pos._menu')
 
     <div class="block full">
@@ -61,68 +63,101 @@
                 <div class="col-md-12">
                     <legend><i class="fa fa-angle-right"></i> Details</legend>                    
                 </div>
-                <!-- <div class="table-responsive"> -->
-                    <table id="item-datatable" class="table table-striped">
-                        <thead>
-                            <tr >
-                                <th>ITEM</th>
-                                <th class="text-right">QUANTITY</th>
-                                <th class="text-right">PRICE</th>
-                                <th class="text-right">DISCOUNT</th>
-                                <th class="text-right">TOTAL</th>
-                            </tr>
-                        </thead>
-                        <tbody >
-                            @foreach($pos->items as $pos_item)
-                            <tr>
-                                <td>{{ $pos_item->item->codeName }}</td>
-                                <td class="text-right"> {{number_format_quantity($pos_item->quantity)}}
-                                    {{$pos_item->unit}}
-                                </td>
-                                <td class="text-right"> {{number_format_quantity($pos_item->price)}} </td>
-                                <td class="text-right"> {{number_format_quantity($pos_item->discount)}} </td>
-                                <td class="text-right"> {{number_format_quantity($pos_item->quantity * $pos_item->price - ($pos_item->discount / 100 * $pos_item->quantity * $pos_item->price))}}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="4" class="text-right"><b>SUB TOTAL</b></td>
-                                <td class="text-right"> {{number_format_quantity($pos->subtotal)}} </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" class="text-right"><b>DISCOUNT</b></td>
-                                <td class="text-right"> {{number_format_quantity($pos->discount)}} </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" class="text-right">TAX BASE</td>
-                                <td class="text-right">{{number_format_quantity($pos->tax_base)}}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" class="text-right">TAX ({{$pos->tax_type}})</td>
-                                <td class="text-right">{{number_format_quantity($pos->tax)}}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4"></td>
-                                <td>
+                <table id="item-datatable" class="table table-striped">
+                    <thead>
+                        <tr >
+                            <th>ITEM</th>
+                            <th class="text-right">QUANTITY</th>
+                            <th class="text-right">PRICE</th>
+                            <th class="text-right">DISCOUNT</th>
+                            <th class="text-right">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody >
+                        @foreach($pos->items as $pos_item)
+                        <tr>
+                            <td>{{ $pos_item->item->codeName }}</td>
+                            <td class="text-right"> {{number_format_quantity($pos_item->quantity)}}
+                                {{$pos_item->unit}}
+                            </td>
+                            <td class="text-right"> {{number_format_quantity($pos_item->price)}} </td>
+                            <td class="text-right"> {{number_format_quantity($pos_item->discount)}} </td>
+                            <td class="text-right"> {{number_format_quantity($pos_item->quantity * $pos_item->price - ($pos_item->discount / 100 * $pos_item->quantity * $pos_item->price))}}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="text-right"><b>SUB TOTAL</b></td>
+                            <td class="text-right"> {{number_format_quantity($pos->subtotal)}} </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="text-right"><b>DISCOUNT</b></td>
+                            <td class="text-right"> {{number_format_quantity($pos->discount)}} </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="text-right">TAX BASE</td>
+                            <td class="text-right">{{number_format_quantity($pos->tax_base)}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="text-right">TAX ({{$pos->tax_type}})</td>
+                            <td class="text-right">{{number_format_quantity($pos->tax)}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4"></td>
+                            <td>
 
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" class="text-right"><b>TOTAL</b></td>
-                                <td class="text-right"> {{number_format_quantity($pos->total)}} </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" class="text-right"><b>MONEY RECEIVED</b></td>
-                                <td class="text-right"> {{number_format_quantity($pos->money_received)}} </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" class="text-right"><b>CHANGE</b></td>
-                                <td class="text-right"> {{number_format_quantity($pos->money_received - $pos->total)}} </td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                <!-- </div> -->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="text-right"><b>TOTAL</b></td>
+                            <td class="text-right"> {{number_format_quantity($pos->total)}} </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="text-right"><b>MONEY RECEIVED</b></td>
+                            <td class="text-right"> {{number_format_quantity($pos->money_received)}} </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="text-right"><b>CHANGE</b></td>
+                            <td class="text-right"> {{number_format_quantity($pos->money_received - $pos->total)}} </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                @if($pos_retur)
+                <div class="col-md-12">
+                    <legend><i class="fa fa-angle-right"></i> Retur</legend>
+                </div>
+                <table id="item-datatable" class="table table-striped">
+                    <thead>
+                    <tr >
+                        <th>ITEM</th>
+                        <th class="text-right">QUANTITY RETUR</th>
+                        <th class="text-right">TOTAL</th>
+                    </tr>
+                    </thead>
+                    <tbody >
+                    @foreach($pos_retur->items as $pos_retur_item)
+                        <tr>
+                            <td>{{ $pos_retur_item->item->codeName }}</td>
+                            <td class="text-right"> {{number_format_quantity($pos_retur_item->quantity_retur)}} </td>
+                            <td class="text-right"> {{number_format_quantity($pos_retur_item->total)}}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="2" class="text-right"><b>TOTAL RETUR</b></td>
+                        <td class="text-right"> {{number_format_quantity($pos_retur->total)}} </td>
+                    </tr>
+                    @if(formulir_view_cancel($pos->formulir, 'delete.point.sales.pos'))
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="text-right"><a href="{{url('/sales/point/pos/' . $pos_retur->pos_id .'/retur/'.$pos_retur->id.'/delete')}}" class="btn btn-danger btn-xs">Delete Retur</a></td>
+                    </tr>
+                    @endif
+                    </tfoot>
+                </table>
+                @endif
             </div>
             <div class="tab-pane" id="block-tabs-settings">
                     <fieldset>
@@ -134,31 +169,28 @@
                         <div class="form-group">
                             <div class="col-md-12">
                                 @if($pos->formulir->form_status == 0)
-                                @if(formulir_view_edit($pos->formulir, 'update.point.sales.order'))
-                                    <a href="{{url('sales/point/pos/'.$pos->id.'/edit#posview')}}"
-                                           class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
+                                @if(formulir_view_edit($pos->formulir, 'update.point.sales.pos'))
+                                    <a href="{{url('sales/point/pos/'.$pos->id.'/edit#posview')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                 @endif
                                 @endif
-                                @if(formulir_view_cancel($pos->formulir, 'delete.point.sales.order'))
+                                @if(!$pos_retur)
+                                    <a href="{{ url('sales/point/pos/'.$pos->id.'/retur') }}" data-toggle="tooltip" title="Update" class="btn btn-effect-ripple btn-info">Retur</a>
+                                @endif
+                                @if(formulir_view_cancel($pos->formulir, 'delete.point.sales.pos'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCancelForm('{{url('formulir/cancel')}}',
                                                '{{ $pos->formulir_id }}',
-                                               'delete.point.sales.order')"><i class="fa fa-times"></i> Cancel Form</a>
+                                               'delete.point.sales.pos')"><i class="fa fa-times"></i> Cancel Form</a>
                                 @endif
-                                @if(formulir_view_close($pos->formulir, 'update.point.sales.order'))
+                                @if(formulir_view_close($pos->formulir, 'update.point.sales.pos'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCloseForm({{$pos->formulir_id}},'{{url('formulir/close')}}')">Close
                                         Form</a>
                                 @endif
-                                @if(formulir_view_reopen($pos->formulir, 'update.point.sales.order'))
+                                @if(formulir_view_reopen($pos->formulir, 'update.point.sales.pos'))
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureReopenForm({{$pos->formulir_id}},'{{url('formulir/reopen')}}')">Reopen
                                         Form</a>
-                                @endif
-                                @if($pos->formulir->approval_status == 1 && $pos->formulir->form_status == 0 && auth()->user()->may('create.point.sales.downpayment') && $pos->is_cash == 1)
-                                    <a href="{{ url('sales/point/pos/downpayment/insert/' . $pos->id) }}"
-                                       class="btn btn-effect-ripple  btn-info"><i class="fa fa-external-link"></i>
-                                        Downpayment</a>
                                 @endif
                             </div>
                         </div>

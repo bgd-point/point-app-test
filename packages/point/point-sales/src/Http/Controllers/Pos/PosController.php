@@ -14,6 +14,7 @@ use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\PersonHelper;
+use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Item;
@@ -29,6 +30,8 @@ use Point\PointSales\Models\Pos\Pos;
 use Point\PointSales\Models\Pos\PosItem;
 use Point\PointSales\Models\Pos\PosPricing;
 use Point\PointSales\Models\Pos\PosPricingItem;
+use Point\PointSales\Models\Pos\PosRetur;
+use Point\PointSales\Models\Pos\PosReturItem;
 
 class PosController extends Controller
 {
@@ -125,6 +128,7 @@ class PosController extends Controller
 
         $view = view('point-sales::app.sales.point.pos.show');
         $view->pos = Pos::find($id);
+        $view->pos_retur = PosRetur::where('pos_id', $view->pos->id)->first();
         $view->list_pos_archived = Pos::joinFormulir()->archived($view->pos->formulir->form_number)->orderByDate()->get();
         $view->revision = $view->list_pos_archived->count();
         return $view;
@@ -465,5 +469,73 @@ class PosController extends Controller
             ]);
             $temp->save();
         }
+    }
+
+    public function returnSales($id) {
+        access_is_allowed('update.point.sales.pos');
+
+        $view = view('point-sales::app.sales.point.pos.retur');
+        $view->pos = Pos::find($id);
+        session()->put('customer_id', $view->pos->customer_id);
+        $view->warehouse = Warehouse::find($view->pos->warehouse_id);
+        self::storeToTemp($view->pos);
+        $results = TempDataHelper::get('pos', auth()->user()->id, ['is_pagination' => true]);
+        if ($results) {
+            $view->results = $results;
+        }
+        $view->warehouse_profiles = Warehouse::find($view->pos->warehouse_id);
+        $view->carts = TempDataHelper::get('pos', auth()->user()->id, ['is_pagination' => true]);
+        return $view;
+    }
+
+    public function storeReturnSales(Request $request, $id) {
+        DB::beginTransaction();
+        $posRetur = new PosRetur;
+        $posRetur->form_date = date('Y-m-d H:i:s');
+        $posRetur->pos_id = $request->get('pos_id');
+        $posRetur->customer_id = $request->get('customer_id');
+        $posRetur->created_by = auth()->user()->id;
+        $posRetur->save();
+
+        $total = 0;
+        $totalQty = 0;
+        for ($i = 0; $i < count($request->get('quantity')); $i++) {
+            if ($request->get('quantity_retur')[$i] > 0) {
+
+                if (number_format_db($request->get('quantity_retur')[$i]) > number_format_db($request->get('quantity')[$i])) {
+                    gritter_error('Retur failed, Quantity retur is more than quantity sales' , 'false');
+                    return redirect()->back();
+                }
+
+                $posReturItem = new PosReturItem;
+                $posReturItem->pos_retur_id = $posRetur->id;
+                $posReturItem->warehouse_id = $request->get('warehouse_id');
+                $posReturItem->item_id = $request->get('item_id')[$i];
+                $posReturItem->quantity = number_format_db($request->get('quantity')[$i]);
+                $posReturItem->quantity_retur = number_format_db($request->get('quantity_retur')[$i]);
+                $posReturItem->total = number_format_db($request->get('price')[$i]);
+                $posReturItem->save();
+                $total += $posReturItem->total;
+                $totalQty += $posReturItem->quantity_retur;
+            }
+        }
+
+        if ($totalQty == 0) {
+            gritter_error('Retur failed, need at least 1 item to retur' , 'false');
+            return redirect()->back();
+        }
+
+        $posRetur->total = $total;
+        $posRetur->save();
+        DB::commit();
+        return redirect('/sales/point/pos/' . $id);
+    }
+
+    public function deleteReturnSales($id, $retur_id) {
+        access_is_allowed('delete.point.sales.pos');
+
+        $posRetur = PosRetur::find($retur_id);
+        $posRetur->delete();
+        return redirect('/sales/point/pos/' . $id);
     }
 }

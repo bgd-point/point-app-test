@@ -55,13 +55,38 @@
                         @if($sales->formulir->form_status != -1)
                         <?php $total_sales += $sales->total;?>
                         @endif
-                        @endforeach  
+                        @endforeach
+                        @foreach($list_retur as $retur)
+                            <tr>
+                                <td class="text-center"><button class="btn btn-danger btn-xs">Retur</button></td>
+                                <td><a href="{{ url('sales/point/pos/'.$retur->pos->id) }}" data-toggle="tooltip" title="Show">{{ $retur->pos->formulir->form_number }}</a></td>
+                                <td>{{ date_format_view($retur->form_date, true) }}</td>
+                                <td>{{ $retur->customer->codeName }}</td>
+                                <td>{{ $retur->createdBy->name }}</td>
+                                <td class="text-right">- {{ number_format_accounting($retur->total) }}</td>
+                            </tr>
+                        @endforeach
                     </tbody> 
                     <tfoot>
-                        <tr>
-                            <td colspan="5" class="text-right"><strong>TOTAL</strong></td>
-                            <td class="text-right"><strong>{{ number_format_accounting($total_sales) }}</strong></td>
-                        </tr>
+                        @if($total_retur > 0)
+                            <tr>
+                                <td colspan="5" class="text-right"><strong>TOTAL SALES</strong></td>
+                                <td class="text-right"><strong>{{ number_format_accounting($total_sales) }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" class="text-right"><strong>Total Retur</strong></td>
+                                <td class="text-right"><strong>- {{ number_format_accounting($total_retur) }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" class="text-right"><strong>Total</strong></td>
+                                <td class="text-right"><strong>{{ number_format_accounting($total_sales - $total_retur) }}</strong></td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td colspan="5" class="text-right"><strong>TOTAL</strong></td>
+                                <td class="text-right"><strong>{{ number_format_accounting($total_sales) }}</strong></td>
+                            </tr>
+                        @endif
                     </tfoot>
                 </table>
                 {!! $list_sales->render() !!}

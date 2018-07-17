@@ -41,6 +41,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales/point', 'namespace' => 
         Route::get('pos/clear', 'PosController@clear');
         Route::get('pos/print/{id}', 'PosController@printPos');
         Route::get('pos/{id}/archived', 'PosController@archived');
+        Route::get('pos/{id}/retur', 'PosController@returnSales');
+        Route::put('pos/{id}/retur', 'PosController@storeReturnSales');
+        Route::get('pos/{id}/retur/{retur_id}/delete', 'PosController@deleteReturnSales');
         Route::post('pos/cancel', 'PosController@cancel');
         Route::post('pos/remove_item_cart', 'PosController@removeItemCart');
         Route::get('pos/insert', 'PosController@_insert');
