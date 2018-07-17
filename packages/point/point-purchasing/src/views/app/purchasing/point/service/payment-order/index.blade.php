@@ -63,10 +63,71 @@
                     <table class="table table-striped table-bordered">
                         <thead>
                         <tr>
-                            <th style="cursor:pointer" onclick="selectData('form_date', @if($order_by == 'form_date' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_date' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Form Date <span class="pull-right"><i class="fa @if($order_by == 'form_date' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_date' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
-                            <th style="cursor:pointer" onclick="selectData('form_number', @if($order_by == 'form_number' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_number' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Form Number <span class="pull-right"><i class="fa @if($order_by == 'form_number' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_number' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
-                            <th style="cursor:pointer" onclick="selectData('person.name', @if($order_by == 'person.name' && $order_type == 'asc') 'desc' @elseif($order_by == 'person.name' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Supplier <span class="pull-right"><i class="fa @if($order_by == 'person.name' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'person.name' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
+                            <th style="cursor:pointer" onclick="selectData('form_date', `{{($order_by == 'form_date' && $order_type == 'desc') ? 'asc' : 'desc'}}`)">
+                                Form Date
+                                <span class="pull-right">
+                                    <i class="fa fa-fw
+                                        @if($order_by === 'form_date')
+                                            @if($order_type === 'desc')
+                                                fa-sort-desc
+                                            @else
+                                                fa-sort-asc
+                                            @endif
+                                        @else
+                                            fa-sort
+                                        @endif
+                                    "></i>
+                                </span>
+                            </th>
+                            <th style="cursor:pointer" onclick="selectData('form_number', `{{($order_by == 'form_number' && $order_type == 'desc') ? 'asc' : 'desc'}}`)">
+                                Form Number
+                                <span class="pull-right">
+                                    <i class="fa fa-fw
+                                        @if($order_by === 'form_number')
+                                            @if($order_type === 'desc')
+                                                fa-sort-desc
+                                            @else
+                                                fa-sort-asc
+                                            @endif
+                                        @else
+                                            fa-sort
+                                        @endif
+                                    "></i>
+                                </span>
+                            </th>
+                            <th style="cursor:pointer" onclick="selectData('person.name', `{{($order_by == 'form_number' && $order_type == 'desc') ? 'asc' : 'desc'}}`)">
+                                Supplier
+                                <span class="pull-right">
+                                    <i class="fa fa-fw
+                                        @if($order_by === 'person.name')
+                                            @if($order_type === 'desc')
+                                                fa-sort-desc
+                                            @else
+                                                fa-sort-asc
+                                            @endif
+                                        @else
+                                            fa-sort
+                                        @endif
+                                    "></i>
+                                </span>
+                            </th>
                             <th>Status</th>
+                            <th class="text-right" style="cursor:pointer" onclick="selectData('total_payment', `{{($order_by == 'total_payment' && $order_type == 'desc') ? 'asc' : 'desc'}}`)">
+                                Total
+                                <span class="pull-right">
+                                    <i class="fa fa-fw
+                                        @if($order_by === 'total_payment')
+                                            @if($order_type === 'desc')
+                                                fa-sort-desc
+                                            @else
+                                                fa-sort-asc
+                                            @endif
+                                        @else
+                                            fa-sort
+                                        @endif
+                                    "></i>
+                                </span>
+                            </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -82,6 +143,9 @@
                                 <td>
                                     @include('framework::app.include._approval_status_label', ['approval_status' => $payment_order->formulir->approval_status])
                                     @include('framework::app.include._form_status_label', ['form_status' => $payment_order->formulir->form_status])
+                                </td>
+                                <td class="text-right">
+                                    {{ number_format_quantity($payment_order->total_payment) }}
                                 </td>
                             </tr>
                         @endforeach
