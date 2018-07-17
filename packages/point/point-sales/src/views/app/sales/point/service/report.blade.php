@@ -54,6 +54,8 @@
                             <?php
                             $date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : '';
                             $date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : '';
+                            $subtotal_qty = 0;
+                            $subtotal_price = 0;
                             ?>
 
                             <tr>
@@ -69,19 +71,25 @@
                                     <td></td>
                                     <td>{{ $invoice_detail->service->name }}</td>
                                     <td class="text-right">{{ number_format_quantity($invoice_detail->quantity, 0)}}</td>
-                                    <td class="text-right">{{ number_format_quantity($invoice_detail->price * $invoice_detail->quantity)}}</td>
+                                    <td class="text-right">{{ number_format_price($invoice_detail->price * $invoice_detail->quantity)}}</td>
                                 </tr>
                                 <?php
                                     $total_quantity += $invoice_detail->quantity;
                                     $total_amount += $invoice_detail->quantity * $invoice_detail->price;
+                                    $subtotal_qty += $invoice_detail->quantity;
+                                    $subtotal_price += $invoice_detail->quantity * $invoice_detail->price;
                                 ?>
                             @endforeach
-                            
+                            <tr>
+                                <td colspan="3" class="text-right">Subtotal</td>
+                                <td class="text-right"><strong>{{ number_format_quantity($subtotal_qty, 0) }}</strong></td>
+                                <td class="text-right"><strong>{{ number_format_price($subtotal_price) }}</strong></td>
+                            </tr>
                         @endforeach
                         <tr>
-                            <td colspan="3" class="text-left"><h4><strong>Total</strong></h4></td>
+                            <td colspan="3" class="text-right"><h4><strong>Total</strong></h4></td>
                             <td class="text-right"><h4><strong>{{number_format_quantity($total_quantity, 0)}}</strong></h4></td>
-                            <td class="text-right"><h4><strong>{{number_format_quantity($total_amount)}}</strong></h4></td>
+                            <td class="text-right"><h4><strong>{{number_format_price($total_amount)}}</strong></h4></td>
                         </tr>
                         </tbody>
                     </table>
