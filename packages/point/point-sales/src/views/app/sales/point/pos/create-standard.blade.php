@@ -4,6 +4,8 @@
 <div id="page-content">
     <h2 class="sub-header">Point of Sales</h2>
 
+    @include('point-sales::app.sales.point.pos._menu')
+
     <div class="panel panel-default">
         <div class="panel-body" id="posview">
             <form action="{{ url('sales/point/pos/create') }}" name="addToCart" id="addToCart" method="get" class="form-horizontal row">
@@ -57,7 +59,7 @@
                     </div>
                 </div>
             </form>
-            <form action="{{ url('sales/point/pos') }}" method="post" class="form-horizontal row">
+            <form action="{{ url('sales/point/pos') }}" method="post" class="form-horizontal row prevent-unload">
                 {!! csrf_field() !!}
                 <input type="hidden" name="form_date" value="{{ date('d-m-y', time()) }}" />
                 <input type="hidden" readonly name="input_customer" id="input_customer" value="{{ Point\PointSales\Helpers\PosHelper::getCustomer() }}">

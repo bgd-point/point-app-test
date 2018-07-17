@@ -199,7 +199,7 @@
         <script src="{{asset('core/themes/appui-backend/js/vendor/modernizr-2.8.3.min.js')}}"></script>
         <script src="{{asset('mntr.js')}}"></script>
     </head>
-    <body oncontextmenu="return {{ \Point\Core\Models\Setting::rightClickAllowed() }}">
+    <body>
         <!-- Page Wrapper -->
         <!-- In the PHP version you can set the following options from inc/config file -->
         <!--
@@ -389,24 +389,16 @@
             $(function(){ UiTables.init(); });
         </script>
         <script>
-            var userIsEditingSomething = false; // set this if something crazy happens
-            oldOnBeforeUnload = window.onbeforeunload;
-
-            window.onbeforeunload = function () {
-                // attempt to handle a previous onbeforeunload
-                if ('function' === typeof oldOnBeforeUnload) {
-                    var message = oldOnBeforeUnload();
-                    if ('undefined' !== typeof message) {
-                        if (confirm('string' === typeof message ? message : 'Are you sure you want to leave this page?')) {
-                            return; // allow user to exit without further annoying pop-ups
-                        }
-                    }
-                }
-                // handle our own
-                if (userIsEditingSomething) {
-                    return 'Are you sure you want to exit?';
-                }
-            };
+            var somethingChanged=false;
+            $('.prevent-unload input').change(function() {
+                somethingChanged = true;
+            });
+            $(window).bind('beforeunload', function(e) {
+                if (somethingChanged)
+                    return "You made some changes and it's not saved?";
+                else
+                    e=null; // i.e; if form state change show warning box, else don't show it.
+            });
         </script>
     </body>
 </html>

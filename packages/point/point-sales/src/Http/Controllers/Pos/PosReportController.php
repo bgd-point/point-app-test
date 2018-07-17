@@ -10,6 +10,7 @@ use Point\Core\Helpers\QueueHelper;
 use Point\Core\Traits\ValidationTrait;
 use Point\PointSales\Helpers\PosHelper;
 use Point\PointSales\Models\Pos\Pos;
+use Point\PointSales\Models\Pos\PosRetur;
 
 class PosReportController extends Controller
 {
@@ -33,9 +34,14 @@ class PosReportController extends Controller
             ->orderBy('point_sales_pos.id');
 
         $list_sales = PosHelper::searchList($list_sales, 'point_sales_pos.id', 'asc', \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'), 1);
+        $list_retur = PosRetur::where('id', '>', 0);
+        if (\Input::get('date_from')) $list_retur = $list_retur->where('form_date', '>=', \Input::get('date_from'));
+        if (\Input::get('date_to')) $list_retur = $list_retur->where('form_date', '>=', \Input::get('date_to'));
         $view = view('point-sales::app.sales.point.pos.report.index');
-        $view->grand_sales = $list_sales->get()->sum('total');
+        $view->grand_sales = $list_sales->get()->sum('total') - $list_retur->get()->sum('total');
+        $view->total_retur = $list_retur->get()->sum('total');
         $view->list_sales = $list_sales->paginate(100);
+        $view->list_retur = $list_retur->get();
         return $view;
     }
 
@@ -43,8 +49,13 @@ class PosReportController extends Controller
     {
         access_is_allowed('read.point.sales.pos.daily.report');
         $list_sales = Pos::joinFormulir()->notArchived()->selectOriginal()->showToday()->userChasier();
+        $list_retur = PosRetur::where('id', '>', 0);
+        if (\Input::get('date_from')) $list_retur = $list_retur->where('form_date', '>=', \Input::get('date_from'));
+        if (\Input::get('date_to')) $list_retur = $list_retur->where('form_date', '>=', \Input::get('date_to'));
         $view = view('point-sales::app.sales.point.pos.report.daily');
         $view->list_sales = $list_sales->paginate(100);
+        $view->list_retur = $list_retur->get();
+        $view->total_retur = $list_retur->get()->sum('total');
         return $view;
     }
 

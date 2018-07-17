@@ -85,7 +85,7 @@ class GoodsReceivedHelper
             $goods_received_item->discount = number_format_db($request->input('item_discount')[$i]);
             $goods_received_item->unit = $request->input('item_unit_name')[$i];
             $goods_received_item->converter = number_format_db($request->input('item_unit_converter')[$i]);
-            $goods_received_item->allocation_id = 1;
+            $goods_received_item->allocation_id = $request->input('allocation_id')[$i] ? $request->input('allocation_id')[$i] : 1;
             $goods_received_item->save();
             ReferHelper::create(
                 $request->input('reference_item_type')[$i],

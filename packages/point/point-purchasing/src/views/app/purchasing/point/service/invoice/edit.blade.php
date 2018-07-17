@@ -310,7 +310,20 @@
                                 {{\Auth::user()->name}}
                             </div>
                         </div>
-
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Request Approval To</label>
+                            <div class="col-md-6">
+                                <select name="approval_to" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                                    @foreach($list_user_approval as $user_approval)
+                                        @if($user_approval->may('approval.point.purchasing.service.invoice'))
+                                            <option value="{{$user_approval->id}}" {{ old('approval_to') == $user_approval->id ? 'selected' : '' }}>
+                                                {{ $user_approval->name }}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                     </fieldset>
 
                     <div class="form-group">

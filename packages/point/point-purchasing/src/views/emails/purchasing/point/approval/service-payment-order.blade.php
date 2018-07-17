@@ -124,7 +124,7 @@
 
 <body>
 <div class="invoice-box">
-    Hi, you have an request approval purchase payment order from {{ $username }}. We would like to inform the
+    Hi, you have a request approval purchase payment order from {{ $username }}. We would like to inform the
     details as follows :
     
     <?php
@@ -300,19 +300,33 @@
                             {{ number_format_quantity($invoice->total) }}
                         </td>
                         <td style="text-align: right;">
-                            {{ number_format_quantity($payment_order_detail->amount) }}
+                            @if($invoice->total - $invoice_remaining - $payment_order_detail->amount == 0)
+                                {{ number_format_quantity($payment_order_detail->amount) }}
+                            @endif
                         </td>
                     </tr>
-
-                    <tr class="heading">
-                        <td style="text-align: right;" colspan="4">
-                            Invoice Remaining
-                        </td>
-                        <td style="text-align: right;">
-                            {{ number_format_quantity($invoice_remaining) }}
-                        </td>
-                        <td></td>
-                    </tr>
+                    @if($invoice->total - $invoice_remaining - $payment_order_detail->amount > 0)
+                        <tr class="heading">
+                            <td style="text-align: right;" colspan="4">
+                                Previously Paid
+                            </td>
+                            <td style="text-align: right;">
+                                {{ number_format_quantity($invoice->total - $invoice_remaining - $payment_order_detail->amount) }}
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr class="heading">
+                            <td style="text-align: right;" colspan="4">
+                                Invoice Remaining
+                            </td>
+                            <td style="text-align: right;">
+                                {{ number_format_quantity($invoice_remaining + $payment_order_detail->amount) }}
+                            </td>
+                            <td style="text-align: right;">
+                                {{ number_format_quantity($payment_order_detail->amount) }}
+                            </td>
+                        </tr>
+                    @endif
                 @elseif(get_class($reference) == "Point\PointPurchasing\Models\Service\Downpayment")
                     <tr class="heading">
                         <td style="text-align: right;" colspan="5">

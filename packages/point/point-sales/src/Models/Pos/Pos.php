@@ -84,6 +84,16 @@ class Pos extends Model
         return $this->belongsTo('\Point\Framework\Models\Master\Person', 'customer_id');
     }
 
+    public function createdBy()
+    {
+        return $this->belongsTo('\Point\Framework\Models\Master\User', 'created_by');
+    }
+
+    public function retur()
+    {
+        return $this->hasOne('\Point\PointSales\Models\Pos\PosRetur', 'pos_id');
+    }
+
     public static function showUrl($id)
     {
         $class = self::find($id);
