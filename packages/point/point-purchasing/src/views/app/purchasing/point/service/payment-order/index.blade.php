@@ -111,7 +111,6 @@
                                     "></i>
                                 </span>
                             </th>
-                            <th>Status</th>
                             <th class="text-right" style="cursor:pointer" onclick="selectData('total_payment', `{{($order_by == 'total_payment' && $order_type == 'desc') ? 'asc' : 'desc'}}`)">
                                 Total
                                 <span class="pull-right">
@@ -128,6 +127,7 @@
                                     "></i>
                                 </span>
                             </th>
+                            <th>Status</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -140,12 +140,12 @@
                                 <td>
                                     {!! get_url_person($payment_order->person_id) !!}
                                 </td>
+                                <td class="text-right">
+                                    {{ number_format_quantity($payment_order->total_payment) }}
+                                </td>
                                 <td>
                                     @include('framework::app.include._approval_status_label', ['approval_status' => $payment_order->formulir->approval_status])
                                     @include('framework::app.include._form_status_label', ['form_status' => $payment_order->formulir->form_status])
-                                </td>
-                                <td class="text-right">
-                                    {{ number_format_quantity($payment_order->total_payment) }}
                                 </td>
                             </tr>
                         @endforeach
