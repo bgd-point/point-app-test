@@ -27,7 +27,8 @@ trait PaymentVesa
                 'url' => url('finance/point/payment/choose/' . $payment_reference->payment_reference_id),
                 'deadline' => $payment_reference->required_date ? : $payment_reference->reference->form_date,
                 'message' => 'create payment from formulir number ' . formulir_url($payment_reference->reference),
-                'permission_slug' => 'menu.point.finance.cashier'
+                'permission_slug' => 'menu.point.finance.cashier',
+                'data' => $payment_reference
             ]);
         }
 
