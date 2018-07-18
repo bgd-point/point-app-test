@@ -21,18 +21,6 @@ trait PaymentVesa
     {
         $list_payment_reference = PaymentReference::whereNull('point_finance_payment_id');
 
-        // Grouping vesa
-        if ($merge_into_group && $list_payment_reference->count() > 5) {
-            array_push($array, [
-                'url' => url('finance/point/payment/vesa-create'),
-                'deadline' => $list_payment_reference->orderBy('id', 'DESC')->first()->reference->form_date,
-                'message' => 'create a payment from pending list',
-                'permission_slug' => 'menu.point.finance.cashier'
-            ]);
-
-            return $array;
-        }
-
         // Push all
         foreach ($list_payment_reference->get() as $payment_reference) {
             array_push($array, [
