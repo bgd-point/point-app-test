@@ -21,57 +21,34 @@
             color: #555;
         }
 
-        .invoice-box table {
+        table {
             width: 100%;
             line-height: inherit;
-            text-align: left;
         }
 
-        .invoice-box table td {
-            padding: 5px;
-            vertical-align: top;
-            
+        table.info {
+            padding: 20px 0;
         }
-
-        .invoice-box table tr td:nth-child(2) {
+        table.info td:nth-child(1) {
+            width: 20%;
+        }
+        table.info td:nth-child(2) {
             text-align: right;
         }
 
-        .invoice-box table tr.top table td {
-            padding-bottom: 20px;
+        td {
+            padding: 5px;
+            vertical-align: top;
         }
 
-        .invoice-box table tr.top table td.title {
-            font-size: 45px;
-            line-height: 45px;
-            color: #333;
-        }
-
-        .invoice-box table tr.information table td {
-            padding-bottom: 40px;
-        }
-
-        .invoice-box table tr.heading td {
+        tr.heading td {
             background: #eee;
             border-bottom: 1px solid #ddd;
             font-weight: bold;
         }
 
-        .invoice-box table tr.details td {
-            padding-bottom: 20px;
-        }
-
-        .invoice-box table tr.item td {
+        tr.item td {
             border-bottom: 1px solid #eee;
-        }
-
-        .invoice-box table tr.item.last td {
-            border-bottom: none;
-        }
-
-        .invoice-box table tr.total td:nth-child(2) {
-            border-top: 2px solid #eee;
-            font-weight: bold;
         }
 
         .btn {
@@ -110,64 +87,57 @@
             border-color: #d9534f;
         }
 
-        @media only screen and (max-width: 600px) {
-            .invoice-box table tr.top table td {
-                width: 100%;
-                display: block;
-                text-align: center;
-            }
-
-            .invoice-box table tr.information table td {
-                width: 100%;
-                display: block;
-                text-align: center;
-            }
+        .text-right {
+            text-align: right;
         }
     </style>
 </head>
 
 <body>
 <div class="invoice-box">
-    Hi, you have an request approval purchase order from {{ $username }}. We would like to inform the
-    details as follows :
+    Hi, you have a request approval purchase order from {{ $username }}. We would like to inform the details as follows :
 
    @foreach($list_data as $purchase_order)
-        <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
+        <table class="info">
             <tr>
-                <td style="width: 20%">Form Number</td>
+                <td>Form Number</td>
                 <td>:</td>
-                <td>{{ $purchase_order->formulir->form_number }}</td>
+                <td>
+                    <a href="{{ url('purchasing/point/purchase-order/'.$purchase_order->id) }}">
+                        {{ $purchase_order->formulir->form_number}}
+                    </a>
+                </td>
             </tr>
             <tr>
-                <td style="width: 20%">Form Date</td>
+                <td>Form Date</td>
                 <td>:</td>
                 <td>{{ \DateHelper::formatView($purchase_order->formulir->form_date) }}</td>
             </tr>
             <tr>
-                <td style="width: 20%">Supplier</td>
+                <td>Supplier</td>
                 <td>:</td>
                 <td>{{ $purchase_order->supplier->codeName }}</td>
             </tr>
             <tr>
-                <td style="width: 20%">Cash Purchase</td>
+                <td>Cash Purchase</td>
                 <td>:</td>
                 <td>{{ $purchase_order->is_cash ? 'Yes' : 'No' }}</td>
             </tr>
             <tr>
-                <td style="width: 20%">Include Expedition</td>
+                <td>Include Expedition</td>
                 <td>:</td>
                 <td>{{ $purchase_order->include_expedition ? 'Yes' : 'No' }}</td>
             </tr>
         </table>
 
-        <table cellpadding="0" cellspacing="0">
+        <table class="details" cellpadding="0" cellspacing="0">
             <tr class="heading">
                 <td>Item</td>
-                <td>Quantity</td>
-                <td>Price</td>
-                <td>Discount(%)</td>
+                <td class="text-right">Quantity</td>
+                <td class="text-right">Price</td>
+                <td class="text-right">Disc (%)</td>
                 <td>Allocation</td>
-                <td>Total</td>
+                <td class="text-right">Total</td>
             </tr>
 
            @foreach($purchase_order->items as $purchase_order_item)
@@ -175,28 +145,42 @@
                     <td>
                         {{$purchase_order_item->item->codeName}}
                     </td>
-                    <td>
+                    <td class="text-right">
                         {{number_format_quantity($purchase_order_item->quantity). ' ' .$purchase_order_item->unit}}
                     </td>
-                    <td>
+                    <td class="text-right">
                         {{number_format_quantity($purchase_order_item->price)}}
                     </td>
-                    <td>
+                    <td class="text-right">
                         {{number_format_quantity($purchase_order_item->discount)}}
                     </td>
                     <td>
                         {{$purchase_order_item->allocation->name}}
                     </td>
-                    <td align="right">
+                    <td class="text-right">
                         {{number_format_quantity($purchase_order_item->quantity * $purchase_order_item->price - ($purchase_order_item->quantity * $purchase_order_item->price * $purchase_order_item->discount / 100))}}
                     </td>
                 </tr>
             @endforeach
+
+
+            @if($purchase_order->tax > 0)
+                <tr class="heading">
+                    <td colspan="5" class="text-right">
+                        Tax ({{$purchase_order->type_of_tax}})
+                    </td>
+                    <td class="text-right">
+                        {{number_format_price($purchase_order->tax)}}
+                    </td>
+                </tr>
+            @endif
             
             <tr class="heading">
-                <td colspan="5">Total</td>
-                <td>
-                    {{number_format_quantity($purchase_order->total)}}
+                <td colspan="5" class="text-right">
+                    Total
+                </td>
+                <td class="text-right">
+                    {{number_format_price($purchase_order->total)}}
                 </td>
             </tr>
             <tr>
