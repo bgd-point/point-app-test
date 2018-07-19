@@ -258,15 +258,17 @@
                         </tr>
                     @endforeach
 
-                    <tr class="heading">
-                        <td style="text-align: right;" colspan="4">
-                            Invoice Subtotal
-                        </td>
-                        <td style="text-align: right;">
-                            {{ number_format_quantity($invoice->subtotal) }}
-                        </td>
-                        <td></td>
-                    </tr>
+                    @if($invoice->discount > 0 || $invoice->tax > 0)
+                        <tr class="heading">
+                            <td style="text-align: right;" colspan="4">
+                                Invoice Subtotal
+                            </td>
+                            <td style="text-align: right;">
+                                {{ number_format_quantity($invoice->subtotal) }}
+                            </td>
+                            <td></td>
+                        </tr>
+                    @endif
 
                     @if($invoice->discount > 0)
                         <tr class="heading">
