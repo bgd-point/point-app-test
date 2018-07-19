@@ -62,9 +62,68 @@
                     <table class="table table-striped table-bordered">
                         <thead>
                         <tr class="th-head">
-                            <th style="cursor:pointer" onclick="selectData('form_date', @if($order_by == 'form_date' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_date' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Form Date <span class="pull-right"><i class="fa @if($order_by == 'form_date' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_date' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
-                            <th style="cursor:pointer" onclick="selectData('form_number', @if($order_by == 'form_number' && $order_type == 'asc') 'desc' @elseif($order_by == 'form_number' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Form Number <span class="pull-right"><i class="fa @if($order_by == 'form_number' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'form_number' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
-                            <th style="cursor:pointer" onclick="selectData('person.name', @if($order_by == 'person.name' && $order_type == 'asc') 'desc' @elseif($order_by == 'person.name' && $order_type == 'desc') 'asc' @else 'desc' @endif)">Supplier <span class="pull-right"><i class="fa @if($order_by == 'person.name' && $order_type == 'asc') fa-sort-asc @elseif($order_by == 'person.name' && $order_type == 'desc') fa-sort-desc @else fa-sort-asc @endif fa-fw"></i></span></th>
+                            <th style="cursor:pointer" onclick="selectData('form_date', `{{($order_by == 'form_date' && $order_type == 'desc') ? 'asc' : 'desc'}}`)">
+                                Form Date
+                                <span class="pull-right">
+                                    <i class="fa fa-fw
+                                        @if($order_by === 'form_date')
+                                            @if($order_type === 'desc')
+                                                fa-sort-desc
+                                            @else
+                                                fa-sort-asc
+                                            @endif
+                                        @else
+                                            fa-sort
+                                        @endif
+                                    "></i>
+                                </span>
+                            </th>
+                            <th style="cursor:pointer" onclick="selectData('form_number', `{{($order_by == 'form_date' && $order_type == 'desc') ? 'asc' : 'desc'}}`)">Form Number
+                                <span class="pull-right">
+                                    <i class="fa fa-fw
+                                        @if($order_by === 'form_number')
+                                            @if($order_type === 'desc')
+                                                fa-sort-desc
+                                            @else
+                                                fa-sort-asc
+                                            @endif
+                                        @else
+                                            fa-sort
+                                        @endif
+                                    "></i>
+                                </span>
+                            </th>
+                            <th style="cursor:pointer" onclick="selectData('person.name', `{{($order_by == 'form_date' && $order_type == 'desc') ? 'asc' : 'desc'}}`)">Form Number
+                                <span class="pull-right">
+                                    <i class="fa fa-fw
+                                        @if($order_by === 'person.name')
+                                            @if($order_type === 'desc')
+                                                fa-sort-desc
+                                            @else
+                                                fa-sort-asc
+                                            @endif
+                                        @else
+                                            fa-sort
+                                        @endif
+                                    "></i>
+                                </span>
+                            </th>
+                            <th class="text-right" style="cursor:pointer" onclick="selectData('total', `{{($order_by == 'total' && $order_type == 'desc') ? 'asc' : 'desc'}}`)">
+                                Total
+                                <span class="pull-right">
+                                    <i class="fa fa-fw
+                                        @if($order_by === 'total')
+                                            @if($order_type === 'desc')
+                                                fa-sort-desc
+                                            @else
+                                                fa-sort-asc
+                                            @endif
+                                        @else
+                                            fa-sort
+                                        @endif
+                                    "></i>
+                                </span>
+                            </th>
                             <th>Status</th>
                         </tr>
                         </thead>
@@ -78,6 +137,9 @@
                                 </td>
                                 <td>
                                     {!! get_url_person($invoice->person->id) !!}
+                                </td>
+                                <td class="text-right">
+                                    {{ number_format_price($invoice->total) }}
                                 </td>
                                 <td>
                                     @include('framework::app.include._approval_status_label', ['approval_status' => $invoice->formulir->approval_status])
@@ -97,49 +159,6 @@
 
 @section('scripts')
 <script>
-$('#check_show').val(0);
-function showAll(){
-    $('#full_view').attr('onclick','compact()');
-    $('#full_view').text('Compact');
-    $('.header_detail').remove();
-    var html = '<th class="header_detail">ITEM</th>'
-                +'<th class="header_detail">QTY</th>'
-                +'<th class="header_detail">PRICE</th>'
-    $('.th-head').append(html);
-    $('.txt-detail').remove();
-    $('.row-detail').append('<td class="txt-detail extend_column_detail" colspan="3" align="center"><strong>DETAIL</strong></td>');
-    var check_show = $('#check_show').val();
-    var array_invoice_id = $('#array_invoice_id').val();
-    if(check_show == 0){
-        var temp = array_invoice_id.split('#');
-        for (var x = temp.length - 1; x >= 0; x--) {
-            var str_url = "{{ url('purchasing/point/service/invoice/detail/') }}/"+temp[x];
-            $.ajax({ url:str_url, success: function(data) {
-                for (var i = 0; i < data.length; i++) {
-                    var extend_table_row = ' <tr class="extend_column_detail">'
-                            +'      <td colspan="4" class="extend_column_detail"></td>'
-                            +'      <td class="extend_column_detail">'+data[i].item_name+'</td>'
-                            +'      <td class="extend_column_detail">'+data[i].quantity+'</td>'
-                            +'      <td class="extend_column_detail">'+data[i].price+'</td>'
-                            +'  </tr>';
-
-                    $('#row_detail_'+data[i].point_purchasing_service_invoice_id).after(extend_table_row);
-                
-                $('#check_show').val(1);
-                }
-            }});
-        }
-    }else{
-        $('.extend_column_detail').show();
-    }
-}
-function compact(){
-    $('#full_view').attr('onclick','showAll()');
-    $('#full_view').text('Show All');
-    $('.header_detail').remove();
-    $('.extend_column_detail').hide();
-
-}
 function selectData(order_by, order_type) {
     var status = $("#status option:selected").val();
     var date_from = $("#date-from").val();
