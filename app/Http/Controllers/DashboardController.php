@@ -42,6 +42,7 @@ class DashboardController extends Controller
         $view = view('app.index');
 
         $array_vesa = [];
+        $array_vesa_payment = [];
 
         /**
          * add additional vesa here
@@ -95,13 +96,14 @@ class DashboardController extends Controller
 
         // FINANCE
         $array_vesa = array_merge($array_vesa, PaymentOrderFinance::getVesa());
-        $array_vesa = array_merge($array_vesa, PaymentReference::getVesa());
+        $array_vesa_payment = array_merge($array_vesa_payment, PaymentReference::getVesa());
         $array_vesa = array_merge($array_vesa, \Point\PointFinance\Models\CashAdvance::getVesa());
 
         // ACCOUNTING
         $array_vesa = array_merge($array_vesa, MemoJournal::getVesa());
 
         $view->array_vesa = $array_vesa;
+        $view->array_vesa_payment = $array_vesa_payment;
 
         return $view;
     }
