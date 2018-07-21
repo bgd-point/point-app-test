@@ -10,7 +10,8 @@
         }
 
         .invoice-box {
-            max-width: 800px;
+            /* max-width: 800px; */
+            width: 1920px;
             margin: auto;
             padding: 30px;
             border: 1px solid #eee;
@@ -25,12 +26,16 @@
             width: 100%;
             line-height: inherit;
             text-align: left;
+            padding: 0;
+            border-spacing: 0;
+            border-collapse: collapse;
+            margin-bottom: 20px;
         }
 
         .invoice-box table td {
             padding: 5px;
             vertical-align: top;
-            
+            /* white-space: nowrap; */
         }
 
         .invoice-box table tr.top table td {
@@ -58,16 +63,39 @@
         }
 
         .invoice-box table tr.item td {
-            border-bottom: 1px solid #eee;
+            /* border-bottom: 1px solid #eee; */
         }
 
         .invoice-box table tr.item.last td {
             border-bottom: none;
         }
 
-        .invoice-box table tr.total td:nth-child(2) {
-            border-top: 2px solid #eee;
+        .invoice-box table tr.total td {
+            border-top: 2px solid #ddd;
             font-weight: bold;
+        }
+        .invoice-box table tr.total.last td {
+            border-bottom: 2px solid #ddd;
+        }
+
+        .overview {
+            padding: 20px 0;
+        }
+        .overview td:first-child {
+            width: 150px;
+        }
+        .overview td:nth-child(2) {
+            width: 20px;
+            text-align: right;
+        }
+        .main td {
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+        .main td.payment {
+            border-left: 2px solid #ddd;
+            border-right: 2px solid #ddd;
+            background-color: #F8f8f8;
         }
 
         .btn {
@@ -106,7 +134,14 @@
             border-color: #d9534f;
         }
 
-        @media only screen and (max-width: 600px) {
+        .text-right {
+            text-align: right;
+        }
+        .allow-wrap {
+            white-space: normal;
+        }
+
+        /* @media only screen and (max-width: 600px) {
             .invoice-box table tr.top table td {
                 width: 100%;
                 display: block;
@@ -118,28 +153,19 @@
                 display: block;
                 text-align: center;
             }
-        }
+        } */
     </style>
 </head>
 
 <body>
 <div class="invoice-box">
-    Hi, you have a request approval purchase payment order from {{ $username }}. We would like to inform the
-    details as follows :
-    
-    <?php
-        $total_all_payment_order = 0;
-    ?>
+    Hi, you have a request approval purchase payment order from <strong>{{ $username }}</strong>. We would like to inform the details as follows :
 
    @foreach($list_data as $payment_order)
-        <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
+        <table class="overview">
             <tr>
-                <td style="width: 20%;">
-                    Form Number
-                </td>
-                <td>
-                    :
-                </td>
+                <td>Form Number</td>
+                <td>:</td>
                 <td>
                     <a href="{{ url('purchasing/point/service/payment-order/'.$payment_order->id) }}">
                         {{ $payment_order->formulir->form_number }}
@@ -147,37 +173,19 @@
                 </td>
             </tr>
             <tr>
-                <td style="width: 20%;">
-                    Form Date
-                </td>
-                <td>
-                    :
-                </td>
-                <td>
-                    {{ \DateHelper::formatView($payment_order->formulir->form_date, true) }}
-                </td>
+                <td>Form Date</td>
+                <td>:</td>
+                <td>{{ \DateHelper::formatView($payment_order->formulir->form_date, true) }}</td>
             </tr>
             <tr>
-                <td style="width: 20%;">
-                    Supplier
-                </td>
-                <td>
-                    :
-                </td>
-                <td>
-                    {!! get_url_person($payment_order->person_id) !!}
-                </td>
+                <td>Supplier</td>
+                <td>:</td>
+                <td>{!! get_url_person($payment_order->person_id) !!}</td>
             </tr>
             <tr>
-                <td style="width: 20%;">
-                    Notes
-                </td>
-                <td>
-                    :
-                </td>
-                <td>
-                    {{ ucfirst($payment_order->notes) }}
-                </td>
+                <td>Notes</td>
+                <td>:</td>
+                <td>{{ ucfirst($payment_order->notes) }}</td>
             </tr>
         </table>
 
@@ -185,7 +193,17 @@
             $total_payment_order = 0;
         ?>
 
-        <table cellpadding="0" cellspacing="0">
+        <table class="main">
+            <tr class="heading">
+                <td>Invoice Number</td>
+                <td>Service & Item</td>
+                <td>Allocation</td>
+                <td class="text-right";>Price</td>
+                <td class="text-right";>Discount (%)</td>
+                <td class="text-right";>Subtotal</td>
+                <td class="text-right">Payment Amount</td>
+                <td class="text-right">Remaining</td>
+            </tr>
             @foreach($payment_order->details as $payment_order_detail)
                 <?php
                     $model = $payment_order_detail->reference->formulirable_type;
@@ -195,156 +213,204 @@
                     <?php
                         $invoice = $reference;
                         $total_payment_order += $payment_order_detail->amount;
-                        $total_all_payment_order += $total_payment_order;
 
                         $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice), $invoice->id, $invoice->total);
                     ?>
-
-                    <tr class="heading">
-                        <td colspan="6">
-                            INVOICE :
-                            <a href="{{url('purchasing/point/service/invoice/'.$invoice->formulir_id)}}">
-                                {{ $invoice->formulir->form_number }}
-                            </a>
-                        </td>
-                    </tr>
-                        
-                    <tr class="heading">
-                        <td>Service & Item</td>
-                        <td>Allocation</td>
-                        <td style="text-align: right;">Price</td>
-                        <td style="text-align: right;">Disc (%)</td>
-                        <td style="text-align: right;">Subtotal</td>
-                        <td style="text-align: right;">Payment</td>
-                    </tr>
                     
-                    @foreach($invoice->services as $service)
+                    @foreach($invoice->services as $index=>$service)
                         <?php
                             $subtotal = ($service->quantity * $service->price);
                             $subtotal -= ($service->quantity * $service->price * $service->discount / 100);
                         ?>
                         <tr class="item">
                             <td>
+                                @if($index === 0)
+                                    <a href="{{url('purchasing/point/service/invoice/'.$invoice->id)}}">
+                                        {{ $invoice->formulir->form_number }}
+                                    </a>
+                                @endif
+                            </td>
+                            <td class="allow-wrap">
                                 {{ ucfirst($service->service->name) }}
                                 (QTY: {{ number_format_quantity($service->quantity) }})
                                 <br>
                                 {{ ucfirst($service->service_notes) }}
                             </td>
                             <td>{{ ucwords($service->allocation->name) }}</td>
-                            <td style="text-align: right; ">{{ number_format_quantity($service->price) }}</td>
-                            <td style="text-align: right;">{{ number_format_quantity($service->discount) }}</td>
-                            <td style="text-align: right;">{{ number_format_quantity($subtotal) }}</td>
+                            <td class="text-right">{{ number_format_price($service->price) }}</td>
+                            <td class="text-right">{{ number_format_quantity($service->discount) }}</td>
+                            <td class="text-right">{{ number_format_price($subtotal) }}</td>
+                            <td class="payment"></td>
                             <td></td>
                         </tr>
                     @endforeach
 
-                    @foreach($invoice->items as $item)
+                    @foreach($invoice->items as $index=>$item)
                         <?php
                             $subtotal = ($item->quantity * $item->price);
                             $subtotal -= ($item->quantity * $item->price * $item->discount / 100);
                         ?>
                         <tr class="item">
-                            <td>
+                            <td></td>
+                            <td class="allow-wrap">
                                 {{ ucfirst($item->item->name) }}
                                 (QTY : {{ number_format_quantity($item->quantity) }})
                                 <br>
                                 {{ ucfirst($item->item_notes) }}
                             </td>
                             <td>{{ ucwords($item->allocation->name) }}</td>
-                            <td style="text-align: right;">{{ number_format_quantity($item->price) }}</td>
-                            <td style="text-align: right;">{{ number_format_quantity($item->discount) }}</td>
-                            <td style="text-align: right;">{{ number_format_quantity($subtotal) }}</td>
+                            <td class="text-right">{{ number_format_price($item->price) }}</td>
+                            <td class="text-right">{{ number_format_quantity($item->discount) }}</td>
+                            <td class="text-right">{{ number_format_price($subtotal) }}</td>
+                            <td class="payment"></td>
                             <td></td>
                         </tr>
                     @endforeach
 
-                    <tr class="heading">
-                        <td style="text-align: right;" colspan="4">
-                            Invoice Subtotal
-                        </td>
-                        <td style="text-align: right;">
-                            {{ number_format_quantity($invoice->subtotal) }}
-                        </td>
-                        <td></td>
-                    </tr>
-
                     @if($invoice->discount > 0)
-                        <tr class="heading">
-                            <td style="text-align: right;" colspan="4">
-                                Invoice Discount
+                        <tr class="item">
+                            <td></td>
+                            <td>
+                                Discount
                             </td>
-                            <td style="text-align: right;">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="text-right">
                                 {{ number_format_quantity($invoice->discount) }}
                             </td>
+                            <td class="payment"></td>
                             <td></td>
                         </tr>
                     @endif
 
                     @if($invoice->tax > 0)
-                        <tr class="heading">
-                            <td style="text-align: right;" colspan="4">
+                        <tr class="item">
+                            <td></td>
+                            <td>
                                 Tax ({{ ucfirst($invoice->type_of_tax) }})
                             </td>
-                            <td style="text-align: right;">
-                                {{ number_format_quantity($invoice->tax) }}
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="text-right">
+                                {{ number_format_price($invoice->tax) }}
                             </td>
+                            <td class="payment"></td>
                             <td></td>
                         </tr>
                     @endif
 
-                    <tr class="heading">
-                        <td style="text-align: right;" colspan="4">
+                    <tr class="total">
+                        <td></td>
+                        <td class="text-right" colspan="4">
                             Invoice Total
                         </td>
-                        <td style="text-align: right;">
-                            {{ number_format_quantity($invoice->total) }}
+                        <td class="text-right">
+                            {{ number_format_price($invoice->total) }}
                         </td>
-                        <td style="text-align: right;">
-                            @if($invoice->total - $invoice_remaining - $payment_order_detail->amount == 0)
-                                {{ number_format_quantity($payment_order_detail->amount) }}
-                            @endif
-                        </td>
+                        <td class="payment"></td>
+                        <td></td>
                     </tr>
+
                     @if($invoice->total - $invoice_remaining - $payment_order_detail->amount > 0)
-                        <tr class="heading">
-                            <td style="text-align: right;" colspan="4">
+                        <tr class="total">
+                            <td></td>
+                            <td class="text-right" colspan="4">
                                 Previously Paid
                             </td>
-                            <td style="text-align: right;">
-                                {{ number_format_quantity($invoice->total - $invoice_remaining - $payment_order_detail->amount) }}
+                            <td class="text-right">
+                                {{ number_format_price($invoice->total - $invoice_remaining - $payment_order_detail->amount) }}
                             </td>
+                            <td class="payment"></td>
                             <td></td>
                         </tr>
-                        <tr class="heading">
-                            <td style="text-align: right;" colspan="4">
+                        <tr class="total">
+                            <td></td>
+                            <td class="text-right" colspan="4">
                                 Invoice Remaining
                             </td>
-                            <td style="text-align: right;">
-                                {{ number_format_quantity($invoice_remaining + $payment_order_detail->amount) }}
+                            <td class="text-right">
+                                {{ number_format_price($invoice_remaining + $payment_order_detail->amount) }}
                             </td>
-                            <td style="text-align: right;">
-                                {{ number_format_quantity($payment_order_detail->amount) }}
-                            </td>
+                            <td class="payment"></td>
+                            <td></td>
                         </tr>
                     @endif
-                @elseif(get_class($reference) == "Point\PointPurchasing\Models\Service\Downpayment")
-                    <tr class="heading">
-                        <td style="text-align: right;" colspan="5">
-                            Downpayment
-                            <a href="{{url('purchasing/point/service/downpayment/'.$reference->formulir_id)}}">
-                                {{ $reference->formulir->form_number }}
-                            </a>
+                    
+                    <tr class="total last">
+                        <td></td>
+                        <td class="text-right" colspan="4">
+                            Payment Amount
                         </td>
-                        <td style="text-align: right;">
-                            -{{ number_format_quantity($reference->amount)}}
+                        <td></td>
+                        <td class="text-right payment">
+                            {{ number_format_price($payment_order_detail->amount) }}
+                        </td>
+                        <td class="text-right">
+                            {{ number_format_price($invoice_remaining) }}
                         </td>
                     </tr>
                 @endif
             @endforeach
+            <?php
+                $downpayment_counter = 0;
+            ?>
+            @foreach($payment_order->details as $payment_order_detail)
+                <?php
+                    $model = $payment_order_detail->reference->formulirable_type;
+                    $reference = $model::find($payment_order_detail->reference->formulirable_id);
+                ?>
+                @if(get_class($reference) == "Point\PointPurchasing\Models\Service\Downpayment")
+                    @if($downpayment_counter === 0)
+                        <tr class="details">
+                            <td colspan="8"></td>
+                        </tr>
+                        <tr class="heading">
+                            <td></td>
+                            <td>Date</td>
+                            <td colspan="3">Note</td>
+                            <td class="text-right">Amount</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <?php $downpayment_counter++ ?>
+                    @endif
+                    <tr class="item" style="border-bottom: 2px solid #ddd">
+                        <td>
+                            <a href="{{url('purchasing/point/service/downpayment/'.$reference->id)}}">
+                                {{ $reference->formulir->form_number }}
+                            </a>
+                        </td>
+                        <td>{{ \DateHelper::formatView($reference->formulir->form_date, true) }}</td>
+                        <td colspan="3">{{ $reference->notes }}</td>
+                        <?php
+                            $dp_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($reference), $reference->id, $reference->amount);
+                        ?>
+                        <td class="text-right">
+                            {{ number_format_price($dp_remaining-$payment_order_detail->amount) }}
+                        </td>
+                        <td class="text-right payment">
+                            {{ number_format_price($payment_order_detail->amount) }}
+                        </td>
+                        <td class="text-right">
+                            {{ number_format_price($dp_remaining) }}
+                        </td>
+                    </tr>
+                @endif
+            @endforeach
+            <tr class="details">
+                <td colspan="8"></td>
+            </tr>
+            <tr class="total last">
+                <td class="text-right" colspan="6">Amount to be paid</td>
+                <td class="text-right payment">
+                    {{ number_format_quantity($payment_order->total_payment)}}</td>
+                <td></td>
+            </tr>
         </table>
 
-        <div style="text-align: right;">
-            <h2> Payment Order Total: {{ number_format_quantity($payment_order->total_payment)}}</h2>
+        <div class="text-right">
             <a href="{{ $url . '/formulir/'.$payment_order->formulir_id.'/approval/check-status/'.$token }}"
                 class="btn btn-check"> Check </a>
             <a href="{{ $url . '/purchasing/point/service/payment-order/'.$payment_order->id.'/approve?token='.$token }}"
