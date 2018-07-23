@@ -10,8 +10,7 @@
         }
 
         .invoice-box {
-            /* max-width: 800px; */
-            width: 1920px;
+            max-width: 800px; 
             margin: auto;
             padding: 30px;
             border: 1px solid #eee;
@@ -162,8 +161,7 @@
 </head>
 
 <body>
-{{-- <div class="invoice-box"> --}}
-    <table><tr><td>
+    <table><tr><td class="allow-wrap">
         Hi, you have a request approval purchase payment order from <strong>{{ $username }}</strong>. We would like to inform the details as follows :
     </td></tr></table>
 
@@ -277,13 +275,13 @@
                         <tr class="item">
                             <td></td>
                             <td>
-                                Discount {{ number_format_quantity($invoice->discount, 2) }}%
+                                Discount {{ number_format_quantity($invoice->discount) }}%
                             </td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td class="text-right">
-                                {{ number_format_price($subtotal * $invoice->discount) }}
+                                -{{ number_format_price($subtotal * $invoice->discount) }}
                             </td>
                             <td class="payment"></td>
                             <td></td>
@@ -441,6 +439,5 @@
         </a>
     </td></tr></table>
     @endif
-{{-- </div> --}}
 </body>
 </html>
