@@ -131,4 +131,9 @@ class Invoice extends Model
             ->get()
             ->toArray();
     }
+
+    public static function bladeEmail()
+    {
+        return 'point-purchasing::emails.purchasing.point.approval.service-invoice';
+    }
 }

@@ -29,13 +29,19 @@ class InvoiceApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.purchasing.service.invoice');
+        self::sendInvoiceApproval(app('request')->input('formulir_id'))
 
-        $list_approver = Invoice::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        gritter_success('You have sent email for invoice approval');
+        return redirect()->back();
+    }
+
+    public static sendInvoiceApproval($list_invoice_id)
+    {
         $token = md5(date('ymdhis'));
+        $list_approver = Invoice::selectApproverList($list_invoice_id);
 
         foreach ($list_approver as $data_approver) {
-            $list_invoice = Invoice::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_invoice = Invoice::selectApproverRequest($list_invoice_id), $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_invoice as $invoice) {
                 array_push($array_formulir_id, $invoice->formulir_id);
@@ -46,28 +52,18 @@ class InvoiceApprovalController extends Controller
             $data = [
                 'list_invoice' => $list_invoice,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'username' => '',
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
 
             ];
+            sendEmail(PaymentOrder::bladeEmail(), $data, $approver->email, 'Request Approval Invoice #' . date('ymdHi'));
             
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-purchasing::emails.purchasing.point.approval.service-invoice', $data, function ($message) use ($approver) {
-                    $message->to($approver->email)->subject('Request approval invoice #' . date('ymdHi'));
-                });
-                $job->delete();
-            });
-
             foreach ($list_invoice as $invoice) {
                 formulir_update_token($invoice->formulir, $token);
             }
         }
-
-        gritter_success('You have sent email for invoice approval');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)

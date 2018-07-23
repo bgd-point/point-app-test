@@ -95,19 +95,61 @@ class EmailApproval extends Command
     public function handle() {
         $formulirs = Formulir::where('approval_status', 0)
             ->where('form_status', 0)
-            ->where('request_approval_at', '<', 'CURDATE()')
+            // ->where('request_approval_at', '<', 'CURDATE()')
+            ->whereNotNull('request_approval_at')
             ->whereNull('cancel_requested_at')
+            ->orderBy('formulirable_type')
             ->get();
 
         $purchasing_service_payment_order = [];
+        $purchasing_service_invoice = [];
         foreach($formulirs AS $key=>$formulir) {
-            if($formulir->formulirable_type === "Point\PointPurchasing\Models\Service\PaymentOrder")
-            {
-                $this->line($key . ". " . $formulir->formulirable_type . " " . $formulir->request_approval_at . " | " . $formulir->form_status . " | " . $formulir->approval_status . " | " . $formulir->cancel_requested_at);
-                array_push($purchasing_service_payment_order, $formulir->id);
+            $this->line($key . ". " . $formulir->formulirable_type . " " . $formulir->request_approval_at . " | " . $formulir->form_status . " | " . $formulir->approval_status . " | " . $formulir->cancel_requested_at);
+            switch($formulir->formulirable_type) {
+                case "Point\PointPurchasing\Models\Service\Invoice":
+                    array_push($purchasing_service_invoice, $formulir->id);
+                    break;
+                case "Point\PointPurchasing\Models\Service\Downpayment":
+                    break;
+                case "Point\PointPurchasing\Models\Service\PaymentOrder":
+                    array_push($purchasing_service_payment_order, $formulir->id);
+                    break;
             }
         }
-        \Point\PointPurchasing\Http\Controllers\Service\PaymentOrderApprovalController::sendPaymentOrderApproval($purchasing_service_payment_order);
+        // \Point\PointPurchasing\Http\Controllers\Service\InvoiceApprovalController::sendInvoiceApproval($purchasing_service_payment_order);
+        // \Point\PointPurchasing\Http\Controllers\Service\PaymentOrderApprovalController::sendPaymentOrderApproval($purchasing_service_payment_order);
 
     }
 }
+// "Point\Framework\Models\OpeningInventory"
+// "Point\PointAccounting\Models\CutOffAccount"
+// "Point\PointAccounting\Models\CutOffInventory"
+// "Point\PointAccounting\Models\MemoJournal"
+// "Point\PointExpedition\Models\Downpayment"
+// "Point\PointExpedition\Models\ExpeditionOrder"
+// "Point\PointExpedition\Models\Invoice"
+// "Point\PointExpedition\Models\PaymentOrder"
+// "Point\PointFinance\Models\Bank\Bank"
+// "Point\PointFinance\Models\Cash\Cash"
+// "Point\PointFinance\Models\CashAdvance"
+// "Point\PointFinance\Models\PaymentOrder\PaymentOrder"
+// "Point\PointInventory\Models\InventoryUsage\InventoryUsage"
+// "Point\PointInventory\Models\StockCorrection\StockCorrection"
+// "Point\PointInventory\Models\TransferItem\TransferItem"
+// "Point\PointManufacture\Models\Formula"
+// "Point\PointManufacture\Models\InputProcess"
+// "Point\PointManufacture\Models\OutputProcess"
+// "Point\PointPurchasing\Models\Inventory\Downpayment"
+// "Point\PointPurchasing\Models\Inventory\GoodsReceived"
+// "Point\PointPurchasing\Models\Inventory\Invoice"
+// "Point\PointPurchasing\Models\Inventory\PaymentOrder"
+// "Point\PointPurchasing\Models\Inventory\PurchaseOrder"
+// "Point\PointPurchasing\Models\Inventory\PurchaseRequisition"
+// "Point\PointSales\Models\Sales\DeliveryOrder"
+// "Point\PointSales\Models\Sales\Downpayment"
+// "Point\PointSales\Models\Sales\Invoice"
+// "Point\PointSales\Models\Sales\PaymentCollection"
+// "Point\PointSales\Models\Sales\SalesOrder"
+// "Point\PointSales\Models\Sales\SalesQuotation"
+// "Point\PointSales\Models\Service\Invoice"
+// "Point\PointSales\Models\Service\PaymentCollection"
