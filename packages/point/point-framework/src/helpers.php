@@ -575,3 +575,24 @@ if (! function_exists('inventory_get_cost_of_sales_value_all')) {
         return InventoryHelper::getAverageCostOfSales($date_from, $item_id);
     }
 }
+
+if (! function_exists('sendEmail')) {
+    /**
+     * @param Array|$data contains array of data to be sent to email blade
+     * @param String|$bladePath contains path to blade template of email html content
+     * @param String|$subject contains email subject
+     * @param String|$targetAddress contains recipient email address
+     * @return string|void
+     */
+    function sendEmail($bladePath, $data, $targetAddress, $subject)
+    {
+        \Queue::push(function ($job) use ($data, $bladePath, $subject, $targetAddress) {
+            // QueueHelper::reconnectAppDatabase($request['database_name']);
+            \Mail::send($bladePath, $data, function ($message) use ($targetAddress, $subject) {
+                $message->to($targetAddress)->subject($subject);
+            });
+            $job->delete();
+        });
+        return true;
+    }
+}
