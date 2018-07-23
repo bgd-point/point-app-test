@@ -22,7 +22,7 @@
             color: #555;
         }
 
-        .invoice-box table {
+        table {
             width: 100%;
             line-height: inherit;
             text-align: left;
@@ -32,49 +32,49 @@
             margin-bottom: 20px;
         }
 
-        .invoice-box table td {
+        table td {
             padding: 5px;
             vertical-align: top;
-            /* white-space: nowrap; */
+            white-space: nowrap; 
         }
 
-        .invoice-box table tr.top table td {
+        table tr.top table td {
             padding-bottom: 20px;
         }
 
-        .invoice-box table tr.top table td.title {
+        table tr.top table td.title {
             font-size: 45px;
             line-height: 45px;
             color: #333;
         }
 
-        .invoice-box table tr.information table td {
+        table tr.information table td {
             padding-bottom: 40px;
         }
 
-        .invoice-box table tr.heading td {
+        table tr.heading td {
             background: #eee;
             border-bottom: 1px solid #ddd;
             font-weight: bold;
         }
 
-        .invoice-box table tr.details td {
+        table tr.details td, table tr.empty-row td {
             padding-bottom: 20px;
         }
 
-        .invoice-box table tr.item td {
+        table tr.item td {
             /* border-bottom: 1px solid #eee; */
         }
 
-        .invoice-box table tr.item.last td {
+        table tr.item.last td {
             border-bottom: none;
         }
 
-        .invoice-box table tr.total td {
+        table tr.total td {
             border-top: 2px solid #ddd;
             font-weight: bold;
         }
-        .invoice-box table tr.total.last td {
+        table tr.total.last td {
             border-bottom: 2px solid #ddd;
         }
 
@@ -91,6 +91,10 @@
         .main td {
             border-left: 1px solid #ddd;
             border-right: 1px solid #ddd;
+        }
+        .main tr.no-side-border td {
+            border-left: 0;
+            border-right: 0;
         }
         .main td.payment {
             border-left: 2px solid #ddd;
@@ -142,13 +146,13 @@
         }
 
         /* @media only screen and (max-width: 600px) {
-            .invoice-box table tr.top table td {
+            table tr.top table td {
                 width: 100%;
                 display: block;
                 text-align: center;
             }
 
-            .invoice-box table tr.information table td {
+            table tr.information table td {
                 width: 100%;
                 display: block;
                 text-align: center;
@@ -158,8 +162,10 @@
 </head>
 
 <body>
-<div class="invoice-box">
-    Hi, you have a request approval purchase payment order from <strong>{{ $username }}</strong>. We would like to inform the details as follows :
+{{-- <div class="invoice-box"> --}}
+    <table><tr><td>
+        Hi, you have a request approval purchase payment order from <strong>{{ $username }}</strong>. We would like to inform the details as follows :
+    </td></tr></table>
 
    @foreach($list_data as $payment_order)
         <table class="overview">
@@ -271,13 +277,13 @@
                         <tr class="item">
                             <td></td>
                             <td>
-                                Discount
+                                Discount {{ number_format_quantity($invoice->discount, 2) }}%
                             </td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td class="text-right">
-                                {{ number_format_quantity($invoice->discount) }}
+                                {{ number_format_price($subtotal * $invoice->discount) }}
                             </td>
                             <td class="payment"></td>
                             <td></td>
@@ -363,7 +369,7 @@
                 ?>
                 @if(get_class($reference) == "Point\PointPurchasing\Models\Service\Downpayment")
                     @if($downpayment_counter === 0)
-                        <tr class="details">
+                        <tr class="empty-row">
                             <td colspan="8"></td>
                         </tr>
                         <tr class="heading">
@@ -399,7 +405,7 @@
                     </tr>
                 @endif
             @endforeach
-            <tr class="details">
+            <tr class="empty-row">
                 <td colspan="8"></td>
             </tr>
             <tr class="total last">
@@ -408,26 +414,33 @@
                     {{ number_format_quantity($payment_order->total_payment)}}</td>
                 <td></td>
             </tr>
-        </table>
 
-        <div class="text-right">
-            <a href="{{ $url . '/formulir/'.$payment_order->formulir_id.'/approval/check-status/'.$token }}"
-                class="btn btn-check"> Check </a>
-            <a href="{{ $url . '/purchasing/point/service/payment-order/'.$payment_order->id.'/approve?token='.$token }}"
-                class="btn btn-success"> Approve </a>
-            <a href="{{ $url . '/purchasing/point/service/payment-order/'.$payment_order->id.'/reject?token='.$token }}"
-                class="btn btn-danger"> Reject </a>
-         </div>
+            <tr class="no-side-border empty-row">
+                <td colspan="8"></td>
+            </tr>
+            <tr class="no-side-border">
+                <td class="text-right" colspan="8" style="padding: 0;">
+                <a href="{{ $url . '/formulir/'.$payment_order->formulir_id.'/approval/check-status/'.$token }}"
+                    class="btn btn-check"> Check </a>
+                <a href="{{ $url . '/purchasing/point/service/payment-order/'.$payment_order->id.'/approve?token='.$token }}"
+                    class="btn btn-success"> Approve </a>
+                <a href="{{ $url . '/purchasing/point/service/payment-order/'.$payment_order->id.'/reject?token='.$token }}"
+                    class="btn btn-danger"> Reject </a>
+                </td>
+            </tr>
+        </table>
     @endforeach
 
     @if(count($list_data) > 1)
+    <table><tr><td style="padding: 0;">
         <a href="{{ $url . '/purchasing/point/service/payment-order/approve-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
             <input type="button" class="btn btn-primary" value="Approve All">
         </a>
         <a href="{{ $url . '/purchasing/point/service/payment-order/reject-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
             <input type="button" class="btn btn-warning" value="Reject All">
         </a>
+    </td></tr></table>
     @endif
-</div>
+{{-- </div> --}}
 </body>
 </html>
