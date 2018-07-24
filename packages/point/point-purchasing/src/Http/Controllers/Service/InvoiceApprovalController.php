@@ -29,13 +29,13 @@ class InvoiceApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.purchasing.service.invoice');
-        self::sendInvoiceApproval(app('request')->input('formulir_id'), auth()->user()->name);
+        self::sendRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
 
         gritter_success('You have sent email for invoice approval');
         return redirect()->back();
     }
 
-    public static function sendInvoiceApproval($list_invoice_id, $requester="VESA")
+    public static function sendingRequestApproval($list_invoice_id, $requester="VESA")
     {
         $token = md5(date('ymdhis'));
         $list_approver = Invoice::selectApproverList($list_invoice_id);

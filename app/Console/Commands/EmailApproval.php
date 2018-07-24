@@ -126,17 +126,17 @@ class EmailApproval extends Command
         }
         if(count($purchasing_service_invoice) > 0) {
             \Point\PointPurchasing\Http\Controllers\Service\InvoiceApprovalController::
-                sendInvoiceApproval($purchasing_service_invoice);
+                sendingRequestApproval($purchasing_service_invoice);
             $this->line("Point\PointPurchasing\Models\Service\Invoice " . count($purchasing_service_invoice) . " email(s) sent.");
         }
         if(count($purchasing_service_invoice) > 0) {
             \Point\PointPurchasing\Http\Controllers\Service\DownpaymentApprovalController::
-                sendDownpaymentApproval($purchasing_service_downpayment);
+                sendingRequestApproval($purchasing_service_downpayment);
             $this->line("Point\PointPurchasing\Models\Service\Downpayment " . count($purchasing_service_downpayment) . " email(s) sent.");
         }
         if(count($purchasing_service_invoice) > 0) {
             \Point\PointPurchasing\Http\Controllers\Service\PaymentOrderApprovalController::
-                sendPaymentOrderApproval($purchasing_service_payment_order);
+                sendingRequestApproval($purchasing_service_payment_order);
             $this->line("Point\PointPurchasing\Models\Service\PaymentOrder " . count($purchasing_service_payment_order) . " email(s) sent.");
         }
 
