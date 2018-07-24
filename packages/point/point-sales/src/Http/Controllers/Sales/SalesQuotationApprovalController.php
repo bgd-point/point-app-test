@@ -32,13 +32,19 @@ class SalesQuotationApprovalController extends Controller
         if ($this->isFormulirNull($request)) {
             return redirect()->back();
         }
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
 
-        $list_approver = SalesQuotation::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+
+    public static function sendingRequestApproval($list_sales_quotation_id, $requester="VESA")
+    {
+        $list_approver = SalesQuotation::selectApproverList($list_sales_quotation_id);
         $token = md5(date('ymdhis'));
 
         foreach ($list_approver as $data_approver) {
-            $list_sales_quotation = SalesQuotation::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_sales_quotation = SalesQuotation::selectApproverRequest($list_sales_quotation_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_sales_quotation as $sales_quotation) {
                 array_push($array_formulir_id, $sales_quotation->formulir_id);
@@ -49,27 +55,18 @@ class SalesQuotationApprovalController extends Controller
             $data = [
                 'list_data' => $list_sales_quotation,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];
 
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-sales::app.emails.sales.point.approval.sales-quotation', $data, function ($message) use ($approver) {
-                    $message->to($approver->email)->subject('request approval sales quotation #' . date('ymdHi'));
-                });
-                $job->delete();
-            });
+            sendEmail(SalesQuotation::bladeEmail(), $data, $approver->email, 'Request Approval Sales Quotation #' . date('ymdHi'));
 
             foreach ($list_sales_quotation as $sales_quotation) {
                 formulir_update_token($sales_quotation->formulir, $token);
             }
         }
-
-        gritter_success('send approval success');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)
