@@ -97,7 +97,7 @@ class EmailApproval extends Command
 
         $formulirs = Formulir::where('approval_status', 0) // form is still pending (not approved or rejected)
             ->where('form_status', 0) // form is still oopen (not closed / cancelled)
-            // ->whereRaw('request_approval_at < CURDATE()') //form has been requested approval more than 1 day ago
+            ->whereRaw('request_approval_at < CURDATE()') //form has been requested approval more than 1 day ago
             ->whereNotNull('request_approval_at') // form has been requested approval before
             ->whereNotNull('form_number') // form not archived
             ->whereNull('cancel_requested_at') // form not asked for cancellation
@@ -113,6 +113,7 @@ class EmailApproval extends Command
         $purchasing_goods_purchase_requisition = [];
         $purchasing_goods_purchase_order = [];
         $purchasing_goods_downpayment = [];
+        $purchasing_goods_payment_order = [];
 
         foreach($formulirs AS $key=>$formulir) {
             // $this->line($key . ". " . $formulir->formulirable_type . " " . $formulir->request_approval_at . " | " . $formulir->form_status . " | " . $formulir->approval_status . " | " . $formulir->cancel_requested_at);
@@ -136,6 +137,9 @@ class EmailApproval extends Command
                 case "Point\PointPurchasing\Models\Inventory\Downpayment":
                     array_push($purchasing_goods_downpayment, $formulir->id);
                     break;
+                case "Point\PointPurchasing\Models\Inventory\PaymentOrder":
+                    array_push($purchasing_goods_payment_order, $formulir->id);
+                    break;
             }
         }
         if(count($purchasing_service_invoice) > 0) {
@@ -143,12 +147,12 @@ class EmailApproval extends Command
                 sendingRequestApproval($purchasing_service_invoice);
             $this->line("Point\PointPurchasing\Models\Service\Invoice " . count($purchasing_service_invoice) . " form(s) resent.");
         }
-        if(count($purchasing_service_invoice) > 0) {
+        if(count($purchasing_service_downpayment) > 0) {
             \Point\PointPurchasing\Http\Controllers\Service\DownpaymentApprovalController::
                 sendingRequestApproval($purchasing_service_downpayment);
             $this->line("Point\PointPurchasing\Models\Service\Downpayment " . count($purchasing_service_downpayment) . " form(s) resent.");
         }
-        if(count($purchasing_service_invoice) > 0) {
+        if(count($purchasing_service_payment_order) > 0) {
             \Point\PointPurchasing\Http\Controllers\Service\PaymentOrderApprovalController::
                 sendingRequestApproval($purchasing_service_payment_order);
             $this->line("Point\PointPurchasing\Models\Service\PaymentOrder " . count($purchasing_service_payment_order) . " form(s) resent.");
@@ -168,6 +172,11 @@ class EmailApproval extends Command
             \Point\PointPurchasing\Http\Controllers\Inventory\DownpaymentApprovalController::
                 sendingRequestApproval($purchasing_goods_downpayment);
             $this->line("Point\PointPurchasing\Models\Inventory\Downpayment " . count($purchasing_goods_downpayment) . " form(s) resent.");
+        }
+        if(count($purchasing_goods_payment_order) > 0) {
+            \Point\PointPurchasing\Http\Controllers\Inventory\PaymentOrderApprovalController::
+                sendingRequestApproval($purchasing_goods_payment_order);
+            $this->line("Point\PointPurchasing\Models\Inventory\PaymentOrder " . count($purchasing_goods_payment_order) . " form(s) resent.");
         }
         // dd($purchasing_goods_purchase_requisition);
     }
