@@ -97,7 +97,7 @@ class EmailApproval extends Command
 
         $formulirs = Formulir::where('approval_status', 0) // form is still pending (not approved or rejected)
             ->where('form_status', 0) // form is still oopen (not closed / cancelled)
-            // ->whereRaw('request_approval_at < CURDATE()') //form has been requested approval more than 1 day ago
+            ->whereRaw('request_approval_at < CURDATE()') //form has been requested approval more than 1 day ago
             ->whereNotNull('request_approval_at') // form has been requested approval before
             ->whereNotNull('form_number') // form not archived
             ->whereNull('cancel_requested_at') // form not asked for cancellation
@@ -196,88 +196,89 @@ class EmailApproval extends Command
                     break;
             }
         }
-        // if(count($purchasing_service_invoice) > 0) {
-        //     \Point\PointPurchasing\Http\Controllers\Service\InvoiceApprovalController::
-        //         sendingRequestApproval($purchasing_service_invoice);
-        //     $this->line("Point\PointPurchasing\Models\Service\Invoice " . count($purchasing_service_invoice) . " form(s) resent.");
-        // }
-        // if(count($purchasing_service_downpayment) > 0) {
-        //     \Point\PointPurchasing\Http\Controllers\Service\DownpaymentApprovalController::
-        //         sendingRequestApproval($purchasing_service_downpayment);
-        //     $this->line("Point\PointPurchasing\Models\Service\Downpayment " . count($purchasing_service_downpayment) . " form(s) resent.");
-        // }
-        // if(count($purchasing_service_payment_order) > 0) {
-        //     \Point\PointPurchasing\Http\Controllers\Service\PaymentOrderApprovalController::
-        //         sendingRequestApproval($purchasing_service_payment_order);
-        //     $this->line("Point\PointPurchasing\Models\Service\PaymentOrder " . count($purchasing_service_payment_order) . " form(s) resent.");
-        // }
+        if(count($purchasing_service_invoice) > 0) {
+            \Point\PointPurchasing\Http\Controllers\Service\InvoiceApprovalController::
+                sendingRequestApproval($purchasing_service_invoice);
+            $this->line("Point\PointPurchasing\Models\Service\Invoice " . count($purchasing_service_invoice) . " form(s) resent.");
+        }
+        if(count($purchasing_service_downpayment) > 0) {
+            \Point\PointPurchasing\Http\Controllers\Service\DownpaymentApprovalController::
+                sendingRequestApproval($purchasing_service_downpayment);
+            $this->line("Point\PointPurchasing\Models\Service\Downpayment " . count($purchasing_service_downpayment) . " form(s) resent.");
+        }
+        if(count($purchasing_service_payment_order) > 0) {
+            \Point\PointPurchasing\Http\Controllers\Service\PaymentOrderApprovalController::
+                sendingRequestApproval($purchasing_service_payment_order);
+            $this->line("Point\PointPurchasing\Models\Service\PaymentOrder " . count($purchasing_service_payment_order) . " form(s) resent.");
+        }
 
-        // if(count($purchasing_goods_purchase_requisition) > 0) {
-        //     \Point\PointPurchasing\Http\Controllers\Inventory\PurchaseRequisitionApprovalController::
-        //         sendingRequestApproval($purchasing_goods_purchase_requisition);
-        //     $this->line("Point\PointPurchasing\Models\Inventory\PurchaseRequisition " . count($purchasing_goods_purchase_requisition) . " form(s) resent.");
-        // }
-        // if(count($purchasing_goods_purchase_order) > 0) {
-        //     \Point\PointPurchasing\Http\Controllers\Inventory\PurchaseOrderApprovalController::
-        //         sendingRequestApproval($purchasing_goods_purchase_order);
-        //     $this->line("Point\PointPurchasing\Models\Inventory\PurchaseOrder " . count($purchasing_goods_purchase_order) . " form(s) resent.");
-        // }
-        // if(count($purchasing_goods_downpayment) > 0) {
-        //     \Point\PointPurchasing\Http\Controllers\Inventory\DownpaymentApprovalController::
-        //         sendingRequestApproval($purchasing_goods_downpayment);
-        //     $this->line("Point\PointPurchasing\Models\Inventory\Downpayment " . count($purchasing_goods_downpayment) . " form(s) resent.");
-        // }
-        // if(count($purchasing_goods_payment_order) > 0) {
-        //     \Point\PointPurchasing\Http\Controllers\Inventory\PaymentOrderApprovalController::
-        //         sendingRequestApproval($purchasing_goods_payment_order);
-        //     $this->line("Point\PointPurchasing\Models\Inventory\PaymentOrder " . count($purchasing_goods_payment_order) . " form(s) resent.");
-        // }
+        if(count($purchasing_goods_purchase_requisition) > 0) {
+            \Point\PointPurchasing\Http\Controllers\Inventory\PurchaseRequisitionApprovalController::
+                sendingRequestApproval($purchasing_goods_purchase_requisition);
+            $this->line("Point\PointPurchasing\Models\Inventory\PurchaseRequisition " . count($purchasing_goods_purchase_requisition) . " form(s) resent.");
+        }
+        if(count($purchasing_goods_purchase_order) > 0) {
+            \Point\PointPurchasing\Http\Controllers\Inventory\PurchaseOrderApprovalController::
+                sendingRequestApproval($purchasing_goods_purchase_order);
+            $this->line("Point\PointPurchasing\Models\Inventory\PurchaseOrder " . count($purchasing_goods_purchase_order) . " form(s) resent.");
+        }
+        if(count($purchasing_goods_downpayment) > 0) {
+            \Point\PointPurchasing\Http\Controllers\Inventory\DownpaymentApprovalController::
+                sendingRequestApproval($purchasing_goods_downpayment);
+            $this->line("Point\PointPurchasing\Models\Inventory\Downpayment " . count($purchasing_goods_downpayment) . " form(s) resent.");
+        }
+        if(count($purchasing_goods_payment_order) > 0) {
+            \Point\PointPurchasing\Http\Controllers\Inventory\PaymentOrderApprovalController::
+                sendingRequestApproval($purchasing_goods_payment_order);
+            $this->line("Point\PointPurchasing\Models\Inventory\PaymentOrder " . count($purchasing_goods_payment_order) . " form(s) resent.");
+        }
 
-        // if(count($inventory_inventory_usage) > 0) {
-        //     \Point\PointInventory\Http\Controllers\InventoryUsage\InventoryUsageApprovalController::
-        //         sendingRequestApproval($inventory_inventory_usage);
-        //     $this->line("Point\PointInventory\Models\InventoryUsage\InventoryUsage " . count($inventory_inventory_usage) . " form(s) resent.");
-        // }
-        // if(count($inventory_stock_correction) > 0) {
-        //     \Point\PointInventory\Http\Controllers\StockCorrection\StockCorrectionApprovalController::   
-        //         sendingRequestApproval($inventory_stock_correction);
-        //     $this->line("Point\PointInventory\Models\StockCorrection\StockCorrection " . count($inventory_stock_correction) . " form(s) resent.");
-        // }
-        // if(count($inventory_transfer_item) > 0) {
-        //     \Point\PointInventory\Http\Controllers\TransferItem\TransferItemApprovalController::
-        //         sendingRequestApproval($inventory_transfer_item);
-        //     $this->line("Point\PointInventory\Models\TransferItem\TransferItem " . count($inventory_transfer_item) . " form(s) resent.");
-        // }
-        // if(count($inventory_stock_opname) > 0) {
-        //     \Point\PointInventory\Http\Controllers\StockOpname\StockOpnameApprovalController::
-        //         sendingRequestApproval($inventory_stock_opname);
-        //     $this->line("Point\PointInventory\Models\StockOpname\StockOpname " . count($inventory_stock_opname) . " form(s) resent.");
-        // }
+        if(count($inventory_inventory_usage) > 0) {
+            \Point\PointInventory\Http\Controllers\InventoryUsage\InventoryUsageApprovalController::
+                sendingRequestApproval($inventory_inventory_usage);
+            $this->line("Point\PointInventory\Models\InventoryUsage\InventoryUsage " . count($inventory_inventory_usage) . " form(s) resent.");
+        }
+        if(count($inventory_stock_correction) > 0) {
+            \Point\PointInventory\Http\Controllers\StockCorrection\StockCorrectionApprovalController::   
+                sendingRequestApproval($inventory_stock_correction);
+            $this->line("Point\PointInventory\Models\StockCorrection\StockCorrection " . count($inventory_stock_correction) . " form(s) resent.");
+        }
+        if(count($inventory_transfer_item) > 0) {
+            \Point\PointInventory\Http\Controllers\TransferItem\TransferItemApprovalController::
+                sendingRequestApproval($inventory_transfer_item);
+            $this->line("Point\PointInventory\Models\TransferItem\TransferItem " . count($inventory_transfer_item) . " form(s) resent.");
+        }
+        if(count($inventory_stock_opname) > 0) {
+            \Point\PointInventory\Http\Controllers\StockOpname\StockOpnameApprovalController::
+                sendingRequestApproval($inventory_stock_opname);
+            $this->line("Point\PointInventory\Models\StockOpname\StockOpname " . count($inventory_stock_opname) . " form(s) resent.");
+        }
 
-        // if(count($sales_goods_quotation) > 0) {
-        //     \Point\PointSales\Http\Controllers\Sales\SalesQuotationApprovalController::
-        //         sendingRequestApproval($sales_goods_quotation);
-        //     $this->line("Point\PointSales\Models\Sales\SalesQuotation " . count($sales_goods_quotation) . " form(s) resent.");
-        // }
-        // if(count($sales_goods_sales_order) > 0) {
-        //     \Point\PointSales\Http\Controllers\Sales\SalesOrderApprovalController::
-        //         sendingRequestApproval($sales_goods_sales_order);
-        //     $this->line("Point\PointSales\Models\Sales\SalesOrder " . count($sales_goods_sales_order) . " form(s) resent.");
-        // }
-        // if(count($sales_goods_downpayment) > 0) {
-        //     \Point\PointSales\Http\Controllers\Sales\DownpaymentApprovalController::
-        //         sendingRequestApproval($sales_goods_downpayment);
-        //     $this->line("Point\PointSales\Models\Sales\Downpayment " . count($sales_goods_downpayment) . " form(s) resent.");
-        // }
+        if(count($sales_goods_quotation) > 0) {
+            \Point\PointSales\Http\Controllers\Sales\SalesQuotationApprovalController::
+                sendingRequestApproval($sales_goods_quotation);
+            $this->line("Point\PointSales\Models\Sales\SalesQuotation " . count($sales_goods_quotation) . " form(s) resent.");
+        }
+        if(count($sales_goods_sales_order) > 0) {
+            \Point\PointSales\Http\Controllers\Sales\SalesOrderApprovalController::
+                sendingRequestApproval($sales_goods_sales_order);
+            $this->line("Point\PointSales\Models\Sales\SalesOrder " . count($sales_goods_sales_order) . " form(s) resent.");
+        }
+        if(count($sales_goods_downpayment) > 0) {
+            \Point\PointSales\Http\Controllers\Sales\DownpaymentApprovalController::
+                sendingRequestApproval($sales_goods_downpayment);
+            $this->line("Point\PointSales\Models\Sales\Downpayment " . count($sales_goods_downpayment) . " form(s) resent.");
+        }
         if(count($sales_goods_delivery_order) > 0) {
             \Point\PointSales\Http\Controllers\Sales\DeliveryOrderApprovalController::
                 sendingRequestApproval($sales_goods_delivery_order);
             $this->line("Point\PointSales\Models\Sales\DeliveryOrder " . count($sales_goods_delivery_order) . " form(s) resent.");
         }
-        // if(count($sales_goods_invoice) > 0) {
-        //         sendingRequestApproval($sales_goods_invoice);
-        //     $this->line("Point\PointSales\Models\Sales\Invoice " . count($sales_goods_invoice) . " form(s) resent.");
-        // }
+        if(count($sales_goods_invoice) > 0) {
+            \Point\PointSales\Http\Controllers\Sales\InvoiceApprovalPrintController::
+                sendingRequestApproval($sales_goods_invoice);
+            $this->line("Point\PointSales\Models\Sales\Invoice " . count($sales_goods_invoice) . " form(s) resent.");
+        }
         // if(count($sales_goods_payment_collection) > 0) {
         //         sendingRequestApproval($sales_goods_payment_collection);
         //     $this->line("Point\PointSales\Models\Sales\PaymentCollection " . count($sales_goods_payment_collection) . " form(s) resent.");

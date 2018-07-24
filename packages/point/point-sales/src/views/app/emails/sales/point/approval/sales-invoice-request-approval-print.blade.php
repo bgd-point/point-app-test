@@ -128,7 +128,7 @@
 
 <body>
 <div class="invoice-box">
-    Hi, you have an request approval to print sales invoice from  {{ $username }}. We would like to inform the
+    Hi, you have a request approval to print sales invoice from <strong>{{ $requester }}</strong>. We would like to inform the
     details as follows :
         <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
             <tr>
@@ -139,7 +139,20 @@
                     :
                 </td>
                 <td>
-                    {{ $invoice->formulir->form_number }}</a>
+                    <a href="{{ url('sales/point/indirect/invoice/'.$invoice->id) }}">
+                        {{ $invoice->formulir->form_number }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20%">
+                    Created By
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    {{ $invoice->formulir->createdBy->name }}
                 </td>
             </tr>
             <tr>
