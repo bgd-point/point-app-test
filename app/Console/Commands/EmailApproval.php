@@ -93,14 +93,18 @@ class EmailApproval extends Command
      * @return mixed
      */
     public function handle() {
+        $this->line("Counting unapproved forms...");
+
         $formulirs = Formulir::where('approval_status', 0) // form is still pending (not approved or rejected)
             ->where('form_status', 0) // form is still oopen (not closed / cancelled)
-            // ->where('request_approval_at', '<', 'CURDATE()') //form has been requested approval more than 1 day ago
+            ->whereRaw('request_approval_at < CURDATE()') //form has been requested approval more than 1 day ago
             ->whereNotNull('request_approval_at') // form has been requested approval before
             ->whereNotNull('form_number') // form not archived
             ->whereNull('cancel_requested_at') // form not asked for cancellation
             ->orderBy('formulirable_type')
             ->get();
+
+        $this->line(count($formulirs) . " form(s) found. Resend email...");
 
         $purchasing_service_invoice = [];
         $purchasing_service_downpayment = [];
@@ -120,12 +124,21 @@ class EmailApproval extends Command
                     break;
             }
         }
-        \Point\PointPurchasing\Http\Controllers\Service\InvoiceApprovalController::
-            sendInvoiceApproval($purchasing_service_invoice);
-        \Point\PointPurchasing\Http\Controllers\Service\DownpaymentApprovalController::
-            sendDownpaymentApproval($purchasing_service_downpayment);
-        \Point\PointPurchasing\Http\Controllers\Service\PaymentOrderApprovalController::
-            sendPaymentOrderApproval($purchasing_service_payment_order);
+        if(count($purchasing_service_invoice) > 0) {
+            \Point\PointPurchasing\Http\Controllers\Service\InvoiceApprovalController::
+                sendInvoiceApproval($purchasing_service_invoice);
+            $this->line("Point\PointPurchasing\Models\Service\Invoice " . count($purchasing_service_invoice) . " email(s) sent.");
+        }
+        if(count($purchasing_service_invoice) > 0) {
+            \Point\PointPurchasing\Http\Controllers\Service\DownpaymentApprovalController::
+                sendDownpaymentApproval($purchasing_service_downpayment);
+            $this->line("Point\PointPurchasing\Models\Service\Downpayment " . count($purchasing_service_downpayment) . " email(s) sent.");
+        }
+        if(count($purchasing_service_invoice) > 0) {
+            \Point\PointPurchasing\Http\Controllers\Service\PaymentOrderApprovalController::
+                sendPaymentOrderApproval($purchasing_service_payment_order);
+            $this->line("Point\PointPurchasing\Models\Service\PaymentOrder " . count($purchasing_service_payment_order) . " email(s) sent.");
+        }
 
     }
 }
