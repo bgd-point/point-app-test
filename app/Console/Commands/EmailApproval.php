@@ -97,7 +97,7 @@ class EmailApproval extends Command
 
         $formulirs = Formulir::where('approval_status', 0) // form is still pending (not approved or rejected)
             ->where('form_status', 0) // form is still oopen (not closed / cancelled)
-            ->whereRaw('request_approval_at < CURDATE()') //form has been requested approval more than 1 day ago
+            // ->whereRaw('request_approval_at < CURDATE()') //form has been requested approval more than 1 day ago
             ->whereNotNull('request_approval_at') // form has been requested approval before
             ->whereNotNull('form_number') // form not archived
             ->whereNull('cancel_requested_at') // form not asked for cancellation
@@ -112,6 +112,7 @@ class EmailApproval extends Command
 
         $purchasing_goods_purchase_requisition = [];
         $purchasing_goods_purchase_order = [];
+        $purchasing_goods_downpayment = [];
 
         foreach($formulirs AS $key=>$formulir) {
             // $this->line($key . ". " . $formulir->formulirable_type . " " . $formulir->request_approval_at . " | " . $formulir->form_status . " | " . $formulir->approval_status . " | " . $formulir->cancel_requested_at);
@@ -131,6 +132,9 @@ class EmailApproval extends Command
                     break;
                 case "Point\PointPurchasing\Models\Inventory\PurchaseOrder":
                     array_push($purchasing_goods_purchase_order, $formulir->id);
+                    break;
+                case "Point\PointPurchasing\Models\Inventory\Downpayment":
+                    array_push($purchasing_goods_downpayment, $formulir->id);
                     break;
             }
         }
@@ -159,6 +163,11 @@ class EmailApproval extends Command
             \Point\PointPurchasing\Http\Controllers\Inventory\PurchaseOrderApprovalController::
                 sendingRequestApproval($purchasing_goods_purchase_order);
             $this->line("Point\PointPurchasing\Models\Inventory\PurchaseOrder " . count($purchasing_goods_purchase_order) . " form(s) resent.");
+        }
+        if(count($purchasing_goods_downpayment) > 0) {
+            \Point\PointPurchasing\Http\Controllers\Inventory\DownpaymentApprovalController::
+                sendingRequestApproval($purchasing_goods_downpayment);
+            $this->line("Point\PointPurchasing\Models\Inventory\Downpayment " . count($purchasing_goods_downpayment) . " form(s) resent.");
         }
         // dd($purchasing_goods_purchase_requisition);
     }
