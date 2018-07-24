@@ -111,6 +111,7 @@ class EmailApproval extends Command
         $purchasing_service_payment_order = [];
 
         $purchasing_goods_purchase_requisition = [];
+        $purchasing_goods_purchase_order = [];
 
         foreach($formulirs AS $key=>$formulir) {
             // $this->line($key . ". " . $formulir->formulirable_type . " " . $formulir->request_approval_at . " | " . $formulir->form_status . " | " . $formulir->approval_status . " | " . $formulir->cancel_requested_at);
@@ -127,6 +128,9 @@ class EmailApproval extends Command
 
                 case "Point\PointPurchasing\Models\Inventory\PurchaseRequisition":
                     array_push($purchasing_goods_purchase_requisition, $formulir->id);
+                    break;
+                case "Point\PointPurchasing\Models\Inventory\PurchaseOrder":
+                    array_push($purchasing_goods_purchase_order, $formulir->id);
                     break;
             }
         }
@@ -145,11 +149,16 @@ class EmailApproval extends Command
                 sendingRequestApproval($purchasing_service_payment_order);
             $this->line("Point\PointPurchasing\Models\Service\PaymentOrder " . count($purchasing_service_payment_order) . " form(s) resent.");
         }
-        
+
         if(count($purchasing_goods_purchase_requisition) > 0) {
             \Point\PointPurchasing\Http\Controllers\Inventory\PurchaseRequisitionApprovalController::
                 sendingRequestApproval($purchasing_goods_purchase_requisition);
             $this->line("Point\PointPurchasing\Models\Inventory\PurchaseRequisition " . count($purchasing_goods_purchase_requisition) . " form(s) resent.");
+        }
+        if(count($purchasing_goods_purchase_order) > 0) {
+            \Point\PointPurchasing\Http\Controllers\Inventory\PurchaseOrderApprovalController::
+                sendingRequestApproval($purchasing_goods_purchase_order);
+            $this->line("Point\PointPurchasing\Models\Inventory\PurchaseOrder " . count($purchasing_goods_purchase_order) . " form(s) resent.");
         }
         // dd($purchasing_goods_purchase_requisition);
     }
