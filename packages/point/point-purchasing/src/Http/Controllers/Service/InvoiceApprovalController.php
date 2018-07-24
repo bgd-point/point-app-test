@@ -29,19 +29,19 @@ class InvoiceApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.purchasing.service.invoice');
-        self::sendInvoiceApproval(app('request')->input('formulir_id'))
+        self::sendInvoiceApproval(app('request')->input('formulir_id'), auth()->user()->name);
 
         gritter_success('You have sent email for invoice approval');
         return redirect()->back();
     }
 
-    public static sendInvoiceApproval($list_invoice_id)
+    public static function sendInvoiceApproval($list_invoice_id, $requester="VESA")
     {
         $token = md5(date('ymdhis'));
         $list_approver = Invoice::selectApproverList($list_invoice_id);
 
         foreach ($list_approver as $data_approver) {
-            $list_invoice = Invoice::selectApproverRequest($list_invoice_id), $data_approver->approval_to);
+            $list_invoice = Invoice::selectApproverRequest($list_invoice_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_invoice as $invoice) {
                 array_push($array_formulir_id, $invoice->formulir_id);
@@ -52,13 +52,13 @@ class InvoiceApprovalController extends Controller
             $data = [
                 'list_invoice' => $list_invoice,
                 'token' => $token,
-                'username' => '',
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
 
             ];
-            sendEmail(PaymentOrder::bladeEmail(), $data, $approver->email, 'Request Approval Invoice #' . date('ymdHi'));
+            sendEmail(Invoice::bladeEmail(), $data, $approver->email, 'Request Approval Invoice #' . date('ymdHi'));
             
             foreach ($list_invoice as $invoice) {
                 formulir_update_token($invoice->formulir, $token);

@@ -124,7 +124,7 @@
 
 <body>
 <div class="invoice-box">
-    Hi, you have a request approval purchase service invoice from {{ $username }}. We would like to inform the details as follows :
+    Hi, you have a request approval purchase service invoice from <strong>{{ $requester }}</strong>. We would like to inform the details as follows :
 
     <?php $total_to_pay = 0; ?>
 
@@ -143,6 +143,17 @@
                     <a href="{{ url('purchasing/point/service/invoice/'.$invoice->id) }}">
                         {{ $invoice->formulir->form_number}}
                     </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20%">
+                    Created By
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    {{ $invoice->formulir->createdBy->name }}
                 </td>
             </tr>
             <tr>

@@ -93,31 +93,39 @@ class EmailApproval extends Command
      * @return mixed
      */
     public function handle() {
-        $formulirs = Formulir::where('approval_status', 0)
-            ->where('form_status', 0)
-            // ->where('request_approval_at', '<', 'CURDATE()')
-            ->whereNotNull('request_approval_at')
-            ->whereNull('cancel_requested_at')
+        $formulirs = Formulir::where('approval_status', 0) // form is still pending (not approved or rejected)
+            ->where('form_status', 0) // form is still oopen (not closed / cancelled)
+            // ->where('request_approval_at', '<', 'CURDATE()') //form has been requested approval more than 1 day ago
+            ->whereNotNull('request_approval_at') // form has been requested approval before
+            ->whereNotNull('form_number') // form not archived
+            ->whereNull('cancel_requested_at') // form not asked for cancellation
             ->orderBy('formulirable_type')
             ->get();
 
-        $purchasing_service_payment_order = [];
         $purchasing_service_invoice = [];
+        $purchasing_service_downpayment = [];
+        $purchasing_service_payment_order = [];
+
         foreach($formulirs AS $key=>$formulir) {
-            $this->line($key . ". " . $formulir->formulirable_type . " " . $formulir->request_approval_at . " | " . $formulir->form_status . " | " . $formulir->approval_status . " | " . $formulir->cancel_requested_at);
+            // $this->line($key . ". " . $formulir->formulirable_type . " " . $formulir->request_approval_at . " | " . $formulir->form_status . " | " . $formulir->approval_status . " | " . $formulir->cancel_requested_at);
             switch($formulir->formulirable_type) {
                 case "Point\PointPurchasing\Models\Service\Invoice":
                     array_push($purchasing_service_invoice, $formulir->id);
                     break;
                 case "Point\PointPurchasing\Models\Service\Downpayment":
+                    array_push($purchasing_service_downpayment, $formulir->id);
                     break;
                 case "Point\PointPurchasing\Models\Service\PaymentOrder":
                     array_push($purchasing_service_payment_order, $formulir->id);
                     break;
             }
         }
-        // \Point\PointPurchasing\Http\Controllers\Service\InvoiceApprovalController::sendInvoiceApproval($purchasing_service_payment_order);
-        // \Point\PointPurchasing\Http\Controllers\Service\PaymentOrderApprovalController::sendPaymentOrderApproval($purchasing_service_payment_order);
+        \Point\PointPurchasing\Http\Controllers\Service\InvoiceApprovalController::
+            sendInvoiceApproval($purchasing_service_invoice);
+        \Point\PointPurchasing\Http\Controllers\Service\DownpaymentApprovalController::
+            sendDownpaymentApproval($purchasing_service_downpayment);
+        \Point\PointPurchasing\Http\Controllers\Service\PaymentOrderApprovalController::
+            sendPaymentOrderApproval($purchasing_service_payment_order);
 
     }
 }

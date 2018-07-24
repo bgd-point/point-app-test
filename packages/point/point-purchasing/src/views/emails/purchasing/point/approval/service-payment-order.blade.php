@@ -162,7 +162,7 @@
 
 <body>
     <table><tr><td class="allow-wrap">
-        Hi, you have a request approval purchase payment order from <strong>{{ $username }}</strong>. We would like to inform the details as follows :
+        Hi, you have a request approval purchase payment order from <strong>{{ $requester }}</strong>. We would like to inform the details as follows :
     </td></tr></table>
 
    @foreach($list_data as $payment_order)
@@ -175,6 +175,11 @@
                         {{ $payment_order->formulir->form_number }}
                     </a>
                 </td>
+            </tr>
+            <tr>
+                <td>Created by</td>
+                <td>:</td>
+                <td>{{ $payment_order->formulir->createdBy->name }}</td>
             </tr>
             <tr>
                 <td>Form Date</td>
