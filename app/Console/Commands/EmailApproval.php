@@ -120,7 +120,7 @@ class EmailApproval extends Command
         $inventory_transfer_item = [];
 
         foreach($formulirs AS $key=>$formulir) {
-            $this->line($key . ". " . $formulir->formulirable_type . " " . $formulir->request_approval_at . " | " . $formulir->form_status . " | " . $formulir->approval_status . " | " . $formulir->cancel_requested_at);
+            // $this->line($key . ". " . $formulir->formulirable_type . " " . $formulir->request_approval_at . " | " . $formulir->form_status . " | " . $formulir->approval_status . " | " . $formulir->cancel_requested_at);
             switch($formulir->formulirable_type) {
                 case "Point\PointPurchasing\Models\Service\Invoice":
                     array_push($purchasing_service_invoice, $formulir->id);
@@ -203,7 +203,12 @@ class EmailApproval extends Command
                 sendingRequestApproval($inventory_stock_correction);
             $this->line("Point\PointInventory\Models\StockCorrection\StockCorrection " . count($inventory_stock_correction) . " form(s) resent.");
         }
-        
+        if(count($inventory_transfer_item) > 0) {
+            \Point\PointInventory\Http\Controllers\TransferItem\TransferItemApprovalController::
+                sendingRequestApproval($inventory_transfer_item);
+            $this->line("Point\PointInventory\Models\TransferItem\TransferItem " . count($inventory_transfer_item) . " form(s) resent.");
+        }
+        // dd($inventory_transfer_item);
     }
 }
 // "Point\Framework\Models\OpeningInventory"

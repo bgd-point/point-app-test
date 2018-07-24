@@ -128,12 +128,12 @@
 <body>
 
     <div class="invoice-box">
-            <p align="justify">
-            Hi, you have an approval request for Transfer Item from {{ $username  }}. <br>
+        <p align="justify">
+            Hi, you have an approval request for Transfer Item from <strong>{{ $requester }}</strong>. <br>
             We would like to inform the details as follows :
-            </p>
+        </p>
 
-            @foreach($list_data as $transfer_item)
+        @foreach($list_data as $transfer_item)
             <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
                 <tr>
                     <td style="width: 20%">
@@ -146,6 +146,17 @@
                         <a href="{{ $url . '/inventory/point/transfer-item/send/'.$transfer_item->id }}">
                             {{ $transfer_item->formulir->form_number }}
                         </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 20%">
+                        Form Date
+                    </td>
+                    <td>
+                        :
+                    </td>
+                    <td>
+                        {{ $transfer_item->formulir->createdBy->name }}
                     </td>
                 </tr>
                 <tr>
