@@ -104,11 +104,13 @@ class EmailApproval extends Command
             ->orderBy('formulirable_type')
             ->get();
 
-        $this->line(count($formulirs) . " form(s) found. Resend email...");
+        $this->line(count($formulirs) . " form(s) found. Resending email...");
 
         $purchasing_service_invoice = [];
         $purchasing_service_downpayment = [];
         $purchasing_service_payment_order = [];
+
+        $purchasing_goods_purchase_requisition = [];
 
         foreach($formulirs AS $key=>$formulir) {
             // $this->line($key . ". " . $formulir->formulirable_type . " " . $formulir->request_approval_at . " | " . $formulir->form_status . " | " . $formulir->approval_status . " | " . $formulir->cancel_requested_at);
@@ -122,24 +124,34 @@ class EmailApproval extends Command
                 case "Point\PointPurchasing\Models\Service\PaymentOrder":
                     array_push($purchasing_service_payment_order, $formulir->id);
                     break;
+
+                case "Point\PointPurchasing\Models\Inventory\PurchaseRequisition":
+                    array_push($purchasing_goods_purchase_requisition, $formulir->id);
+                    break;
             }
         }
         if(count($purchasing_service_invoice) > 0) {
             \Point\PointPurchasing\Http\Controllers\Service\InvoiceApprovalController::
                 sendingRequestApproval($purchasing_service_invoice);
-            $this->line("Point\PointPurchasing\Models\Service\Invoice " . count($purchasing_service_invoice) . " email(s) sent.");
+            $this->line("Point\PointPurchasing\Models\Service\Invoice " . count($purchasing_service_invoice) . " form(s) resent.");
         }
         if(count($purchasing_service_invoice) > 0) {
             \Point\PointPurchasing\Http\Controllers\Service\DownpaymentApprovalController::
                 sendingRequestApproval($purchasing_service_downpayment);
-            $this->line("Point\PointPurchasing\Models\Service\Downpayment " . count($purchasing_service_downpayment) . " email(s) sent.");
+            $this->line("Point\PointPurchasing\Models\Service\Downpayment " . count($purchasing_service_downpayment) . " form(s) resent.");
         }
         if(count($purchasing_service_invoice) > 0) {
             \Point\PointPurchasing\Http\Controllers\Service\PaymentOrderApprovalController::
                 sendingRequestApproval($purchasing_service_payment_order);
-            $this->line("Point\PointPurchasing\Models\Service\PaymentOrder " . count($purchasing_service_payment_order) . " email(s) sent.");
+            $this->line("Point\PointPurchasing\Models\Service\PaymentOrder " . count($purchasing_service_payment_order) . " form(s) resent.");
         }
-
+        
+        if(count($purchasing_goods_purchase_requisition) > 0) {
+            \Point\PointPurchasing\Http\Controllers\Inventory\PurchaseRequisitionApprovalController::
+                sendingRequestApproval($purchasing_goods_purchase_requisition);
+            $this->line("Point\PointPurchasing\Models\Inventory\PurchaseRequisition " . count($purchasing_goods_purchase_requisition) . " form(s) resent.");
+        }
+        // dd($purchasing_goods_purchase_requisition);
     }
 }
 // "Point\Framework\Models\OpeningInventory"
