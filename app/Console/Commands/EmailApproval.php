@@ -97,7 +97,7 @@ class EmailApproval extends Command
 
         $formulirs = Formulir::where('approval_status', 0) // form is still pending (not approved or rejected)
             ->where('form_status', 0) // form is still oopen (not closed / cancelled)
-            // ->whereRaw('request_approval_at < CURDATE()') //form has been requested approval more than 1 day ago
+            ->whereRaw('request_approval_at < CURDATE()') //form has been requested approval more than 1 day ago
             ->whereNotNull('request_approval_at') // form has been requested approval before
             ->whereNotNull('form_number') // form not archived
             ->whereNull('cancel_requested_at') // form not asked for cancellation
@@ -197,6 +197,11 @@ class EmailApproval extends Command
             \Point\PointInventory\Http\Controllers\InventoryUsage\InventoryUsageApprovalController::
                 sendingRequestApproval($inventory_inventory_usage);
             $this->line("Point\PointInventory\Models\InventoryUsage\InventoryUsage " . count($inventory_inventory_usage) . " form(s) resent.");
+        }
+        if(count($inventory_stock_correction) > 0) {
+            \Point\PointInventory\Http\Controllers\StockCorrection\StockCorrectionApprovalController::   
+                sendingRequestApproval($inventory_stock_correction);
+            $this->line("Point\PointInventory\Models\StockCorrection\StockCorrection " . count($inventory_stock_correction) . " form(s) resent.");
         }
         
     }
