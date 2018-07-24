@@ -128,12 +128,12 @@
 <body>
 
     <div class="invoice-box">
-            <p align="justify">
-            Hi, you have an approval request for Inventory Usage from {{ $username  }}. <br>
-            We would like to inform the details as follows :
-            </p>
+        <p align="justify">
+        Hi, you have an approval request for Inventory Usage from <strong>{{ $requester }}</strong>. <br>
+        We would like to inform the details as follows :
+        </p>
 
-            @foreach($list_data as $inventory_usage)
+        @foreach($list_data as $inventory_usage)
             <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
                 <tr>
                     <td style="width: 20%">
@@ -146,6 +146,17 @@
                         <a href="{{ $url . '/inventory/point/inventory-usage/'.$inventory_usage->id }}">
                             {{ $inventory_usage->formulir->form_number }}
                         </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 20%">
+                        Created By
+                    </td>
+                    <td>
+                        :
+                    </td>
+                    <td>
+                        {{ $inventory_usage->formulir->createdBy->name }}
                     </td>
                 </tr>
                 <tr>

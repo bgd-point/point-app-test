@@ -97,7 +97,7 @@ class EmailApproval extends Command
 
         $formulirs = Formulir::where('approval_status', 0) // form is still pending (not approved or rejected)
             ->where('form_status', 0) // form is still oopen (not closed / cancelled)
-            ->whereRaw('request_approval_at < CURDATE()') //form has been requested approval more than 1 day ago
+            // ->whereRaw('request_approval_at < CURDATE()') //form has been requested approval more than 1 day ago
             ->whereNotNull('request_approval_at') // form has been requested approval before
             ->whereNotNull('form_number') // form not archived
             ->whereNull('cancel_requested_at') // form not asked for cancellation
@@ -115,8 +115,12 @@ class EmailApproval extends Command
         $purchasing_goods_downpayment = [];
         $purchasing_goods_payment_order = [];
 
+        $inventory_inventory_usage = [];
+        $inventory_stock_correction = [];
+        $inventory_transfer_item = [];
+
         foreach($formulirs AS $key=>$formulir) {
-            // $this->line($key . ". " . $formulir->formulirable_type . " " . $formulir->request_approval_at . " | " . $formulir->form_status . " | " . $formulir->approval_status . " | " . $formulir->cancel_requested_at);
+            $this->line($key . ". " . $formulir->formulirable_type . " " . $formulir->request_approval_at . " | " . $formulir->form_status . " | " . $formulir->approval_status . " | " . $formulir->cancel_requested_at);
             switch($formulir->formulirable_type) {
                 case "Point\PointPurchasing\Models\Service\Invoice":
                     array_push($purchasing_service_invoice, $formulir->id);
@@ -139,6 +143,16 @@ class EmailApproval extends Command
                     break;
                 case "Point\PointPurchasing\Models\Inventory\PaymentOrder":
                     array_push($purchasing_goods_payment_order, $formulir->id);
+                    break;
+
+                case "Point\PointInventory\Models\InventoryUsage\InventoryUsage":
+                    array_push($inventory_inventory_usage, $formulir->id);
+                    break;
+                case "Point\PointInventory\Models\StockCorrection\StockCorrection":
+                    array_push($inventory_stock_correction, $formulir->id);
+                    break;
+                case "Point\PointInventory\Models\TransferItem\TransferItem":
+                    array_push($inventory_transfer_item, $formulir->id);
                     break;
             }
         }
@@ -178,7 +192,13 @@ class EmailApproval extends Command
                 sendingRequestApproval($purchasing_goods_payment_order);
             $this->line("Point\PointPurchasing\Models\Inventory\PaymentOrder " . count($purchasing_goods_payment_order) . " form(s) resent.");
         }
-        // dd($purchasing_goods_purchase_requisition);
+
+        if(count($inventory_inventory_usage) > 0) {
+            \Point\PointInventory\Http\Controllers\InventoryUsage\InventoryUsageApprovalController::
+                sendingRequestApproval($inventory_inventory_usage);
+            $this->line("Point\PointInventory\Models\InventoryUsage\InventoryUsage " . count($inventory_inventory_usage) . " form(s) resent.");
+        }
+        
     }
 }
 // "Point\Framework\Models\OpeningInventory"
