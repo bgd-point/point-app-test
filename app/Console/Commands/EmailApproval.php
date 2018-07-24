@@ -259,10 +259,11 @@ class EmailApproval extends Command
                 sendingRequestApproval($sales_goods_quotation);
             $this->line("Point\PointSales\Models\Sales\SalesQuotation " . count($sales_goods_quotation) . " form(s) resent.");
         }
-        // if(count($sales_goods_sales_order) > 0) {
-        //         sendingRequestApproval($sales_goods_sales_order);
-        //     $this->line("Point\PointSales\Models\Sales\SalesOrder " . count($sales_goods_sales_order) . " form(s) resent.");
-        // }
+        if(count($sales_goods_sales_order) > 0) {
+            \Point\PointSales\Http\Controllers\Sales\SalesOrderApprovalController::
+                sendingRequestApproval($sales_goods_sales_order);
+            $this->line("Point\PointSales\Models\Sales\SalesOrder " . count($sales_goods_sales_order) . " form(s) resent.");
+        }
         // if(count($sales_goods_downpayment) > 0) {
         //         sendingRequestApproval($sales_goods_downpayment);
         //     $this->line("Point\PointSales\Models\Sales\Downpayment " . count($sales_goods_downpayment) . " form(s) resent.");

@@ -33,13 +33,19 @@ class SalesOrderApprovalController extends Controller
         if ($this->isFormulirNull($request)) {
             return redirect()->back();
         }
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
 
-        $list_approver = SalesOrder::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+
+    public static function sendingRequestApproval($list_sales_order_id, $requester="VESA")
+    {
+        $list_approver = SalesOrder::selectApproverList($list_sales_order_id);
         $token = md5(date('ymdhis'));
         
         foreach ($list_approver as $data_approver) {
-            $list_sales_order = SalesOrder::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_sales_order = SalesOrder::selectApproverRequest($list_sales_order_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_sales_order as $sales_order) {
                 array_push($array_formulir_id, $sales_order->formulir_id);
@@ -50,27 +56,18 @@ class SalesOrderApprovalController extends Controller
             $data = [
                 'list_data' => $list_sales_order,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];
 
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-sales::app.emails.sales.point.approval.sales-order', $data, function ($message) use ($approver) {
-                    $message->to($approver->email)->subject('request approval sales order #' . date('ymdHi'));
-                });
-                $job->delete();
-            });
+            sendEmail(SalesOrder::bladeEmail(), $data, $approver->email, 'Request Approval Sales Order #' . date('ymdHi'));
 
             foreach ($list_sales_order as $sales_order) {
                 formulir_update_token($sales_order->formulir, $token);
             }
         }
-
-        gritter_success('send approval success');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)
