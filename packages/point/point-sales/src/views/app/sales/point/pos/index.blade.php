@@ -66,10 +66,7 @@
                                 @if($sales->formulir->form_status == 0)
                                 <a href="{{ url('sales/point/pos/'.$sales->id.'/edit') }}" data-toggle="tooltip" title="Update" class="btn btn-effect-ripple btn-xs btn-info">Update</a>
                                 @else
-                                    @if(!$sales->retur)
-                                        <a href="{{ url('sales/point/pos/'.$sales->id.'/retur') }}" data-toggle="tooltip" title="Update" class="btn btn-effect-ripple btn-xs btn-info">Retur</a>
-                                    @endif
-                                <a href="#" onclick="pagePrint('/sales/point/pos/print/{{$sales->id}}');" data-toggle="tooltip" title="Print" class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-print"></i></a>
+                                <a href="#" onclick="pagePrint('/sales/point/pos/print/{{$sales->id}}');" data-toggle="tooltip" title="Print" class="btn btn-effect-ripple btn-xs btn-info">Print</a>
                                 @endif
                             </td>
                             <td>{{ date_format_view($sales->formulir->form_date, true) }}</td>
