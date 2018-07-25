@@ -31,13 +31,19 @@ class StockCorrectionApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.inventory.stock.correction');
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
 
-        $list_approver = StockCorrection::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+
+    public static function sendingRequestApproval($list_stock_correction_id, $requester="VESA")
+    {
+        $list_approver = StockCorrection::selectApproverList($list_stock_correction_id);
         $token = md5(date('ymdhis'));
 
         foreach ($list_approver as $data_approver) {
-            $list_stock_correction = StockCorrection::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_stock_correction = StockCorrection::selectApproverRequest($list_stock_correction_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_stock_correction as $stock_correction) {
                 array_push($array_formulir_id, $stock_correction->formulir_id);
@@ -48,27 +54,18 @@ class StockCorrectionApprovalController extends Controller
             $data = [
                 'list_data' => $list_stock_correction,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];
 
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-inventory::emails.inventory.point.approval.stock-correction', $data, function ($message) use ($approver) {
-                    $message->to($approver->email)->subject('request approval stock correction #' . date('ymdHi'));
-                });
-                $job->delete();
-            });
+            sendEmail(StockCorrection::bladeEmail(), $data, $approver->email, 'Request Approval Stock Correction #' . date('ymdHi'));
 
             foreach ($list_stock_correction as $stock_correction) {
                 formulir_update_token($stock_correction->formulir, $token);
             }
         }
-
-        gritter_success('send approval success');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)

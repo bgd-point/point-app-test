@@ -54,7 +54,7 @@ class TransferItem extends Model
 
     public static function bladeEmail()
     {
-        return 'point-expedition::emails.expedition.point.approval.downpayment';
+        return 'point-inventory::emails.inventory.point.approval.transfer-item-email';
     }
 
     public static function showUrl($id)

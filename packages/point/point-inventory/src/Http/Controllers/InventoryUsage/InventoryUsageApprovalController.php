@@ -29,13 +29,19 @@ class InventoryUsageApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.inventory.usage');
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
 
-        $list_approver = InventoryUsage::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+
+    public static function sendingRequestApproval($list_inventory_usage_id, $requester="VESA")
+    {
+        $list_approver = InventoryUsage::selectApproverList($list_inventory_usage_id);
         $token = md5(date('ymdhis'));
 
         foreach ($list_approver as $data_approver) {
-            $list_inventory_usage = InventoryUsage::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_inventory_usage = InventoryUsage::selectApproverRequest($list_inventory_usage_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_inventory_usage as $inventory_usage) {
                 array_push($array_formulir_id, $inventory_usage->formulir_id);
@@ -46,27 +52,18 @@ class InventoryUsageApprovalController extends Controller
             $data = [
                 'list_data' => $list_inventory_usage,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];
 
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-inventory::emails.inventory.point.approval.inventory-usage-email', $data, function ($message) use ($approver) {
-                    $message->to($approver->email)->subject('Request Approval Inventory Usage #' . date('ymdHi'));
-                });
-                $job->delete();
-            });
+            sendEmail(InventoryUsage::bladeEmail(), $data, $approver->email, 'Request Approval Inventory Usage #' . date('ymdHi'));
 
             foreach ($list_inventory_usage as $inventory_usage) {
                 formulir_update_token($inventory_usage->formulir, $token);
             }
         }
-
-        gritter_success('send approval success');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)

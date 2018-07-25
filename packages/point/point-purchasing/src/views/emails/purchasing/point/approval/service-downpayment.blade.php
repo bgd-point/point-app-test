@@ -128,8 +128,7 @@
 
 <body>
 <div class="invoice-box">
-    Hi, you have an request approval purchase service downpayment from {{ $username }}. We would like to inform the
-    details as follows :
+    Hi, you have an request approval purchase service downpayment from <strong>{{ $requester }}</strong>. We would like to inform the details as follows :
 
    @foreach($list_downpayment as $downpayment)
         <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
@@ -141,7 +140,20 @@
                     :
                 </td>
                 <td>
-                    {{ $downpayment->formulir->form_number }}</a>
+                    <a href="{{ $url . '/purchasing/point/service/downpayment/' . $downpayment->formulir_id }}">
+                        {{ $downpayment->formulir->form_number }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20%">
+                    Created By
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    {{ $downpayment->formulir->createdBy->name }}</a>
                 </td>
             </tr>
             <tr>
@@ -163,7 +175,7 @@
                     :
                 </td>
                 <td>
-                    {{ $downpayment->supplier->codeName }}
+                    {!! get_url_person($downpayment->supplier_id) !!}
                 </td>
             </tr>
             <tr>

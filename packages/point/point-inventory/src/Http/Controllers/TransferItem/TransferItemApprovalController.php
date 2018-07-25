@@ -31,13 +31,19 @@ class TransferItemApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.inventory.transfer.item');
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
 
-        $list_approver = TransferItem::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+
+    public static function sendingRequestApproval($list_transfer_item_id, $requester="VESA")
+    {
+        $list_approver = TransferItem::selectApproverList($list_transfer_item_id);
         $token = md5(date('ymdhis'));
 
         foreach ($list_approver as $data_approver) {
-            $list_transfer_item = TransferItem::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_transfer_item = TransferItem::selectApproverRequest($list_transfer_item_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_transfer_item as $transfer_item) {
                 array_push($array_formulir_id, $transfer_item->formulir_id);
@@ -48,27 +54,18 @@ class TransferItemApprovalController extends Controller
             $data = [
                 'list_data' => $list_transfer_item,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];
 
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-inventory::emails.inventory.point.approval.transfer-item-email', $data, function ($message) use ($approver) {
-                    $message->to($approver->email)->subject('Request Approval Transfer Item #' . date('ymdHi'));
-                });
-                $job->delete();
-            });
+            sendEmail(TransferItem::bladeEmail(), $data, $approver->email, 'Request Approval Transfer Item #' . date('ymdHi'));
 
             foreach ($list_transfer_item as $transfer_item) {
                 formulir_update_token($transfer_item->formulir, $token);
             }
         }
-
-        gritter_success('send approval success');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)
