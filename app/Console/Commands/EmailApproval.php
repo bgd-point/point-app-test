@@ -303,11 +303,11 @@ class EmailApproval extends Command
                 sendingRequestApproval($finance_cash_advance);
             $this->line("Point\PointFinance\Models\CashAdvance ". count($finance_cash_advance) . " form(s) resent.");
         }
-        // if(count($finance_payment_order) > 0) {
-        //     \Point\PointFinance\Http\Controllers\PaymentOrder\PaymentOrderApprovalController::
-        //         sendingRequestApproval($finance_payment_order);
-        //     $this->line("Point\PointFinance\Models\PaymentOrder\PaymentOrder ". count($finance_payment_order) . " form(s) resent.");
-        // }
+        if(count($finance_payment_order) > 0) {
+            \Point\PointFinance\Http\Controllers\PaymentOrder\PaymentOrderApprovalController::
+                sendingRequestApproval($finance_payment_order);
+            $this->line("Point\PointFinance\Models\PaymentOrder\PaymentOrder ". count($finance_payment_order) . " form(s) resent.");
+        }
         // dd($finance_cash_advance);
     }
 }
