@@ -332,12 +332,12 @@ class EmailApproval extends Command
                 sendingRequestApproval($expedition_downpayment);
             $this->line("Point\PointExpedition\Models\Downpayment " . count($expedition_downpayment) . " form(s) resent.");
         }
-        // if(count($expedition_payment_order) > 0){
-        //     \Point\PointExpedition\Http\Controllers\::
-        //         sendingRequestApproval($expedition_payment_order);
-        //     $this->line("Point\PointExpedition\Models\PaymentOrder " . count($expedition_payment_order) . " form(s) resent.");
-        // }
-        dd($expedition_downpayment);
+        if(count($expedition_payment_order) > 0){
+            \Point\PointExpedition\Http\Controllers\PaymentOrderApprovalController::
+                sendingRequestApproval($expedition_payment_order);
+            $this->line("Point\PointExpedition\Models\PaymentOrder " . count($expedition_payment_order) . " form(s) resent.");
+        }
+        dd($expedition_payment_order);
     }
 }
 // "Point\Framework\Models\OpeningInventory"

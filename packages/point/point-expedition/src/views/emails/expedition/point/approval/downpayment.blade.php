@@ -129,7 +129,7 @@
 
     <div class="invoice-box">
         <p align="justify">
-        Hi, you have an approval request for Downpayament Expedition from <strong>{{ $requester }}</strong>. <br>
+        Hi, you have an approval request for Downpayment Expedition from <strong>{{ $requester }}</strong>. <br>
         We would like to inform the details as follows :
         </p>
         @foreach($list_data as $downpayment)
