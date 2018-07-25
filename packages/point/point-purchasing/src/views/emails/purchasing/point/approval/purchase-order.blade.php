@@ -95,7 +95,7 @@
 
 <body>
 <div class="invoice-box">
-    Hi, you have a request approval purchase order from {{ $username }}. We would like to inform the details as follows :
+    Hi, you have a request approval purchase order from <strong>{{ $requester }}</strong>. We would like to inform the details as follows :
 
    @foreach($list_data as $purchase_order)
         <table class="info">
@@ -106,6 +106,13 @@
                     <a href="{{ url('purchasing/point/purchase-order/'.$purchase_order->id) }}">
                         {{ $purchase_order->formulir->form_number}}
                     </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Created By</td>
+                <td>:</td>
+                <td>
+                    {{ $purchase_order->formulir->createdBy->name }}
                 </td>
             </tr>
             <tr>

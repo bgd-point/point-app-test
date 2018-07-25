@@ -129,7 +129,7 @@
 
     <div class="invoice-box">
             <p align="justify">
-            Hi, you have an approval request for Stock Opname from {{ $username  }}. <br>
+            Hi, you have an approval request for Stock Opname from <strong>{{ $requester }}</strong>. <br>
             We would like to inform the details as follows :
             </p>
 
@@ -146,6 +146,17 @@
                         <a href="{{ $url . '/inventory/point/stock-opname/'.$stock_opname->id }}">
                             {{ $stock_opname->formulir->form_number }}
                         </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 20%">
+                        Created By
+                    </td>
+                    <td>
+                        :
+                    </td>
+                    <td>
+                        {{ $stock_opname->formulir->createdBy->name }}
                     </td>
                 </tr>
                 <tr>

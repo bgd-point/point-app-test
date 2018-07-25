@@ -29,6 +29,14 @@ class Formulir extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function createdBy()
+    {
+        return $this->belongsTo('Point\Core\Models\User', 'created_by');
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function formulirable()

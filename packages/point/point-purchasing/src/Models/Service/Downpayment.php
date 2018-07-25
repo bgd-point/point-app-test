@@ -72,4 +72,9 @@ class Downpayment extends Model
 
         return '/purchasing/point/service/downpayment/'.$id.'/archived';
     }
+
+    public static function bladeEmail()
+    {
+        return 'point-purchasing::emails.purchasing.point.approval.service-downpayment';
+    }
 }
