@@ -125,8 +125,8 @@ class EmailApproval extends Command
         $sales_goods_downpayment = [];
         $sales_goods_delivery_order = [];
         $sales_goods_payment_collection = [];
-        
-        $sales_service_invoice = [];
+
+        $sales_service_downpayment = [];
         $sales_service_payment_collection = [];
 
 
@@ -185,8 +185,8 @@ class EmailApproval extends Command
                     array_push($sales_goods_payment_collection, $formulir->id);
                     break;
 
-                case "Point\PointSales\Models\Service\Invoice":
-                    array_push($sales_service_invoice, $formulir->id);
+                case "Point\PointSales\Models\Service\Downpayment":
+                    array_push($sales_service_downpayment, $formulir->id);
                     break;
                 case "Point\PointSales\Models\Service\PaymentCollection":
                     array_push($sales_service_payment_collection, $formulir->id);
@@ -277,11 +277,11 @@ class EmailApproval extends Command
             $this->line("Point\PointSales\Models\Sales\PaymentCollection " . count($sales_goods_payment_collection) . " form(s) resent.");
         }
 
-        
-        // if(count($sales_service_invoice) > 0) {
-        //         sendingRequestApproval($sales_service_invoice);
-        //     $this->line("Point\PointSales\Models\Service\Invoice " . count($sales_service_invoice) . " form(s) resent.");
-        // }
+        if(count($sales_service_downpayment) > 0) {
+            \Point\PointSales\Http\Controllers\Service\DownpaymentApprovalController::
+                sendingRequestApproval($sales_service_downpayment);
+            $this->line("Point\PointSales\Models\Service\Downpayment " . count($sales_service_downpayment) . " form(s) resent.");
+        }
         // if(count($sales_service_payment_collection) > 0) {
         //         sendingRequestApproval($sales_service_payment_collection);
         //     $this->line("Point\PointSales\Models\Service\PaymentCollection " . count($sales_service_payment_collection) . " form(s) resent.");
