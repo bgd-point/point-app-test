@@ -132,6 +132,9 @@ class EmailApproval extends Command
         $finance_cash_advance = [];
         $finance_payment_order = [];
 
+        $expedition_expedition_order = [];
+        $expedition_downpayment = [];
+        $expedition_payment_order = [];
 
         foreach($formulirs AS $key=>$formulir) {
             // $this->line($key . ". " . $formulir->formulirable_type . " " . $formulir->request_approval_at . " | " . $formulir->form_status . " | " . $formulir->approval_status . " | " . $formulir->cancel_requested_at);
@@ -200,6 +203,16 @@ class EmailApproval extends Command
                     break;
                 case "Point\PointFinance\Models\PaymentOrder\PaymentOrder":
                     array_push($finance_payment_order, $formulir->id);
+                    break;
+
+                case "Point\PointExpedition\Models\ExpeditionOrder":
+                    array_push($expedition_expedition_order, $formulir->id);
+                    break;
+                case "Point\PointExpedition\Models\Downpayment":
+                    array_push($expedition_downpayment, $formulir->id);
+                    break;
+                case "Point\PointExpedition\Models\PaymentOrder":
+                    array_push($expedition_payment_order, $formulir->id);
                     break;
             }
         }
@@ -297,7 +310,7 @@ class EmailApproval extends Command
                 sendingRequestApproval($sales_service_payment_collection);
             $this->line("Point\PointSales\Models\Service\PaymentCollection " . count($sales_service_payment_collection) . " form(s) resent.");
         }
-        
+
         if(count($finance_cash_advance) > 0) {
             \Point\PointFinance\Http\Controllers\CashAdvanceApprovalController::
                 sendingRequestApproval($finance_cash_advance);
@@ -308,7 +321,23 @@ class EmailApproval extends Command
                 sendingRequestApproval($finance_payment_order);
             $this->line("Point\PointFinance\Models\PaymentOrder\PaymentOrder ". count($finance_payment_order) . " form(s) resent.");
         }
-        // dd($finance_cash_advance);
+
+        if(count($expedition_expedition_order) > 0){
+            \Point\PointExpedition\Http\Controllers\ExpeditionOrderApprovalController::
+                sendingRequestApproval($expedition_expedition_order);
+            $this->line("Point\PointExpedition\Models\ExpeditionOrder " . count($expedition_expedition_order) . " form(s) resent.");
+        }
+        // if(count($expedition_downpayment) > 0){
+        //     \Point\PointExpedition\Http\Controllers\DownpaymentApprovalController::
+        //         sendingRequestApproval($expedition_downpayment);
+        //     $this->line("Point\PointExpedition\Models\Downpayment " . count($expedition_downpayment) . " form(s) resent.");
+        // }
+        // if(count($expedition_payment_order) > 0){
+        //     \Point\PointExpedition\Http\Controllers\::
+        //         sendingRequestApproval($expedition_payment_order);
+        //     $this->line("Point\PointExpedition\Models\PaymentOrder " . count($expedition_payment_order) . " form(s) resent.");
+        // }
+        dd($expedition_expedition_order);
     }
 }
 // "Point\Framework\Models\OpeningInventory"

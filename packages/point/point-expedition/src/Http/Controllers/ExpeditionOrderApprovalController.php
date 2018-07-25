@@ -28,13 +28,19 @@ class ExpeditionOrderApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.expedition.order');
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
 
-        $list_approver = ExpeditionOrder::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+
+    public static function sendingRequestApproval($list_expedition_order_id, $requester="VESA")
+    {
+        $list_approver = ExpeditionOrder::selectApproverList($list_expedition_order_id);
         $token = md5(date('ymdhis'));
 
         foreach ($list_approver as $data_approver) {
-            $list_expedition_order = ExpeditionOrder::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_expedition_order = ExpeditionOrder::selectApproverRequest($list_expedition_order_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_expedition_order as $expedition_order) {
                 array_push($array_formulir_id, $expedition_order->formulir_id);
@@ -45,28 +51,19 @@ class ExpeditionOrderApprovalController extends Controller
             $data = [
                 'list_data' => $list_expedition_order,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];
             
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-expedition::emails.expedition.point.approval.expedition-order', $data,
-                    function ($message) use ($approver) {
-                        $message->to($approver->email)->subject('request approval expedition order #' . date('ymdHi'));
-                    });
-                $job->delete();
-            });
+            sendEmail(ExpeditionOrder::bladeEmail(), $data, $approver->email, 'Request Approval Expedition Order #' . date('ymdHi'));
 
             foreach ($list_expedition_order as $expedition_order) {
                 formulir_update_token($expedition_order->formulir, $token);
             }
         }
 
-        gritter_success('send approval success');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)
