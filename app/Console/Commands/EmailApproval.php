@@ -282,10 +282,11 @@ class EmailApproval extends Command
                 sendingRequestApproval($sales_service_downpayment);
             $this->line("Point\PointSales\Models\Service\Downpayment " . count($sales_service_downpayment) . " form(s) resent.");
         }
-        // if(count($sales_service_payment_collection) > 0) {
-        //         sendingRequestApproval($sales_service_payment_collection);
-        //     $this->line("Point\PointSales\Models\Service\PaymentCollection " . count($sales_service_payment_collection) . " form(s) resent.");
-        // }
+        if(count($sales_service_payment_collection) > 0) {
+            \Point\PointSales\Http\Controllers\Service\PaymentCollectionApprovalController::
+                sendingRequestApproval($sales_service_payment_collection);
+            $this->line("Point\PointSales\Models\Service\PaymentCollection " . count($sales_service_payment_collection) . " form(s) resent.");
+        }
         // dd($inventory_transfer_item);
     }
 }
