@@ -124,9 +124,8 @@ class EmailApproval extends Command
         $sales_goods_sales_order = [];
         $sales_goods_downpayment = [];
         $sales_goods_delivery_order = [];
-        $sales_goods_invoice = [];
         $sales_goods_payment_collection = [];
-        // $sales_goods_retur = [];
+        
         $sales_service_invoice = [];
         $sales_service_payment_collection = [];
 
@@ -182,12 +181,10 @@ class EmailApproval extends Command
                 case "Point\PointSales\Models\Sales\DeliveryOrder":
                     array_push($sales_goods_delivery_order, $formulir->id);
                     break;
-                case "Point\PointSales\Models\Sales\Invoice":
-                    array_push($sales_goods_invoice, $formulir->id);
-                    break;
                 case "Point\PointSales\Models\Sales\PaymentCollection":
                     array_push($sales_goods_payment_collection, $formulir->id);
                     break;
+
                 case "Point\PointSales\Models\Service\Invoice":
                     array_push($sales_service_invoice, $formulir->id);
                     break;
@@ -274,19 +271,13 @@ class EmailApproval extends Command
                 sendingRequestApproval($sales_goods_delivery_order);
             $this->line("Point\PointSales\Models\Sales\DeliveryOrder " . count($sales_goods_delivery_order) . " form(s) resent.");
         }
-        if(count($sales_goods_invoice) > 0) {
-            \Point\PointSales\Http\Controllers\Sales\InvoiceApprovalPrintController::
-                sendingRequestApproval($sales_goods_invoice);
-            $this->line("Point\PointSales\Models\Sales\Invoice " . count($sales_goods_invoice) . " form(s) resent.");
+        if(count($sales_goods_payment_collection) > 0) {
+            \Point\PointSales\Http\Controllers\Sales\PaymentCollectionApprovalController::
+                sendingRequestApproval($sales_goods_payment_collection);
+            $this->line("Point\PointSales\Models\Sales\PaymentCollection " . count($sales_goods_payment_collection) . " form(s) resent.");
         }
-        // if(count($sales_goods_payment_collection) > 0) {
-        //         sendingRequestApproval($sales_goods_payment_collection);
-        //     $this->line("Point\PointSales\Models\Sales\PaymentCollection " . count($sales_goods_payment_collection) . " form(s) resent.");
-        // }
-        // if(count($sales_goods_retur) > 0) {
-        //         sendingRequestApproval($sales_goods_retur);
-        //     $this->line( . count($sales_goods_retur) . " form(s) resent.");
-        // }
+
+        
         // if(count($sales_service_invoice) > 0) {
         //         sendingRequestApproval($sales_service_invoice);
         //     $this->line("Point\PointSales\Models\Service\Invoice " . count($sales_service_invoice) . " form(s) resent.");
@@ -337,3 +328,22 @@ class EmailApproval extends Command
 // "Point\PointSales\Models\Sales\PaymentCollection"
 // "Point\PointSales\Models\Service\Invoice"
 // "Point\PointSales\Models\Service\PaymentCollection"
+
+// $sales_goods_print_invoice = [];
+// case "Point\PointSales\Models\Sales\Invoice":
+//     array_push($sales_goods_print_invoice, $formulir->id);
+//     break;
+// if(count($sales_goods_print_invoice) > 0) {
+//     foreach ($sales_goods_print_invoice as $key => $invoice_id) {
+//         \Point\PointSales\Http\Controllers\Sales\InvoiceApprovalPrintController::
+//             sendingRequestApproval($invoice_id);
+//     }
+//     $this->line("Point\PointSales\Models\Sales\Invoice " . count($sales_goods_print_invoice) . " form(s) resent.");
+// }
+
+
+// $sales_goods_retur = [];
+// if(count($sales_goods_retur) > 0) {
+//         sendingRequestApproval($sales_goods_retur);
+//     $this->line( . count($sales_goods_retur) . " form(s) resent.");
+// }

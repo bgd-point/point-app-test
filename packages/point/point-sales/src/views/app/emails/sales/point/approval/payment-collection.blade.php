@@ -128,8 +128,7 @@
 
 <body>
 <div class="invoice-box">
-    Hi, you have an request approval payment collection from {{ $username }}. We would like to inform the
-    details as follows :
+    Hi, you have an request approval payment collection from <strong>{{ $requester }}</strong>. We would like to inform the details as follows :
 
    @foreach($list_data as $payment_collection)
         <?php $payment_collection = \Point\PointSales\Models\Sales\PaymentCollection::find($payment_collection['id']); ?>
@@ -143,7 +142,20 @@
                     :
                 </td>
                 <td>
-                    {{ $payment_collection->formulir->form_number }}</a>
+                    <a href="{{ url('/sales/point/indirect/payment-collection/'.$payment_collection->id) }}">
+                        {{ $payment_collection->formulir->form_number }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20%">
+                    Created By
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    {{ $payment_collection->formulir->createdBy->name }}
                 </td>
             </tr>
             <tr>
@@ -175,10 +187,13 @@
                 <td>
                     Date
                 </td>
-                <td>
-                    Notes
+                <td style="text-align: left;">
+                    Invoice Number
                 </td>
                 <td>
+                    Items
+                </td>
+                <td style="text-align: right;">
                     Amount
                 </td>
             </tr>
@@ -190,33 +205,32 @@
                 ?>
 
                 @if (get_class($reference) == 'Point\PointSales\Models\Sales\Invoice')
-                    <?php $index = 1;?>
-                    @foreach($reference->items as $invoice_item)
-                        @if ($index == 1)
+                    @foreach($reference->items as $key=>$invoice_item)
+                        @if ($key == 0)
                             <tr class="item">
-                                <td style="text-align: left;font-weight: bold;">
+                                <td>
                                     {{date_format_view($invoice_item->invoice->formulir->form_date)}}
                                 </td>
-                                <td style="text-align: left;font-weight: bold;">
+                                <td style="text-align: left;">
                                     {{$invoice_item->invoice->formulir->form_number}}
                                 </td>
+                                <td>
+                                    {{$invoice_item->item->codeName}} (Qty: {{number_format_quantity($invoice_item->quantity)}})
+                                </td>
                                 <td style="text-align: right">
-                                    {{number_format_quantity($payment_collection_detail->amount)}}
+                                    {{number_format_price($payment_collection_detail->amount)}}
                                 </td>
                             </tr>
-                                <tr class="item">
-                                    <td style="text-align: left" colspan="3">
-                                        {{$invoice_item->item->codeName}} (Qty: {{number_format_quantity($invoice_item->quantity)}})
-                                    </td>
-                                </tr>
-                            @else
-                                <tr class="item">
-                                    <td style="text-align: left" colspan="3">
-                                        {{$invoice_item->item->codeName}} (Qty: {{number_format_quantity($invoice_item->quantity)}})
-                                    </td>
-                                </tr>
+                        @else
+                            <tr class="item">
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    {{$invoice_item->item->codeName}} (Qty: {{number_format_quantity($invoice_item->quantity)}})
+                                </td>
+                                <td></td>
+                            </tr>
                         @endif
-                        <?php $index++;?>
                     @endforeach
                 @endif
                     @if (get_class($reference) == 'Point\PointSales\Models\Sales\Downpayment')
@@ -224,7 +238,7 @@
                             <td style="text-align: left;font-weight: bold;">
                                 {{date_format_view($reference->formulir->form_date)}}
                             </td>
-                            <td style="text-align: left;font-weight: bold;">
+                            <td style="text-align: left;font-weight: bold;" colspan="2">
                                 {{$reference->formulir->form_number}}
                             </td>
                             <td style="text-align: right">
@@ -236,7 +250,7 @@
             <tr></tr>
             @if(count($payment_collection->others) > 0)
             <tr class="heading">
-                <td colspan="2">
+                <td colspan="3">
                     Notes
                 </td>
                 <td>
@@ -246,7 +260,7 @@
             @endif
             @foreach($payment_collection->others as $payment_collection_other)
             <tr class="item">
-                <td colspan="2">
+                <td colspan="3">
                     {{ $payment_collection_other->coa->account }}. {{$payment_collection_other->other_notes}}
                 </td>
                 <td >
@@ -256,14 +270,14 @@
             @endforeach
             <tr></tr>
             <tr class="heading">
-                <td colspan="2">
+                <td colspan="3">
                 </td>
                 <td>
                     {{number_format_quantity($payment_collection->total_payment)}}
                 </td>
             </tr>
             <tr>
-                <td colspan="6" >
+                <td colspan="4">
                     <a href="{{ $url . '/formulir/'.$payment_collection->formulir_id.'/approval/check-status/'.$token }}"><input
                                 type="button" class="btn btn-check" value="Check"></a>
                     <a href="{{ $url . '/sales/point/indirect/payment-collection/'.$payment_collection->id.'/approve?token='.$token }}"><input
