@@ -15,9 +15,12 @@
                             $array_vesa = array_values(array_sort($array_vesa, function ($value) {
                                 return $value['deadline'];
                             }));
-                            $array_vesa_payment = array_values(array_sort($array_vesa_payment, function ($value) {
-                                return $value['deadline'];
-                            }));
+                            if(isset($array_vesa_payment)){
+                                $array_vesa_payment = array_values(array_sort($array_vesa_payment, function ($value) {
+                                    return $value['deadline'];
+                                }));
+                            }
+
 
                             // VESA DUE DATE
                             $due_date = array_where($array_vesa, function ($value, $key) use ($array_vesa) {
@@ -35,6 +38,8 @@
                                 }
                             });
                         ?>
+
+                        @if(isset($array_vesa_payment))
                         <tr bgcolor="black" style="color:#FFF">
                             <td colspan='5'><strong>Approved Formulir, please create payment </strong></td>
                         </tr>
@@ -61,6 +66,7 @@
                                 </tr>
                             @endif
                         @endforeach
+                        @endif
 
                         <tr> <td colspan="5"></td></tr>
                         <tr bgcolor="black" style="color:#FFF">
@@ -87,6 +93,7 @@
                                 </tr>
                             @endif
                         @endforeach
+
                         <tr> <td colspan="5"></td></tr>
                         <tr bgcolor="black" style="color:#FFF">
                             <td colspan="5" ><strong>TO DO LIST</strong></td>

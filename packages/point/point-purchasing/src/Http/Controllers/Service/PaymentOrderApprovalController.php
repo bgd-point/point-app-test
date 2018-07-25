@@ -33,43 +33,40 @@ class PaymentOrderApprovalController extends Controller
     {
         access_is_allowed('create.point.purchasing.service.payment.order');
         
-        $list_approver = PaymentOrder::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+
+    public static function sendingRequestApproval($list_payment_order_id, $requester="VESA")
+    {
         $token = md5(date('ymdhis'));
+        $list_approver = PaymentOrder::selectApproverList($list_payment_order_id);
 
         foreach ($list_approver as $data_approver) {
-            $list_payment_order = PaymentOrder::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_payment_order = PaymentOrder::selectApproverRequest($list_payment_order_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_payment_order as $payment_order) {
                 array_push($array_formulir_id, $payment_order->formulir_id);
             }
-            
             $array_formulir_id = implode(',', $array_formulir_id);
             $approver = User::find($data_approver->approval_to);
             $data = [
                 'list_data' => $list_payment_order,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];
 
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-purchasing::emails.purchasing.point.approval.service-payment-order', $data, function ($message) use ($approver) {
-                    $message->to($approver->email)->subject('request approval payment order #' . date('ymdHi'));
-                });
-                $job->delete();
-            });
+            sendEmail(PaymentOrder::bladeEmail(), $data, $approver->email, 'Request Approval Payment Order #' . date('ymdHi'));
 
             foreach ($list_payment_order as $payment_order) {
                 formulir_update_token($payment_order->formulir, $token);
             }
         }
-
-        gritter_success('send approval success');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)

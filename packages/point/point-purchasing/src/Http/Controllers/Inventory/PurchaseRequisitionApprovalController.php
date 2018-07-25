@@ -28,12 +28,18 @@ class PurchaseRequisitionApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.purchasing.requisition');
-        $list_approver = PurchaseRequisition::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+    public static function sendingRequestApproval($list_purchase_requisition_id, $requester="VESA")
+    {
+        $list_approver = PurchaseRequisition::selectApproverList($list_purchase_requisition_id);
         $token = md5(date('ymdhis'));
 
         foreach ($list_approver as $data_approver) {
-            $list_purchase_requisition = PurchaseRequisition::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_purchase_requisition = PurchaseRequisition::selectApproverRequest($list_purchase_requisition_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_purchase_requisition as $purchase_requisition) {
                 array_push($array_formulir_id, $purchase_requisition->formulir_id);
@@ -44,27 +50,18 @@ class PurchaseRequisitionApprovalController extends Controller
             $data = [
                 'list_data' => $list_purchase_requisition,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
-                ];
+            ];
 
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-purchasing::emails.purchasing.point.approval.purchase-requisition', $data, function ($message) use ($approver) {
-                    $message->to($approver->email)->subject('request approval purchase requisition #' . date('ymdHi'));
-                });
-                $job->delete();
-            });
+            sendEmail(PurchaseRequisition::bladeEmail(), $data, $approver->email, 'Request Approval Purchase Requisition #' . date('ymdHi'));
 
             foreach ($list_purchase_requisition as $purchase_requisition) {
                 formulir_update_token($purchase_requisition->formulir, $token);
             }
         }
-
-        gritter_success('send approval success');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)

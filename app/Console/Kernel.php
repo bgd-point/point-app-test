@@ -43,5 +43,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('inspire')
                  ->hourly();
+
+        $schedule->command('dev:resend-email')
+                 ->dailyAt('7:00');
     }
 }

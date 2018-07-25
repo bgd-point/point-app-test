@@ -6,7 +6,7 @@
         @include('point-inventory::app/inventory/point/stock-opname/_breadcrumb')
         <li>Request approval</li>
     </ul>
-    <h2 class="sub-header">Inventory Usage</h2>
+    <h2 class="sub-header">Stock Opname</h2>
     @include('point-inventory::app.inventory.point.stock-opname._menu')
     
     <form action="{{url('inventory/point/stock-opname/send-request-approval')}}" method="post">

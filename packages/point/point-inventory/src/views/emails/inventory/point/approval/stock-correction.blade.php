@@ -128,12 +128,12 @@
 <body>
 
     <div class="invoice-box">
-            <p align="justify">
-            Hi, you have an approval request for Stock Correction from {{ $username  }}. <br>
+        <p align="justify">
+            Hi, you have an approval request for Stock Correction from <strong>{{ $requester  }}</strong>. <br>
             We would like to inform the details as follows :
-            </p>
+        </p>
 
-            @foreach($list_data as $stock_correction)
+        @foreach($list_data as $stock_correction)
             <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
                 <tr>
                     <td style="width: 20%">
@@ -146,6 +146,17 @@
                         <a href="{{ $url . '/inventory/point/stock-correction/'.$stock_correction->id }}">
                             {{ $stock_correction->formulir->form_number }}
                         </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 20%">
+                        Form Date
+                    </td>
+                    <td>
+                        :
+                    </td>
+                    <td>
+                        {{ $stock_correction->formulir->createdBy->name }}
                     </td>
                 </tr>
                 <tr>

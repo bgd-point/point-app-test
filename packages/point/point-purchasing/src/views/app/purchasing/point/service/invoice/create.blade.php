@@ -455,7 +455,7 @@
                 '<a href="javascript:void(0)" class="remove-row btn btn-danger pull-right"><i class="fa fa-trash"></i></a>',
                 '<select id="service-id-' + service_counter + '" name="service_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one.." onchange="selectService(this.value,' + service_counter + ')">'
                 + '</select>',
-                '<select id="service-allocation-id-' + counter + '" name="service_allocation_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
+                '<select id="service-allocation-id-' + service_counter + '" name="service_allocation_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
                 @foreach($list_allocation as $allocation)
                 + '<option value="{{$allocation->id}}">{{$allocation->name}}</option>'
                 @endforeach
