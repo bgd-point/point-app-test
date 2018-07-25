@@ -129,6 +129,9 @@ class EmailApproval extends Command
         $sales_service_downpayment = [];
         $sales_service_payment_collection = [];
 
+        $finance_cash_advance = [];
+        $finance_payment_order = [];
+
 
         foreach($formulirs AS $key=>$formulir) {
             // $this->line($key . ". " . $formulir->formulirable_type . " " . $formulir->request_approval_at . " | " . $formulir->form_status . " | " . $formulir->approval_status . " | " . $formulir->cancel_requested_at);
@@ -190,6 +193,13 @@ class EmailApproval extends Command
                     break;
                 case "Point\PointSales\Models\Service\PaymentCollection":
                     array_push($sales_service_payment_collection, $formulir->id);
+                    break;
+
+                case "Point\PointFinance\Models\CashAdvance":
+                    array_push($finance_cash_advance, $formulir->id);
+                    break;
+                case "Point\PointFinance\Models\PaymentOrder\PaymentOrder":
+                    array_push($finance_payment_order, $formulir->id);
                     break;
             }
         }
@@ -287,7 +297,18 @@ class EmailApproval extends Command
                 sendingRequestApproval($sales_service_payment_collection);
             $this->line("Point\PointSales\Models\Service\PaymentCollection " . count($sales_service_payment_collection) . " form(s) resent.");
         }
-        // dd($inventory_transfer_item);
+        
+        if(count($finance_cash_advance) > 0) {
+            \Point\PointFinance\Http\Controllers\CashAdvanceApprovalController::
+                sendingRequestApproval($finance_cash_advance);
+            $this->line("Point\PointFinance\Models\CashAdvance ". count($finance_cash_advance) . " form(s) resent.");
+        }
+        // if(count($finance_payment_order) > 0) {
+        //     \Point\PointFinance\Http\Controllers\PaymentOrder\PaymentOrderApprovalController::
+        //         sendingRequestApproval($finance_payment_order);
+        //     $this->line("Point\PointFinance\Models\PaymentOrder\PaymentOrder ". count($finance_payment_order) . " form(s) resent.");
+        // }
+        // dd($finance_cash_advance);
     }
 }
 // "Point\Framework\Models\OpeningInventory"
