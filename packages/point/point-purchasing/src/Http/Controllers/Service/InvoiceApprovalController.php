@@ -29,7 +29,7 @@ class InvoiceApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.purchasing.service.invoice');
-        self::sendRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
 
         gritter_success('You have sent email for invoice approval');
         return redirect()->back();
