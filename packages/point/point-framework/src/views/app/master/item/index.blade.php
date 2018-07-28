@@ -44,10 +44,12 @@
                             <th>NAME</th>
                             <th>ACCOUNT</th>
                             <th>NOTES</th>
-                            @if(auth()->user()->may('read.point.sales.pos.pricing'))
+                            @if(auth()->user()->may('read.cogs.item'))
                                 <th style="text-align: right;">COST OF GOOD SALES</th>
                             @endif
-                            <th style="text-align: right;">PRICE</th>
+                            @if(auth()->user()->may('read.price.item'))
+                                <th style="text-align: right;">PRICE</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -62,22 +64,24 @@
                                 <td><a href="{{url('master/item/'.$item->id)}}">{{ $item->codeName }}</a></td>
                                 <td>{{ $item->accountAsset->name }}</td>
                                 <td>{{ $item->notes }}</td>
-                                @if(auth()->user()->may('read.point.sales.pos.pricing'))
+                                @if(auth()->user()->may('read.cogs.item'))
                                     <td style="min-width: 225px; text-align: right;">{{ number_format_price($item->averageCostOfSales(\Carbon::now())) }}</td>
                                 @endif
-                                <td style="min-width: 225px; text-align: right;">
-                                    @forelse($item->pricing AS $key=>$pricing)
-                                        <span style="display: block;">
-                                            @if($key === 0)
-                                                {{$pricing->person_group_name}} {{ number_format_price($pricing->price ? $pricing->price * (100 - $pricing->discount) / 100 : 0) }}
-                                            @elseif($item->pricing[$key-1]->person_group_id !== $pricing->person_group_id)
-                                                {{$pricing->person_group_name}} {{ number_format_price($pricing->price ? $pricing->price * (100 - $pricing->discount) / 100 : 0) }}
-                                            @endif
-                                        </span>
-                                    @empty
-                                    NOT SET
-                                    @endforelse
-                                </td>
+                                @if(auth()->user()->may('read.price.item'))
+                                    <td style="min-width: 225px; text-align: right;">
+                                        @forelse($item->pricing AS $key=>$pricing)
+                                            <span style="display: block;">
+                                                @if($key === 0)
+                                                    {{$pricing->person_group_name}} {{ number_format_price($pricing->price ? $pricing->price * (100 - $pricing->discount) / 100 : 0) }}
+                                                @elseif($item->pricing[$key-1]->person_group_id !== $pricing->person_group_id)
+                                                    {{$pricing->person_group_name}} {{ number_format_price($pricing->price ? $pricing->price * (100 - $pricing->discount) / 100 : 0) }}
+                                                @endif
+                                            </span>
+                                        @empty
+                                            NOT SET
+                                        @endforelse
+                                    </td>
+                                @endif
                             </tr>
                         @endforeach  
                     </tbody> 
