@@ -44,10 +44,14 @@
                             <th>NAME</th>
                             <th>ACCOUNT</th>
                             <th>NOTES</th>
+                            @if(auth()->user()->may('read.point.sales.pos.pricing'))
+                                <th style="text-align: right;">COST OF GOOD SALES</th>
+                            @endif
+                            <th style="text-align: right;">PRICE</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($list_item as $item)
+                        @foreach($list_item as $key=>$item)
                             <tr id="list-{{$item->id}}">
                                 <td class="text-center">
                                     <a href="javascript:void(0)" data-toggle="tooltip" title="Delete" class="btn btn-effect-ripple btn-xs btn-danger" onclick="secureDelete({{$item->id}}, '{{url('master/item/delete')}}')"><i class="fa fa-times"></i></a>
@@ -56,8 +60,23 @@
                                     </a>
                                 </td>
                                 <td><a href="{{url('master/item/'.$item->id)}}">{{ $item->codeName }}</a></td>
-                                <td> {{ $item->accountAsset->account }}</td>
+                                <td>{{ $item->accountAsset->name }}</td>
                                 <td>{{ $item->notes }}</td>
+                                @if(auth()->user()->may('read.point.sales.pos.pricing'))
+                                    <td style="min-width: 225px; text-align: right;">{{ number_format_price($item->averageCostOfSales(\Carbon::now())) }}</td>
+                                @endif
+                                <td style="min-width: 225px; text-align: right;">
+                                    @forelse($item->pricing AS $key=>$pricing)
+                                        @if($key === 0)
+                                            {{$pricing->person_group_name}} {{ number_format_price($pricing->price ?: 0) }}
+                                        @elseif($item->pricing[$key-1]->person_group_id !== $pricing->person_group_id)
+                                            <br>
+                                            {{$pricing->person_group_name}} {{ number_format_price($pricing->price ?: 0) }}
+                                        @endif
+                                    @empty
+                                    NOT SET
+                                    @endforelse
+                                </td>
                             </tr>
                         @endforeach  
                     </tbody> 
