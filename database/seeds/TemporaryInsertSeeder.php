@@ -8,6 +8,12 @@ use Point\Core\Models\Master\Permission;
 
 class TemporaryInsertSeeder extends Seeder
 {
+    /**
+     * Seeder that only executed once for existing production system
+     *
+     * @return void
+     */
+
     private $output;
 
     public function __construct(Output $output)
@@ -23,20 +29,39 @@ class TemporaryInsertSeeder extends Seeder
 
 	public function run()
     {
-        $this->output->writeln('<info>--- Inserting export inventory value permission ---</info>');
+        $this->output->writeln('<info>--- Insert master item read cogs and price permission ---</info>');
 
-        PermissionHelper::create('INVENTORY VALUE REPORT', ['export'], 'INVENTORY');
-        
-        $permission_export = Permission::where('slug', 'export.inventory.value.report')->first();
+        $permission = new Permission;
+        $permission->name = 'Read COGS ITEM';
+        $permission->slug = 'read.cogs.item';
+        $permission->group = 'MASTER';
+        $permission->type = 'ITEM';
+        $permission->action = 'Read COGS';
+        $permission->save();
+
+        $permission_export = Permission::where('slug', 'read.cogs.item')->first();
         
         $permission_role = new PermissionRole;
-
         $permission_role->permission_id = $permission_export->id;
         $permission_role->role_id = 1;
-
         $permission_role->save();
 
-        $this->output->writeln('<info>--- Insert export inventory value permission finished ---</info>');
+        $permission = new Permission;
+        $permission->name = 'Read PRICE ITEM';
+        $permission->slug = 'read.price.item';
+        $permission->group = 'MASTER';
+        $permission->type = 'ITEM';
+        $permission->action = 'Read Price';
+        $permission->save();
+        
+        $permission_export = Permission::where('slug', 'read.price.item')->first();
+        
+        $permission_role = new PermissionRole;
+        $permission_role->permission_id = $permission_export->id;
+        $permission_role->role_id = 1;
+        $permission_role->save();
+
+        $this->output->writeln('<info>--- Insert master item read cogs and price permission finished ---</info>');
 
     }
 }
