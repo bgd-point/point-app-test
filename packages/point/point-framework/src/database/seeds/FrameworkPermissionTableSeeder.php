@@ -3,6 +3,8 @@
 use Illuminate\Database\Seeder;
 use Symfony\Component\Console\Output\ConsoleOutput as Output;
 use Point\Core\Helpers\PermissionHelper;
+use Point\Core\Models\Master\Permission;
+use Point\Core\Models\Master\PermissionRole;
 
 class FrameworkPermissionTableSeeder extends Seeder
 {
@@ -29,6 +31,7 @@ class FrameworkPermissionTableSeeder extends Seeder
         $this->menu();
         $this->output->writeln('<info>updated menu permission</info>');
         $this->master();
+        $this->additionalitemPermission();
         $this->output->writeln('<info>updated master permission</info>');
         $this->accounting();
         $this->output->writeln('<info>updated accounting permission</info>');
@@ -69,7 +72,7 @@ class FrameworkPermissionTableSeeder extends Seeder
         PermissionHelper::create('ALLOCATION', ['create', 'read', 'update', 'delete', 'export'], $group);
         PermissionHelper::create('ALLOCATION REPORT', ['read', 'export'], $group);
         PermissionHelper::create('SERVICE', ['create', 'read', 'update', 'delete', 'export'], $group);
-        PermissionHelper::create('FIXED ASSETS ITEM', ['create', 'read', 'update', 'delete', 'export'], $group);
+        // PermissionHelper::create('FIXED ASSETS ITEM', ['create', 'read', 'update', 'delete', 'export'], $group);
     }
 
     private function accounting()
@@ -97,5 +100,24 @@ class FrameworkPermissionTableSeeder extends Seeder
 
         PermissionHelper::create('INVENTORY REPORT', ['read'], $group);
         PermissionHelper::create('INVENTORY VALUE REPORT', ['read'], $group);
+    }
+
+    private function additionalitemPermission()
+    {
+        $permission = new Permission;
+        $permission->name = 'Read COGS ITEM';
+        $permission->slug = 'read.cogs.item';
+        $permission->group = 'MASTER';
+        $permission->type = 'ITEM';
+        $permission->action = 'Read COGS';
+        $permission->save();
+
+        $permission = new Permission;
+        $permission->name = 'Read PRICE ITEM';
+        $permission->slug = 'read.price.item';
+        $permission->group = 'MASTER';
+        $permission->type = 'ITEM';
+        $permission->action = 'Read Price';
+        $permission->save();
     }
 }
