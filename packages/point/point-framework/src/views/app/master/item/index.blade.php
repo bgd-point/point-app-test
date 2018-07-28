@@ -67,12 +67,13 @@
                                 @endif
                                 <td style="min-width: 225px; text-align: right;">
                                     @forelse($item->pricing AS $key=>$pricing)
-                                        @if($key === 0)
-                                            {{$pricing->person_group_name}} {{ number_format_price($pricing->price ?: 0) }}
-                                        @elseif($item->pricing[$key-1]->person_group_id !== $pricing->person_group_id)
-                                            <br>
-                                            {{$pricing->person_group_name}} {{ number_format_price($pricing->price ?: 0) }}
-                                        @endif
+                                        <span style="display: block;">
+                                            @if($key === 0)
+                                                {{$pricing->person_group_name}} {{ number_format_price($pricing->price ? $pricing->price * (100 - $pricing->discount) / 100 : 0) }}
+                                            @elseif($item->pricing[$key-1]->person_group_id !== $pricing->person_group_id)
+                                                {{$pricing->person_group_name}} {{ number_format_price($pricing->price ? $pricing->price * (100 - $pricing->discount) / 100 : 0) }}
+                                            @endif
+                                        </span>
                                     @empty
                                     NOT SET
                                     @endforelse

@@ -56,7 +56,9 @@ class Item extends Model
                         'person_group_id',
                         'person_group.name AS person_group_name',
                         'price',
-                        'form_date')
+                        'discount',
+                        'form_date'
+                    )
                     ->where('formulir.form_status', 0)
                     ->orderBy('person_group_id')
                     ->orderBy('form_date', 'DESC');
