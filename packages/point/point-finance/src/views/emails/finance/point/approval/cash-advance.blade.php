@@ -128,7 +128,7 @@
 
 <body>
 <div class="invoice-box">
-    Hi, you have an request approval cash advance from {{ $username }}. We would like to inform the
+    Hi, you have an request approval cash advance from <strong>{{ $requester }}</strong>. We would like to inform the
     details as follows :
 
     @foreach($list_data as $cash_advance)
@@ -141,7 +141,20 @@
                     :
                 </td>
                 <td>
-                    {{ $cash_advance->formulir->form_number }}</a>
+                    <a href="{{ url('finance/point/cash-advance/'.$cash_advance->id) }}">
+                        {{ $cash_advance->formulir->form_number }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20%">
+                    Created By
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    {{ ucwords($cash_advance->formulir->createdBy->name) }}
                 </td>
             </tr>
             <tr>

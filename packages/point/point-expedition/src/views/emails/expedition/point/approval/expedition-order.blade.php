@@ -129,8 +129,8 @@
 
     <div class="invoice-box">
         <p align="justify">
-        Hi, you have an approval request for Expedition Order from {{ $username  }}. <br>
-        We would like to inform the details as follows :
+            Hi, you have an approval request for Expedition Order from <strong>{{ $requester }}</strong>. <br>
+            We would like to inform the details as follows :
         </p>
         @foreach($list_data as $expedition_order)
         <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
@@ -143,10 +143,15 @@
                 <td style="width: 20%">Form Number</td>
                 <td>:</td>
                 <td>
-                    <a href="{{ $url . '/expedition/point/expedition-order/'.$expedition_order->id }}">
+                    <a href="{{ url('expedition/point/expedition-order/'.$expedition_order->id) }}">
                         {{ $expedition_order->formulir->form_number }}
                     </a>
                 </td>
+            </tr>
+            <tr>
+                <td style="width: 20%">Created By</td>
+                <td>:</td>
+                <td>{{ $expedition_order->formulir->createdBy->name }}</td>
             </tr>
             <tr>
                 <td style="width: 20%">Expedition</td>

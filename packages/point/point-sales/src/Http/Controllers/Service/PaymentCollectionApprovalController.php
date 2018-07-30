@@ -32,13 +32,19 @@ class PaymentCollectionApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.sales.service.payment.collection');
-        
-        $list_approver = PaymentCollection::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+
+    public static function sendingRequestApproval($list_payment_collection_id, $requester="VESA")
+    {
+        $list_approver = PaymentCollection::selectApproverList($list_payment_collection_id);
         $token = md5(date('ymdhis'));
 
         foreach ($list_approver as $data_approver) {
-            $list_payment_collection = PaymentCollection::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_payment_collection = PaymentCollection::selectApproverRequest($list_payment_collection_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_payment_collection as $payment_collection) {
                 array_push($array_formulir_id, $payment_collection->formulir_id);
@@ -49,27 +55,18 @@ class PaymentCollectionApprovalController extends Controller
             $data = [
                 'list_data' => $list_payment_collection,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];
 
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-sales::app.emails.sales.point.approval.service-payment-collection', $data, function ($message) use ($approver) {
-                    $message->to($approver->email)->subject('request approval payment collection #' . date('ymdHi'));
-                });
-                $job->delete();
-            });
+            sendEmail(PaymentCollection::bladeEmail(), $data, $approver->email, 'Request Approval Sales Service Payment Collection #' . date('ymdHi'));
 
             foreach ($list_payment_collection as $payment_collection) {
                 formulir_update_token($payment_collection->formulir, $token);
             }
         }
-
-        gritter_success('send approval success');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)

@@ -32,12 +32,19 @@ class DownpaymentApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.expedition.downpayment');
-        $list_approver = Downpayment::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+        
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+
+    public static function sendingRequestApproval($list_downpayment_id, $requester="VESA")
+    {
+        $list_approver = Downpayment::selectApproverList($list_downpayment_id);
         $token = md5(date('ymdhis'));
 
         foreach ($list_approver as $data_approver) {
-            $list_downpayment = Downpayment::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_downpayment = Downpayment::selectApproverRequest($list_downpayment_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_downpayment as $downpayment) {
                 array_push($array_formulir_id, $downpayment->formulir_id);
@@ -48,28 +55,20 @@ class DownpaymentApprovalController extends Controller
             $data = [
                 'list_data' => $list_downpayment,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
 
             ];
             
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-expedition::emails.expedition.point.approval.downpayment', $data, function ($message) use ($approver) {
-                    $message->to($approver->email)->subject('request approval downpayment #' . date('ymdHi'));
-                });
-                $job->delete();
-            });
+            sendEmail(Downpayment::bladeEmail(), $data, $approver->email, 'Request Approval Expedition Downpayment #' . date('ymdHi'));
 
             foreach ($list_downpayment as $downpayment) {
                 formulir_update_token($downpayment->formulir, $token);
             }
         }
 
-        gritter_success('send approval success');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)

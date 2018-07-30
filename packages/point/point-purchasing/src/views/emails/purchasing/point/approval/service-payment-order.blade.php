@@ -204,7 +204,7 @@
 
         <table class="main">
             <tr class="heading">
-                <td>Invoice Number</td>
+                <td class="allow-wrap">Invoice Number</td>
                 <td>Service & Item</td>
                 <td>Allocation</td>
                 <td class="text-right";>Price</td>
@@ -232,7 +232,7 @@
                             $subtotal -= ($service->quantity * $service->price * $service->discount / 100);
                         ?>
                         <tr class="item">
-                            <td>
+                            <td class="allow-wrap">
                                 @if($index === 0)
                                     <a href="{{url('purchasing/point/service/invoice/'.$invoice->id)}}">
                                         {{ $invoice->formulir->form_number }}
@@ -386,7 +386,7 @@
                         <?php $downpayment_counter++ ?>
                     @endif
                     <tr class="item" style="border-bottom: 2px solid #ddd">
-                        <td>
+                        <td class="allow-wrap">
                             <a href="{{url('purchasing/point/service/downpayment/'.$reference->id)}}">
                                 {{ $reference->formulir->form_number }}
                             </a>

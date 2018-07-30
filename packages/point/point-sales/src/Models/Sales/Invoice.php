@@ -87,4 +87,8 @@ class Invoice extends Model
             return '/sales/point/indirect/invoice/'.$class->id.'/archived';
         }
     }
+    public static function bladeEmail()
+    {
+        return 'point-sales::app.emails.sales.point.approval.sales-invoice-request-approval-print';
+    }
 }

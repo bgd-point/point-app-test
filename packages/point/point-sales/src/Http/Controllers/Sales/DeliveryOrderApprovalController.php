@@ -31,13 +31,19 @@ class DeliveryOrderApprovalController extends Controller
         if ($this->isFormulirNull($request)) {
             return redirect()->back();
         }
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
 
-        $list_approver = DeliveryOrder::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+
+    public static function sendingRequestApproval($list_delivery_order_id, $requester="VESA")
+    {
+        $list_approver = DeliveryOrder::selectApproverList($list_delivery_order_id);
         $token = md5(date('ymdhis'));
 
         foreach ($list_approver as $data_approver) {
-            $list_delivery_order = DeliveryOrder::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_delivery_order = DeliveryOrder::selectApproverRequest($list_delivery_order_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_delivery_order as $delivery_order) {
                 array_push($array_formulir_id, $delivery_order->formulir_id);
@@ -48,27 +54,18 @@ class DeliveryOrderApprovalController extends Controller
             $data = [
                 'list_data' => $list_delivery_order,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
-                ];
+            ];
 
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-sales::app.emails.sales.point.approval.delivery-order', $data, function ($message) use ($approver) {
-                    $message->to($approver->email)->subject('request approval delivery order #' . date('ymdHi'));
-                });
-                $job->delete();
-            });
+            sendEmail(DeliveryOrder::bladeEmail(), $data, $approver->email, 'Request Approval Sales Delivery Order #' . date('ymdHi'));
 
             foreach ($list_delivery_order as $delivery) {
                 formulir_update_token($delivery->formulir, $token);
             }
         }
-
-        gritter_success('send approval success');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)
