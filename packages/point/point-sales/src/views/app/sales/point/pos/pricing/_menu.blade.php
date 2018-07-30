@@ -4,7 +4,7 @@
 </a>
 @endif
 @if(auth()->user()->may('create.point.sales.pos.pricing'))
-<a href="{{ url('sales/point/pos/pricing/create-step-1') }}" class="btn {{\Request::segment(5)==('create-step-1') || \Request::segment(5)==('create-step-2')?'btn-primary':'btn-info'}}">
+<a href="{{ url('sales/point/pos/pricing/create-step-2?form_date='.date(date_format_get(), strtotime(\Carbon::now()))) }}" class="btn {{\Request::segment(5)==('create-step-1') || \Request::segment(5)==('create-step-2')?'btn-primary':'btn-info'}}">
     Create
 </a>
 @endif
