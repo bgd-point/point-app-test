@@ -14,7 +14,7 @@ trait FormulirTrait
      */
     public function scopeSelectRequestApproval($q)
     {
-        return $q->joinFormulir()->notArchived()->notCanceled()->approvalPending()->selectOriginal();
+        return $q->joinFormulir()->notArchived()->approvalPending()->open()->selectOriginal();
     }
 
     /**

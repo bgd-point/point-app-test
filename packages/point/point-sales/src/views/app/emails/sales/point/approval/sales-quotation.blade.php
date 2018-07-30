@@ -128,7 +128,7 @@
 
 <body>
     <div class="invoice-box">
-        Hi, you have an request approval quotation from {{ $username }}. We would like to inform the
+        Hi, you have an request approval quotation from <strong>{{ $requester }}</strong>. We would like to inform the
         details as follows :
 
         @foreach($list_data as $quotation)
@@ -142,7 +142,20 @@
                         :
                     </td>
                     <td>
-                        {{ $quotation->formulir->form_number }}</a>
+                        <a href="{{ url('/sales/point/indirect/sales-quotation/' . $quotation->id) }}">
+                            {{ $quotation->formulir->form_number }}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 20%">
+                        Created By
+                    </td>
+                    <td>
+                        :
+                    </td>
+                    <td>
+                        {{ $quotation->formulir->createdBy->name }}
                     </td>
                 </tr>
                 <tr>

@@ -129,7 +129,7 @@
 
     <div class="invoice-box">
         <p align="justify">
-        Hi, you have an approval request for Downpayament Expedition from {{ $username  }}. <br>
+        Hi, you have an approval request for Downpayment Expedition from <strong>{{ $requester }}</strong>. <br>
         We would like to inform the details as follows :
         </p>
         @foreach($list_data as $downpayment)
@@ -143,9 +143,16 @@
                 <td style="width: 20%">Form Number</td>
                 <td>:</td>
                 <td>
-                    <a href="{{ $url . '/expedition/point/downpayment/'.$downpayment->id }}">
-                    {{ $downpayment->formulir->form_number }}
+                    <a href="{{ url('expedition/point/downpayment/'.$downpayment->id) }}">
+                        {{ $downpayment->formulir->form_number }}
                     </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20%">Form Number</td>
+                <td>:</td>
+                <td>
+                    {{ $downpayment->formulir->createdBy->name }}
                 </td>
             </tr>
             <tr>

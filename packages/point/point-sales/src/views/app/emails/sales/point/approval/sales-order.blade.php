@@ -128,7 +128,7 @@
 
 <body>
 <div class="invoice-box">
-    Hi, you have an request approval sales order from  {{ $username }}. We would like to inform the
+    Hi, you have an request approval sales order from <strong>{{ $requester }}</strong>. We would like to inform the
     details as follows :
 
     @foreach($list_data as $order)
@@ -142,7 +142,20 @@
                     :
                 </td>
                 <td>
-                    {{ $order->formulir->form_number }}</a>
+                    <a href="{{ url('/sales/point/indirect/sales-order/' . $order->id) }}">
+                        {{ $order->formulir->form_number }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20%">
+                    Created By
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    {{ $order->formulir->createdBy->name }}
                 </td>
             </tr>
             <tr>
