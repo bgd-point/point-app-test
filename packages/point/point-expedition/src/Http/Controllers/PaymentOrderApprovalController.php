@@ -133,6 +133,7 @@ class PaymentOrderApprovalController extends Controller
         foreach ($array_formulir_id as $id) {
             $payment_order = PaymentOrder::where('formulir_id', $id)->first();
             FormulirHelper::approve($payment_order->formulir, $approval_message, 'approval.point.expedition.payment.order', $token);
+            self::addPaymentReference($payment_order);
             timeline_publish('approve', $payment_order->formulir->form_number . ' approved', $payment_order->formulir->approval_to);
         }
         DB::commit();
@@ -165,7 +166,7 @@ class PaymentOrderApprovalController extends Controller
         return $view;
     }
 
-    public function addPaymentReference($payment_order)
+    public static function addPaymentReference($payment_order)
     {
         $payment_reference = new PaymentReference;
         $payment_reference->payment_reference_id = $payment_order->formulir_id;
