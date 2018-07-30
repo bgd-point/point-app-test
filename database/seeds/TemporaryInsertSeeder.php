@@ -2,9 +2,8 @@
 
 use Illuminate\Database\Seeder;
 use Symfony\Component\Console\Output\ConsoleOutput as Output;
-use Point\Core\Helpers\PermissionHelper;
-use Point\Core\Models\Master\PermissionRole;
-use Point\Core\Models\Master\Permission;
+use Point\PointExpedition\Models\PaymentOrder;
+use Point\PointExpedition\Http\Controllers\PaymentOrderApprovalController;
 
 class TemporaryInsertSeeder extends Seeder
 {
@@ -23,20 +22,19 @@ class TemporaryInsertSeeder extends Seeder
 
 	public function run()
     {
-        $this->output->writeln('<info>--- Inserting export inventory value permission ---</info>');
-
-        PermissionHelper::create('INVENTORY VALUE REPORT', ['export'], 'INVENTORY');
-        
-        $permission_export = Permission::where('slug', 'export.inventory.value.report')->first();
-        
-        $permission_role = new PermissionRole;
-
-        $permission_role->permission_id = $permission_export->id;
-        $permission_role->role_id = 1;
-
-        $permission_role->save();
-
-        $this->output->writeln('<info>--- Insert export inventory value permission finished ---</info>');
-
+        $this->output->writeln('<info>--- Inserting Expedition Payment Order to Finance Payment Reference ---</info>');
+        $list_payment_order = PaymentOrder::joinFormulir()
+                                          ->leftJoin('point_finance_payment_reference AS fpf', 'point_expedition_payment_order.formulir_id', '=', 'fpf.payment_reference_id')
+                                          ->whereNull('fpf.payment_reference_id')
+                                          ->where('formulir.form_status', 0)
+                                          ->where('formulir.approval_status', 1)
+                                          ->select('point_expedition_payment_order.*')
+                                          ->get();
+        $this->output->writeln('<info>--- Found ' . count($list_payment_order) . ' payment order(s) ---</info>');
+        foreach ($list_payment_order as $key => $payment_order) {
+            $this->output->writeln('<info>--- Inserting formulir(' . $payment_order->formulir_id . ') ---</info>');
+            PaymentOrderApprovalController::addPaymentReference($payment_order);
+        }
+        $this->output->writeln('<info>--- Inserting Expedition Payment Order to Finance Payment Reference Finished ---</info>');
     }
 }
