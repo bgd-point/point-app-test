@@ -26,33 +26,31 @@ class InvoiceApprovalPrintController extends Controller
 
     public function sendRequestApproval(Request $request)
     {
-        $invoice = Invoice::find($request->input('id'));
-        $approver = User::find($request->input('approval_to'));
+        self::sendingRequestApproval($request->input('id'), auth()->user()->name);
+
+        gritter_success('send approval success');
+        return redirect('sales/point/indirect/invoice/'.$invoice->id);
+    }
+
+    public static function sendingRequestApproval($invoice_id, $requester="VESA")
+    {
+        $invoice = Invoice::find($invoice_id);
+        $approver = User::find($invoice->formulir->approval_to);
         $token = md5(date('ymdhis'));
         $data = [
             'invoice' => $invoice,
             'token' => $token,
-            'username' => auth()->user()->name,
+            'requester' => $requester,
             'url' => url('/'),
             'approver' => $approver,
 
         ];
-        $request = $request->input();
-        \Queue::push(function ($job) use ($approver, $data, $request) {
-            QueueHelper::reconnectAppDatabase($request['database_name']);
-            \Mail::send('point-sales::app.emails.sales.point.approval.sales-invoice-request-approval-print', $data, function ($message) use ($approver) {
-                $message->to($approver->email)->subject('request approval to print sales invoice #' . date('ymdHi'));
-            });
-            $job->delete();
-        });
+        sendEmail(Invoice::bladeEmail(), $data, $approver->email, 'Request Approval to Print Sales Invoice #' . date('ymdHi'));
 
         $invoice->request_approval_print_token = $token;
         $invoice->request_approval_print_at = date('Y-m-d H:i:s');
         $invoice->approval_print_to = $approver->id;
         $invoice->save();
-
-        gritter_success('send approval success');
-        return redirect('sales/point/indirect/invoice/'.$invoice->id);
     }
 
     public function approve(Request $request, $id)

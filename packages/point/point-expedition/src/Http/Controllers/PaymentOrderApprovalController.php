@@ -36,13 +36,18 @@ class PaymentOrderApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.expedition.payment.order');
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
 
-        $list_approver = PaymentOrder::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+    public static function sendingRequestApproval($list_payment_order_id, $requester="VESA")
+    {
+        $list_approver = PaymentOrder::selectApproverList($list_payment_order_id);
         $token = md5(date('ymdhis'));
 
         foreach ($list_approver as $data_approver) {
-            $list_payment_order = PaymentOrder::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_payment_order = PaymentOrder::selectApproverRequest($list_payment_order_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_payment_order as $payment_order) {
                 array_push($array_formulir_id, $payment_order->formulir_id);
@@ -53,28 +58,18 @@ class PaymentOrderApprovalController extends Controller
             $data = [
                 'list_data' => $list_payment_order,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];
 
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-expedition::emails.expedition.point.approval.payment-order', $data,
-                    function ($message) use ($approver) {
-                        $message->to($approver->email)->subject('request approval payment order #' . date('ymdHi'));
-                    });
-                $job->delete();
-            });
+            sendEmail(PaymentOrder::bladeEmail(), $data, $approver->email, 'Request Approval Expedition Payment Order #' . date('ymdHi'));
 
             foreach ($list_payment_order as $payment_order) {
                 formulir_update_token($payment_order->formulir, $token);
             }
         }
-
-        gritter_success('send approval success');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)
@@ -138,6 +133,7 @@ class PaymentOrderApprovalController extends Controller
         foreach ($array_formulir_id as $id) {
             $payment_order = PaymentOrder::where('formulir_id', $id)->first();
             FormulirHelper::approve($payment_order->formulir, $approval_message, 'approval.point.expedition.payment.order', $token);
+            self::addPaymentReference($payment_order);
             timeline_publish('approve', $payment_order->formulir->form_number . ' approved', $payment_order->formulir->approval_to);
         }
         DB::commit();
@@ -170,7 +166,7 @@ class PaymentOrderApprovalController extends Controller
         return $view;
     }
 
-    public function addPaymentReference($payment_order)
+    public static function addPaymentReference($payment_order)
     {
         $payment_reference = new PaymentReference;
         $payment_reference->payment_reference_id = $payment_order->formulir_id;

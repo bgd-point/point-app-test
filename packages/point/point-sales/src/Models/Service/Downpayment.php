@@ -81,4 +81,9 @@ class Downpayment extends Model
             return '/sales/point/service/downpayment/'.$downpayment->id.'/archived';
         }
     }
+
+    public static function bladeEmail()
+    {
+        return 'point-sales::app.emails.sales.point.approval.service-downpayment';
+    }
 }

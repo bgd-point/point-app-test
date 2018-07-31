@@ -128,8 +128,7 @@
 
 <body>
 <div class="invoice-box">
-    Hi, you have an request approval payment collection from {{ $username }}. We would like to inform the
-    details as follows :
+    Hi, you have a request approval service payment collection from <strong>{{ $requester }}</strong>. We would like to inform the details as follows :
 
    @foreach($list_data as $payment_collection)
         <?php $payment_collection = \Point\PointSales\Models\Service\PaymentCollection::find($payment_collection['id']); ?>
@@ -143,7 +142,20 @@
                     :
                 </td>
                 <td>
-                    {{ $payment_collection->formulir->form_number }}</a>
+                    <a href="{{ url('sales/point/service/payment-collection/'.$payment_collection->id) }}">
+                        {{ $payment_collection->formulir->form_number }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20%">
+                    Created By
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    {{ $payment_collection->formulir->createdBy->name }}
                 </td>
             </tr>
             <tr>
@@ -175,7 +187,7 @@
                 <td>
                     Date
                 </td>
-                <td>
+                <td style="text-align: left;">
                     Notes
                 </td>
                 <td>

@@ -2,9 +2,8 @@
 
 use Illuminate\Database\Seeder;
 use Symfony\Component\Console\Output\ConsoleOutput as Output;
-use Point\Core\Helpers\PermissionHelper;
-use Point\Core\Models\Master\PermissionRole;
-use Point\Core\Models\Master\Permission;
+use Point\PointExpedition\Models\PaymentOrder;
+use Point\PointExpedition\Http\Controllers\PaymentOrderApprovalController;
 
 class TemporaryInsertSeeder extends Seeder
 {
@@ -62,6 +61,5 @@ class TemporaryInsertSeeder extends Seeder
         $permission_role->save();
 
         $this->output->writeln('<info>--- Insert master item read cogs and price permission finished ---</info>');
-
     }
 }

@@ -129,7 +129,7 @@
 
     <div class="invoice-box">
         <p align="justify">
-        Hi, you have an approval request for Payment Order from {{ $username  }}. <br>
+        Hi, you have an approval request for Expedition Payment Order from <strong>{{ $requester }}</strong>. <br>
         We would like to inform the details as follows :
         </p>
         @foreach($list_data as $payment_order)
@@ -143,10 +143,15 @@
                 <td style="width: 20%">Form Number</td>
                 <td>:</td>
                 <td>
-                    <a href="{{ $url . '/expedition/point/payment-order/'.$payment_order->id }}">
+                    <a href="{{ url('expedition/point/payment-order/'.$payment_order->id) }}">
                         {{ $payment_order->formulir->form_number }}
                     </a>
                 </td>
+            </tr>
+            <tr>
+                <td style="width: 20%">Created By</td>
+                <td>:</td>
+                <td>{{ $payment_order->formulir->createdBy->name }}</td>
             </tr>
             <tr>
                 <td style="width: 20%">Expedition</td>
@@ -157,9 +162,9 @@
 
         <table cellpadding="0" cellspacing="0">
             <tr class="heading">
-                <td align="left">Refence Number</td>
-                <td align="left">Notes</td>
-                <td align="left">Amount</td>
+                <td>Refence Number</td>
+                <td style="text-align: left">Notes</td>
+                <td style="text-align: right">Amount</td>
             </tr>
             @foreach($payment_order->details as $payment_order_detail)
             <tr class="item">
