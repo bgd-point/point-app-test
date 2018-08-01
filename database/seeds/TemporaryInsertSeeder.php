@@ -7,6 +7,12 @@ use Point\PointExpedition\Http\Controllers\PaymentOrderApprovalController;
 
 class TemporaryInsertSeeder extends Seeder
 {
+    /**
+     * Seeder that only executed once for existing production system
+     *
+     * @return void
+     */
+
     private $output;
 
     public function __construct(Output $output)
@@ -22,19 +28,38 @@ class TemporaryInsertSeeder extends Seeder
 
 	public function run()
     {
-        $this->output->writeln('<info>--- Inserting Expedition Payment Order to Finance Payment Reference ---</info>');
-        $list_payment_order = PaymentOrder::joinFormulir()
-                                          ->leftJoin('point_finance_payment_reference AS fpf', 'point_expedition_payment_order.formulir_id', '=', 'fpf.payment_reference_id')
-                                          ->whereNull('fpf.payment_reference_id')
-                                          ->where('formulir.form_status', 0)
-                                          ->where('formulir.approval_status', 1)
-                                          ->select('point_expedition_payment_order.*')
-                                          ->get();
-        $this->output->writeln('<info>--- Found ' . count($list_payment_order) . ' payment order(s) ---</info>');
-        foreach ($list_payment_order as $key => $payment_order) {
-            $this->output->writeln('<info>--- Inserting formulir(' . $payment_order->formulir_id . ') ---</info>');
-            PaymentOrderApprovalController::addPaymentReference($payment_order);
-        }
-        $this->output->writeln('<info>--- Inserting Expedition Payment Order to Finance Payment Reference Finished ---</info>');
+        $this->output->writeln('<info>--- Insert master item read cogs and price permission ---</info>');
+
+        $permission = new Permission;
+        $permission->name = 'Read COGS ITEM';
+        $permission->slug = 'read.cogs.item';
+        $permission->group = 'MASTER';
+        $permission->type = 'ITEM';
+        $permission->action = 'Read COGS';
+        $permission->save();
+
+        $permission_export = Permission::where('slug', 'read.cogs.item')->first();
+        
+        $permission_role = new PermissionRole;
+        $permission_role->permission_id = $permission_export->id;
+        $permission_role->role_id = 1;
+        $permission_role->save();
+
+        $permission = new Permission;
+        $permission->name = 'Read PRICE ITEM';
+        $permission->slug = 'read.price.item';
+        $permission->group = 'MASTER';
+        $permission->type = 'ITEM';
+        $permission->action = 'Read Price';
+        $permission->save();
+        
+        $permission_export = Permission::where('slug', 'read.price.item')->first();
+        
+        $permission_role = new PermissionRole;
+        $permission_role->permission_id = $permission_export->id;
+        $permission_role->role_id = 1;
+        $permission_role->save();
+
+        $this->output->writeln('<info>--- Insert master item read cogs and price permission finished ---</info>');
     }
 }

@@ -40,7 +40,12 @@ class ItemController extends Controller
         access_is_allowed('read.item');
 
         $view = view('framework::app.master.item.index');
-        $view->list_item = Item::search(\Input::get('status'), \Input::get('search'))->paginate(100);
+        $list_item = Item::search(\Input::get('status'), \Input::get('search'))
+                         ->with('accountAsset', 'pricing')
+                         ->paginate(100);
+        
+        // return Response()->json($list_item);
+        $view->list_item = $list_item;
         return $view;
     }
 
