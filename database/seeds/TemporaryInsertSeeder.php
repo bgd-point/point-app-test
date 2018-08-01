@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Point\Core\Models\Master\Permission;
+use Point\Core\Models\Master\PermissionRole;
 use Symfony\Component\Console\Output\ConsoleOutput as Output;
 use Point\PointExpedition\Models\PaymentOrder;
 use Point\PointExpedition\Http\Controllers\PaymentOrderApprovalController;
