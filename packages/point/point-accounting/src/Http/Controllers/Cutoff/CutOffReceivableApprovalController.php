@@ -36,37 +36,36 @@ class CutOffReceivableApprovalController extends Controller
             return redirect()->back();
         }
 
-        $list_approver = CutOffReceivable::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+
+    public static function sendingRequestApproval($list_cut_off_id, $requester="VESA")
+    {
+        $list_approver = CutOffReceivable::selectApproverList($list_cut_off_id);
 
         foreach ($list_approver as $data_approver) {
-            $list_cut_off = CutOffReceivable::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_cut_off = CutOffReceivable::selectApproverRequest($list_cut_off_id, $data_approver->approval_to);
             $approver = User::find($data_approver->approval_to);
             $token = md5(date('ymdhis'));
             $data = [
                 'list_data' => $list_cut_off,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver
             ];
 
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-accounting::emails.accounting.point.approval.cut-off-receivable', $data, function ($message) use ($approver) {
-                    $message->to($approver->email)->subject('Request Approval Cut Off Account Receivable #' . date('ymdHi'));
-                });
-                $job->delete();
-            });
+            sendEmail(CutOffReceivable::bladeEmail(), $data, $approver->email, 'Request Approval Cut Off Account Receivable #' . date('ymdHi'));
 
             foreach ($list_cut_off as $cut_off) {
                 formulir_update_token($cut_off->formulir, $token);
             }
         }
-
-        gritter_success('send approval success');
-        return redirect()->back();
     }
+
     public function approve(Request $request, $id)
     {
         $cut_off_receivable = CutOffReceivable::find($id);

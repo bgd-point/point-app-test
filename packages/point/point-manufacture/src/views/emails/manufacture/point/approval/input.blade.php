@@ -127,7 +127,7 @@
 
 <body>
 <div class="invoice-box">
-    Hello Mr/Mrs/Ms/ {{ $approver->name }},<br/>You have an approval request for manufacture input form. We would like to inform the
+    Hello Mr/Mrs/Ms/ {{ $approver->name }},<br/>You have an approval request for manufacture input from {{ $requester }}. We would like to inform the
     details as follows :
 
     @foreach($list_data as $process_in)
@@ -141,6 +141,17 @@
                 </td>
                 <td>
                     <a href="{{ $url .'/manufacture/point/process-io/'.$process_in->process_id.'/input/'.$process_in->id }}">{{ $process_in->formulir->form_number }}</a>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20%">
+                    Created By
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    {{ $process_in->formulir->createdBy->name }}
                 </td>
             </tr>
             <tr>

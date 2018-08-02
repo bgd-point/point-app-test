@@ -37,12 +37,19 @@ class InputApprovalController extends Controller
             return redirect()->back();
         }
 
-        $list_approver = InputProcess::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+
+    public static function sendingRequestApproval($list_process_in_id, $requester="VESA")
+    {
+        $list_approver = InputProcess::selectApproverList($list_process_in_id);
         $token = md5(date('ymdhis'));
 
         foreach ($list_approver as $data_approver) {
-            $list_process_in = InputProcess::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_process_in = InputProcess::selectApproverRequest($list_process_in_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_process_in as $process) {
                 array_push($array_formulir_id, $process->formulir_id);
@@ -53,28 +60,18 @@ class InputApprovalController extends Controller
             $data = [
                 'list_data' => $list_process_in,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];
 
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-manufacture::emails.manufacture.point.approval.input', $data,
-                    function ($message) use ($approver) {
-                        $message->to($approver->email)->subject('request approval manufacture process in #' . date('ymdHi'));
-                    });
-                $job->delete();
-            });
+            sendEmail(InputProcess::bladeEmail(), $data, $approver->email, 'Request Approval Manufacture Process In #' . date('ymdHi'));
 
             foreach ($list_process_in as $process_in) {
                 formulir_update_token($process_in->formulir, $token);
             }
         }
-
-        gritter_success('send approval success');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)

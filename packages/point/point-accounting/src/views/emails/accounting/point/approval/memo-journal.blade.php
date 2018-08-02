@@ -129,8 +129,7 @@
 
     <div class="invoice-box">
             <p align="justify">
-            Hi, you have an approval request for Memo Journal from {{ $username  }}.
-            We would like to inform the details as follows :
+                Hi, you have an approval request for Memo Journal from <strong>{{ $requester  }}</strong>. We would like to inform the details as follows :
             </p>
 
            @foreach($list_data as $memo_journal)
@@ -138,7 +137,12 @@
                 <tr>
                     <td style="width: 20%">Form Number</td>
                     <td>:</td>
-                    <td><a href="{{ $url.'/accounting/point/memo-journal/'.$memo_journal->id }}">{{ $memo_journal->formulir->form_number }}</a></td>
+                    <td><a href="{{ url('accounting/point/memo-journal/'.$memo_journal->id) }}">{{ $memo_journal->formulir->form_number }}</a></td>
+                </tr>
+                <tr>
+                    <td style="width: 20%">Created By</td>
+                    <td>:</td>
+                    <td>{{ $memo_journal->formulir->createdBy->name }}</td>
                 </tr>
                 <tr>
                     <td style="width: 20%">Form Date</td>

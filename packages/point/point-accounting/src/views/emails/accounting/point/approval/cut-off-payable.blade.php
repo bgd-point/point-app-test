@@ -128,23 +128,28 @@
 <body>
 
     <div class="invoice-box">
-            <p align="justify">
-            Hi, you have an approval request for Cut Off Payable from {{ $username  }}. <br>
+        <p align="justify">
+            Hi, you have an approval request for Cut Off Payable from <strong>{{ $requester }}</strong>. <br>
             We would like to inform the details as follows :
-            </p>
-            <?php
+        </p>
+        <?php
             $list_coa = Point\Framework\Models\Master\Coa::active()->where('coa_category_id', 8)->get();
-            ?>
-            @foreach($list_data as $cut_off)
+        ?>
+        @foreach($list_data as $cut_off)
             <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
                 <tr>
                     <td style="width: 20%">Form Number</td>
                     <td>:</td>
                     <td>
-                        <a href="{{ $url . '/accounting/point/cut-off/payable/'.$cut_off->id }}">
+                        <a href="{{ url('accounting/point/cut-off/payable/'.$cut_off->id) }}">
                             {{ $cut_off->formulir->form_number }}
                         </a>
                     </td>
+                </tr>
+                <tr>
+                    <td style="width: 20%">Created By</td>
+                    <td>:</td>
+                    <td>{{ $cut_off->formulir->createdBy->name }}</td>
                 </tr>
                 <tr>
                     <td style="width: 20%">Form Date</td>

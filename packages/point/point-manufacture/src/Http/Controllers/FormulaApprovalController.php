@@ -30,13 +30,19 @@ class FormulaApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.manufacture.formula');
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
 
-        $list_approver = Formula::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+
+    public static function sendingRequestApproval($list_formula_id, $requester="VESA")
+    {
+        $list_approver = Formula::selectApproverList($list_formula_id);
         $token = md5(date('ymdhis'));
 
         foreach ($list_approver as $data_approver) {
-            $list_data = Formula::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_data = Formula::selectApproverRequest($list_formula_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_data as $formula) {
                 array_push($array_formulir_id, $formula->formulir_id);
@@ -47,28 +53,19 @@ class FormulaApprovalController extends Controller
             $data = [
                 'list_data' => $list_data,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];
 
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-manufacture::emails.manufacture.point.approval.formula', $data,
-                    function ($message) use ($approver) {
-                        $message->to($approver->email)->subject('request approval manufacture formula #' . date('ymdHi'));
-                    });
-                $job->delete();
-            });
+            sendEmail(Formula::bladeEmail(), $data, $approver->email, 'Request Approval Manufacture Formula #' . date('ymdHi'));
 
             foreach ($list_data as $formula) {
                 formulir_update_token($formula->formulir, $token);
             }
         }
 
-        gritter_success('send approval success');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)
