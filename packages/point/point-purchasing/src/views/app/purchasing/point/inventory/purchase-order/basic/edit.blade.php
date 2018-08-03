@@ -193,7 +193,18 @@
                                                    onclick="setToNontax()" value="0" name="subtotal" /></td>
                                     </tr>
                                     <tr>
-                                        <td colspan="6" class="text-right">DISCOUNT</td>
+                                        <td colspan="5" class="text-right">DISCOUNT</td>
+                                        <td>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">Rp</span>
+                                                <input type="text"
+                                                       id="discount-rp"
+                                                       class="form-control text-right"
+                                                       style="min-width: 100px"
+                                                       onkeyup="discountNominalChanged()" 
+                                                       value="0"/>
+                                            </div>
+                                        </td>
                                         <td>
                                             <div class="input-group">
                                                 <input type="text" id="discount" name="discount" maxlength="3"
@@ -396,19 +407,52 @@
             }
 
             $('#subtotal').val(appNum(subtotal));
+            calculateTotal();
+        }
 
-            if (dbNum($('#discount').val()) > 100) {
-                dbNum($('#discount').val(100))
+        $('#discount-rp').autoNumeric('init', {
+            vMin: '0', vMax: '999999999999.99', aPad: false, aSep: ',', aDec: '.'
+        });
+        function discountNominalChanged() {
+            var subtotal = dbNum($('#subtotal').val());
+
+            if(dbNum($("#discount-rp").val()) > subtotal)
+            {
+                $("#discount-rp").val(number_format(subtotal, 0, ".", ","));
+                $('#discount').val(100);
             }
+            else
+            {
+                var discount = dbNum($("#discount-rp").val()) / subtotal * 100
+                $('#discount').val(Number.parseFloat(discount.toFixed(15)));
+                // https://stackoverflow.com/questions/5037839/avoiding-problems-with-javascripts-weird-decimal-calculations
+            }
+            calculateTax();
+        }
 
+        function calculateTotal(){
             var discount = dbNum($('#discount').val());
-            if($('#tax-choice-include-tax').prop('checked')) {
-                $('#discount').val(0);
-                $('#discount').prop('readonly', true);
-                var discount = 0;
-            } else {
-                $('#discount').prop('readonly', false);
+            var subtotal = dbNum($('#subtotal').val());
+            
+            if (discount > 100) {
+                $('#discount').val(100);
+                $("#discount-rp").val(number_format(subtotal, 0, ".", ","));
             }
+            else {
+                $("#discount-rp").val(number_format(subtotal * discount / 100, 0, ".", ","));
+            }
+
+            if ($('#tax-choice-include-tax').prop('checked')) {
+                $('#discount, #discount-rp').val(0).prop('readonly', true);
+            } else {
+                $('#discount, #discount-rp').prop('readonly', false);
+            }
+            calculateTax();
+        }
+
+        function calculateTax(){
+            var discount = dbNum($('#discount').val());
+            var subtotal = dbNum($('#subtotal').val());
             var tax_base = subtotal - (subtotal / 100 * discount);
             var tax = 0;
 
