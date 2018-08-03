@@ -173,7 +173,7 @@
                                             </tr>
                                             <tr>
                                                 <td colspan="6" class="text-right">DISCOUNT (%)</td>
-                                                <td class="text-right">{{ $purchase_order->discount }}</td>
+                                                <td class="text-right">{{ $purchase_order->discount+0 }}</td>
                                             </tr>
                                             <tr>
                                                 <td colspan="6" class="text-right">TAX BASE</td>

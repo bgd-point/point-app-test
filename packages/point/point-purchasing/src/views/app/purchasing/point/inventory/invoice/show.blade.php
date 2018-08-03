@@ -154,7 +154,7 @@
                                         </tr>
                                         <tr>
                                             <td colspan="4" class="text-right">DISCOUNT (%)</td>
-                                            <td class="text-right">{{ number_format_quantity($invoice->discount) }}</td>
+                                            <td class="text-right">{{ $invoice->discount+0 }}</td>
                                         </tr>
                                         <tr>
                                             <td colspan="4" class="text-right">TAX BASE</td>
