@@ -167,11 +167,15 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="input-group"><input type="text" id="discount" name="discount"
-                                                                            class="form-control calculate text-right"
-                                                                            style="min-width: 100px"
-                                                                            value="{{$invoice->discount+0}}"/><span
-                                                        class="input-group-addon">%</span></div>
+                                            <div class="input-group">
+                                                <input type="text"
+                                                       id="discount"
+                                                       name="discount"
+                                                       class="form-control calculate text-right"
+                                                       style="min-width: 100px"
+                                                       value="{{$invoice->discount+0}}"/>
+                                                <span class="input-group-addon">%</span>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>

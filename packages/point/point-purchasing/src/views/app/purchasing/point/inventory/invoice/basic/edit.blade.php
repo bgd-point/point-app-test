@@ -189,7 +189,6 @@
                                                 <input type="text"
                                                        id="discount"
                                                        name="discount"
-                                                       maxlength="3"
                                                        class="form-control calculate text-right"
                                                        style="min-width: 100px"
                                                        value="{{$invoice->discount}}"/>

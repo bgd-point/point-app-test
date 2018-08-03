@@ -164,7 +164,6 @@
                                         <td>
                                             <div class="input-group">
                                                 <input type="text" id="discount" name="discount"
-                                                    maxlength="3"
                                                     class="form-control calculate text-right"
                                                     style="min-width: 100px"
                                                     value="{{$purchase_order_discount+0}}"/>
