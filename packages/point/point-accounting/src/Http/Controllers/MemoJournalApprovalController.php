@@ -34,11 +34,18 @@ class MemoJournalApprovalController extends Controller
             return redirect()->back();
         }
 
-        $list_approver = MemoJournal::selectApproverList(app('request')->input('formulir_id'));
-        $request = $request->input();
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+
+        gritter_success('send approval success');
+        return redirect()->back();
+    }
+
+    public static function sendingRequestApproval($list_memo_journal_id, $requester="VESA")
+    {
+        $list_approver = MemoJournal::selectApproverList($list_memo_journal_id);
         $token = md5(date('ymdhis'));
         foreach ($list_approver as $data_approver) {
-            $list_memo_journal = MemoJournal::selectApproverRequest(app('request')->input('formulir_id'), $data_approver->approval_to);
+            $list_memo_journal = MemoJournal::selectApproverRequest($list_memo_journal_id, $data_approver->approval_to);
             $array_formulir_id = [];
             foreach ($list_memo_journal as $memo_journal) {
                 array_push($array_formulir_id, $memo_journal->formulir_id);
@@ -49,27 +56,18 @@ class MemoJournalApprovalController extends Controller
             $data = [
                 'list_data' => $list_memo_journal,
                 'token' => $token,
-                'username' => auth()->user()->name,
+                'requester' => $requester,
                 'url' => url('/'),
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
-                ];
+            ];
 
-            \Queue::push(function ($job) use ($approver, $data, $request) {
-                QueueHelper::reconnectAppDatabase($request['database_name']);
-                \Mail::send('point-accounting::emails.accounting.point.approval.memo-journal', $data, function ($message) use ($approver) {
-                    $message->to($approver->email)->subject('request approval Memo Journal #' . date('ymdHi'));
-                });
-                $job->delete();
-            });
+            sendEmail(MemoJournal::bladeEmail(), $data, $approver->email, 'Request Approval Memo Journal #' . date('ymdHi'));
 
             foreach ($list_memo_journal as $memo_journal) {
                 formulir_update_token($memo_journal->formulir, $token);
             }
         }
-
-        gritter_success('send approval success');
-        return redirect()->back();
     }
 
     public function approve(Request $request, $id)

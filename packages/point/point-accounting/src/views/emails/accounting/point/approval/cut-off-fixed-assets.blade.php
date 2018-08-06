@@ -128,23 +128,28 @@
 <body>
 
     <div class="invoice-box">
-            <p align="justify">
-            Hi, you have an approval request for Cut Off Fixed Assets from {{ $username  }}. <br>
+        <p align="justify">
+            Hi, you have an approval request for Cut Off Fixed Assets from <strong>{{ $requester }}</strong>. <br>
             We would like to inform the details as follows :
-            </p>
-            <?php
+        </p>
+        <?php
             $list_coa = Point\Framework\Models\Master\Coa::active()->joinCategory()->where('coa_category.name', 'Fixed Assets')->where('coa.has_subledger', 1)->selectOriginal()->get();
-            ?>
-            @foreach($list_data as $cut_off)
+        ?>
+        @foreach($list_data as $cut_off)
             <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
                 <tr>
                     <td style="width: 20%">Form Number</td>
                     <td>:</td>
                     <td>
-                        <a href="{{ $url . '/accounting/point/cut-off/payable/'.$cut_off->id }}">
+                        <a href="{{ url('accounting/point/cut-off/payable/'.$cut_off->id) }}">
                             {{ $cut_off->formulir->form_number }}
                         </a>
                     </td>
+                </tr>
+                <tr>
+                    <td style="width: 20%">Created By</td>
+                    <td>:</td>
+                    <td>{{ $cut_off->formulir->createdBy->name }}</td>
                 </tr>
                 <tr>
                     <td style="width: 20%">Form Date</td>
@@ -161,11 +166,11 @@
                 ?>
                 @foreach($list_coa as $coa)
                     <?php
-                        $cut_off_receivable_detail = Point\PointAccounting\Models\CutOffFixedAssetsDetail::where('coa_id', $coa->id)->where('fixed_assets_id', $cut_off->id)->get();
-                        $amount = Point\PointAccounting\Models\CutOffFixedAssetsDetail::getAmountDepreciation($coa->id, $cut_off->id);
+                        $cut_off_fixed_assets_detail = Point\PointAccounting\Models\CutOffFixedAssetsDetail::where('coa_id', $coa->id)->where('fixed_assets_id', $cut_off->id)->get();
+                        $amount = Point\PointAccounting\Models\CutOffFixedAssetsDetail::getTotalPrice($coa->id, $cut_off->id);
                         $total_amount += $amount;
 
-                        if (!$cut_off_receivable_detail->count()) {
+                        if (!$cut_off_fixed_assets_detail->count()) {
                             continue;
                         }
                     ?>
@@ -174,9 +179,9 @@
                         <td align="left">Notes</td>
                         <td align="right">Amount</td>
                     </tr>
-                    @foreach($cut_off_receivable_detail as $account)
+                    @foreach($cut_off_fixed_assets_detail as $account)
                     <tr class="item">
-                        <td align="left">{{ $account->person->codeName }}</td>
+                        <td align="left">{{ $account->suplier->codeName }}</td>
                         <td align="left">{{ $account->notes }}</td>
                         <td align="right">{{number_format_quantity($account->amount)}}</td>
                     </tr>

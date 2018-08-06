@@ -127,8 +127,7 @@
 
 <body>
 <div class="invoice-box">
-    Hello Mr/Mrs/Ms/ {{ $approver->name }},<br/>You have an approval request for manufacture input form. We would like to inform the
-    details as follows :
+    Hello Mr/Mrs/Ms/ {{ $approver->name }},<br/>You have an approval request for manufacture formula from <strong>{{ $requester }}</strong>. We would like to inform the details as follows :
 
     @foreach($list_data as $formula)
 
@@ -141,7 +140,18 @@
                     :
                 </td>
                 <td>
-                    <a href="{{ $url. '/manufacture/point/formula/'.$formula->id }}">{{ $formula->formulir->form_number }}</a>
+                    <a href="{{ url('manufacture/point/formula/'.$formula->id) }}">{{ $formula->formulir->form_number }}</a>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20%">
+                    Created By
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    {{ $formula->formulir->createdBy->name }}
                 </td>
             </tr>
             <tr>
