@@ -121,8 +121,8 @@ class MasterVesa
             array_push($array, [
                 'url' => null,
                 'deadline' => \Carbon::now(),
-                'message' => 'Please restock this item. Minimum stock is ' . $minimum_qty . ' ' . $unit_name . 
-                             ' but current stock is '. $current_qty . ' ' . $unit_name,
+                'message' => 'Please restock this item. Minimum stock is <strong>' . $minimum_qty . ' ' . $unit_name . 
+                             '</strong> but current stock is <strong>'. $current_qty . ' ' . $unit_name . '</strong>',
                 'permission_slug' => 'create.point.purchasing.requisition'
             ]);
         }
