@@ -119,9 +119,10 @@ class MasterVesa
             $minimum_qty = number_format_quantity($item->reminder_quantity_minimum);
             $current_qty = number_format_quantity($item->current_stock);
             array_push($array, [
-                'url' => null,
+                'url' => url('purchasing/point/purchase-order/basic/create'),
                 'deadline' => \Carbon::now(),
-                'message' => 'Please restock this item. Minimum stock is <strong>' . $minimum_qty . ' ' . $unit_name . 
+                'message' => 'Please restock <strong>'.$item->item_code.'</strong>. 
+                              Minimum stock is <strong>' . $minimum_qty . ' ' . $unit_name . 
                              '</strong> but current stock is <strong>'. $current_qty . ' ' . $unit_name . '</strong>',
                 'permission_slug' => 'create.point.purchasing.requisition'
             ]);
