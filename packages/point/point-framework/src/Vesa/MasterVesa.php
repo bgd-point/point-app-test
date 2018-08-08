@@ -63,33 +63,66 @@ class MasterVesa
 
     private static function vesaStockReminder($array = [], $merge_into_group = true)
     {
-        $list_inventory = Inventory::rightJoin('item', 'item.id', '=', 'inventory.item_id')
+        // $subQuery = \DB::table('inventory')
+        //                ->join('item as i', 'i.id', '=', 'inventory.item_id')
+        //                ->select(
+        //                    'item_id',
+        //                    'warehouse_id',
+        //                    'total_quantity',
+        //                    'i.reminder_quantity_minimum'
+        //                )
+        //                ->selectRaw('CONCAT("[", i.code, "] ", i.name) as item_code')
+        //                ->where('i.disabled', 0)
+        //                ->where('i.reminder', 1)
+        //                ->whereRaw('form_date = (
+        //                     SELECT MAX(form_date)
+        //                     FROM inventory ii
+        //                     WHERE ii.item_id = inventory.item_id AND ii.warehouse_id = inventory.warehouse_id
+        //                 )');
+        // $list_inventory = \DB::table(\DB::raw('('.$subQuery->toSql().') as o1'))
+        //             ->select('item_id', 'item_code', 'reminder_quantity_minimum')
+        //             ->selectRaw('SUM(total_quantity) as total_quantity')
+        //             ->having('total_quantity', '<=', 'reminder_quantity_minimum')
+        //             ->groupBy('item_id')
+        //             ->mergeBindings($subQuery)
+        //             ->get();
+
+        $items = Inventory::rightJoin('item', 'item.id', '=', 'inventory.item_id')
             ->where(\DB::raw('coalesce(inventory.total_quantity,0)'), '<', \DB::raw('item.reminder_quantity_minimum'))
-            ->where('item.reminder', '1')
-            ->select('item.*', 'inventory.total_quantity as total_quantity')
+            ->where('item.reminder', 1)
+            ->where('item.disabled', 0)
+            ->select(
+                'item_id',
+                'warehouse_id',
+                'total_quantity',
+                'item.reminder_quantity_minimum'
+            )
+            ->selectRaw('CONCAT("[", item.code, "] ", item.name) as item_code')
             ->orderBy('inventory.id', 'desc')
             ->groupBy('inventory.item_id')
             ->get();
 
-        if ($merge_into_group && $list_inventory->count() > 5) {
+
+        if ($merge_into_group && count($items) > 5) {
             array_push($array, [
                 'url' => url('master/item/stock-reminder'),
-                'deadline' => null,
-                'message' => 'Stock reminder below minimum quantity',
+                'deadline' => \Carbon::now(),
+                'message' => 'You have some items that need restock. Please restock them.',
                 'permission_slug' => 'create.point.purchasing.requisition'
             ]);
             return $array;
         }
 
-        foreach ($list_inventory as $inventory) {
+        foreach ($items as $item) {
+            $unit = Item::defaultUnit($item->item_id);
+            $unit_name = $unit ? $unit->name : '';
+            $minimum_qty = number_format_quantity($item->reminder_quantity_minimum);
+            $current_qty = number_format_quantity($item->current_stock);
             array_push($array, [
                 'url' => null,
-                'deadline' => null,
-                'message' => 'Stock reminder for [' . $inventory->code . '] ' . $inventory->name . ' is '
-                    . number_format_quantity($inventory->total_quantity, 0)
-                    . ' ' . Item::defaultUnit($inventory->id)->name
-                    . ' < ' . number_format_quantity($inventory->reminder_quantity_minimum, 0)
-                    . ' ' . Item::defaultUnit($inventory->id)->name,
+                'deadline' => \Carbon::now(),
+                'message' => 'Please restock this item. Minimum stock is <strong>' . $minimum_qty . ' ' . $unit_name . 
+                             '</strong> but current stock is <strong>'. $current_qty . ' ' . $unit_name . '</strong>',
                 'permission_slug' => 'create.point.purchasing.requisition'
             ]);
         }
