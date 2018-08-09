@@ -37,13 +37,13 @@ class InputApprovalController extends Controller
             return redirect()->back();
         }
 
-        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name, url('/'));
 
         gritter_success('send approval success');
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_process_in_id, $requester, $domain=url('/'))
+    public static function sendingRequestApproval($list_process_in_id, $requester, $domain)
     {
         $list_approver = InputProcess::selectApproverList($list_process_in_id);
         $token = md5(date('ymdhis'));

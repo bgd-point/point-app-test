@@ -31,13 +31,13 @@ class TransferItemApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.inventory.transfer.item');
-        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name, url('/'));
 
         gritter_success('send approval success');
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_transfer_item_id, $requester, $domain=url('/'))
+    public static function sendingRequestApproval($list_transfer_item_id, $requester, $domain)
     {
         $list_approver = TransferItem::selectApproverList($list_transfer_item_id);
         $token = md5(date('ymdhis'));

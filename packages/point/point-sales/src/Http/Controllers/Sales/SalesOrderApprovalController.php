@@ -33,13 +33,13 @@ class SalesOrderApprovalController extends Controller
         if ($this->isFormulirNull($request)) {
             return redirect()->back();
         }
-        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name, url('/'));
 
         gritter_success('send approval success');
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_sales_order_id, $requester, $domain=url('/'))
+    public static function sendingRequestApproval($list_sales_order_id, $requester, $domain)
     {
         $list_approver = SalesOrder::selectApproverList($list_sales_order_id);
         $token = md5(date('ymdhis'));

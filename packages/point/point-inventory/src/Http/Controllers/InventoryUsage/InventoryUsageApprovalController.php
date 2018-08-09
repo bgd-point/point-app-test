@@ -29,13 +29,13 @@ class InventoryUsageApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.inventory.usage');
-        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name, url('/'));
 
         gritter_success('send approval success');
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_inventory_usage_id, $requester, $domain=url('/'))
+    public static function sendingRequestApproval($list_inventory_usage_id, $requester, $domain)
     {
         $list_approver = InventoryUsage::selectApproverList($list_inventory_usage_id);
         $token = md5(date('ymdhis'));

@@ -31,13 +31,13 @@ class StockCorrectionApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.inventory.stock.correction');
-        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name, url('/'));
 
         gritter_success('send approval success');
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_stock_correction_id, $requester, $domain=url('/'))
+    public static function sendingRequestApproval($list_stock_correction_id, $requester, $domain)
     {
         $list_approver = StockCorrection::selectApproverList($list_stock_correction_id);
         $token = md5(date('ymdhis'));

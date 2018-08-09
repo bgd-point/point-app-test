@@ -34,13 +34,13 @@ class CutOffFixedAssetsApprovalController extends Controller
             return redirect()->back();
         }
 
-        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name, url('/'));
 
         gritter_success('send approval success');
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_cut_off_id, $requester, $domain=url('/'))
+    public static function sendingRequestApproval($list_cut_off_id, $requester, $domain)
     {
         $list_approver = CutOffFixedAssets::selectApproverList($list_cut_off_id);
         foreach ($list_approver as $data_approver) {

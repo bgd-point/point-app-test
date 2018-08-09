@@ -32,13 +32,13 @@ class DownpaymentApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.expedition.downpayment');
-        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name, url('/'));
         
         gritter_success('send approval success');
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_downpayment_id, $requester, $domain=url('/'))
+    public static function sendingRequestApproval($list_downpayment_id, $requester, $domain)
     {
         $list_approver = Downpayment::selectApproverList($list_downpayment_id);
         $token = md5(date('ymdhis'));
