@@ -143,7 +143,7 @@
                 <td style="width: 20%">Form Number</td>
                 <td>:</td>
                 <td>
-                    <a href="{{ url('expedition/point/expedition-order/'.$expedition_order->id) }}">
+                    <a href="{{ $url .'expedition/point/expedition-order/'.$expedition_order->id }}">
                         {{ $expedition_order->formulir->form_number }}
                     </a>
                 </td>
