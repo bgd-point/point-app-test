@@ -34,7 +34,7 @@ class ExpeditionOrderApprovalController extends Controller
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_expedition_order_id, $requester="VESA")
+    public static function sendingRequestApproval($list_expedition_order_id, $requester, $domain=url('/'))
     {
         $list_approver = ExpeditionOrder::selectApproverList($list_expedition_order_id);
         $token = md5(date('ymdhis'));
@@ -52,7 +52,7 @@ class ExpeditionOrderApprovalController extends Controller
                 'list_data' => $list_expedition_order,
                 'token' => $token,
                 'requester' => $requester,
-                'url' => url('/'),
+                'url' => $domain,
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];

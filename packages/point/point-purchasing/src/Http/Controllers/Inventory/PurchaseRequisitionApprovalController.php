@@ -33,7 +33,7 @@ class PurchaseRequisitionApprovalController extends Controller
         gritter_success('send approval success');
         return redirect()->back();
     }
-    public static function sendingRequestApproval($list_purchase_requisition_id, $requester="VESA")
+    public static function sendingRequestApproval($list_purchase_requisition_id, $requester, $domain=url('/'))
     {
         $list_approver = PurchaseRequisition::selectApproverList($list_purchase_requisition_id);
         $token = md5(date('ymdhis'));
@@ -51,7 +51,7 @@ class PurchaseRequisitionApprovalController extends Controller
                 'list_data' => $list_purchase_requisition,
                 'token' => $token,
                 'requester' => $requester,
-                'url' => url('/'),
+                'url' => $domain,
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];

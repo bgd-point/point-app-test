@@ -37,7 +37,7 @@ class DeliveryOrderApprovalController extends Controller
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_delivery_order_id, $requester="VESA")
+    public static function sendingRequestApproval($list_delivery_order_id, $requester, $domain=url('/'))
     {
         $list_approver = DeliveryOrder::selectApproverList($list_delivery_order_id);
         $token = md5(date('ymdhis'));
@@ -55,7 +55,7 @@ class DeliveryOrderApprovalController extends Controller
                 'list_data' => $list_delivery_order,
                 'token' => $token,
                 'requester' => $requester,
-                'url' => url('/'),
+                'url' => $domain,
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];

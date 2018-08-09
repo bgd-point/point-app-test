@@ -42,7 +42,7 @@ class DownpaymentApprovalController extends Controller
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_downpayment_id, $requester="VESA")
+    public static function sendingRequestApproval($list_downpayment_id, $requester, $domain=url('/'))
     {
         $list_approver = Downpayment::selectApproverList($list_downpayment_id);
         $token = md5(date('ymdhis'));
@@ -60,7 +60,7 @@ class DownpaymentApprovalController extends Controller
                 'list_data' => $list_downpayment,
                 'token' => $token,
                 'requester' => $requester,
-                'url' => url('/'),
+                'url' => $domain,
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
                 ];

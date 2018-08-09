@@ -38,7 +38,7 @@ class PaymentCollectionApprovalController extends Controller
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_payment_collection_id, $requester="VESA")
+    public static function sendingRequestApproval($list_payment_collection_id, $requester, $domain=url('/'))
     {
         $list_approver = PaymentCollection::selectApproverList($list_payment_collection_id);
         $token = md5(date('ymdhis'));
@@ -56,7 +56,7 @@ class PaymentCollectionApprovalController extends Controller
                 'list_data' => $list_payment_collection,
                 'token' => $token,
                 'requester' => $requester,
-                'url' => url('/'),
+                'url' => $domain,
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];

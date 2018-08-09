@@ -37,7 +37,7 @@ class StockOpnameApprovalController extends Controller
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_stock_opname_id, $requester="VESA")
+    public static function sendingRequestApproval($list_stock_opname_id, $requester, $domain=url('/'))
     {
         $list_approver = StockOpname::selectApproverList($list_stock_opname_id);
         $token = md5(date('ymdhis'));
@@ -55,7 +55,7 @@ class StockOpnameApprovalController extends Controller
                 'list_data' => $list_stock_opname,
                 'token' => $token,
                 'requester' => $requester,
-                'url' => url('/'),
+                'url' => $domain,
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];

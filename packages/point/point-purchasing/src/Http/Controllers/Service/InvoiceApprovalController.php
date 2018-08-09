@@ -35,7 +35,7 @@ class InvoiceApprovalController extends Controller
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_invoice_id, $requester="VESA")
+    public static function sendingRequestApproval($list_invoice_id, $requester, $domain=url('/'))
     {
         $token = md5(date('ymdhis'));
         $list_approver = Invoice::selectApproverList($list_invoice_id);
@@ -53,7 +53,7 @@ class InvoiceApprovalController extends Controller
                 'list_invoice' => $list_invoice,
                 'token' => $token,
                 'requester' => $requester,
-                'url' => url('/'),
+                'url' => $domain,
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
 
