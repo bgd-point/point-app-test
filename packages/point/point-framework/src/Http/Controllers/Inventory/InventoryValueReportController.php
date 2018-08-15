@@ -28,6 +28,7 @@ class InventoryValueReportController extends Controller
         $view->date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : date('Y-m-d 23:59:59');
         $view->inventory = Inventory::joinItem()
             ->groupBy('inventory.item_id')
+            ->where('account_asset_id', 8)
             ->where('inventory.total_quantity', '>', 0)
             ->where(function ($query) use ($view, $array_of_search) {
                 if ($view->search_warehouse) {
