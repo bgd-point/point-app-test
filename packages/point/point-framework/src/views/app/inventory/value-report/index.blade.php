@@ -46,6 +46,7 @@
                     <table class="table table-striped table-bordered">
                         <thead>
                         <tr>
+                            <th>Account</th>
                             <th>Item</th>
                             <th colspan="2">Opening Stock <br/> <span style="font-size:12px">({{date_format_view($date_from)}})</span></th>
                             <th colspan="2">Stock In <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
@@ -53,6 +54,7 @@
                             <th colspan="2">Closing Stock <br/> <span style="font-size:12px"> ({{date_format_view($date_to)}})</th>
                         </tr>
                         <tr>
+                            <th></th>
                             <th></th>
                             <th style="text-align: center">QTY</th>
                             <th style="text-align: center">VALUE</th>
@@ -93,6 +95,7 @@
                             $recalculate_stock = \Point\Framework\Models\Inventory::where('item_id', '=', $item->item_id)->where('recalculate', '=', 1)->orderBy('form_date', 'asc')->count() > 0;
                             ?>
                             <tr>
+                                <td>{{ $item->item->accountAsset->account }}</td>
                                 <td style="{{$recalculate_stock == true ? 'color:red;font-weight: bold' : ''}}">
                                     <a href="{{url('inventory/value-report/detail/'.$item->item_id.'?date_from='.$date_from.'&date_to='.$date_to.'&warehouse_id='.$warehouse_id)}}">
                                         @if($recalculate_stock == true)
@@ -116,6 +119,7 @@
                             </tr>
                         @endforeach
                         <tr>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
