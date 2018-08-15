@@ -257,8 +257,6 @@ class JournalHelper
     {
         $journal = Journal::where('form_date', '<=', $form_date)
             ->selectRaw('sum(debit) as debit, sum(credit) as credit')
-            ->join('coa', 'coa.id', '=', 'coa_id')
-            ->where('coa.disabled', 0)
             ->first();
 
         return $journal->debit - $journal->credit;
