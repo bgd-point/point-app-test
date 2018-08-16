@@ -8,6 +8,7 @@ use Point\Framework\Helpers\WarehouseHelper;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\Warehouse;
+use Point\Framework\Models\Master\Coa;
 
 class InventoryValueReportController extends Controller
 {
@@ -26,12 +27,17 @@ class InventoryValueReportController extends Controller
         $view->search_warehouse = \Input::get('warehouse_id') ? Warehouse::find(\Input::get('warehouse_id')) : 0;
         $view->date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : date('Y-m-01 00:00:00');
         $view->date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : date('Y-m-d 23:59:59');
+        $view->list_coa = Coa::getByCategory('inventories');
+        $view->coa = \Input::get('account') ?: 0;
         $view->inventory = Inventory::joinItem()
             ->groupBy('inventory.item_id')
             ->where('inventory.total_quantity', '>', 0)
             ->where(function ($query) use ($view, $array_of_search) {
                 if ($view->search_warehouse) {
                     $query->where('inventory.warehouse_id', $view->search_warehouse->id);
+                }
+                if ($view->coa > 0) {
+                    $query->where('account_asset_id', $view->coa);
                 }
                 foreach ($array_of_search as $search) {
                     $query->where(function ($q) use ($search) {
