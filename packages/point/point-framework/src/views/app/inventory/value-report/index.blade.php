@@ -12,25 +12,42 @@
             <div class="panel-body">
                 <form action="{{ url('inventory/value-report') }}" method="get" class="form-horizontal">
                     <div class="form-group">
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
                                 <input type="text" name="date_from" id="date_from" class="form-control date input-datepicker" placeholder="From"  value="{{\Input::get('date_from') ? \Input::get('date_from') : date(date_format_get(), strtotime($date_from))}}">
                                 <span class="input-group-addon"><i class="fa fa-chevron-right"></i></span>
                                 <input type="text" name="date_to" id="date_to" class="form-control date input-datepicker" placeholder="To" value="{{\Input::get('date_to') ? \Input::get('date_to') : date(date_format_get(), strtotime($date_to))}}">
                             </div>
                         </div>
-                        <div class="col-sm-3">
-                            <input type="text" name="search" id="search" class="form-control" placeholder="Search Item..." value="{{\Input::get('search')}}" value="{{\Input::get('search') ? \Input::get('search') : ''}}">
-                        </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <select name="warehouse_id" id="warehouse_id" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
-                                <option value="0" @if($search_warehouse) selected @endif>All</option>
+                                <option value="0" @if($search_warehouse) selected @endif>All Warehouses</option>
                                 @foreach($list_warehouse as $warehouse)
-                                    <option value="{{$warehouse->id}}" @if( $search_warehouse && $search_warehouse->id == $warehouse->id) selected @endif>{{$warehouse->codeName}}</option>
+                                    <option
+                                        value="{{$warehouse->id}}"
+                                        @if( $search_warehouse && $search_warehouse->id == $warehouse->id) selected @endif>
+                                        {{$warehouse->codeName}}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-sm-12">
+                        <div class="col-sm-4">
+                            <select name="account" class="selectize" style="width: 100%;" data-placeholder="Choose account inventory..">
+                                <option value="0" selected>All Accounts</option>
+                                @foreach($list_coa as $c)
+                                    <option
+                                        value="{{$c->id}}"
+                                        @if($coa == $c->id) selected @endif>
+                                        {{ $c->coa_number }} {{ $c->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <input type="text" name="search" id="search" class="form-control" placeholder="Search Item..." value="{{\Input::get('search')}}" value="{{\Input::get('search') ? \Input::get('search') : ''}}">
+                        </div>
+                        <div class="col-sm-8">
                             <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
                             @if(access_is_allowed_to_view('export.inventory.value.report'))
                                 <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-excel">Export to excel</a>
@@ -48,12 +65,14 @@
                         <tr>
                             <th>Account</th>
                             <th>Item</th>
+                            <th>Unit</th>
                             <th colspan="2">Opening Stock <br/> <span style="font-size:12px">({{date_format_view($date_from)}})</span></th>
                             <th colspan="2">Stock In <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
                             <th colspan="2">Stock Out <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
                             <th colspan="2">Closing Stock <br/> <span style="font-size:12px"> ({{date_format_view($date_to)}})</th>
                         </tr>
                         <tr>
+                            <th></th>
                             <th></th>
                             <th></th>
                             <th style="text-align: center">QTY</th>
@@ -108,6 +127,7 @@
                                         @endif
                                     </a>
                                 </td>
+                                <td>{{ $item->item->defaultUnit($item->item->id)->name }}</td>
                                 <td style="text-align: right">{{number_format_quantity($opening_stock)}}</td>
                                 <td style="text-align: right">{{number_format_quantity($opening_value)}}</td>
                                 <td style="text-align: right">{{number_format_quantity($stock_in)}}</td>
@@ -119,6 +139,7 @@
                             </tr>
                         @endforeach
                         <tr>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
