@@ -28,6 +28,8 @@ class Kernel extends ConsoleKernel
         Commands\MethodChecker::class,
         Commands\RemoveSpace::class,
         Commands\Recalculate::class,
+        Commands\Recalculate2::class,
+        Commands\Reinvoice::class,
         Commands\InventoryCheck::class,
         Commands\Masking::class,
     ];
