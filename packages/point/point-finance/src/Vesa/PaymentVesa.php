@@ -19,7 +19,9 @@ trait PaymentVesa
 
     private static function vesaCreate($array = [], $merge_into_group = true)
     {
-        $list_payment_reference = PaymentReference::whereNull('point_finance_payment_id');
+        $list_payment_reference = PaymentReference::joinFormulir()
+                                  ->notCanceled()
+                                  ->whereNull('point_finance_payment_id');
 
         // Push all
         foreach ($list_payment_reference->get() as $payment_reference) {

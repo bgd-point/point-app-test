@@ -4,11 +4,12 @@ namespace Point\PointFinance\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Point\PointFinance\Vesa\PaymentVesa;
+use Point\Framework\Traits\FormulirTrait;
 
 class PaymentReference extends Model
 {
-    use PaymentVesa;
-    
+    use PaymentVesa, FormulirTrait;
+
     protected $table = 'point_finance_payment_reference';
     public $timestamps = false;
 
