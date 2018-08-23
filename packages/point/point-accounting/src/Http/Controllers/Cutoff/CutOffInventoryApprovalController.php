@@ -35,13 +35,13 @@ class CutOffInventoryApprovalController extends Controller
             return redirect()->back();
         }
 
-        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name, url('/'));
 
         gritter_success('send approval success');
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_cut_off_id, $requester="VESA")
+    public static function sendingRequestApproval($list_cut_off_id, $requester, $domain)
     {
         $list_approver = CutOffInventory::selectApproverList($list_cut_off_id);
         foreach ($list_approver as $data_approver) {
@@ -52,7 +52,7 @@ class CutOffInventoryApprovalController extends Controller
                 'list_data' => $list_cut_off,
                 'token' => $token,
                 'requester' => $requester,
-                'url' => url('/'),
+                'url' => $domain,
                 'approver' => $approver
             ];
 

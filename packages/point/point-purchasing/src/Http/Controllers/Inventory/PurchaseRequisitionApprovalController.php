@@ -28,12 +28,12 @@ class PurchaseRequisitionApprovalController extends Controller
     public function sendRequestApproval(Request $request)
     {
         access_is_allowed('create.point.purchasing.requisition');
-        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name, url('/'));
 
         gritter_success('send approval success');
         return redirect()->back();
     }
-    public static function sendingRequestApproval($list_purchase_requisition_id, $requester="VESA")
+    public static function sendingRequestApproval($list_purchase_requisition_id, $requester, $domain)
     {
         $list_approver = PurchaseRequisition::selectApproverList($list_purchase_requisition_id);
         $token = md5(date('ymdhis'));
@@ -51,7 +51,7 @@ class PurchaseRequisitionApprovalController extends Controller
                 'list_data' => $list_purchase_requisition,
                 'token' => $token,
                 'requester' => $requester,
-                'url' => url('/'),
+                'url' => $domain,
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];

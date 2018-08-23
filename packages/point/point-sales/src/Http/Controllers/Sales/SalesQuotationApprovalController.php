@@ -32,13 +32,13 @@ class SalesQuotationApprovalController extends Controller
         if ($this->isFormulirNull($request)) {
             return redirect()->back();
         }
-        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name, url('/'));
 
         gritter_success('send approval success');
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_sales_quotation_id, $requester="VESA")
+    public static function sendingRequestApproval($list_sales_quotation_id, $requester, $domain)
     {
         $list_approver = SalesQuotation::selectApproverList($list_sales_quotation_id);
         $token = md5(date('ymdhis'));
@@ -56,7 +56,7 @@ class SalesQuotationApprovalController extends Controller
                 'list_data' => $list_sales_quotation,
                 'token' => $token,
                 'requester' => $requester,
-                'url' => url('/'),
+                'url' => $domain,
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];

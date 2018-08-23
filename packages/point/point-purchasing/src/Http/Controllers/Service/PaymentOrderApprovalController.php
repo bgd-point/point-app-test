@@ -33,13 +33,13 @@ class PaymentOrderApprovalController extends Controller
     {
         access_is_allowed('create.point.purchasing.service.payment.order');
         
-        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name, url('/'));
 
         gritter_success('send approval success');
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_payment_order_id, $requester="VESA")
+    public static function sendingRequestApproval($list_payment_order_id, $requester, $domain)
     {
         $token = md5(date('ymdhis'));
         $list_approver = PaymentOrder::selectApproverList($list_payment_order_id);
@@ -56,7 +56,7 @@ class PaymentOrderApprovalController extends Controller
                 'list_data' => $list_payment_order,
                 'token' => $token,
                 'requester' => $requester,
-                'url' => url('/'),
+                'url' => $domain,
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];

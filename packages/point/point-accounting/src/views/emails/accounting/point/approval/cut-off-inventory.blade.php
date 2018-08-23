@@ -141,7 +141,7 @@
                     <td style="width: 20%">Form Number</td>
                     <td>:</td>
                     <td>
-                        <a href="{{ url('accounting/point/cut-off/inventory/'.$cut_off->id) }}">
+                        <a href="{{ $url .'accounting/point/cut-off/inventory/'.$cut_off->id }}">
                             {{ $cut_off->formulir->form_number }}
                         </a>
                     </td>

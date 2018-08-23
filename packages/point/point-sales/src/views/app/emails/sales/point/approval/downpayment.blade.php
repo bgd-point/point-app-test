@@ -141,7 +141,7 @@
                     :
                 </td>
                 <td>
-                    <a href="{{ url('/sales/point/indirect/downpayment/' . $downpayment->id) }}">
+                    <a href="{{ $url .'/sales/point/indirect/downpayment/' . $downpayment->id }}">
                         {{ $downpayment->formulir->form_number }}
                     </a>
                 </td>

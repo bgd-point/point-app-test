@@ -34,13 +34,13 @@ class MemoJournalApprovalController extends Controller
             return redirect()->back();
         }
 
-        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name);
+        self::sendingRequestApproval(app('request')->input('formulir_id'), auth()->user()->name, url('/'));
 
         gritter_success('send approval success');
         return redirect()->back();
     }
 
-    public static function sendingRequestApproval($list_memo_journal_id, $requester="VESA")
+    public static function sendingRequestApproval($list_memo_journal_id, $requester, $domain)
     {
         $list_approver = MemoJournal::selectApproverList($list_memo_journal_id);
         $token = md5(date('ymdhis'));
@@ -57,7 +57,7 @@ class MemoJournalApprovalController extends Controller
                 'list_data' => $list_memo_journal,
                 'token' => $token,
                 'requester' => $requester,
-                'url' => url('/'),
+                'url' => $domain,
                 'approver' => $approver,
                 'array_formulir_id' => $array_formulir_id
             ];

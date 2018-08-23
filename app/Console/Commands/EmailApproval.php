@@ -13,7 +13,7 @@ class EmailApproval extends Command
      *
      * @var string
      */
-    protected $signature = 'dev:resend-email';
+    protected $signature = 'dev:resend-email {domain}';
 
     /**
      * The console command description.
@@ -50,7 +50,13 @@ class EmailApproval extends Command
             ->orderBy('formulirable_type')
             ->get();
 
-        $this->line(count($formulirs) . " form(s) found. Resending email...");
+        $domain = $this->argument('domain') . "." . ENV('SERVER_DOMAIN');
+        if(count($formulirs) > 1)
+            $this->line(count($formulirs) . " forms found. Resending email for " . $this->argument('domain'));
+        elseif(count($formulirs) == 1)
+            $this->line(count($formulirs) . " form found. Resending email for " . $this->argument('domain'));
+        elseif(count($formulirs) == 0)
+            $this->line(count($formulirs) . " forms found.");
 
         $purchasing_service_invoice = [];
         $purchasing_service_downpayment = [];
@@ -241,7 +247,7 @@ class EmailApproval extends Command
     private function executeSendEmail($list_id, $parent, $prefix_output)
     {
         if(count($list_id) > 0) {
-            $parent::sendingRequestApproval($list_id);
+            $parent::sendingRequestApproval($list_id, "VESA", $domain);
             $this->line($prefix_output . " " . count($list_id) . " form(s) resent.");
         }
     }

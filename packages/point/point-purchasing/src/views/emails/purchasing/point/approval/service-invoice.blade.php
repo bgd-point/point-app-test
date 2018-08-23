@@ -140,7 +140,7 @@
                     :
                 </td>
                 <td>
-                    <a href="{{ url('purchasing/point/service/invoice/'.$invoice->id) }}">
+                    <a href="{{ $url .'purchasing/point/service/invoice/'.$invoice->id }}">
                         {{ $invoice->formulir->form_number}}
                     </a>
                 </td>
