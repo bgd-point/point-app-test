@@ -38,18 +38,18 @@
     ?>
     <tr>
         <td>{{ $coa->account }}</td>
-        <td class="text-right">{{ $export ? $opening_balance : number_format_accounting($opening_balance) }}</td>
-        <td class="text-right">{{ $export ? $debit : number_format_accounting($debit) }}</td>
-        <td class="text-right">{{ $export ? $credit : number_format_accounting($credit) }}</td>
-        <td class="text-right">{{ $export ? $ending_balance : number_format_accounting($ending_balance) }}</td>
+        <td class="text-right">{{ $export ? round($opening_balance, 2) : number_format_accounting($opening_balance) }}</td>
+        <td class="text-right">{{ $export ? round($debit, 2) : number_format_accounting($debit) }}</td>
+        <td class="text-right">{{ $export ? round($credit, 2) : number_format_accounting($credit) }}</td>
+        <td class="text-right">{{ $export ? round($ending_balance, 2) : number_format_accounting($ending_balance) }}</td>
     </tr>
     @endforeach
     <tr>
         <td><strong>Total</strong></td>
-        <td class="text-right">{{ $export ? $total_opening_balance : number_format_accounting($total_opening_balance) }}</td>
-        <td class="text-right">{{ $export ? $total_debit : number_format_accounting($total_debit) }}</td>
-        <td class="text-right">{{ $export ? $total_credit : number_format_accounting($total_credit) }}</td>
-        <td class="text-right">{{ $export ? $total_ending_balance : number_format_accounting($total_ending_balance) }}</td>
+        <td class="text-right">{{ $export ? round($total_opening_balance, 2) : number_format_accounting($total_opening_balance) }}</td>
+        <td class="text-right">{{ $export ? round($total_debit, 2) : number_format_accounting($total_debit) }}</td>
+        <td class="text-right">{{ $export ? round($total_credit, 2) : number_format_accounting($total_credit) }}</td>
+        <td class="text-right">{{ $export ? round($total_ending_balance, 2) : number_format_accounting($total_ending_balance) }}</td>
     </tr>
     </tbody>
 </table>
