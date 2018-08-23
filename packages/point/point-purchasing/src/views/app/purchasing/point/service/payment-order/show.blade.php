@@ -136,6 +136,12 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Created By</label>
+                            <div class="col-md-6 content-show">
+                                {{ $payment_order->formulir->createdBy->name }} ({{ date_format_view($payment_order->formulir->created_at) }})
+                            </div>
+                        </div>
                     </div>
                 </div>
 
