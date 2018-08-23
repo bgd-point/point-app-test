@@ -78,7 +78,7 @@ class DashboardController extends Controller
         $array_vesa = array_merge($array_vesa, GoodsReceived::getVesa());
         $array_vesa = array_merge($array_vesa, InvoicePurchasing::getVesa());
         $array_vesa = array_merge($array_vesa, PaymentOrderPurchasing::getVesa());
-        $array_vesa = array_merge($array_vesa, CashAdvance::getVesa());
+//        $array_vesa = array_merge($array_vesa, CashAdvance::getVesa());
 
         // PURCHASING SERVICE
         $array_vesa = array_merge($array_vesa, PurchaseServiceInvoice::getVesa());
