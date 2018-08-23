@@ -25,7 +25,7 @@ trait MemoJournalVesa
 
     private static function vesaApproval($array = [], $merge_into_group = true)
     {
-        $list_memo_journal = self::joinFormulir()->open()->approvalPending()->selectOriginal();
+        $list_memo_journal = self::joinFormulir()->notArchived()->open()->approvalPending()->selectOriginal();
 
         // Grouping vesa
         if ($merge_into_group && $list_memo_journal->count() > 5) {
@@ -54,7 +54,7 @@ trait MemoJournalVesa
 
     private static function vesaReject($array = [], $merge_into_group = true)
     {
-        $list_memo_journal = self::joinFormulir()->open()->approvalRejected()->selectOriginal();
+        $list_memo_journal = self::joinFormulir()->notArchived()->open()->approvalRejected()->selectOriginal();
 
         // Grouping vesa
         if ($merge_into_group && $list_memo_journal->count() > 5) {
