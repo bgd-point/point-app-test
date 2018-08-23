@@ -14,7 +14,13 @@
                 <h1>{{$item->codeName}}</h1>
 
                 <div class="table-responsive">
-                    {!! $list_inventory->render() !!}
+                    {!! $list_inventory->appends([
+                        'search'=>app('request')->get('search'),
+                        'date_from'=>app('request')->get('date_from'),
+                        'date_to'=>app('request')->get('date_to'),
+                        'account'=>app('request')->get('account'),
+                        'warehouse_id'=>app('request')->get('warehouse_id')
+                        ])->render() !!}
                     <table class="table table-striped table-bordered">
                         <thead>
                         <tr>
@@ -90,7 +96,13 @@
                         @endforeach
                         </tbody>
                     </table>
-                    {!! $list_inventory->render() !!}
+                    {!! $list_inventory->appends([
+                        'search'=>app('request')->get('search'),
+                        'date_from'=>app('request')->get('date_from'),
+                        'date_to'=>app('request')->get('date_to'),
+                        'account'=>app('request')->get('account'),
+                        'warehouse_id'=>app('request')->get('warehouse_id')
+                        ])->render() !!}
                 </div>
             </div>
         </div>

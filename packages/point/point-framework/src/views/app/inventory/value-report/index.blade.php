@@ -59,7 +59,13 @@
                 <br/>
 
                 <div class="table-responsive">
-                    {!! $inventory->appends(['search'=>app('request')->get('search')])->render() !!}
+                    {!! $inventory->appends([
+                        'search'=>app('request')->get('search'),
+                        'date_from'=>app('request')->get('date_from'),
+                        'date_to'=>app('request')->get('date_to'),
+                        'account'=>app('request')->get('account'),
+                        'warehouse_id'=>app('request')->get('warehouse_id')
+                        ])->render() !!}
                     <table class="table table-striped table-bordered">
                         <thead>
                         <tr>
@@ -153,7 +159,13 @@
                         </tr>
                         </tbody>
                     </table>
-                    {!! $inventory->appends(['search'=>app('request')->get('search')])->render() !!}
+                    {!! $inventory->appends([
+                        'search'=>app('request')->get('search'),
+                        'date_from'=>app('request')->get('date_from'),
+                        'date_to'=>app('request')->get('date_to'),
+                        'account'=>app('request')->get('account'),
+                        'warehouse_id'=>app('request')->get('warehouse_id')
+                        ])->render() !!}
                 </div>
             </div>
         </div>
