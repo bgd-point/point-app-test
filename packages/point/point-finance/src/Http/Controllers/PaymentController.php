@@ -43,4 +43,48 @@ class PaymentController extends Controller
 
         return array('status' => 'success');
     }
+
+    public function requestCancel () {
+        $formulir_id = app('request')->input('formulir_id');
+        $approver = app('request')->input('approver');
+        
+        $formulir = \Point\Framework\Models\Formulir::find($formulir_id);
+        $approver = \Point\Core\Models\User::find($approver);
+        $token = md5(date('ymdhis'));
+
+        $formulir->cancel_token = $token;
+        $formulir->cancel_requested_at = \Carbon::now();
+        $formulir->cancel_request_status = 0;
+        $formulir->approval_to = $approver->id;
+        $formulir->save();
+
+        $data = array(
+            'formulir' => $formulir,
+            'token' => $token,
+            'username' => auth()->user()->name,
+            'url' => url('/'),
+            'approver' => $approver,
+        );
+
+        \Queue::push(function ($job) use ($data) {
+            \Mail::send(
+                'framework::email.cancel-formulir',
+                $data,
+                function ($message) use ($data) {
+                    $message
+                        ->to($data['approver']->email)
+                        ->subject('Request approval form cancellation #' . $data['formulir']->form_number);
+                }
+            );
+            $job->delete();
+        });
+
+        $response = array(
+            'status' => 'success',
+            'title' => 'Email sent',
+            'msg' => 'You have sent email for deletion approval'
+        );
+        gritter_success('You have sent email for deletion approval "'. $formulir->form_number);
+        return Redirect()->back();
+    }
 }

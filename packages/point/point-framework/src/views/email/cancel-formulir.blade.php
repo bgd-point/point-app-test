@@ -86,7 +86,7 @@
 
 <body>
 <div class="invoice-box">
-    Hi, you have a request approval of formulir cancellation from {{ $username }}. We would like to inform the
+    Hi, you have a request approval of formulir cancellation from <strong>{{ $username }}</strong>. We would like to inform the
     details as follows :
 
     <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">

@@ -145,6 +145,31 @@
                                onclick="secureCancelForm('{{url('finance/point/payment/cancel')}}',
                                     '{{ $bank->formulir_id }}',
                                     'delete.point.finance.cashier.bank')"><i class="fa fa-times"></i> Cancel Form</a>
+                            @else
+                            <?php
+                                $users = \Point\Core\Models\User::where('disabled', 0)->get();
+                            ?>
+                            <form action="{{ url('finance/point/payment/request-cancel') }}" method="post">
+                                {{ csrf_field() }}
+                                <input type="hidden" name="formulir_id" value="{{ $bank->formulir->id }}">
+                                <div class="col-md-2 text-right" style="line-height: 36px;">
+                                    Approval cancel to
+                                </div>
+                                <div class="col-md-3">
+                                    <select name="approver" class="form-control">
+                                        @foreach($users as $user)
+                                            @if ($user->may('delete.point.finance.cashier.bank'))
+                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-7">
+                                    <button type="submit" class="btn btn-effect-ripple btn-danger">
+                                        <i class="fa fa-times"></i> Request Cancel Form
+                                    </button>
+                                </div>
+                            </form>
                             @endif
                         </div>
                     </div>

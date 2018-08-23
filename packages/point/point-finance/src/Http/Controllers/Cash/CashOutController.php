@@ -85,4 +85,19 @@ class CashOutController extends Controller
         $view->revision = $view->list_cash_archived->count();
         return $view;
     }
+
+    /**
+     * @param $formulir_id
+     * @param $user_id
+     *
+     * @return $this
+     * @throws \Point\Core\Exceptions\PointException
+     */
+    public function setApprovalTo ($cash_id, $user_id) {
+        $cash = Cash::find($cash_id)->joinFormulir();
+        $formulir_id = $cash->formulir_id;
+        $formulir = Formulir::find($formulir_id);
+        $formulir->approval_to = $user_id;
+        $formulir->save();
+    }
 }
