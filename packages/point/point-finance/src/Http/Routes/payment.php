@@ -84,5 +84,8 @@ Route::group(['prefix' => 'finance/point', 'namespace' => 'Point\PointFinance\Ht
             Route::get('bank/out/{id}/edit', 'BankOutController@edit');
             Route::post('bank/out/{id}', 'BankOutController@update');
         });
+
+        // additional route to setApprovalTo and sending email form cancel request
+        Route::post('payment/request-cancel', 'PaymentController@requestCancel');
     });
 });
