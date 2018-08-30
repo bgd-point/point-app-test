@@ -12,6 +12,7 @@ use Point\Framework\Http\Controllers\Controller;
 use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
+use Point\Core\Models\User;
 
 class WarehouseController extends Controller
 {
@@ -161,9 +162,13 @@ class WarehouseController extends Controller
         access_is_allowed('create.user');
 
         $view = view('framework::app.master.warehouse.set_user');
-        $view->list_warehouse = Warehouse::active()->get();
-        $view->list_user = UserHelper::getAllUser();
-        return $view;
+        $list_warehouse = Warehouse::active()->get();
+        $list_user = User::get();
+        foreach ($list_user as $user) {
+            $user->warehouse;
+        }
+        // return Response()->json($list_user);
+        return $view->with('list_user', $list_user)->with('list_warehouse', $list_warehouse);
     }
 
     public function updateUserWarehouse()

@@ -29,26 +29,38 @@
                         </div>
                     </fieldset>
 
-                    @foreach($list_user as $user)
                     <div class="form-group">
-                        <label class="col-md-3 control-label">
-                            {{ $user->name }}
-                        </label>
+                        <label class="col-md-3 control-label">User</label>
                         <div class="col-md-6">
-                            <select id="warehouse-id" name="warehouse_id" class="selectize" style="width: 100%;" data-placeholder="Select Warehouse .." onchange="updateWarehouse({{$user->id}}, this.value)">
-                                <option></option>
-                                @foreach($list_warehouse as $warehouse)
-                                    <option value="{{$warehouse->id}}" @if(\Point\Framework\Models\Master\UserWarehouse::getWarehouse($user->id) == $warehouse->id) selected @endif>{{$warehouse->name}}</option>
+                            <select class="selectize user" style="width: 100%;">
+                                <option value="">Select User...</option>
+                                @foreach($list_user as $user)
+                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                    </div>
-                    @endforeach
-
-                    <div class="form-group">
-                        <div class="col-md-6 col-md-offset-3">
-                            <a href="{{ url('master/warehouse') }}" class="btn btn-effect-ripple btn-primary">Done</a>
-                        </div>
+                    </div>}
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="table-responsive" id="table-warehouse">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <th></th>
+                                <th>Warehouse Name</th>
+                            </thead>
+                            <tbody>
+                            @foreach($list_warehouse as $warehouse)
+                                <tr>
+                                    <td class="text-center">
+                                        <input type="checkbox" data-id="{{$warehouse->id}}">
+                                    </td>
+                                    <td style="width: 100%">{{ $warehouse->name }}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -57,21 +69,52 @@
 @stop
 
 @section('scripts')
-    <script>
-        function updateWarehouse(user_id, warehouse_id){
-            $.ajax({
-                url: "{{URL::to('master/warehouse/set-user')}}",
-                type: 'POST',
-                data: {
-                    user_id: user_id,
-                    warehouse_id: warehouse_id
-                },
-                success: function(data) {
-                    notification('success', 'Warehouse has been set');
-                },error: function(data){
-                    notification('Failed', 'Something went wrong');
-                }
-            });
+<script>
+function updateWarehouse(user_id, warehouse_id){
+    $.ajax({
+        url: "{{URL::to('master/warehouse/set-user')}}",
+        type: 'POST',
+        data: {
+            user_id: user_id,
+            warehouse_id: warehouse_id
+        },
+        success: function(data) {
+            notification('success', 'Warehouse has been set');
+        },error: function(data){
+            notification('Failed', 'Something went wrong');
         }
-    </script>
+    });
+}
+
+function resetCheckboxWarehouse() {
+    $("input[type=checkbox]").prop('checked', false);
+}
+function setCheckboxWarehouse(id) {
+    $("input[type=checkbox][data-id="+id+"]").prop('checked', true);
+}
+
+const list_user = {!! json_encode($list_user) !!};
+
+$(".user").change(e => {
+    resetCheckboxWarehouse();
+
+    let userId = Number(e.currentTarget.value);
+
+    let user = list_user.find(user => {
+        return user.id === userId;
+    });
+    
+    user.warehouse.forEach(warehouse => {
+        setCheckboxWarehouse(warehouse.warehouse_id);
+    });
+});
+
+$("input[type=checkbox]").click(e => {
+    let warehouse_id = $(e.currentTarget).data("id");
+    let user_id = Number($(".user")[0].value);
+    
+    updateWarehouse(user_id, warehouse_id);
+});
+
+</script>
 @stop
