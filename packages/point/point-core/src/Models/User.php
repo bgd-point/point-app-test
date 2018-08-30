@@ -62,6 +62,11 @@ class User extends Model implements
         return $q->where('name', 'like', '%' . $search . '%')->where('id', '>', 1);
     }
 
+    public function warehouse()
+    {
+        return $this->hasMany('Point\Framework\Models\Master\UserWarehouse', 'user_id');
+    }
+
     public function checkRole($permission_id)
     {
         $roleUsers = RoleUser::where('user_id', '=', $this->id)->get();
