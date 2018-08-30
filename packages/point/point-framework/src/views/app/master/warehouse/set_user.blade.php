@@ -70,13 +70,14 @@
 
 @section('scripts')
 <script>
-function updateWarehouse(user_id, warehouse_id){
+function updateWarehouse(user_id, warehouse_id, value){
     $.ajax({
         url: "{{URL::to('master/warehouse/set-user')}}",
         type: 'POST',
         data: {
-            user_id: user_id,
-            warehouse_id: warehouse_id
+            user_id,
+            warehouse_id,
+            value,
         },
         success: function(data) {
             notification('success', 'Warehouse has been set');
@@ -112,8 +113,9 @@ $(".user").change(e => {
 $("input[type=checkbox]").click(e => {
     let warehouse_id = $(e.currentTarget).data("id");
     let user_id = Number($(".user")[0].value);
-    
-    updateWarehouse(user_id, warehouse_id);
+    let value = $(e.currentTarget).is(":checked");
+    console.log(user_id, warehouse_id, value);
+    updateWarehouse(user_id, warehouse_id, value);
 });
 
 </script>

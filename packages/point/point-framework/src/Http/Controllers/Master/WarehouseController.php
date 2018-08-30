@@ -167,7 +167,6 @@ class WarehouseController extends Controller
         foreach ($list_user as $user) {
             $user->warehouse;
         }
-        // return Response()->json($list_user);
         return $view->with('list_user', $list_user)->with('list_warehouse', $list_warehouse);
     }
 
@@ -177,29 +176,19 @@ class WarehouseController extends Controller
 
         $warehouse_id = app('request')->input('warehouse_id');
         $user_id = app('request')->input('user_id');
-        $user_warehouse = UserWarehouse::where('user_id', '=', $user_id)->first();
+        $value = app('request')->input('value');
 
-        if (!$user_warehouse) {
+        if ($value === true) {
             $user_warehouse = new UserWarehouse;
             $user_warehouse->user_id = $user_id;
             $user_warehouse->warehouse_id = $warehouse_id;
             $user_warehouse->save();
-
-            return array(
-                'status' => 'success',
-                'title' => 'Success',
-                'msg' => 'update user warehouse success'
-            );
         }
-
-        $user_warehouse->warehouse_id = $warehouse_id;
-        $user_warehouse->save();
-
-        return array(
-            'status' => 'success',
-            'title' => 'Success',
-            'msg' => 'update user warehouse success'
-        );
+        else {
+            $user_warehouse = UserWarehouse::where('user_id', $user_id)
+                                           ->where('warehouse_id', $warehouse_id)
+                                           ->delete();
+        }
     }
 
     public function delete()
