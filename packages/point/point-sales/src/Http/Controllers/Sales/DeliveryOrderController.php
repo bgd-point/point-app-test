@@ -33,12 +33,12 @@ class DeliveryOrderController extends Controller
     {
         access_is_allowed('read.point.sales.delivery.order');
 
-        $view = view('point-sales::app.sales.point.sales.delivery-order.index');
         $UserWarehouse = UserWarehouse::where('user_id', auth()->user()->id)->first();
         
         // if warehouse is set
         if ($UserWarehouse)
         {
+            $view = view('point-sales::app.sales.point.sales.delivery-order.index');
             $list_delivery_order = DeliveryOrder::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
             $list_delivery_order = DeliveryOrderHelper::searchList($list_delivery_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
 
@@ -84,27 +84,58 @@ class DeliveryOrderController extends Controller
      */
     public function createStep1()
     {
-        $view = view('point-sales::app.sales.point.sales.delivery-order.create-step-1');
-        $view->list_sales_include_expedition = SalesOrder::includeExpedition()->paginate(100);
-        $view->list_sales_exclude_expedition = SalesOrder::excludeExpedition()->paginate(100);
+        $UserWarehouse = UserWarehouse::where('user_id', auth()->user()->id)->first();
+        
+        // if warehouse is set
+        if ($UserWarehouse)
+        {
+            $view = view('point-sales::app.sales.point.sales.delivery-order.create-step-1');
+            $view->list_sales_include_expedition = SalesOrder::includeExpedition()->paginate(100);
+            $view->list_sales_exclude_expedition = SalesOrder::excludeExpedition()->paginate(100);
 
-        return $view;
+            return $view;
+        }
+        else
+        {
+            gritter_error('Warehouse is not set, please contact admin', 'false');
+            return redirect('/');
+        }
     }
 
     public function createStep2($sales_order_id, $expedition_id = '')
     {
-        $view = view('point-sales::app.sales.point.sales.delivery-order.create-step-2');
-        $view->reference_expedition_order = $expedition_id ? ExpeditionOrder::find($expedition_id) : '';
-        $view->reference_sales_order = SalesOrder::find($sales_order_id);
-        ;
-        $view->list_warehouse = Warehouse::all();
-        $view->list_user_approval = UserHelper::getAllUser();
-        $expedition_reference = '';
-        if ($expedition_id) {
-            $expedition_reference = ExpeditionOrderItem::where('point_expedition_order_id', $expedition_id)->get();
+        $UserWarehouse = UserWarehouse::where('user_id', auth()->user()->id)->first();
+        
+        // if warehouse is set
+        if ($UserWarehouse)
+        {
+            $view = view('point-sales::app.sales.point.sales.delivery-order.create-step-2');
+            $view->reference_expedition_order = $expedition_id ? ExpeditionOrder::find($expedition_id) : '';
+            $view->reference_sales_order = SalesOrder::find($sales_order_id);
+            
+            // admin doesn't has warehouse_id (warehouse_id = null), but staff has warehouse_id
+            if (is_null($UserWarehouse->warehouse_id))
+            {
+                $view->list_warehouse = Warehouse::all();
+            }
+            else
+            {
+                $view->list_warehouse = Warehouse::where('id', $UserWarehouse->warehouse_id)->get();
+
+            }
+            $view->list_user_approval = UserHelper::getAllUser();
+            $expedition_reference = '';
+            if ($expedition_id) {
+                $expedition_reference = ExpeditionOrderItem::where('point_expedition_order_id', $expedition_id)->get();
+            }
+            $view->expedition = $expedition_reference;
+            return $view;
         }
-        $view->expedition = $expedition_reference;
-        return $view;
+        else
+        {
+            gritter_error('Warehouse is not set, please contact admin', 'false');
+            return redirect('/');
+        }
     }
 
     /**
