@@ -34,12 +34,30 @@ class DeliveryOrderController extends Controller
         access_is_allowed('read.point.sales.delivery.order');
 
         $view = view('point-sales::app.sales.point.sales.delivery-order.index');
-        $list_delivery_order = DeliveryOrder::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
-        $list_delivery_order = DeliveryOrderHelper::searchList($list_delivery_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
-        $view->list_delivery_order = $list_delivery_order->paginate(100);
-        $array_delivery_order_id = [];
-        $view->array_delivery_order_id = $array_delivery_order_id;
-        return $view;
+        $UserWarehouse = UserWarehouse::where('user_id', auth()->user()->id)->first();
+        
+        // if warehouse is set
+        if ($UserWarehouse)
+        {
+            $list_delivery_order = DeliveryOrder::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
+            $list_delivery_order = DeliveryOrderHelper::searchList($list_delivery_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
+
+            // admin doesn't has warehouse_id (warehouse_id = null), but staff has warehouse_id
+            if (!is_null($UserWarehouse->warehouse_id))
+            {
+                $list_delivery_order->where('warehouse_id', $UserWarehouse->warehouse_id);
+            }
+
+            $view->list_delivery_order = $list_delivery_order->paginate(100);
+            $view->array_delivery_order_id = [];
+            return $view;
+        }
+        // if warehouse is not set
+        else
+        {
+            gritter_error('Warehouse is not set, please contact admin', 'false');
+            return redirect('/');
+        }
     }
 
     public function ajaxDetailItem(Request $request, $id)
