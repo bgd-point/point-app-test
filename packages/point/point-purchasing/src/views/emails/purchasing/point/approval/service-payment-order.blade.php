@@ -408,6 +408,25 @@
                     </tr>
                 @endif
             @endforeach
+
+						@if(count($payment_order->others) > 0)
+								<tr class="empty-row" style="border-bottom: 2px solid #ddd">
+										<td colspan="8"></td>
+								</tr>
+								<tr class="heading" style="border-bottom: 2px solid #ddd">
+										<td colspan="8">Others</td>
+								</tr>
+								@foreach($payment_order->others as $other)
+										<tr class="item" style="border-bottom: 2px solid #ddd">
+											<td colspan="3">{{ $other->other_notes }}</td>
+											<td>{{ $other->allocation->name }}</td>
+											<td colspan="2">{{ $other->coa->name }}</td>
+												<td class="text-right">{{ number_format_price($other->amount) }}</td>
+												<td></td>
+										</tr>
+								@endforeach
+						@endif
+
             <tr class="empty-row">
                 <td colspan="8"></td>
             </tr>
