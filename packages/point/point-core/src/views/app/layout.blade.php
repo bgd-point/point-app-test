@@ -394,10 +394,10 @@
                 somethingChanged = true;
             });
             $(window).bind('beforeunload', function(e) {
-                if (somethingChanged)
-                    return "You made some changes and it's not saved?";
-                else
-                    e=null; // i.e; if form state change show warning box, else don't show it.
+                // if (somethingChanged)
+                //     return "You made some changes and it's not saved?";
+                // else
+                //     e=null; // i.e; if form state change show warning box, else don't show it.
             });
         </script>
     </body>
