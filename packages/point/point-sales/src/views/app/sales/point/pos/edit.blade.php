@@ -501,7 +501,6 @@
     }
 
     function setAction(action) {
-        calculate();
         $('#action').val(action);
     }
 </script>
