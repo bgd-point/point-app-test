@@ -51,10 +51,11 @@
                     <table id="item-datatable" class="table table-striped">
                         <thead>
                         <tr>
-                            <th width="55%">ITEM</th>
-                            <th width="15%" class="text-right">QUANTITY</th>
-                            <th width="15%" class="text-right">RETUR</th>
-                            <th width="15%" class="text-right">TOTAL</th>
+                            <th style="width:40%; vertical-align:middle;">ITEM</th>
+                            <th style="width:15%; vertical-align:middle;" class="text-right">QUANTITY</th>
+                            <th style="width:15%; vertical-align:middle;" class="text-right">ADD STOCK</th>
+                            <th style="width:15%; vertical-align:middle;" class="text-right">NOT ADD STOCK</th>
+                            <th style="width:15%; vertical-align:middle;" class="text-right">TOTAL</th>
                         </tr>
                         </thead>
                         <tbody class="">
@@ -67,7 +68,8 @@
                                         <input type="hidden" name="price[]" readonly id="item-price-{{$index}}" class="form-control format-quantity calculate text-right" value="{{ $detail->quantity * $detail->price }}">
                                     </td>
                                     <td><input type="text" name="quantity[]" readonly id="item-quantity-{{$index}}" class="form-control format-quantity text-right" value="{{ $detail->quantity }}" autofocus="false"></td>
-                                    <td><input type="text" name="quantity_retur[]" id="item-quantity-retur-{{$index}}" class="form-control format-quantity calculate text-right" value="0"></td>
+                                    <td><input type="text" name="add_stock[]" id="item-add-stock-{{$index}}" class="form-control format-quantity calculate text-right" value="0"></td>
+                                    <td><input type="text" name="not_add_stock[]" id="item-not-add-stock-{{$index}}" class="form-control format-quantity calculate text-right" value="0"></td>
                                     <td><input type="text" name="total[]" id="item-total-{{$index}}" class="form-control format-price text-right" readonly value="0" autofocus="false"/></td>
                                 </tr>
                                 <?php $index++ ?>
@@ -75,11 +77,11 @@
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td colspan="3"></td>
+                            <td colspan="4"></td>
                             <td><input type="text" name="total[]" id="total" class="form-control format-price text-right" readonly value="0"/></td>
                         </tr>
                         <tr>
-                            <td colspan="3"></td>
+                            <td colspan="4"></td>
                             <td><button class="btn btn-primary btn-block">Retur</button></td>
                         </tr>
                         </tfoot>
@@ -131,9 +133,8 @@
 
     function calculate() {
         var total = 0;
-        console.log('counter: ' + counter);
         for(var i=0; i<counter; i++) {
-            var price = dbNum($('#item-quantity-retur-'+i).val());
+            var price = dbNum($('#item-add-stock-'+i).val()) + dbNum($('#item-not-add-stock-'+i).val());
             var qty = dbNum($('#item-price-'+i).val());
             var total_per_row = price * qty;
             $('#item-total-'+i).val(appNum(total_per_row));
