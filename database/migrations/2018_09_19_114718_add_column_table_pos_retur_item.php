@@ -27,8 +27,7 @@ class AddColumnTablePosReturItem extends Migration
     public function down()
     {
         Schema::table('point_sales_pos_retur_item', function ($table) {
-            $table->dropColumn(['add_stock']);
-            $table->dropColumn(['not_add_stock']);
+            $table->dropColumn(['add_stock', 'not_add_stock']);
         });
     }
 }
