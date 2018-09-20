@@ -123,7 +123,7 @@ class MasterVesa
                 'deadline' => \Carbon::now(),
                 'message' => 'Please restock <strong>'.$item->item_code.'</strong>. 
                               Minimum stock is <strong>' . $minimum_qty . ' ' . $unit_name . 
-                             '</strong> but current stock is <strong>'. $current_qty . ' ' . $unit_name . '</strong>',
+                             '</strong>. Current stock is <strong>'. $current_qty . ' ' . $unit_name . '</strong>.',
                 'permission_slug' => 'create.point.purchasing.requisition'
             ]);
         }
