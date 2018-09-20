@@ -65,7 +65,7 @@
                                     <td style="vertical-align:middle">
                                         <div style="margin-top:5px" id="item-name-{{$index}}">{{ $detail->item->codeName }}</div>
                                         <input type="hidden" id="item-id-{{$index}}" name="item_id[]" value="{{$detail->item->id}}"/>
-                                        <input type="hidden" name="price[]" readonly id="item-price-{{$index}}" class="form-control format-quantity calculate text-right" value="{{ $detail->quantity * $detail->price }}">
+                                        <input type="hidden" name="price[]" readonly id="item-price-{{$index}}" class="form-control format-quantity calculate text-right" value="{{ $detail->price }}">
                                     </td>
                                     <td><input type="text" name="quantity[]" readonly id="item-quantity-{{$index}}" class="form-control format-quantity text-right" value="{{ $detail->quantity }}" autofocus="false"></td>
                                     <td><input type="text" name="add_stock[]" id="item-add-stock-{{$index}}" class="form-control format-quantity calculate text-right" value="0"></td>
@@ -78,7 +78,7 @@
                         <tfoot>
                         <tr>
                             <td colspan="4"></td>
-                            <td><input type="text" name="total[]" id="total" class="form-control format-price text-right" readonly value="0"/></td>
+                            <td><input type="text" id="total" class="form-control format-price text-right" readonly value="0"/></td>
                         </tr>
                         <tr>
                             <td colspan="4"></td>
@@ -127,6 +127,11 @@
     initDatatable('#item-datatable');
     var counter = $("#item-datatable").dataTable().fnGetNodes().length;
 
+    $('.form-control').focus(function(e) {
+        e.currentTarget.select();
+    })
+    
+    calculate();
     $('.calculate').keyup(function(){
         calculate();
     });
@@ -134,13 +139,13 @@
     function calculate() {
         var total = 0;
         for(var i=0; i<counter; i++) {
-            var price = dbNum($('#item-add-stock-'+i).val()) + dbNum($('#item-not-add-stock-'+i).val());
-            var qty = dbNum($('#item-price-'+i).val());
+            var price = dbNum($('#item-price-'+i).val());
+            var qty = dbNum($('#item-add-stock-'+i).val()) + dbNum($('#item-not-add-stock-'+i).val());
             var total_per_row = price * qty;
             $('#item-total-'+i).val(appNum(total_per_row));
             total += total_per_row;
         }
-        $('#total').val(appNum(total_per_row));
+        $('#total').val(appNum(total));
     }
 </script>
 @stop
