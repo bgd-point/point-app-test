@@ -474,8 +474,17 @@ class PosController extends Controller
     public function returnSales($id) {
         access_is_allowed('update.point.sales.pos');
 
+        $pos = Pos::find($id);
+        $inventory = Inventory::where('formulir_id', $pos->formulir_id)->get();
+        foreach ($pos->items as $key => $item) {
+            $arr = $inventory->filter(function($inv) use ($item) {
+                return $inv->item_id === $item->item_id;
+            });
+            $item->cogs = $arr->first()->cogs;
+        }
+        
         $view = view('point-sales::app.sales.point.pos.retur');
-        $view->pos = Pos::find($id);
+        $view->pos = $pos;
         session()->put('customer_id', $view->pos->customer_id);
         $view->warehouse = Warehouse::find($view->pos->warehouse_id);
         self::storeToTemp($view->pos);
@@ -485,13 +494,18 @@ class PosController extends Controller
         }
         $view->warehouse_profiles = Warehouse::find($view->pos->warehouse_id);
         $view->carts = TempDataHelper::get('pos', auth()->user()->id, ['is_pagination' => true]);
+        
         return $view;
     }
 
     public function storeReturnSales(Request $request, $id) {
         DB::beginTransaction();
+
+        $formulir = FormulirHelper::create($request->input(), 'point-sales-pos-retur');
+
         $posRetur = new PosRetur;
-        $posRetur->form_date = date('Y-m-d H:i:s');
+        $posRetur->form_date = $formulir->form_date;
+        $posRetur->formulir_id = $formulir->id;
         $posRetur->pos_id = $request->get('pos_id');
         $posRetur->customer_id = $request->get('customer_id');
         $posRetur->created_by = auth()->user()->id;
@@ -500,9 +514,15 @@ class PosController extends Controller
         $total = 0;
         $totalQty = 0;
         for ($i = 0; $i < count($request->get('quantity')); $i++) {
-            if ($request->get('quantity_retur')[$i] > 0) {
+            $addStock = number_format_db($request->get('add_stock')[$i]);
+            $numRetur = $addStock + number_format_db($request->get('not_add_stock')[$i]);
 
-                if (number_format_db($request->get('quantity_retur')[$i]) > number_format_db($request->get('quantity')[$i])) {
+            if ($numRetur > 0) {
+                $quantity = number_format_db($request->get('quantity')[$i]);
+                $price = number_format_db($request->get('price')[$i]);
+                $add_stock = number_format_db($request->get('add_stock')[$i]);
+
+                if ($numRetur > $quantity) {
                     gritter_error('Retur failed, Quantity retur is more than quantity sales' , 'false');
                     return redirect()->back();
                 }
@@ -511,12 +531,28 @@ class PosController extends Controller
                 $posReturItem->pos_retur_id = $posRetur->id;
                 $posReturItem->warehouse_id = $request->get('warehouse_id');
                 $posReturItem->item_id = $request->get('item_id')[$i];
-                $posReturItem->quantity = number_format_db($request->get('quantity')[$i]);
-                $posReturItem->quantity_retur = number_format_db($request->get('quantity_retur')[$i]);
-                $posReturItem->total = number_format_db($request->get('price')[$i]);
+                $posReturItem->quantity = $quantity;
+                $posReturItem->quantity_retur = $numRetur;
+                $posReturItem->add_stock = $add_stock;
+                $posReturItem->not_add_stock = number_format_db($request->get('not_add_stock')[$i]);
+                $posReturItem->total = $quantity * $price;
                 $posReturItem->save();
                 $total += $posReturItem->total;
                 $totalQty += $posReturItem->quantity_retur;
+
+                if ($addStock > 0) {
+                    $inventory = new Inventory;
+                    $inventory->form_date = $formulir->form_date;
+                    $inventory->formulir_id = $formulir->id;
+                    $inventory->warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
+                    $inventory->item_id = $posReturItem->item_id;
+                    $inventory->price = number_format_db($request->get('cogs')[$i]);
+                    $inventory->quantity = $add_stock;
+                    if ($quantity > 0) {
+                        $inventory_helper = new InventoryHelper($inventory);
+                        $inventory_helper->in();
+                    }
+                }
             }
         }
 
@@ -527,15 +563,22 @@ class PosController extends Controller
 
         $posRetur->total = $total;
         $posRetur->save();
+
         DB::commit();
         return redirect('/sales/point/pos/' . $id);
     }
 
     public function deleteReturnSales($id, $retur_id) {
-        access_is_allowed('delete.point.sales.pos');
-
         $posRetur = PosRetur::find($retur_id);
+        $formulir_id = $posRetur->formulir_id;
+        FormulirHelper::cancel('delete.point.sales.pos', $formulir_id);
+        
+        DB::beginTransaction();
+        Inventory::where('formulir_id', $formulir_id)->delete();
+        $posRetur->items()->delete();
         $posRetur->delete();
+        DB::commit();
+
         return redirect('/sales/point/pos/' . $id);
     }
 }

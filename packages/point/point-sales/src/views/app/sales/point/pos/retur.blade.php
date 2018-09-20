@@ -65,6 +65,7 @@
                                     <td style="vertical-align:middle">
                                         <div style="margin-top:5px" id="item-name-{{$index}}">{{ $detail->item->codeName }}</div>
                                         <input type="hidden" id="item-id-{{$index}}" name="item_id[]" value="{{$detail->item->id}}"/>
+                                        <input type="hidden" name="cogs[]" readonly id="item-cogs-{{$index}}" class="form-control format-quantity calculate text-right" value="{{ $detail->cogs }}">
                                         <input type="hidden" name="price[]" readonly id="item-price-{{$index}}" class="form-control format-quantity calculate text-right" value="{{ $detail->price }}">
                                     </td>
                                     <td><input type="text" name="quantity[]" readonly id="item-quantity-{{$index}}" class="form-control format-quantity text-right" value="{{ $detail->quantity }}" autofocus="false"></td>
