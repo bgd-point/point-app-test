@@ -236,21 +236,23 @@ class InventoryHelper
     {
         $inventories = Inventory::where('item_id', '=', $item_id)
             ->where('form_date', '<=', $date)
-            ->groupBy('warehouse_id')
+            // ->groupBy('warehouse_id')
             ->orderBy('form_date', 'desc')
-            ->get();
+            // ->get();
+            ->first();
 
-        $average_cost_of_sales = 0;
-        $count_warehouse = 0;
+        $average_cost_of_sales = $inventories['cogs'];
+        // $average_cost_of_sales = 0;
+        // $count_warehouse = 0;
 
-        foreach ($inventories as $inventory) {
-            $average_cost_of_sales += $inventory->cogs;
-            $count_warehouse++;
-        }
+        // foreach ($inventories as $inventory) {
+        //     $average_cost_of_sales += $inventory->cogs;
+        //     $count_warehouse++;
+        // }
 
-        if ($average_cost_of_sales) {
-            $average_cost_of_sales = $average_cost_of_sales / $count_warehouse;
-        }
+        // if ($average_cost_of_sales) {
+        //     $average_cost_of_sales = $average_cost_of_sales / $count_warehouse;
+        // }
 
         return $average_cost_of_sales;
     }
