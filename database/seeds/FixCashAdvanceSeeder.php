@@ -6,24 +6,26 @@ class FixCashAdvanceSeeder extends Seeder
 {
     public function run()
     {
-        \DB::beginTransaction();
+        $cash_advances = \Point\PointFinance\Models\CashAdvance::join('formulir', 'formulir.id', '=', 'point_finance_cash_advance.formulir_id')
+            ->where('formulir.form_status', '!=', 0)
+            ->select('point_finance_cash_advance.*')
+            ->get();
 
-        $cash_cash_advances = \Point\PointFinance\Models\Cash\CashCashAdvance::all();
-        \Log::info($cash_cash_advances->count());
-
-        foreach($cash_cash_advances as $cash_cash_advance) {
-            \Log::info($cash_cash_advance->id);
-            if ($cash_cash_advance->used->form_status == -1) {
-                \Log::info($cash_cash_advance->used->form_number);
-                $cash_cash_advance->cashAdvance->remaining_amount += $cash_cash_advance->cash_advance_amount;
-                $cash_cash_advance->cashAdvance->formulir->form_status = 0;
-                $cash_cash_advance->cashAdvance->formulir->save();
-                $cash_cash_advance->cashAdvance->save();
-            }
-
-            $cash_cash_advance->save();
+        foreach($cash_advances as $cash_advance) {
+            $cash_advance->remaining_amount = 0;
+            $cash_advance->save();
         }
 
-        \DB::commit();
+        //
+        $cash_advances = \Point\PointFinance\Models\CashAdvance::join('formulir', 'formulir.id', '=', 'point_finance_cash_advance.formulir_id')
+            ->where('point_finance_cash_advance.is_payed', 1)
+            ->where('point_finance_cash_advance.remaining_amount', 0)
+            ->select('point_finance_cash_advance.*')
+            ->get();
+
+        foreach($cash_advances as $cash_advance) {
+            $cash_advance->formulir->form_status = 1;
+            $cash_advance->formulir->save();
+        }
     }
 }
