@@ -209,7 +209,7 @@
                                 </div>
                             </fieldset>
                         @endif
-                        @if($input->formulir->approval_status == 0)
+                        @if(formulir_view_approval($input->formulir, 'approval.point.manufacture.input'))
                             <fieldset>
                                 <div class="form-group">
                                     <div class="col-md-12">
