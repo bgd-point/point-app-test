@@ -120,8 +120,6 @@ class CashAdvanceApprovalController extends Controller
 
             $cash_advance->is_payed = true;
             $cash_advance->save();
-
-            $cash_advance->formulir->form_status = 1;
             $cash_advance->formulir->save();
 
             timeline_publish('approve', $cash_advance->formulir->form_number . ' approved', $cash_advance->formulir->approval_to);
