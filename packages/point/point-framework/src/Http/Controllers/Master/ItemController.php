@@ -736,6 +736,23 @@ class ItemController extends Controller
         ));
     }
 
+    public function _listItemManufacture()
+    {
+        if (!$this->validateCSRF()) {
+            return response()->json($this->restrictionAccessMessage());
+        }
+
+        return response()->json(array(
+            'lists' => Inventory::join('item', 'inventory.item_id', '=', 'item.id')
+                ->where('form_date', '<=', \Carbon::now())
+                ->select('item.id as value', DB::raw('CONCAT("[", item.code, "] ", item.name) AS text'), 'item.code as code')
+                ->groupBy('item_id')
+                ->orderBy('item.code')
+                ->get()
+                ->toArray()
+        ));
+    }
+
     public function _getPrice()
     {
         if (!$this->validateCSRF()) {

@@ -64,6 +64,24 @@
         });
     }
 
+    function reloadItemManufacture(element, reset = true) {
+        $.ajax({
+            url: "{{URL::to('master/item/list-item-manufacture')}}",
+            success: function (data) {
+                var items = $(element)[0].selectize;
+                if (reset === true) {
+                    items.clear();
+                }
+                items.load(function (callback) {
+                    callback(eval(JSON.stringify(data.lists)));
+                });
+
+            }, error: function (data) {
+                swal('Failed', 'Something went wrong', 'error');
+            }
+        });
+    }
+
     function reloadItem(element, reset = true) {
         if (list_item == '') {
             populateJsonItem();
