@@ -92,7 +92,7 @@ class ManufactureHelper
             $finished_goods = new InputProduct;
             $finished_goods->input_id = $input->id;
             $finished_goods->product_id = $product_id[$i];
-            $finished_goods->quantity = $quantity[$i];
+            $finished_goods->quantity = number_format_db($quantity[$i]);
             $unit = ItemUnit::where('item_id', $product_id[$i])->first();
             $finished_goods->unit = $unit->name;
             $converter = number_format_db($unit->converter);
