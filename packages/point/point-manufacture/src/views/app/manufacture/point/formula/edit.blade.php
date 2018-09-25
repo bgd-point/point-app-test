@@ -36,9 +36,8 @@
 
                         <div class="col-md-3">
                             <input type="text" name="form_date" class="form-control date input-datepicker"
-                                   data-date-format="{{\DateHelper::formatGet()}}"
-                                   placeholder="{{\DateHelper::formatGet()}}"
-                                   value="{{ date(\DateHelper::formatGet(), strtotime($formula->formulir->form_date)) }}">
+                                    data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}"
+                                    value="{{ date(date_format_get(), strtotime($formula->formulir->form_date)) }}">
                         </div>
                         <div class="col-md-3">
                             <div class="input-group bootstrap-timepicker">
