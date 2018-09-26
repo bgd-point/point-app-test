@@ -96,7 +96,7 @@
                         <td>{{ $deposit->deposit_number }}</td>
                         <td>{{ $deposit->category->name }}</td>
                         <td>{!! nl2br(e($deposit->formulir->notes)) !!}</td>
-                        <td>{{ number_format_quantity($deposit->interest_percent) }} % ({{ number_format_quantity(($deposit->deposit_time * $deposit->original_amount * $deposit->interest_percent) / ($deposit->total_days_in_year * 100)) }})</td>
+                        <td>{{ number_format_quantity($deposit->interest_percent) }} % @if($deposit->total_days_in_year > 0)({{ number_format_quantity(($deposit->deposit_time * $deposit->original_amount * $deposit->interest_percent) / ($deposit->total_days_in_year * 100)) }})@endif</td>
                         <td>{{ number_format_quantity($deposit->total_interest) }}</td>
                         <td>{{ number_format_quantity($deposit->original_amount) }}</td>
                         <td>
