@@ -108,7 +108,7 @@
 
                     @if($deposit->important_notes)
                         <tr>
-                            <td colspan="9" style="background-color: red;color:white"> IMPORTANT NOTES : {!! nl2br(e($deposit->important_notes)) !!}</td>
+                            <td colspan="11" style="background-color: red;color:white"> IMPORTANT NOTES : {!! nl2br(e($deposit->important_notes)) !!}</td>
                             <td style="display:none"></td>
                             <td style="display:none"></td>
                             <td style="display:none"></td>
