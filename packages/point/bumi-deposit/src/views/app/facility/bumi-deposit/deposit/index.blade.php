@@ -70,6 +70,8 @@
                             <th>No Bilyet</th>
                             <th>Category</th>
                             <th>Notes</th>
+                            <th>Bank Interest</th>
+                            <th>Bank Interest + Tax Fee</th>
                             <th>Deposit Value</th>
                             <th>Withdrawal</th>
                         </tr>
@@ -94,6 +96,8 @@
                         <td>{{ $deposit->deposit_number }}</td>
                         <td>{{ $deposit->category->name }}</td>
                         <td>{!! nl2br(e($deposit->formulir->notes)) !!}</td>
+                        <td>{{ number_format_quantity($deposit->interest_percent) }} %</td>
+                        <td>{{ number_format_quantity($deposit->total_interest) }}</td>
                         <td>{{ number_format_quantity($deposit->original_amount) }}</td>
                         <td>
                             @if(formulir_is_close($deposit->formulir_id))
@@ -105,6 +109,8 @@
                     @if($deposit->important_notes)
                         <tr>
                             <td colspan="9" style="background-color: red;color:white"> IMPORTANT NOTES : {!! nl2br(e($deposit->important_notes)) !!}</td>
+                            <td style="display:none"></td>
+                            <td style="display:none"></td>
                             <td style="display:none"></td>
                             <td style="display:none"></td>
                             <td style="display:none"></td>
