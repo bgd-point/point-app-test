@@ -113,7 +113,7 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label">Bank Interest</label>
                             <div class="col-md-9 content-show">
-                                {{number_format_quantity($deposit->interest_percent)}} % ( {{ number_format_quantity(($deposit->deposit_time * $deposit->original_amount * $deposit->interest_percent) / ($deposit->total_days_in_year * 100)) }} )
+                                {{number_format_quantity($deposit->interest_percent)}} % @if($deposit->total_days_in_year)( {{ number_format_quantity(($deposit->deposit_time * $deposit->original_amount * $deposit->interest_percent) / ($deposit->total_days_in_year * 100)) }} )@endif
                             </div>
                         </div>
                         <div class="form-group">
