@@ -265,11 +265,11 @@ class ReportController extends Controller
                 });
 
                 $sheet->cell('F'.$next_row, function ($cell) use ($total_received) {
-                    $cell->setValue(number_format_quantity($total_received));
+                    $cell->setValue($total_received);
                 });
                 
                 $sheet->cell('G'.$next_row, function ($cell) use ($total_disbursed) {
-                    $cell->setValue(number_format_quantity($total_disbursed));
+                    $cell->setValue($total_disbursed);
                 });
 
                 $next_row = $next_row + 1;
@@ -283,7 +283,7 @@ class ReportController extends Controller
                 });
 
                 $sheet->cell('F'.$next_row, function ($cell) use ($data_report) {
-                    $cell->setValue(number_format_quantity($data_report['journal_debit'] - $data_report['journal_credit']));
+                    $cell->setValue($data_report['journal_debit'] - $data_report['journal_credit']);
                 });
 
                 $next_row = $next_row + 1;
@@ -297,7 +297,7 @@ class ReportController extends Controller
                 });
 
                 $sheet->cell('F'.$next_row, function ($cell) use ($data_report, $total_received, $total_disbursed) {
-                    $cell->setValue(number_format_quantity(($data_report['journal_debit'] - $data_report['journal_credit']) + $total_received - $total_disbursed));
+                    $cell->setValue(($data_report['journal_debit'] - $data_report['journal_credit']) + $total_received - $total_disbursed);
                 });
             });
         })->export('xls');
