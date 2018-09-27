@@ -50,7 +50,7 @@ class GeneralLedgerController extends Controller
                     'E' => '#,##0.00',
                     'F' => '#,##0.00'
                 ));
-                $sheet->loadView('framework::app.accounting.general-ledger._data', $data);
+                $sheet->loadView('framework::app.accounting.general-ledger._data-export', $data);
                 $sheet->setColumnFormat(array(
                     'D' => '#,##0.00',
                     'E' => '#,##0.00',

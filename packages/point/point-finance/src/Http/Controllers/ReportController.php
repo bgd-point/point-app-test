@@ -166,8 +166,8 @@ class ReportController extends Controller
                 ));
 
                 $sheet->setColumnFormat(array(
-                    'F' => '0.00',
-                    'G' => '0.00'
+                    'F' => '#,##0.00',
+                    'G' => '#,##0.00'
                 ));
 
                 $title = strtoupper($type." REPORT FROM " . $date_from . " - " . $date_to);
