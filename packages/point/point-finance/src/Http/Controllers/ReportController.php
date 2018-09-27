@@ -165,6 +165,11 @@ class ReportController extends Controller
                     'G' => 25,
                 ));
 
+                $sheet->setColumnFormat(array(
+                    'F' => '0.00',
+                    'G' => '0.00'
+                ));
+
                 $title = strtoupper($type." REPORT FROM " . $date_from . " - " . $date_to);
                 $info_export = "DATE EXPORT ". \Carbon::now();
                 $sheet->cell('A1', function ($cell) use ($title) {
@@ -244,8 +249,8 @@ class ReportController extends Controller
                             $data_report['report'][$i]->formulir->form_number,
                             $data_report['report'][$i]->person->codeName,
                             $report_detail->notes_detail,
-                            $received,
-                            $disbursed
+                            $received * 1,
+                            $disbursed * 1
                         ]);
                     }
                 }
@@ -271,11 +276,6 @@ class ReportController extends Controller
                 $sheet->cell('G'.$next_row, function ($cell) use ($total_disbursed) {
                     $cell->setValue($total_disbursed);
                 });
-
-                $sheet->setColumnFormat(array(
-                    'F' => '#,##0.00',
-                    'G' => '#,##0.00'
-                ));
 
                 $next_row = $next_row + 1;
                 $sheet->cell('E'.$next_row, function ($cell) {
