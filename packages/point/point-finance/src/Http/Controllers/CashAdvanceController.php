@@ -16,6 +16,7 @@ use Point\PointFinance\Models\Cash\Cash;
 use Point\PointFinance\Models\Cash\CashCashAdvance;
 use Point\PointFinance\Models\CashAdvance;
 use Point\PointFinance\Models\PaymentReference;
+use Point\PointPurchasing\Helpers\CashAdvanceHelper;
 
 class CashAdvanceController extends Controller
 {
@@ -28,12 +29,10 @@ class CashAdvanceController extends Controller
     {
         $view = view('point-finance::app.finance.point.cash-advance.index');
 
-        $view->list_cash_advance = CashAdvance::joinFormulir()
-            ->notArchived()
-            ->selectOriginal()
-            ->orderByStandard()
-            ->paginate(100);
+        $list_cash_advance = CashAdvance::joinFormulir()->joinEmployee()->notArchived()->selectOriginal()->orderByStandard();
+        $list_cash_advance = CashAdvanceHelper::searchList($list_cash_advance, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
 
+        $view->list_cash_advance = $list_cash_advance->paginate(100);
         return $view;
     }
 
