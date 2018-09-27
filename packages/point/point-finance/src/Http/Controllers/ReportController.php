@@ -272,6 +272,11 @@ class ReportController extends Controller
                     $cell->setValue($total_disbursed);
                 });
 
+                $sheet->setColumnFormat(array(
+                    'F' => '#,##0.00',
+                    'G' => '#,##0.00'
+                ));
+
                 $next_row = $next_row + 1;
                 $sheet->cell('E'.$next_row, function ($cell) {
                     $cell->setValue('OPENING BALANCE');
