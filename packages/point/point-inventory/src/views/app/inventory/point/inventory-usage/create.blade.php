@@ -159,7 +159,9 @@
                             <select name="approval_to" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
                                 <option></option>
                                 @foreach($list_user_approval as $user_approval)
+                                    @if($user_approval->may('approval.point.inventory.usage'))
                                     <option value="{{$user_approval->id}}" @if(old('approval_to') == $user_approval->id) selected @endif>{{$user_approval->name}}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
