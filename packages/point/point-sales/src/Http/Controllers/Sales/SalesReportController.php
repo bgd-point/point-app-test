@@ -40,6 +40,12 @@ class SalesReportController extends Controller
             \Excel::create($fileName, function ($excel) use ($storage, $request) {
                 # Sheet Data
                 $excel->sheet('Data', function ($sheet) use ($request) {
+                    $sheet->setColumnFormat(array(
+                        'E' => '#,##0.00',
+                        'G' => '#,##0.00',
+                        'H' => '#,##0.00'
+                    ));
+
                     $sheet->setWidth(array(
                         'A' => 10,
                         'B' => 25,
@@ -77,10 +83,10 @@ class SalesReportController extends Controller
                             $report->invoice->formulir->form_number,
                             $report->invoice->person->codeName,
                             $report->item->codeName,
-                            number_format_quantity($report->quantity, 0),
+                            $report->quantity * 1,
                             $report->unit,
-                            number_format_quantity($report->price),
-                            number_format_quantity($total)
+                            $report->price * 1,
+                            $total
                         ]);
                     }
                     $total_data = $list_report->count()+2;
@@ -93,7 +99,7 @@ class SalesReportController extends Controller
                             'size'       => '14',
                             'bold'       =>  true
                         ));
-                        $cell->setValue(number_format_quantity($total_value));
+                        $cell->setValue($total_value);
                     });
                 });
             })->store('xls', $storage);
