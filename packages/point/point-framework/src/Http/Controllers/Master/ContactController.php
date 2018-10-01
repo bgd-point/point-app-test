@@ -75,8 +75,10 @@ class ContactController extends Controller
         $this->validate($request, [
             'person_group_id' => 'required',
             'code' => 'required|unique:person,code',
-            'name' => 'required|unique:person,name'
+            'name' => 'required'
         ]);
+
+
 
         $person = new Person;
         $person->person_type_id = $person_type->id;
