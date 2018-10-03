@@ -58,7 +58,7 @@ trait InputVesa
         if ($merge_into_group && $list_manufacture->count() > 5) {
             array_push($array, [
                 'url' => url('manufacture/point/process-io/vesa-proses-after-approval'),
-                'deadline' => $list_manufacture->orderBy('required_date')->first()->required_date,
+                'deadline' => '',
                 'message' => 'Make an manufacture process out',
                 'permission_slug' => 'create.point.manufacture.output'
             ]);
