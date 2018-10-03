@@ -106,7 +106,7 @@
                                                     {{date_format_view($delivery_order->formulir->form_date)}}
                                                     <input type="hidden" name="item_id[]" value="{{$delivery_order_item->item_id}}">
                                                     <input type="hidden" name="reference_item_type[]" value="{{get_class($delivery_order_item)}}">
-                                                    <input type="hidden" name="reference_item_id[]" value="{{get_class($delivery_order_item)}}">
+                                                    <input type="hidden" name="reference_item_id[]" value="{{$delivery_order_item->id}}">
                                                 </td>
                                                 <td>
                                                     <a href="{{ url('master/item/'.$delivery_order_item->item_id) }}">{{ $delivery_order_item->item->codeName }}</a>
