@@ -49,6 +49,11 @@ class Formulir extends Model
         return $this->hasMany('Point\Framework\Models\EmailHistory');
     }
 
+    public function archives()
+    {
+        return $this->hasMany('Point\Framework\Models\Formulir', 'archived', 'form_number');
+    }
+
     public function scopeNotArchived($q, $form_number = 0)
     {
         $q->whereNotNull('form_number');

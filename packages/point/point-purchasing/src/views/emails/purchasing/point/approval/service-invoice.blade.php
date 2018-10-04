@@ -189,6 +189,26 @@
                     {{ ucfirst($invoice->formulir->notes) }}
                 </td>
             </tr>
+            @if(count($invoice->formulir->archives) > 0)
+            <tr>
+                <td style="width: 20%">
+                    Edit(s)
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    @foreach($invoice->formulir->archives as $key=>$value)
+                        <div>
+                            {{ \DateHelper::formatView($value->created_at, true) }}
+                        </div>
+                        <div>
+                            {{ ucfirst($value->edit_notes) }}
+                        </div>
+                    @endforeach
+                </td>
+                </tr>
+            @endif
         </table>
 
         <table cellpadding="0" cellspacing="0">
