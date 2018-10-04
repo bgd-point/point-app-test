@@ -138,7 +138,7 @@
                     :
                 </td>
                 <td>
-                    <a href="{{ $url .'/purchasing/point/payment-order/'.$payment_order->id }}">
+                    <a href="{{ $url . '/purchasing/point/payment-order/'.$payment_order->id }}">
                         {{ $payment_order->formulir->form_number }}
                     </a>
                 </td>

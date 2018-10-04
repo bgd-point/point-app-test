@@ -141,7 +141,7 @@
                     :
                 </td>
                 <td>
-                    <a href="{{ $url .'finance/point/cash-advance/'.$cash_advance->id }}">
+                    <a href="{{ $url . '/finance/point/cash-advance/'.$cash_advance->id }}">
                         {{ $cash_advance->formulir->form_number }}
                     </a>
                 </td>

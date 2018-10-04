@@ -171,7 +171,7 @@
                 <td>Form Number</td>
                 <td>:</td>
                 <td>
-                    <a href="{{ $url .'purchasing/point/service/payment-order/'.$payment_order->id }}">
+                    <a href="{{ $url . '/purchasing/point/service/payment-order/'.$payment_order->id }}">
                         {{ $payment_order->formulir->form_number }}
                     </a>
                 </td>
@@ -234,7 +234,7 @@
                         <tr class="item">
                             <td class="allow-wrap">
                                 @if($index === 0)
-                                    <a href="{{ $url .'purchasing/point/service/invoice/'.$invoice->id }}">
+                                    <a href="{{ $url . '/purchasing/point/service/invoice/'.$invoice->id }}">
                                         {{ $invoice->formulir->form_number }}
                                     </a>
                                 @endif
@@ -387,7 +387,7 @@
                     @endif
                     <tr class="item" style="border-bottom: 2px solid #ddd">
                         <td class="allow-wrap">
-                            <a href="{{ $url .'purchasing/point/service/downpayment/'.$reference->id }}">
+                            <a href="{{ $url . '/purchasing/point/service/downpayment/'.$reference->id }}">
                                 {{ $reference->formulir->form_number }}
                             </a>
                         </td>

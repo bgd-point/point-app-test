@@ -103,7 +103,7 @@
                 <td>Form Number</td>
                 <td>:</td>
                 <td>
-                    <a href="{{ $url .'purchasing/point/purchase-order/'.$purchase_order->id }}">
+                    <a href="{{ $url . '/purchasing/point/purchase-order/'.$purchase_order->id }}">
                         {{ $purchase_order->formulir->form_number}}
                     </a>
                 </td>

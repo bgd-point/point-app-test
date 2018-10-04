@@ -52,7 +52,7 @@ class EmailApproval extends Command
             ->orderBy('formulirable_type')
             ->get();
 
-        $this->domain = "//" . $this->argument('domain') . "." . ENV('SERVER_DOMAIN') . "/";
+        $this->domain = "//" . $this->argument('domain') . "." . ENV('SERVER_DOMAIN');
         if(count($formulirs) > 1)
             $this->line(count($formulirs) . " forms found. Resending email for " . $this->argument('domain'));
         elseif(count($formulirs) == 1)

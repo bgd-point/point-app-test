@@ -143,7 +143,7 @@
                         :
                     </td>
                     <td>
-                        <a href="{{ $url .'/inventory/point/transfer-item/send/'.$transfer_item->id }}">
+                        <a href="{{ $url . '/inventory/point/transfer-item/send/'.$transfer_item->id }}">
                             {{ $transfer_item->formulir->form_number }}
                         </a>
                     </td>

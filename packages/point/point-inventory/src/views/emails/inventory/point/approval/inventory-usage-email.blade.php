@@ -143,7 +143,7 @@
                         :
                     </td>
                     <td>
-                        <a href="{{ $url .'/inventory/point/inventory-usage/'.$inventory_usage->id }}">
+                        <a href="{{ $url . '/inventory/point/inventory-usage/'.$inventory_usage->id }}">
                             {{ $inventory_usage->formulir->form_number }}
                         </a>
                     </td>
