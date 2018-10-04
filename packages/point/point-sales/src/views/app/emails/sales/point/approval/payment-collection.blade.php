@@ -142,7 +142,7 @@
                     :
                 </td>
                 <td>
-                    <a href="{{ $url .'/sales/point/indirect/payment-collection/'.$payment_collection->id }}">
+                    <a href="{{ $url . '/sales/point/indirect/payment-collection/'.$payment_collection->id }}">
                         {{ $payment_collection->formulir->form_number }}
                     </a>
                 </td>

@@ -137,7 +137,7 @@
                 <tr>
                     <td style="width: 20%">Form Number</td>
                     <td>:</td>
-                    <td><a href="{{ $url .'accounting/point/memo-journal/'.$memo_journal->id }}">{{ $memo_journal->formulir->form_number }}</a></td>
+                    <td><a href="{{ $url . '/accounting/point/memo-journal/'.$memo_journal->id }}">{{ $memo_journal->formulir->form_number }}</a></td>
                 </tr>
                 <tr>
                     <td style="width: 20%">Created By</td>

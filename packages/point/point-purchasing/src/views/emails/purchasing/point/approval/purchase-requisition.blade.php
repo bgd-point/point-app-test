@@ -137,7 +137,7 @@
                 <td style="width: 20%">Form Number</td>
                 <td>:</td>
                 <td>
-                    <a href="{{ $url .'/purchasing/point/purchase-requisition/'.$purchase_requisition->id }}">
+                    <a href="{{ $url . '/purchasing/point/purchase-requisition/'.$purchase_requisition->id }}">
                         {{ $purchase_requisition->formulir->form_number }}
                     </a>
                 </td>
