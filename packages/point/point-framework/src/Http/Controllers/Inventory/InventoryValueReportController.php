@@ -9,6 +9,7 @@ use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\Warehouse;
 use Point\Framework\Models\Master\Coa;
+use Psy\Util\Json;
 
 class InventoryValueReportController extends Controller
 {
@@ -16,6 +17,7 @@ class InventoryValueReportController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Point\Core\Exceptions\PointException
      */
     public function index()
     {
@@ -288,6 +290,6 @@ class InventoryValueReportController extends Controller
             $job->delete();
         });
 
-        return Response::HTTP_OK;
+        return response()->json();
     }
 }
