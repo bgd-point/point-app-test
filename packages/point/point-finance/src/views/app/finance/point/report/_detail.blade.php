@@ -9,6 +9,7 @@
             <th>form date</th>
             <th>form number</th>
             <th>person</th>
+            <th>Account</th>
             <th>notes</th>
             <th class="text-right">received</th>
             <th class="text-right">disbursed</th>
@@ -30,6 +31,7 @@
                         <a href="{{ url('finance/point/'.$type.'/'. $report->payment_flow .'/'.$report->id) }}" @if($report->formulir->form_status == -1) style="background:red;color:white !important" @endif>{{ $report->formulir->form_number}}</a>
                     </td>
                     <td>{{ strtoupper($report->person->codeName) }}</td>
+                    <td>{{ \Point\Framework\Models\Master\Coa::find($report_detail->coa_id)->account }}</td>
                     <td>{{ strtoupper($report_detail->notes_detail) }}</td>
                     <td class="text-right">
                         @if($report->payment_flow == 'in')
@@ -51,31 +53,31 @@
             @endforeach
         @endforeach
         <tr>
-            <td colspan="5" class="text-right">Total</td>
+            <td colspan="6" class="text-right">Total</td>
             <td class="text-right"><strong>{{ number_format_price($total_received) }}</strong></td>
             <td class="text-right"><strong>{{ number_format_price($total_disbursed) }}</strong></td>
         </tr>
         <tr>
-            <td colspan="5" class="text-right">Opening Balance</td>
+            <td colspan="6" class="text-right">Opening Balance</td>
             <td class="text-right"><strong>{{ number_format_price($opening_balance) }}</strong></td>
             <td></td>
         </tr>
         <tr>
-            <td colspan="5" class="text-right">Ending Balance</td>
+            <td colspan="6" class="text-right">Ending Balance</td>
             <td></td>
             <td class="text-right"><strong>{{ number_format_price($opening_balance + $total_received + $total_disbursed) }}</strong></td>
         </tr>
         <tr>
-            <td colspan="5"></td>
+            <td colspan="6"></td>
             <td colspan="2" style="background: black"></td>
         </tr>
         <tr>
-            <td colspan="5" class="text-right">Cash Advance</td>
+            <td colspan="6" class="text-right">Cash Advance</td>
             <td></td>
             <td class="text-right"><strong>{{ number_format_price($total_cash_advance_remaining) }}</strong></td>
         </tr>
         <tr>
-            <td colspan="5" class="text-right">Total Cash</td>
+            <td colspan="6" class="text-right">Total Cash</td>
             <td></td>
             <td class="text-right"><strong>{{ number_format_price($opening_balance + $total_received + $total_disbursed - ($total_cash_advance_remaining)) }}</strong></td>
         </tr>

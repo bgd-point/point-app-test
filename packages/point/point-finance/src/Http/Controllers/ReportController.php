@@ -163,11 +163,13 @@ class ReportController extends Controller
                     'E' => 25,
                     'F' => 25,
                     'G' => 25,
+                    'H' => 25,
+                    'I' => 25,
                 ));
 
                 $sheet->setColumnFormat(array(
-                    'F' => '#,##0.00',
-                    'G' => '#,##0.00'
+                    'H' => '#,##0.00',
+                    'I' => '#,##0.00'
                 ));
 
                 $title = strtoupper($type." REPORT FROM " . $date_from . " - " . $date_to);
@@ -180,7 +182,7 @@ class ReportController extends Controller
                 });
 
                 // MERGER COLUMN
-                $sheet->mergeCells('A4:G4', 'center');
+                $sheet->mergeCells('A4:I4', 'center');
                 $sheet->cell('A4', function ($cell) use ($type) {
                     // Set font
                     $cell->setFont(array(
@@ -192,7 +194,7 @@ class ReportController extends Controller
                     $cell->setValue(strtoupper($type.' REPORT'));
                 });
 
-                $sheet->mergeCells('A5:G5', 'center');
+                $sheet->mergeCells('A5:I5', 'center');
                 $sheet->cell('A5', function ($cell) use ($date_from, $date_to) {
                     // Set font
                     $cell->setFont(array(
@@ -208,7 +210,7 @@ class ReportController extends Controller
                     }
                 });
 
-                $sheet->cell('A6:G6', function ($cell) {
+                $sheet->cell('A6:I6', function ($cell) {
                     // Set font
                     $cell->setFont(array(
                         'family'     => 'Times New Roman',
@@ -219,7 +221,7 @@ class ReportController extends Controller
 
                 // Generad table of content
                 $header = array(
-                    array('NO', 'FORM DATE', 'FORM NUMBER', 'PERSON', 'NOTES', 'RECEIVED', 'DISBURSED')
+                    array('NO', 'FORM DATE', 'FORM NUMBER', 'PERSON', 'ACCOUNT', 'ACCOUNT DESCRIPTION', 'NOTES', 'RECEIVED', 'DISBURSED')
                 );
 
                 $data_report = self::dataReport($type, $date_from, $date_to, $coa_id, $subledger_id);
@@ -244,10 +246,14 @@ class ReportController extends Controller
                             $total_disbursed += $report_detail->amount;
                         }
 
+                        $coa = Coa::find($report_detail->coa_id);
+
                         array_push($header, [$total_row,
                             date_format_view($data_report['report'][$i]->formulir->form_date),
                             $data_report['report'][$i]->formulir->form_number,
                             $data_report['report'][$i]->person->codeName,
+                            $coa->coa_number,
+                            $coa->name,
                             $report_detail->notes_detail,
                             $received * 1,
                             $disbursed * 1
@@ -257,10 +263,10 @@ class ReportController extends Controller
 
                 $total_row = $total_row + 6;
                 $sheet->fromArray($header, null, 'A6', false, false);
-                $sheet->setBorder('A6:G'.$total_row, 'thin');
+                $sheet->setBorder('A6:I'.$total_row, 'thin');
 
                 $next_row = $total_row + 1;
-                $sheet->cell('E'.$next_row, function ($cell) {
+                $sheet->cell('G'.$next_row, function ($cell) {
                     $cell->setValue('TOTAL');
                     $cell->setFont(array(
                         'family'     => 'Times New Roman',
@@ -269,16 +275,16 @@ class ReportController extends Controller
                     ));
                 });
 
-                $sheet->cell('F'.$next_row, function ($cell) use ($total_received) {
+                $sheet->cell('H'.$next_row, function ($cell) use ($total_received) {
                     $cell->setValue($total_received);
                 });
                 
-                $sheet->cell('G'.$next_row, function ($cell) use ($total_disbursed) {
+                $sheet->cell('I'.$next_row, function ($cell) use ($total_disbursed) {
                     $cell->setValue($total_disbursed);
                 });
 
                 $next_row = $next_row + 1;
-                $sheet->cell('E'.$next_row, function ($cell) {
+                $sheet->cell('G'.$next_row, function ($cell) {
                     $cell->setValue('OPENING BALANCE');
                     $cell->setFont(array(
                         'family'     => 'Times New Roman',
@@ -287,12 +293,12 @@ class ReportController extends Controller
                     ));
                 });
 
-                $sheet->cell('F'.$next_row, function ($cell) use ($data_report) {
+                $sheet->cell('H'.$next_row, function ($cell) use ($data_report) {
                     $cell->setValue($data_report['journal_debit'] - $data_report['journal_credit']);
                 });
 
                 $next_row = $next_row + 1;
-                $sheet->cell('E'.$next_row, function ($cell) {
+                $sheet->cell('G'.$next_row, function ($cell) {
                     $cell->setValue('ENDING BALANCE');
                     $cell->setFont(array(
                         'family'     => 'Times New Roman',
@@ -301,7 +307,7 @@ class ReportController extends Controller
                     ));
                 });
 
-                $sheet->cell('F'.$next_row, function ($cell) use ($data_report, $total_received, $total_disbursed) {
+                $sheet->cell('H'.$next_row, function ($cell) use ($data_report, $total_received, $total_disbursed) {
                     $cell->setValue(($data_report['journal_debit'] - $data_report['journal_credit']) + $total_received - $total_disbursed);
                 });
             });
