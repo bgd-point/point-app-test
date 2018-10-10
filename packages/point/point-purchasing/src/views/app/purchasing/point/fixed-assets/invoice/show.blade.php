@@ -203,16 +203,6 @@
                                                'delete.point.purchasing.invoice.fixed.assets')"><i class="fa fa-times"></i> Cancel
                                         Form</a>
                                 @endif
-                                @if(formulir_view_close($invoice->formulir, 'update.point.purchasing.invoice.fixed.assets'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCloseForm({{$invoice->formulir_id}},'{{url('formulir/close')}}')">Close
-                                        Form</a>
-                                @endif
-                                @if(formulir_view_reopen($invoice->formulir, 'update.point.purchasing.invoice.fixed.assets'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureReopenForm({{$invoice->formulir_id}},'{{url('formulir/reopen')}}')">Reopen
-                                        Form</a>
-                                @endif
                             </div>
                         </div>
                     </fieldset>

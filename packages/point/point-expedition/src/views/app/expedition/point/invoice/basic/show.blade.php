@@ -123,16 +123,6 @@
                                                'delete.point.expedition.invoice')"><i class="fa fa-times"></i> Cancel
                                         Form</a>
                                 @endif
-                                @if(formulir_view_close($invoice->formulir, 'update.point.expedition.invoice'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCloseForm({{$invoice->formulir_id}},'{{url('formulir/close')}}')">Close
-                                        Form</a>
-                                @endif
-                                @if(formulir_view_reopen($invoice->formulir, 'update.point.expedition.invoice'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureReopenForm({{$invoice->formulir_id}},'{{url('formulir/reopen')}}')">Reopen
-                                        Form</a>
-                                @endif
                                 @if(formulir_view_email_vendor($invoice->formulir, 'create.point.expedition.invoice'))
                                     <form action="{{url('expedition/point/invoice/basic/send-email')}}" method="post">
                                         {!! csrf_field() !!}
