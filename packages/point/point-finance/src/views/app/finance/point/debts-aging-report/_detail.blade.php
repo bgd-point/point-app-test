@@ -16,7 +16,7 @@
 	    </tr>
 	</thead>
 		<tbody >
-		<?php $i = 1; $amount=0; $remain=0; $a=0; $b=0; $c=0; $d=0; ?>
+		<?php $i = 0; $amount=0; $remain=0; $a=0; $b=0; $c=0; $d=0; ?>
 		@foreach($list_report as $report)
 		<?php
             $sum=0;
@@ -36,7 +36,8 @@
         ?>
 		@if($remaining > 0)
 			<?php
-            $amount = $amount + $report->amount;
+			$amount = $amount + $report->amount;
+			$i++;
 			?>
 		<tr>
 			<td>{{$i}}</td>
@@ -52,7 +53,6 @@
 			<td class="text-right">@if($position > 60){{number_format_price($remaining)}} <?php $d=$d+$remaining; ?> @endif</td>
 		</tr>
 		@endif
-		<?php $i++; ?>
 		@endforeach
 		</tbody>
 		<tfoot>
