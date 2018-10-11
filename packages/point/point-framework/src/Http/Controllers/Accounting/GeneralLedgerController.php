@@ -40,7 +40,7 @@ class GeneralLedgerController extends Controller
                 $data = array(
                     'list_coa' => Coa::active()->orderBy('coa_number')->orderBy('name')->get(),
                     'coa_id' => $coa_id,
-                    'coa' => null,
+                    'coa' => Coa::where('id', $coa_id)->first(),
                     'journals' => $journals,
                     'date_to' => $date_to,
                     'date_from' => $date_from
