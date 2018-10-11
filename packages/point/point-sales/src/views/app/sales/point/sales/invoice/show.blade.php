@@ -217,17 +217,6 @@
                                         Request Cancel Form
                                     </a>
                                 @endif
-
-                                @if(formulir_view_close($invoice->formulir, 'update.point.sales.invoice'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureCloseForm({{$invoice->formulir_id}},'{{url('formulir/close')}}')">Close
-                                        Form</a>
-                                @endif
-                                @if(formulir_view_reopen($invoice->formulir, 'update.point.sales.invoice'))
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
-                                       onclick="secureReopenForm({{$invoice->formulir_id}},'{{url('formulir/reopen')}}')">Reopen
-                                        Form</a>
-                                @endif
                                 @if(formulir_view_email_vendor($invoice->formulir, 'create.point.sales.invoice'))
                                     <form action="{{url('sales/point/indirect/invoice/send-email')}}" method="post">
                                         {!! csrf_field() !!}
