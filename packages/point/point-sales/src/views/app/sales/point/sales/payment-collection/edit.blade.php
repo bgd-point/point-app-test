@@ -54,10 +54,24 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Payment Type</label>
 
-                        <div class="col-md-6 content-show">
-                            {{ $payment_collection->payment_type }}
-                            <input readonly type="hidden" name="payment_type" class="form-control"
-                                   value="{{$payment_collection->payment_type}}"/>
+                        <div class="col-md-6">
+                            <select
+                                id="payment_type"
+                                name="payment_type"
+                                class="selectize"
+                                style="width: 100%;"
+                                data-placeholder="Please choose">
+                                <option
+                                    value="cash"
+                                    {{ $payment_collection->payment_type == 'cash' ? 'selected' : '' }}>
+                                    Cash
+                                </option>
+                                <option
+                                    value="bank"
+                                    {{ $payment_collection->payment_type == 'bank' ? 'selected' : '' }}>
+                                    Bank
+                                </option>
+                            </select>
                         </div>
                     </div>
 
