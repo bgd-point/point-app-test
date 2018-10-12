@@ -67,6 +67,12 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-md-3 control-label">Payment Type</label>
+                            <div class="col-md-6 content-show">
+                                {{ $payment_collection->payment_type }}
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <div class="col-md-12">
                                 <div class="table-responsive">
                                     <table class="table table-striped">
