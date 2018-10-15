@@ -90,4 +90,9 @@
         <div class="signature">____________________</div>
         <div class="signature-person">({{strtoupper($sales_quotation->person->name)}})</div>
     </td>
+</tr>
+<tr>
+    <td colspan=2 style="padding-top: 25px; text-transform: unset!important;">
+        <em>This document has been digitally approved</em>
+    </td>
 @stop
