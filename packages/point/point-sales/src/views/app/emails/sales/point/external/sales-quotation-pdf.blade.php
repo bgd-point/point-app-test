@@ -92,7 +92,10 @@
     </td>
 </tr>
 <tr>
-    <td colspan=2 style="padding-top: 25px; text-transform: unset!important;">
+    <td style="padding-top: 25px; text-transform: unset!important;">
+        <em>This document has been digitally approved</em>
+    </td>
+    <td style="padding-top: 25px; text-transform: unset!important;">
         <em>This document has been digitally approved</em>
     </td>
 @stop
