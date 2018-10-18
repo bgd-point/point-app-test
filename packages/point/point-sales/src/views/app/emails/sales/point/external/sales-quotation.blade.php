@@ -128,7 +128,14 @@
 
 <body>
     <div class="invoice-box">
-        Hello Mr/Mrs/Ms/ {{ $sales_quotation->person->name }},<br/>You have an email sales quotation from <br>
+        Dear Sir/Madam, <br> <br>
+
+        Please find attached sales quotation for your perusal. <br><br>
+
+        Should you have further queries please do not hesitate to contact us. <br><br>
+
+        Sincerely Yours, <br><br>
+
         @if($warehouse->store_name)
         <strong style="font-size:18px; text-transform: uppercase;">{{$warehouse->store_name}}</strong> <br/>
         <font style="font-size:12px;text-transform: capitalize;">
@@ -140,76 +147,6 @@
             Addess......... <br/>
             Phone Number 
         @endif
-        <br/> <br/>
-
-        <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
-            <tr>
-                <td style="width: 20%">Form Number</td>
-                <td>:</td>
-                <td>{{ $sales_quotation->formulir->form_number }}</td>
-            </tr>
-            <tr>
-                <td style="width: 20%">Form Date</td>
-                <td>:</td>
-                <td>{{ \DateHelper::formatView($sales_quotation->formulir->form_date) }}</td>
-            </tr>
-            <tr>
-                <td style="width: 20%">Customer</td>
-                <td>:</td>
-                <td>{{ $sales_quotation->person->name }}</td>
-            </tr>
-        </table>
-
-        <table cellpadding="0" cellspacing="0">
-            <tr class="heading">
-                <td>Item</td>
-                <td align="right">Quantity</td>
-                <td>Unit</td>
-                <td align="right">Price</td>
-                <td>Discount</td>
-                <td align="right">Total</td>
-            </tr>
-
-            @foreach($sales_quotation->items as $items)
-                <tr class="item">
-                    <td>{{ $items->item->name }}</td>
-                    <td align="right">{{ number_format_quantity($items->quantity) }}</td>
-                    <td>{{ $items->unit}}</td>
-                    <td align="right">{{ number_format_price($items->price) }}</td>
-                    <td>{{ number_format_price($items->discount) }}</td>
-                    <td align="right">
-                        {{ number_format_price($items->quantity * $items->price - ($items->quantity * $items->price * $items->discount/100)) }}
-                    </td>
-                </tr>
-            @endforeach
-            <tr>
-                <td colspan="5" align="right">Subtotal</td>
-                <td align="right">{{ number_format_quantity($sales_quotation->subtotal) }}</td>
-            </tr>
-            <tr>
-                <td colspan="5" align="right">Discount (%)</td>
-                <td align="right">{{ number_format_quantity($sales_quotation->discount) }}</td>
-            </tr>
-            <tr>
-                <td colspan="5" align="right">Tax Base</td>
-                <td align="right">{{ number_format_quantity($sales_quotation->tax_base) }}</td>
-            </tr>
-            @if($sales_quotation->type_of_tax != 'non')
-            <tr>
-                <td colspan="5" align="right">Tax ({{ $sales_quotation->type_of_tax }})
-                </td>
-                <td align="right">{{ number_format_quantity($sales_quotation->tax) }}</td>
-            </tr>
-            @endif
-            <tr>
-                <td colspan="5" align="right">Expedition Fee</td>
-                <td align="right">{{ number_format_quantity($sales_quotation->expedition_fee) }}</td>
-            </tr>
-            <tr>
-                <td colspan="5" align="right">Total</td>
-                <td align="right">{{ number_format_quantity($sales_quotation->total) }}</td>
-            </tr>
-        </table>
     </div>
 </body>
 </html>
