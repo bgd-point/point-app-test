@@ -216,7 +216,8 @@ class PurchaseOrder extends Model
 
     /**
      * For get formulir id expedition order already locked by delivery order
-     * @return Array formulir_id
+     *
+     * @return array
      */
     public static function getArrayFormulirExpeditionOrderLockedByGoodsReceived()
     {
@@ -227,7 +228,9 @@ class PurchaseOrder extends Model
             $expedition_locked = FormulirLock::where('locking_id', $delivery_order->formulir_id)
                 ->orderBy('id', 'DESC')
                 ->first();
-//            array_push($array_expedition_order_locked, $expedition_locked->locked_id);
+            if ($expedition_locked) {
+                array_push($array_expedition_order_locked, $expedition_locked->locked_id);
+            }
         }
 
         return $array_expedition_order_locked;
