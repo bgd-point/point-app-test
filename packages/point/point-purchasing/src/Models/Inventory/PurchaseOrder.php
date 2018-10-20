@@ -227,7 +227,7 @@ class PurchaseOrder extends Model
             $expedition_locked = FormulirLock::where('locking_id', $delivery_order->formulir_id)
                 ->orderBy('id', 'DESC')
                 ->first();
-            array_push($array_expedition_order_locked, $expedition_locked->locked_id);
+//            array_push($array_expedition_order_locked, $expedition_locked->locked_id);
         }
 
         return $array_expedition_order_locked;
