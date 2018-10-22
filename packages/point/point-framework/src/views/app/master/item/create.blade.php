@@ -58,7 +58,7 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Code *</label>
                     <div class="col-md-6">
-                        <input readonly type="text" id="code" name="code" class="form-control" value="{{old('code')}}">
+                        <input type="text" id="code" name="code" class="form-control" value="{{old('code')}}">
                     </div>
                 </div>
                 <div class="form-group">
