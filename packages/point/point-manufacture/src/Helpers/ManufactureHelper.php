@@ -159,7 +159,7 @@ class ManufactureHelper
         }
         $total_product_quantity = 0;
         for ($i=0; $i < count($request->input('quantity_output')); $i++) {
-            $total_product_quantity += $request->input('quantity_output')[$i];
+            $total_product_quantity += number_format_db($request->input('quantity_output')[$i]);
         }
         $cogs_product = $total_cogs_material / $total_product_quantity;
         
