@@ -590,6 +590,7 @@ if (! function_exists('sendEmail')) {
             Point\Core\Helpers\QueueHelper::reconnectAppDatabase(request()->database_name);
             \Mail::send($bladePath, $data, function ($message) use ($targetAddress, $subject, $data) {
                 $appName = ucfirst(explode('//', $data['url'])[1]);
+                $appName = explode('.', $appName)[0];
                 $message->to($targetAddress)->subject($appName . ' - ' . $subject);
             });
             $job->delete();
