@@ -74,12 +74,13 @@
                                 <table id="item-datatable" class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th style="min-width:80px;"></th>
-                                            <th style="min-width:250px;">ITEM *</th>
-                                            <th style="min-width:160px;">STOCK BEFORE <br>USAGE *</th>
-                                            <th style="min-width:160px;">QUANTITY <br>USAGE *</th>
+                                            <th style="width:1px!important;"></th>
+                                            <th style="min-width:160px;">ITEM *</th>
+                                            <th style="min-width:100px;">STOCK BEFORE USAGE *</th>
+                                            <th style="min-width:100px;">QUANTITY USAGE *</th>
                                             <th style="min-width:250px;">NOTES *</th>
-                                            <th style="min-width:250px;">ALLOCATION*</th>
+                                            <th style="min-width:160px;">ALLOCATION*</th>
+                                            <th style="min-width:160px;">COA*</th>
                                         </tr>
                                     </thead>
                                     <tbody class="manipulate-row">
@@ -122,17 +123,23 @@
                                                     @endif
                                                 </div>
                                             </td>
+                                            <td>
+                                                <select id="coa-id-{{ $counter }}" name="coa_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">
+                                                @foreach ($list_coa as $coa)
+                                                    <option value="{{ $coa->id }}">
+                                                        {{ $coa->coa_number }} {{ $coa->name }}
+                                                    </option>
+                                                @endforeach
+                                                </select>
+                                            </td>
                                         </tr>
                                         @endfor
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td><input type="button" id="addItemRow" class="btn btn-primary" value="Add Item"></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td colspan="6">
+                                                <input type="button" id="addItemRow" class="btn btn-primary" value="Add Item">
+                                            </td>
                                         </tr>
                                     </tfoot>
                                 </table> 
@@ -223,12 +230,18 @@ $('#addItemRow').on( 'click', function () {
                 +'</a>'
                 +'</span>'
             @endif
-        +'</div>'
+        +'</div>',
+        '<select id="coa-id-{{$counter}}" name="coa_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
+            @foreach ($list_coa as $coa)
+                +'<option value="{{ $coa->id }}">{{ $coa->coa_number }} {{ $coa->name }}</option>'
+            @endforeach
+        +'</select>'
 
     ] ).draw( false );
 
     initFormatNumber();
     initSelectize('#item-id-'+counter);
+    initSelectize('#coa-id-'+counter);
     reloadItemInSelectize("#item-id-"+counter);
     initSelectize('#allocation-id-'+counter);
     reloadAllocationInSelectize('#allocation-id-'+counter);

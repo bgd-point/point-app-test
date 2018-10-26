@@ -43,6 +43,17 @@ class Coa extends Model
             ->selectOriginal()
             ->get();
     }
+    /**
+     * @param $name
+     *
+     * @return query
+     */
+    public static function scopePosition($q, $name)
+    {
+        $q->join('coa_category', 'coa.coa_category_id', '=', 'coa_category.id')
+            ->join('coa_position', 'coa_category.coa_position_id', '=', 'coa_position.id')
+            ->where('coa_position.name', '=', $name);
+    }
 
     /**
      * @param $name
