@@ -63,6 +63,7 @@ class InventoryUsageHelper
             $inventory_usage_items->allocation_id = app('request')->input('allocation_id')[$i];
             $inventory_usage_items->unit = Item::defaultUnit($inventory_usage_items->item_id)->name;
             $inventory_usage_items->converter = '1';
+            $inventory_usage_items->coa_id = app('request')->input('coa_id')[$i];
             $inventory_usage_items->save();
         }
 
@@ -117,7 +118,7 @@ class InventoryUsageHelper
             }
 
             // JOURNAL #1 of #2 - Inventory Usage Expense
-            $inventory_usage_expense_account = JournalHelper::getAccount('point inventory usage', 'inventory differences');
+            $inventory_usage_expense_account = $inventory_usage_item->coa_id;
             $position = JournalHelper::position($inventory_usage_expense_account);
             $journal = new Journal();
             $journal->form_date = $inventory_usage->formulir->form_date;
