@@ -242,6 +242,7 @@ $('#addItemRow').on( 'click', function () {
     initFormatNumber();
     initSelectize('#item-id-'+counter);
     initSelectize('#coa-id-'+counter);
+    $('#coa-id-counter').val({{ $default_coa }});
     reloadItemInSelectize("#item-id-"+counter);
     initSelectize('#allocation-id-'+counter);
     reloadAllocationInSelectize('#allocation-id-'+counter);

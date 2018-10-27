@@ -9,6 +9,7 @@ use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\PersonHelper;
+use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Master\Allocation;
@@ -70,6 +71,7 @@ class InventoryUsageController extends Controller
         $view->list_allocation = Allocation::active()->get();
         $view->list_user_approval = UserHelper::getAllUser();
         $view->list_coa = COA::position('Expense')->active()->select('coa.id', 'coa.name', 'coa.coa_number')->get();
+        $view->default_coa = JournalHelper::getAccount('point inventory usage', 'inventory differences');
         return $view;
     }
 
@@ -129,6 +131,7 @@ class InventoryUsageController extends Controller
         $view->list_warehouse = Warehouse::active()->get();
         $view->list_allocation = Allocation::active()->get();
         $view->list_user_approval = UserHelper::getAllUser();
+        $view->list_coa = COA::position('Expense')->active()->select('coa.id', 'coa.name', 'coa.coa_number')->get();
         return $view;
     }
 
