@@ -93,21 +93,24 @@
                                                 <th class="text-right">QUANTITY USAGE</th>
                                                 <th>NOTES</th>
                                                 <th>ALLOCATION</th>
+                                                <th>ACCOUNT</th>
                                             </tr>
                                         </thead>
                                         <tbody class="manipulate-row">
-                                        @foreach($inventory_usage->listInventoryUsage as $stock_usage_item)
+                                        @foreach($inventory_usage->listInventoryUsage as $inventory_usage_item)
                                         <tr>
-                                            <td>{{ $stock_usage_item->item->codeName }}</td>
-                                            <td class="text-right">{{ number_format_quantity($stock_usage_item->stock_in_database) }} {{$stock_usage_item->unit}}</td>
-                                            <td class="text-right">{{ number_format_quantity($stock_usage_item->quantity_usage) }} {{$stock_usage_item->unit}}</td>
-                                            <td>{{ $stock_usage_item->usage_notes }}</td>
-                                            <td>{{ $stock_usage_item->allocation->name }}</td>
+                                            <td>{{ $inventory_usage_item->item->codeName }}</td>
+                                            <td class="text-right">{{ number_format_quantity($inventory_usage_item->stock_in_database) }} {{$inventory_usage_item->unit}}</td>
+                                            <td class="text-right">{{ number_format_quantity($inventory_usage_item->quantity_usage) }} {{$inventory_usage_item->unit}}</td>
+                                            <td>{{ $inventory_usage_item->usage_notes }}</td>
+                                            <td>{{ $inventory_usage_item->allocation->name }}</td>
+                                            <td>{{ $inventory_usage_item->coa->coa_number }} {{ $inventory_usage_item->coa->name }}</td>
                                         </tr>
                                         @endforeach
                                         </tbody> 
                                         <tfoot>
                                             <tr>                                            
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>

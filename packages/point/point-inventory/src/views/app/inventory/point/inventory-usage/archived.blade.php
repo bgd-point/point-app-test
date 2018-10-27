@@ -65,6 +65,7 @@
                                         <th>QUANTITY USAGE</th>
                                         <th>NOTES</th>
                                         <th>ALLOCATION</th>
+                                        <th>ACCOUNT</th>
                                     </tr>
                                 </thead>
                                 <tbody class="manipulate-row">
@@ -76,11 +77,13 @@
                                     <td class="text-center">{{ number_format_quantity($inventory_usage_item->quantity_usage) }} {{$inventory_usage_item->unit}}</td>
                                     <td>{{ $inventory_usage_item->usage_notes }}</td>
                                     <td>{{ $inventory_usage_item->allocation->name }}</td>
+                                    <td>{{ $inventory_usage_item->coa->coa_number }} {{ $inventory_usage_item->coa->name }}</td>
                                 </tr>
                                 @endforeach
                                 </tbody> 
                                 <tfoot>
                                     <tr>                                            
+                                        <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
