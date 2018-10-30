@@ -120,7 +120,33 @@
                         @endforeach
                     </table>
                 </div>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="btn-sync-budget"
+                    onclick="btnSyncBudgetClicked(this);">
+                    <i class="fa fa-spinner fa-spin hidden"></i>
+                    Sync Budget
+                </button>
             </div>
         </div>
     </div>
+@stop
+
+@section('scripts')
+<script>
+function btnSyncBudgetClicked(event) {
+    $(event).prop('disabled', true);
+    $(event).find('i').toggleClass('hidden');
+
+    sendSyncBudget()
+}
+function sendSyncBudget() {
+    $.get('/sync-budget', function(data) {
+        $('#btn-sync-budget').prop('disabled', false)
+        $('#btn-sync-budget').find('i').toggleClass('hidden')
+    })
+}
+</script>
 @stop

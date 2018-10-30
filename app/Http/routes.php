@@ -13,6 +13,7 @@
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', 'DashboardController@index');
+    Route::get('/sync-budget', 'DashboardController@syncBudget');
 });
 
 

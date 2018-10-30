@@ -34,6 +34,10 @@ use Point\PointSales\Models\Sales\SalesOrder;
 use Point\PointSales\Models\Sales\SalesQuotation;
 use Point\PointSales\Models\Service\Downpayment as SalesServiceDownpayment;
 use Point\PointSales\Models\Service\PaymentCollection as ServicePaymentCollection;
+use Point\Framework\Models\Master\Allocation;
+use Point\Framework\Models\Master\AllocationReport;
+use Point\Framework\Models\Master\Coa;
+use Point\Framework\Helpers\JournalHelper;
 
 class DashboardController extends Controller
 {
@@ -106,5 +110,71 @@ class DashboardController extends Controller
         $view->array_vesa_payment = $array_vesa_payment;
 
         return $view;
+    }
+
+    public function syncBudget() {
+        $allocation = $this->getAllocation();
+
+        $coa = $this->getCoaBalance();
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://kbretail.cloud.point.red/api/v1/sync-budget",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30000,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode([$allocation, $coa]),
+            CURLOPT_HTTPHEADER => array(
+                // Set here requred headers
+                "accept: */*",
+                "content-type: application/json",
+                "Authorization: Bearer token",
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            return Response()->json($err, 400);
+        }
+        
+        return Response()->json($response);
+        
+    }
+
+    private function getAllocation() {
+        return AllocationReport::joinAllocation()
+            ->joinFormulir()
+            ->notCanceled()
+            ->notArchived()
+            ->selectOriginal()
+            ->addSelect('formulir.form_date', 'allocation.name')
+            ->get();
+    }
+
+    private function getCoaBalance() {
+        $coa = Coa::orderBy('coa_number')
+            ->orderBy('name')
+            ->select(
+                'id',
+                'coa_category_id',
+                'coa_group_id',
+                'name',
+                'coa_number',
+                'notes'
+            )
+            ->get();
+        // attach ending balance
+        foreach($coa as $value) {
+            $value->balance = JournalHelper::coaEndingBalance($value->id, date('Y-m-d 23:59:59'));
+        }
+
+        return $coa;
     }
 }
