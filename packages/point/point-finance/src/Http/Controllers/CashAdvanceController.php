@@ -228,9 +228,18 @@ class CashAdvanceController extends Controller
                 ->where('payment_type', $request->get('type'))
                 ->where('coa_id', $request->get('account'))
                 ->where('remaining_amount', '>', 0)
+                ->handedOver()
                 ->select('point_finance_cash_advance.id as value', DB::raw('CONCAT(formulir.form_number, " - ", remaining_amount, " a/n ",person.name) AS text'))
                 ->get()
                 ->toArray()
         ));
+    }
+
+    public function handOver($id)
+    {
+        $cashAdvance = CashAdvance::find($id);
+        $cashAdvance->handed_over = true;
+        $cashAdvance->save();
+        return redirect()->back();
     }
 }

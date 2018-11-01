@@ -29,6 +29,7 @@ Route::group(['prefix' => 'finance/point', 'namespace' => 'Point\PointFinance\Ht
         Route::post('cash-advance/send-request-approval', 'CashAdvanceApprovalController@sendRequestApproval');
         Route::get('cash-advance/list', 'CashAdvanceController@_list');
         Route::get('cash-advance/{id}/archived', 'CashAdvanceController@archived');
+        Route::get('cash-advance/{id}/hand-over', 'CashAdvanceController@handOver');
         Route::resource('/cash-advance', 'CashAdvanceController');
 
         // Cash

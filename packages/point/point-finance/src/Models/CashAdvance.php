@@ -78,4 +78,9 @@ class CashAdvance extends Model
     {
         return 'point-finance::emails.finance.point.approval.cash-advance';
     }
+
+    public function scopeHandedOver($query)
+    {
+        $query->where('handed_over', true);
+    }
 }
