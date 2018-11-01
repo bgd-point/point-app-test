@@ -36,6 +36,13 @@
                                         'approval_to' => $cash_advance->formulir->approvalTo->name,
                                     ])
                                     @include('framework::app.include._form_status_label', ['form_status' => $cash_advance->formulir->form_status])
+                                    @if ($cash_advance->handed_over)
+                                        <label class="label label-success" data-toggle="tooltip">
+                                            <i class="fa fa-file-text"></i> Sudah diserahkan</label>
+                                    @else
+                                        <label class="label label-warning" data-toggle="tooltip">
+                                            <i class="fa fa-file-text"></i> Belum diserahkan</label>
+                                    @endif
                                 </div>
                             </div>
                         </fieldset>

@@ -12,5 +12,14 @@
         class="btn {{\Request::segment(4)=='request-approval'?'btn-primary':'btn-info'}}">
     Request Approval
 </a>
+@if(isset($cash_advance)
+    && !$cash_advance->handed_over
+    && $cash_advance->formulir->approval_status === 1
+    && $cash_advance->formulir->form_status === 0)
+<a href="{{ $cash_advance->id }}/hand-over"
+   class="btn btn-info">
+    Sudah diserahkan
+</a>
+@endif
 
 <br/><br/>
