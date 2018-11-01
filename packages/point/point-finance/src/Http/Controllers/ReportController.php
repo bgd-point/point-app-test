@@ -64,6 +64,7 @@ class ReportController extends Controller
             ->where('is_payed', true)
             ->where('amount', '>', 0)
             ->where('coa_id', $coa_id)
+            ->handedOver()
             ->sum('amount');
 
         $view->total_cash_advance_used = CashCashAdvance::joinFormulir()->selectOriginal()->notArchived()->notCanceled()
@@ -76,6 +77,7 @@ class ReportController extends Controller
             ->where('is_payed', true)
             ->where('amount', '>', 0)
             ->where('coa_id', $coa_id)
+            ->handedOver()
             ->sum('remaining_amount');
 
         \Log::info('amount ' . $view->total_cash_advance);
