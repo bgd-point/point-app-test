@@ -32,13 +32,13 @@ trait DownpaymentVesa
 
     private static function vesaCreate($array = [], $merge_into_group = true)
     {
-        $list_downpayment = Downpayment::joinFormulir()->whereNotNull('sales_order_id')->notArchived()->notCanceled()->selectOriginal()->orderByStandard();
+        $list_downpayment = Downpayment::joinFormulir()->with('person')->whereNotNull('sales_order_id')->notArchived()->notCanceled()->selectOriginal()->orderByStandard();
         $array_sales_order_in_downpayment = [];
         foreach ($list_downpayment as $downpayment) {
             array_push($array_sales_order_in_downpayment, $downpayment->sales_order_id);
         }
 
-        $list_sales_order = SalesOrder::joinFormulir()->approvalApproved()->open()->where('is_cash', true)->whereNotIn('point_sales_order.id', $array_sales_order_in_downpayment)->notArchived()->notCanceled()->selectOriginal()->orderByStandard();
+        $list_sales_order = SalesOrder::joinFormulir()->with('person')->approvalApproved()->open()->where('is_cash', true)->whereNotIn('point_sales_order.id', $array_sales_order_in_downpayment)->notArchived()->notCanceled()->selectOriginal()->orderByStandard();
 
         // Grouping vesa
         if ($merge_into_group && $list_sales_order->count() > 5) {
@@ -46,7 +46,7 @@ trait DownpaymentVesa
             array_push($array, [
                 'url' => url('sales/point/indirect/downpayment/vesa-create'),
                 'deadline' => $sales_order->formulir->form_date,
-                'message' => 'Make an sales downpayment',
+                'message' => 'you have many sales orders waiting to get downpayments',
                 'permission_slug' => 'create.point.sales.downpayment'
             ]);
             return $array;
@@ -58,7 +58,9 @@ trait DownpaymentVesa
                 array_push($array, [
                     'url' => url('sales/point/indirect/downpayment/insert/'.$sales_order->id),
                     'deadline' => $sales_order->formulir->form_date,
-                    'message' => 'Make an sales downpayment from sales order ' . formulir_url($sales_order->formulir),
+                    'message' => 'Make a sales downpayment from sales order '
+                        . formulir_url($sales_order->formulir)
+                    . ' customer <strong>' . $sales_order->person->name . '</strong>',
                     'permission_slug' => 'create.point.sales.downpayment'
                 ]);
             }
@@ -69,14 +71,14 @@ trait DownpaymentVesa
 
     private static function vesaApproval($array = [], $merge_into_group = true)
     {
-        $list_downpayment = self::joinFormulir()->open()->approvalPending()->notArchived()->notCanceled()->selectOriginal()->orderByStandard();
+        $list_downpayment = self::joinFormulir()->with('person')->open()->approvalPending()->notArchived()->notCanceled()->selectOriginal()->orderByStandard();
 
         // Grouping vesa
         if ($merge_into_group && $list_downpayment->get()->count() > 5) {
             array_push($array, [
                 'url' => url('sales/point/indirect/downpayment/vesa-approval'),
                 'deadline' => $list_downpayment->orderBy('form_date')->first()->formulir->form_date,
-                'message' => 'please approve sales downpayment',
+                'message' => 'you have many sale downpayments waiting to be approved',
                 'permission_slug' => 'approval.point.sales.downpayment'
             ]);
 
@@ -88,7 +90,10 @@ trait DownpaymentVesa
             array_push($array, [
                 'url' => url('sales/point/indirect/downpayment/' . $downpayment->id),
                 'deadline' => $downpayment->formulir->form_date,
-                'message' => 'please approve this sales downpayment ' . formulir_url($downpayment->formulir),
+                'message' => 'please approve this sales downpayment '
+                    . formulir_url($downpayment->formulir)
+                    . ' customer <strong>' . $downpayment->person->name . '</strong> amount '
+                    . number_format_price($downpayment->amount),
                 'permission_slug' => 'approval.point.sales.downpayment'
             ]);
         }
@@ -98,13 +103,13 @@ trait DownpaymentVesa
 
     private static function vesaReject($array = [], $merge_into_group = true)
     {
-        $list_downpayment = self::joinFormulir()->open()->approvalRejected()->notArchived()->notCanceled()->selectOriginal()->orderByStandard();
+        $list_downpayment = self::joinFormulir()->with('person')->open()->approvalRejected()->notArchived()->notCanceled()->selectOriginal()->orderByStandard();
         // Grouping vesa
         if ($merge_into_group && $list_downpayment->get()->count() > 5) {
             array_push($array, [
                 'url' => url('sales/point/indirect/downpayment/vesa-rejected'),
                 'deadline' => $list_downpayment->orderBy('form_date')->first()->formulir->form_date,
-                'message' => 'Rejected, please edit your form downpayment',
+                'message' => 'sales downpayment rejected, please edit your forms',
                 'permission_slug' => 'update.point.sales.downpayment'
             ]);
 
@@ -116,7 +121,11 @@ trait DownpaymentVesa
             array_push($array, [
                 'url' => url('sales/point/indirect/downpayment/' . $downpayment->id.'/edit'),
                 'deadline' => $downpayment->formulir->form_date,
-                'message' => formulir_url($downpayment->formulir). ' Rejected, please edit your form sales downpayment',
+                'message' => 'sales downpayment'
+                    . formulir_url($downpayment->formulir)
+                    . ' customer <strong>' . $downpayment->person->name . '</strong> amount '
+                    . number_format_price($downpayment->amount)
+                    . ' Rejected, please edit your form sales downpayment',
                 'permission_slug' => 'update.point.sales.downpayment'
             ]);
         }

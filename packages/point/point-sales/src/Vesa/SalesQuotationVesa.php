@@ -24,7 +24,7 @@ trait SalesQuotationVesa
 
     private static function vesaApproval($array = [], $merge_into_group = true)
     {
-        $list_sales_quotation = self::joinFormulir()->open()->approvalPending()->notArchived()->selectOriginal()->orderByStandard();
+        $list_sales_quotation = self::joinFormulir()->with('person')->open()->approvalPending()->notArchived()->selectOriginal()->orderByStandard();
 
         // Grouping vesa
         if ($merge_into_group && $list_sales_quotation->get()->count() > 5) {
@@ -32,7 +32,7 @@ trait SalesQuotationVesa
                 'url' => url('sales/point/indirect/sales-quotation/vesa-approval'),
                 'deadline' => $list_sales_quotation->orderBy('required_date')->first()->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $list_sales_quotation->orderBy('required_date')->first()->required_date) ? true : false,
-                'message' => 'please approve sales quotation',
+                'message' => 'you have many sales quotations waiting to be approved',
                 'permission_slug' => 'approval.point.sales.quotation'
             ]);
 
@@ -45,7 +45,9 @@ trait SalesQuotationVesa
                 'url' => url('sales/point/indirect/sales-quotation/' . $sales_quotation->id),
                 'deadline' => $sales_quotation->required_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $sales_quotation->required_date) ? true : false,
-                'message' => 'please approve this sales quotation ' . formulir_url($sales_quotation->formulir),
+                'message' => 'please approve this sales quotation '
+                    . formulir_url($sales_quotation->formulir)
+                    . ' customer <strong>' . $sales_quotation->person->name . '</strong>',
                 'permission_slug' => 'approval.point.sales.quotation'
             ]);
         }
@@ -55,7 +57,7 @@ trait SalesQuotationVesa
 
     private static function vesaReject($array = [], $merge_into_group = true)
     {
-        $list_sales_quotation = self::joinFormulir()->open()->approvalRejected()->notArchived()->selectOriginal()->orderByStandard();
+        $list_sales_quotation = self::joinFormulir()->with('person')->open()->approvalRejected()->notArchived()->selectOriginal()->orderByStandard();
 
         // Grouping vesa
         if ($merge_into_group && $list_sales_quotation->get()->count() > 5) {
@@ -63,7 +65,7 @@ trait SalesQuotationVesa
                 'url' => url('sales/point/sales-quotation/vesa-rejected'),
                 'deadline' => $list_sales_quotation->orderBy('required_date')->first()->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $list_sales_quotation->orderBy('required_date')->first()->required_date) ? true : false,
-                'message' => 'Rejected, please edit your form',
+                'message' => 'you have many rejected sales quotations. please edit your forms',
                 'permission_slug' => 'update.point.sales.quotation'
             ]);
 
@@ -76,7 +78,9 @@ trait SalesQuotationVesa
                 'url' => url('sales/point/sales-quotation/' . $sales_quotation->id.'/edit'),
                 'deadline' => $sales_quotation->required_date ? : $sales_quotation->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $sales_quotation->required_date) ? true : false,
-                'message' => $sales_quotation->formulir->form_number. ' Rejected, please edit your form',
+                'message' => 'sales quotation '
+                    . formulir_url($sales_quotation->formulir)
+                    . ' customer <strong>' . $sales_quotation->person->name . '</strong> rejected, please edit your form',
                 'permission_slug' => 'update.point.sales.quotation'
             ]);
         }

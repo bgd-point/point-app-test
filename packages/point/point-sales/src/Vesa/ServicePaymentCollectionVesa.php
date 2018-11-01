@@ -34,6 +34,7 @@ trait ServicePaymentCollectionVesa
     private static function vesaCreate($array = [], $merge_into_group = true)
     {
         $list_invoice = Invoice::joinFormulir()
+            ->with('person')
             ->availableToPaymentCollection()
             ->groupBy('person_id')
             ->notArchived()
@@ -45,7 +46,7 @@ trait ServicePaymentCollectionVesa
                 'url' => url('sales/point/service/payment-collection/vesa-create'),
                 'deadline' => $list_invoice->orderBy('due_date')->first()->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $list_invoice->orderBy('due_date')->first()->due_date) ? true : false,
-                'message' => 'Make a payment collection from invoice',
+                'message' => 'you have many service invoices waiting to get payment collection',
                 'permission_slug' => 'create.point.sales.service.payment.collection'
             ]);
             return $array;
@@ -56,7 +57,10 @@ trait ServicePaymentCollectionVesa
                 'url' => url('sales/point/service/payment-collection/create-step-2/' . $invoice->person_id),
                 'deadline' => $invoice->due_date ? : $invoice->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $invoice->due_date) ? true : false,
-                'message' => 'Make a payment collection from invoice number ' . formulir_url($invoice->formulir),
+                'message' => 'create payment collection invoice '
+                    . formulir_url($invoice->formulir)
+                    . ' customer <strong>' . $invoice->person->name . '</strong> amount '
+                    . number_format_price($invoice->total),
                 'permission_slug' => 'create.point.sales.service.payment.collection'
             ]);
         }
@@ -66,14 +70,14 @@ trait ServicePaymentCollectionVesa
 
     private static function vesaApproval($array = [], $merge_into_group = true)
     {
-        $list_payment_collection = self::joinFormulir()->open()->approvalPending()->notArchived()->selectOriginal()->orderByStandard();
+        $list_payment_collection = self::joinFormulir()->with('person')->open()->approvalPending()->notArchived()->selectOriginal()->orderByStandard();
         // Grouping vesa
         if ($merge_into_group && $list_payment_collection->get()->count() > 5) {
             array_push($array, [
                 'url' => url('sales/point/service/payment-collection/vesa-approval'),
                 'deadline' => $list_payment_collection->orderBy('due_date')->first()->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $list_payment_collection->orderBy('due_date')->first()->due_date) ? true : false,
-                'message' => 'please approve payment collection service',
+                'message' => 'you have many service payment collections waiting to be approved',
                 'permission_slug' => 'approval.point.sales.service.payment.collection'
             ]);
 
@@ -86,7 +90,10 @@ trait ServicePaymentCollectionVesa
                 'url' => url('sales/point/service/payment-collection/' . $payment_collection->id),
                 'deadline' => $payment_collection->due_date ? : $payment_collection->formulir->form_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $payment_collection->due_date) ? true : false,
-                'message' => 'Please approve this payment collection service number ' . formulir_url($payment_collection->formulir),
+                'message' => 'Please approve service payment collection '
+                    . formulir_url($payment_collection->formulir)
+                    . ' customer <strong>' . $payment_collection->person->name . '</strong> amount '
+                    . number_format_price($payment_collection->total_payment),
                 'permission_slug' => 'approval.point.sales.service.payment.collection'
             ]);
         }
@@ -96,7 +103,7 @@ trait ServicePaymentCollectionVesa
 
     private static function vesaReject($array = [], $merge_into_group = true)
     {
-        $list_payment_collection = self::joinFormulir()->open()->approvalRejected()->notArchived()->selectOriginal()->orderByStandard();
+        $list_payment_collection = self::joinFormulir()->with('person')->open()->approvalRejected()->notArchived()->selectOriginal()->orderByStandard();
 
         // Grouping vesa
         if ($merge_into_group && $list_payment_collection->get()->count() > 5) {
