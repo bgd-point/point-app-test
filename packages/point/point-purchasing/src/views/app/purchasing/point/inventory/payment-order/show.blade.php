@@ -55,7 +55,7 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label">Form Number</label>
                             <div class="col-md-6 content-show">
-                                {{ formulir_url($payment_order->formulir) }}
+                                {!! formulir_url($payment_order->formulir) !!}
                             </div>
                         </div>
                         <div class="form-group">
