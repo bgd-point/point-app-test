@@ -587,12 +587,13 @@ if (! function_exists('sendEmail')) {
     function sendEmail($bladePath, $data, $targetAddress, $subject)
     {
         \Queue::push(function ($job) use ($data, $bladePath, $subject, $targetAddress) {
-            // QueueHelper::reconnectAppDatabase($request['database_name']);
-            \Mail::send($bladePath, $data, function ($message) use ($targetAddress, $subject) {
-                $message->to($targetAddress)->subject($subject);
+            Point\Core\Helpers\QueueHelper::reconnectAppDatabase(request()->database_name);
+            \Mail::send($bladePath, $data, function ($message) use ($targetAddress, $subject, $data) {
+                $appName = ucfirst(explode('//', $data['url'])[1]);
+                $appName = explode('.', $appName)[0];
+                $message->to($targetAddress)->subject($appName . ' - ' . $subject);
             });
             $job->delete();
         });
-        return true;
     }
 }
