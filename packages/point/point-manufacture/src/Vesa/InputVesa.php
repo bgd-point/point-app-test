@@ -70,7 +70,7 @@ trait InputVesa
             array_push($array, [
                 'url' => url('manufacture/point/process-io/' . $manufacture->process_id . '/output/create-step-2/' . $manufacture->id),
                 'deadline' => $manufacture->formulir->form_date,
-                'message' => 'Make a manufacture process out from number ' . $manufacture->formulir->form_number,
+                'message' => 'Make a manufacture process out from number ' . formulir_url($manufacture->formulir),
                 'permission_slug' => 'create.point.manufacture.output'
             ]);
         }
