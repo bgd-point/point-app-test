@@ -40,7 +40,7 @@ trait InputVesa
         // Push all
         foreach ($list_input_in->get() as $input_in) {
             array_push($array, [
-                'url' => url('manufacture/point/process-io/' . $input_in->id . '/input/' . $input_in->id),
+                'url' => url('manufacture/point/process-io/' . $input_in->process_id . '/input/' . $input_in->id),
                 'deadline' => $input_in->formulir->form_date,
                 'message' => 'Please approve this manufacture process in number ' . formulir_url($input_in->formulir),
                 'permission_slug' => 'approval.point.manufacture.input'
@@ -68,7 +68,7 @@ trait InputVesa
         // Push all
         foreach ($list_manufacture->get() as $manufacture) {
             array_push($array, [
-                'url' => url('manufacture/point/process-io/' . $manufacture->id . '/output/create-step-2/' . $manufacture->id),
+                'url' => url('manufacture/point/process-io/' . $manufacture->process_id . '/output/create-step-2/' . $manufacture->id),
                 'deadline' => $manufacture->formulir->form_date,
                 'message' => 'Make a manufacture process out from number ' . $manufacture->formulir->form_number,
                 'permission_slug' => 'create.point.manufacture.output'
