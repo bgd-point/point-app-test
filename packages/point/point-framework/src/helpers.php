@@ -587,9 +587,11 @@ if (! function_exists('sendEmail')) {
     function sendEmail($bladePath, $data, $targetAddress, $subject)
     {
         \Queue::push(function ($job) use ($data, $bladePath, $subject, $targetAddress) {
-            Point\Core\Helpers\QueueHelper::reconnectAppDatabase(request()->database_name);
+            if (request()->database_name) {
+                Point\Core\Helpers\QueueHelper::reconnectAppDatabase(request()->database_name);
+            }
             \Mail::send($bladePath, $data, function ($message) use ($targetAddress, $subject, $data) {
-                $appName = ucfirst(explode('//', $data['url'])[1]);
+                $appName = strtoupper(explode('//', $data['url'])[1]);
                 $appName = explode('.', $appName)[0];
                 $message->to($targetAddress)->subject($appName . ' - ' . $subject);
             });
