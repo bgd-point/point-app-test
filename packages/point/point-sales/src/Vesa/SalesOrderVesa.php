@@ -53,7 +53,7 @@ trait SalesOrderVesa
                 'url' => url('sales/point/indirect/sales-order/create-step-2/' . $sales_quotation->id),
                 'deadline' => $sales_quotation->required_date,
                 'due_date' => (date('Y-m-d 00:00:00') > $sales_quotation->required_date) ? true : false,
-                'message' => 'create sales order from ' . $sales_quotation->formulir->form_number,
+                'message' => 'create sales order from ' . formulir_url($sales_quotation->formulir),
                 'permission_slug' => 'create.point.sales.order'
             ]);
         }
