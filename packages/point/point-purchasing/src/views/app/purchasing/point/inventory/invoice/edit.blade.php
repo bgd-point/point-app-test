@@ -115,6 +115,8 @@
                                                            value="{{get_class($goods_received_item)}}">
                                                     <input type="hidden" name="reference_item_id[]"
                                                            value="{{$goods_received_item->id}}">
+                                                    <input type="hidden" name="item_id[]" value="{{$goods_received_item->item->id}}">
+                                                    <input type="hidden" name="allocation_id[]" value="{{$goods_received_item->allocation->id}}">
                                                 </td>
                                                 <td>
                                                     <a href="{{ url('master/item/'.$goods_received_item->item_id) }}">{{ $goods_received_item->item->codeName }}</a>

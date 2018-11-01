@@ -81,7 +81,7 @@ trait ExpeditionOrderVesa
             array_push($array, [
                 'url' => url('expedition/point/expedition-order/create-step-2/' . $expedition_reference->expedition_reference_id),
                 'deadline' => $expedition_reference->formulir->form_date,
-                'message' => 'create expedition order from ' . $expedition_reference->formulir->form_number,
+                'message' => 'create expedition order ' . formulir_url($expedition_reference->formulir),
                 'permission_slug' => 'create.point.expedition.order'
             ]);
         }

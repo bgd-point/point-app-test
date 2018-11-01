@@ -66,7 +66,7 @@ trait PurchaseOrderVesa
 
     private static function vesaApproval($array = [], $merge_into_group = true)
     {
-        $list_purchase_order = self::joinFormulir()->open()->notArchived()->approvalPending()->selectOriginal()->orderByStandard();
+        $list_purchase_order = self::joinFormulir()->with('supplier')->open()->notArchived()->approvalPending()->selectOriginal()->orderByStandard();
 
         // Grouping vesa
         if ($merge_into_group && $list_purchase_order->get()->count() > 5) {
