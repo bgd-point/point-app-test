@@ -85,7 +85,7 @@ trait PurchaseOrderVesa
             array_push($array, [
                 'url' => url('purchasing/point/purchase-order/' . $purchase_order->id),
                 'deadline' => $purchase_order->formulir->form_date,
-                'message' => 'please approve this purchase order ' . formulir_url($purchase_order->formulir),
+                'message' => 'Approval PURCHASE ORDER <b>' . formulir_url($purchase_order->formulir) . '</b> TOTAL <b>' . number_format_price($purchase_order->total) .  '</b> Supplier <b>' . $purchase_order->supplier->name .'</b>',
                 'permission_slug' => 'approval.point.purchasing.order'
             ]);
         }
@@ -119,7 +119,7 @@ trait PurchaseOrderVesa
             array_push($array, [
                 'url' => $url,
                 'deadline' => $purchase_order->formulir->form_date,
-                'message' => $purchase_order->formulir->form_number. ' Rejected, please edit your form',
+                'message' => $purchase_order->formulir->form_number. ' is rejected by ' . $purchase_order->formulir->createdBy->name . ', please follow up and update your form',
                 'permission_slug' => 'update.point.purchasing.order'
             ]);
         }
