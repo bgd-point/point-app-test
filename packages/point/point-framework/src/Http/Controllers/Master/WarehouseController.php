@@ -171,6 +171,9 @@ class WarehouseController extends Controller
         access_is_allowed('create.user');
 
         $warehouse_id = app('request')->input('warehouse_id');
+        if ($warehouse_id == 0) {
+            $warehouse_id = null;
+        }
         $user_id = app('request')->input('user_id');
         $user_warehouse = UserWarehouse::where('user_id', '=', $user_id)->first();
 

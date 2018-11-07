@@ -36,7 +36,7 @@
                         </label>
                         <div class="col-md-6">
                             <select id="warehouse-id" name="warehouse_id" class="selectize" style="width: 100%;" data-placeholder="Select Warehouse .." onchange="updateWarehouse({{$user->id}}, this.value)">
-                                <option></option>
+                                <option value="0">All Warehouse</option>
                                 @foreach($list_warehouse as $warehouse)
                                     <option value="{{$warehouse->id}}" @if(\Point\Framework\Models\Master\UserWarehouse::getWarehouse($user->id) == $warehouse->id) selected @endif>{{$warehouse->name}}</option>
                                 @endforeach

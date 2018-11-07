@@ -95,11 +95,15 @@
                         <div class="col-md-6">
                             <select id="warehouse-id" name="warehouse_id" class="selectize" style="width: 100%;"
                                     data-placeholder="Choose one..">
+                                @if (count($list_warehouse) === 1)
+                                    <option value="{{$list_warehouse[0]->id}}" selected>{{$list_warehouse[0]->codeName}}</option>
+                                @else
                                 <option></option>
-                                @foreach($list_warehouse as $warehouse)
-                                    <option value="{{$warehouse->id}}"
-                                            @if(old('warehouse') == $warehouse->id) selected @endif>{{$warehouse->codeName}}</option>
-                                @endforeach
+                                    @foreach($list_warehouse as $warehouse)
+                                        <option value="{{$warehouse->id}}"
+                                                @if(old('warehouse') == $warehouse->id) selected @endif>{{$warehouse->codeName}}</option>
+                                    @endforeach
+                                @endif
                             </select>
                         </div>
                     </div>

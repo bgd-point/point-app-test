@@ -33,13 +33,31 @@ class DeliveryOrderController extends Controller
     {
         access_is_allowed('read.point.sales.delivery.order');
 
-        $view = view('point-sales::app.sales.point.sales.delivery-order.index');
-        $list_delivery_order = DeliveryOrder::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
-        $list_delivery_order = DeliveryOrderHelper::searchList($list_delivery_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
-        $view->list_delivery_order = $list_delivery_order->paginate(100);
-        $array_delivery_order_id = [];
-        $view->array_delivery_order_id = $array_delivery_order_id;
-        return $view;
+        $UserWarehouse = UserWarehouse::where('user_id', auth()->user()->id)->first();
+        
+        // if warehouse is set
+        if ($UserWarehouse)
+        {
+            $view = view('point-sales::app.sales.point.sales.delivery-order.index');
+            $list_delivery_order = DeliveryOrder::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
+            $list_delivery_order = DeliveryOrderHelper::searchList($list_delivery_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
+
+            // admin doesn't has warehouse_id (warehouse_id = null), but staff has warehouse_id
+            if (!is_null($UserWarehouse->warehouse_id))
+            {
+                $list_delivery_order->where('warehouse_id', $UserWarehouse->warehouse_id);
+            }
+
+            $view->list_delivery_order = $list_delivery_order->paginate(100);
+            $view->array_delivery_order_id = [];
+            return $view;
+        }
+        // if warehouse is not set
+        else
+        {
+            gritter_error('Warehouse is not set, please contact admin', 'false');
+            return redirect('/');
+        }
     }
 
     public function ajaxDetailItem(Request $request, $id)
@@ -66,27 +84,57 @@ class DeliveryOrderController extends Controller
      */
     public function createStep1()
     {
-        $view = view('point-sales::app.sales.point.sales.delivery-order.create-step-1');
-        $view->list_sales_include_expedition = SalesOrder::includeExpedition()->paginate(100);
-        $view->list_sales_exclude_expedition = SalesOrder::excludeExpedition()->paginate(100);
+        $UserWarehouse = UserWarehouse::where('user_id', auth()->user()->id)->first();
+        
+        // if warehouse is set
+        if ($UserWarehouse)
+        {
+            $view = view('point-sales::app.sales.point.sales.delivery-order.create-step-1');
+            $view->list_sales_include_expedition = SalesOrder::includeExpedition()->paginate(100);
+            $view->list_sales_exclude_expedition = SalesOrder::excludeExpedition()->paginate(100);
 
-        return $view;
+            return $view;
+        }
+        else
+        {
+            gritter_error('Warehouse is not set, please contact admin', 'false');
+            return redirect('/');
+        }
     }
 
     public function createStep2($sales_order_id, $expedition_id = '')
     {
-        $view = view('point-sales::app.sales.point.sales.delivery-order.create-step-2');
-        $view->reference_expedition_order = $expedition_id ? ExpeditionOrder::find($expedition_id) : '';
-        $view->reference_sales_order = SalesOrder::find($sales_order_id);
-        ;
-        $view->list_warehouse = Warehouse::all();
-        $view->list_user_approval = UserHelper::getAllUser();
-        $expedition_reference = '';
-        if ($expedition_id) {
-            $expedition_reference = ExpeditionOrderItem::where('point_expedition_order_id', $expedition_id)->get();
+        $UserWarehouse = UserWarehouse::where('user_id', auth()->user()->id)->first();
+        
+        // if warehouse is set
+        if ($UserWarehouse)
+        {
+            $view = view('point-sales::app.sales.point.sales.delivery-order.create-step-2');
+            $view->reference_expedition_order = $expedition_id ? ExpeditionOrder::find($expedition_id) : '';
+            $view->reference_sales_order = SalesOrder::find($sales_order_id);
+            
+            // admin doesn't has warehouse_id (warehouse_id = null), but staff has warehouse_id
+            if (is_null($UserWarehouse->warehouse_id))
+            {
+                $view->list_warehouse = Warehouse::all();
+            }
+            else
+            {
+                $view->list_warehouse = Warehouse::where('id', $UserWarehouse->warehouse_id)->get();
+            }
+            $view->list_user_approval = UserHelper::getAllUser();
+            $expedition_reference = '';
+            if ($expedition_id) {
+                $expedition_reference = ExpeditionOrderItem::where('point_expedition_order_id', $expedition_id)->get();
+            }
+            $view->expedition = $expedition_reference;
+            return $view;
         }
-        $view->expedition = $expedition_reference;
-        return $view;
+        else
+        {
+            gritter_error('Warehouse is not set, please contact admin', 'false');
+            return redirect('/');
+        }
     }
 
     /**
@@ -169,26 +217,68 @@ class DeliveryOrderController extends Controller
      */
     public function show($id)
     {
-        $view = view('point-sales::app.sales.point.sales.delivery-order.show');
-        $view->delivery_order = DeliveryOrder::find($id);
-        $reference = FormulirHelper::getLockedModel($view->delivery_order->formulir_id);
-        // convert to locking model from expedition order to sales order
-        if (get_class($reference) == 'Point\PointExpedition\Models\ExpeditionOrder') {
-            $reference = FormulirHelper::getLockedModel($reference->formulir_id);
+        $UserWarehouse = UserWarehouse::where('user_id', auth()->user()->id)->first();
+        
+        // if warehouse is set
+        if ($UserWarehouse)
+        {
+            $view->delivery_order = DeliveryOrder::find($id);
+            
+            // only user with null warehouse Id or proper warehouse id that has access to this delivery order
+            if (is_null($UserWarehouse->warehouse_id) || $UserWarehouse->warehouse_id === $delivery_order->warehouse_id)
+            {
+                $view = view('point-sales::app.sales.point.sales.delivery-order.show');
+                $reference = FormulirHelper::getLockedModel($view->delivery_order->formulir_id);
+                // convert to locking model from expedition order to sales order
+                if (get_class($reference) == 'Point\PointExpedition\Models\ExpeditionOrder') {
+                    $reference = FormulirHelper::getLockedModel($reference->formulir_id);
+                }
+                $view->reference = $reference;
+                $view->list_delivery_order_archived = DeliveryOrder::joinFormulir()->archived($view->delivery_order->formulir->form_number)->get();
+                $view->revision = $view->list_delivery_order_archived->count();
+                $view->list_referenced = FormulirLock::where('locked_id', '=', $view->delivery_order->formulir_id)->where('locked', true)->get();
+                return $view;
+            }
+            else
+            {
+                gritter_error('User does not have access to this warehouse, please contact admin', 'false');
+                return redirect('/');
+            }
         }
-        $view->reference = $reference;
-        $view->list_delivery_order_archived = DeliveryOrder::joinFormulir()->archived($view->delivery_order->formulir->form_number)->get();
-        $view->revision = $view->list_delivery_order_archived->count();
-        $view->list_referenced = FormulirLock::where('locked_id', '=', $view->delivery_order->formulir_id)->where('locked', true)->get();
-        return $view;
+        else
+        {
+            gritter_error('Warehouse is not set, please contact admin', 'false');
+            return redirect('/');
+        }
     }
 
     public function archived($id)
     {
-        $view = view('point-sales::app.sales.point.sales.delivery-order.archived');
-        $view->delivery_order_archived = DeliveryOrder::find($id);
-        $view->delivery_order = DeliveryOrder::joinFormulir()->notArchived($view->delivery_order_archived->formulir->archived)->selectOriginal()->first();
-        return $view;
+        $UserWarehouse = UserWarehouse::where('user_id', auth()->user()->id)->first();
+        
+        // if warehouse is set
+        if ($UserWarehouse)
+        {
+            $view->delivery_order_archived = DeliveryOrder::find($id);
+
+            // only user with null warehouse Id or proper warehouse id that has access to this delivery order
+            if (is_null($UserWarehouse->warehouse_id) || $UserWarehouse->warehouse_id === $delivery_order->warehouse_id)
+            {
+                $view = view('point-sales::app.sales.point.sales.delivery-order.archived');
+                $view->delivery_order = DeliveryOrder::joinFormulir()->notArchived($view->delivery_order_archived->formulir->archived)->selectOriginal()->first();
+                return $view;
+            }
+            else
+            {
+                gritter_error('User does not have access to this warehouse, please contact admin', 'false');
+                return redirect('/');
+            }
+        }
+        else
+        {
+            gritter_error('Warehouse is not set, please contact admin', 'false');
+            return redirect('/');
+        }
     }
 
     /**
@@ -199,16 +289,44 @@ class DeliveryOrderController extends Controller
      */
     public function edit($id)
     {
-        $delivery_order = DeliveryOrder::find($id);
-        $view = view('point-sales::app.sales.point.sales.delivery-order.edit');
-        $view->delivery_order = $delivery_order;
-        $view->reference_sales_order = $delivery_order->checkReference();
-        $view->reference_expedition_order = $delivery_order->checkReferenceExpedition($view->reference_sales_order);
-        // $view->reference_sales_order = $view->reference_expedition ? '' : $view->reference;
-        $view->list_warehouse = Warehouse::all();
-        $view->list_user_approval = UserHelper::getAllUser();
+        $UserWarehouse = UserWarehouse::where('user_id', auth()->user()->id)->first();
+        
+        // if warehouse is set
+        if ($UserWarehouse)
+        {
+            $view = view('point-sales::app.sales.point.sales.delivery-order.edit');
+            
+            $delivery_order = DeliveryOrder::find($id);
 
-        return $view;
+            // admin doesn't has warehouse_id (warehouse_id = null)
+            if (is_null($UserWarehouse->warehouse_id))
+            {
+                $view->list_warehouse = Warehouse::all();
+            }
+            // staff has warehouse_id, check if user warehouse is same with delivery order warehouse id
+            else if ($UserWarehouse->warehouse_id === $delivery_order->warehouse_id)
+            {
+                $view->list_warehouse = Warehouse::where('id', $UserWarehouse->warehouse_id)->get();
+            }
+            // user warehouse is different with current delivery order warehouse_id
+            else
+            {
+                gritter_error('User does not have access to this warehouse, please contact admin', 'false');
+                return redirect('/');
+            }
+            $view->delivery_order = $delivery_order;
+            $view->reference_sales_order = $delivery_order->checkReference();
+            $view->reference_expedition_order = $delivery_order->checkReferenceExpedition($view->reference_sales_order);
+            // $view->reference_sales_order = $view->reference_expedition ? '' : $view->reference;
+            $view->list_user_approval = UserHelper::getAllUser();
+
+            return $view;
+        }
+        else
+        {
+            gritter_error('Warehouse is not set, please contact admin', 'false');
+            return redirect('/');
+        }
     }
 
     /**
