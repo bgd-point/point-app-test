@@ -81,7 +81,7 @@ class CashAdvanceController extends Controller
         $cash_advance = new CashAdvance;
         $cash_advance->formulir_id = $formulir->id;
         $cash_advance->payment_type = $request->input('payment_type');
-        if($cash_advance->payment_type == 'cash') {
+        if ($cash_advance->payment_type == 'cash') {
             $cash_advance->coa_id = $request->input('coa_cash_id');
         } else {
             $cash_advance->coa_id = $request->input('coa_bank_id');
@@ -98,7 +98,7 @@ class CashAdvanceController extends Controller
         DB::commit();
 
         gritter_success('create form success', 'false');
-        return redirect('finance/point/cash-advance/'.$cash_advance->id);
+        return redirect('finance/point/cash-advance/' . $cash_advance->id);
     }
 
     /**
@@ -192,7 +192,7 @@ class CashAdvanceController extends Controller
         $cash_advance->amount = number_format_db($request->input('amount'));
         $cash_advance->remaining_amount = number_format_db($request->input('amount'));
         $cash_advance->payment_type = $request->input('payment_type');
-        if($cash_advance->payment_type == 'cash') {
+        if ($cash_advance->payment_type == 'cash') {
             $cash_advance->coa_id = $request->input('coa_cash_id');
         } else {
             $cash_advance->coa_id = $request->input('coa_bank_id');
@@ -205,7 +205,7 @@ class CashAdvanceController extends Controller
         DB::commit();
 
         gritter_success('update form success', 'false');
-        return redirect('finance/point/cash-advance/'.$cash_advance->id);
+        return redirect('finance/point/cash-advance/' . $cash_advance->id);
     }
 
     /**
@@ -224,7 +224,7 @@ class CashAdvanceController extends Controller
         return response()->json(array(
             'lists' => CashAdvance::joinFormulir()->joinEmployee()->notArchived()->notCanceled()->selectOriginal()
                 ->where('is_payed', true)
-                ->where('form_date', '<', date_format_db($request->get('date'),'end'))
+                ->where('form_date', '<', date_format_db($request->get('date'), 'end'))
                 ->where('payment_type', $request->get('type'))
                 ->where('coa_id', $request->get('account'))
                 ->where('remaining_amount', '>', 0)
@@ -240,6 +240,10 @@ class CashAdvanceController extends Controller
         $cashAdvance = CashAdvance::find($id);
         $cashAdvance->handed_over = true;
         $cashAdvance->save();
+
+        $cashAdvance->formulir->form_date = \Carbon::now();
+        $cashAdvance->formulir->save();
+
         return redirect()->back();
     }
 }
