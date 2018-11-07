@@ -13,6 +13,13 @@ Route::group(['prefix' => 'finance/point', 'namespace' => 'Point\PointFinance\Ht
         Route::post('report/view', 'ReportController@_view');
         Route::get('report/{type}', 'ReportController@index');
 
+        // Report cash or bank
+        Route::group(['namespace' => 'DebtCash'], function () {
+            Route::get('debt-report/export/pdf', 'ReportController@exportPDF');
+            Route::get('debt-report/export', 'ReportController@export');
+            Route::post('debt-report/view', 'ReportController@_view');
+            Route::get('debt-report/{type}', 'ReportController@index');
+        });
         // Allocation Report
         Route::get('allocation-report', 'AllocationReportController@index');
         Route::get('allocation-report/export', 'AllocationReportController@export');
@@ -57,6 +64,33 @@ Route::group(['prefix' => 'finance/point', 'namespace' => 'Point\PointFinance\Ht
             Route::get('cash/{id}/archived', 'CashOutController@archived');
             Route::get('cash/out/{id}/edit', 'CashOutController@edit');
             Route::post('cash/out/{id}', 'CashOutController@update');
+        });
+
+        // Cash
+        Route::group(['namespace' => 'DebtCash'], function () {
+            Route::get('/debt-cash', 'CashController@index');
+            Route::get('debt-cash/print/{id}', 'CashController@printCash');
+
+            // Cash In
+            Route::get('debt-cash/in/create/{payment_reference}', 'CashInController@createFromReference');
+            Route::post('debt-cash/in/store', 'CashInController@storeFromReference');
+
+            Route::get('debt-cash/in/create', 'CashInController@create');
+            Route::post('debt-cash/in', 'CashInController@store');
+            Route::get('debt-cash/in/choose-receivable', 'CashInController@chooseReceivable');
+            Route::get('debt-cash/in/{id}', 'CashInController@show');
+            Route::get('debt-cash/{id}/archived', 'CashInController@archived');
+            Route::get('debt-cash/in/{id}/edit', 'CashInController@edit');
+            Route::post('debt-cash/in/{id}', 'CashInController@update');
+
+            // Cash Out
+            Route::get('debt-cash/out/create/{payment_reference}', 'CashOutController@create');
+            Route::post('debt-cash/out', 'CashOutController@store');
+            Route::get('debt-cash/out/choose-payable', 'CashOutController@choosePayable');
+            Route::get('debt-cash/out/{id}', 'CashOutController@show');
+            Route::get('debt-cash/{id}/archived', 'CashOutController@archived');
+            Route::get('debt-cash/out/{id}/edit', 'CashOutController@edit');
+            Route::post('debt-cash/out/{id}', 'CashOutController@update');
         });
 
         // Cash
