@@ -30,12 +30,11 @@
                         <div class="form-group pull-right">
                             <div class="col-md-12">
                                 @include('framework::app.include._approval_status_label', [
-                                                                    'approval_status' => $memo_journal->formulir->approval_status,
-                                                                    'approval_message' => $memo_journal->formulir->approval_message,
-                                                                    'approval_at' => $memo_journal->formulir->approval_at,
-                                                                    'approval_to' => $memo_journal->formulir->approvalTo->name,
-                                                                ])
-                                @include('framework::app.include._form_status_label', ['form_status' => $memo_journal->formulir->form_status])
+                                    'approval_status' => $memo_journal->formulir->approval_status,
+                                    'approval_message' => $memo_journal->formulir->approval_message,
+                                    'approval_at' => $memo_journal->formulir->approval_at,
+                                    'approval_to' => $memo_journal->formulir->approvalTo->name,
+                                ])
                             </div>
                         </div>
                     </fieldset>
