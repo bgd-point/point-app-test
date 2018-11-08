@@ -54,12 +54,11 @@
                         <input type="button" id="button-report" onclick="view()" value="Submit" class="btn btn-effect-ripple btn-info">
                     </div>
                 </div>
-            </div>
-            <br/>
+                
                 <div class="report-view" style="margin: 20px;">
-                    
+                        
                 </div>
-            </div>
+            </form>
         </div>
     </div>  
 </div>
@@ -82,10 +81,24 @@ function view() {
         success: function(data) {
             $('.report-view').html(data);
             $("#button-report").val("Submit");
-
+            initSelectize('#approver');
         }, error: function(data) {
             $("#button-report").val("Submit");
         }
+    });
+}
+
+function sendApproval() {
+    $data = $("#search").serialize();
+    $("#btn-send-approval").attr("disabled", true);
+    $.post("{{URL::to('finance/point/debt-report/'.$type)}}", $data, (response) => {
+        notification('send approval success');
+    })
+    .fail((error) => {
+        notification('send approval fail');
+    })
+    .always(function() {
+        $("#btn-send-approval").removeAttr("disabled");
     });
 }
 </script>

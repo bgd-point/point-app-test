@@ -1,9 +1,7 @@
-<br><br>
 <div class="table-responsive">
     <table class="table table-striped table-bordered">
         <thead>
         <tr>
-            <th>&nbsp;</th>
             <th>form date</th>
             <th>form number</th>
             <th>person</th>
@@ -21,9 +19,6 @@
         @foreach($list_report as $report)
             @foreach($report->detail as $report_detail)
                 <tr @if($report->formulir->form_status == -1) style="background:red;color:white" @endif>
-                    <td>
-                        <a href="#" onclick="pagePrint('/finance/point/{{$type}}/print/{{$report->id}}');" data-toggle="tooltip" title="Print" class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-print"></i> Print</a>
-                    </td>
                     <td>{{ date_format_view($report->formulir->form_date) }}</td>
                     <td>
                         <a href="{{ url('finance/point/'.$type.'/'. $report->payment_flow .'/'.$report->id) }}" @if($report->formulir->form_status == -1) style="background:red;color:white !important" @endif>{{ $report->formulir->form_number}}</a>
@@ -51,7 +46,7 @@
             @endforeach
         @endforeach
         <tr>
-            <td colspan="6" class="text-right">Total</td>
+            <td colspan="5" class="text-right">Total</td>
             <td class="text-right"><strong>{{ number_format_price($total_received) }}</strong></td>
             <td class="text-right"><strong>{{ number_format_price($total_disbursed) }}</strong></td>
         </tr>
@@ -59,12 +54,31 @@
     </table>
 </div>
 
-<script>
-  function pagePrint(url){
-    var printWindow = window.open( url, 'Print', 'left=75, top=0, width=1200, height=1000, toolbar=0, resizable=0');
-    printWindow.addEventListener('load', function(){
-      printWindow.print();
+<div class="form-group">
+    <div class="row">
+        <label class="col-md-3 control-label">Approval to</label>
+        <div class="col-sm-6">
+            <select name="approver" id="approver" class="selectize">
+            @foreach($list_user as $user)
+                <option value="{{ $user->id }}">{{ $user->name }}</option>
+            @endforeach
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-md-3"></label>
+        <div class="col-sm-9">
+            <button class="btn btn-info" type="button" id="btn-send-approval" onclick="sendApproval()">Request Approval</button>
+        </div>
+    </div>
+</div>
 
-    }, true);
-  }
+<script>
+    function pagePrint(url){
+        var printWindow = window.open( url, 'Print', 'left=75, top=0, width=1200, height=1000, toolbar=0, resizable=0');
+        printWindow.addEventListener('load', function(){
+            printWindow.print();
+
+        }, true);
+    }
 </script>

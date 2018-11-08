@@ -15,6 +15,8 @@ use Point\Core\Models\Master\PermissionRole;
 use Point\Core\Models\Master\RoleUser;
 use Point\Core\Traits\ByTrait;
 use Point\Core\Traits\HistoryTrait;
+use Point\Core\Traits\MasterTrait;
+
 
 class User extends Model implements
     AuthenticatableContract,
@@ -27,7 +29,7 @@ class User extends Model implements
         HasRoleAndPermission::can as may;
     }
 
-    use HistoryTrait, ByTrait;
+    use HistoryTrait, ByTrait, MasterTrait;
 
     /**
      * The database table used by the model.

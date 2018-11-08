@@ -19,6 +19,7 @@ Route::group(['prefix' => 'finance/point', 'namespace' => 'Point\PointFinance\Ht
             Route::get('debt-report/export', 'ReportController@export');
             Route::post('debt-report/view', 'ReportController@_view');
             Route::get('debt-report/{type}', 'ReportController@index');
+            Route::post('debt-report/{type}', 'ReportController@sendRequestApproval');
         });
         // Allocation Report
         Route::get('allocation-report', 'AllocationReportController@index');
