@@ -37,7 +37,7 @@
                     <td class="text-right">
                         @if($report->payment_flow == 'out')
                             <b>{{ number_format_price($report_detail->amount) }}</b>
-                            <?php $total_disbursed += $report_detail->amount * -1; ?>
+                            <?php $total_disbursed += $report_detail->amount; ?>
                         @else
                             0.00
                         @endif
@@ -46,9 +46,15 @@
             @endforeach
         @endforeach
         <tr>
-            <td colspan="5" class="text-right">Total</td>
+            <td colspan="5" class="text-right"></td>
             <td class="text-right"><strong>{{ number_format_price($total_received) }}</strong></td>
             <td class="text-right"><strong>{{ number_format_price($total_disbursed) }}</strong></td>
+        </tr>
+        <tr>
+            <td colspan="6" class="text-right">Total</td>
+            <td class="text-right">
+                <strong>{{ number_format_price($total_received - $total_disbursed) }}</strong>
+            </td>
         </tr>
         </tbody>
     </table>

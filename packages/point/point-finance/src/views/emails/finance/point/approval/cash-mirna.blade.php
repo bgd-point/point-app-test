@@ -180,14 +180,11 @@
 			</tr>
 		</table> --}}
 
-		<table cellpadding="0" cellspacing="0">
+		<table cellpadding="0" cellspacing="0" style="width: 800px;">
 			<tr class="heading">
-				<th>FORM DATE</th>
-				<th>FORM NUMBER</th>
-				<th>PERSON</th>
-				<th>ACCOUNT</th>
-				<th class="text-right">RECEIVED</th>
-				<th class="text-right">DISBURSED</th>
+				<th style="width: 100%;">DESKRIPSI</th>
+				<th style="width: 1px; white-space: nowrap;" class="text-right">RECEIVED</th>
+				<th style="width: 1px; white-space: nowrap;" class="text-right">DISBURSED</th>
 			</tr>
 			<?php
 			$total_received = 0;
@@ -195,15 +192,26 @@
 			?>
 			@foreach($list_report as $report)
 				@foreach($report->detail as $report_detail)
-					<tr class="item last"
-						@if($report->formulir->form_status == -1) style="background:red;color:white" @endif>
-						<td>{{ date_format_view($report->formulir->form_date) }}</td>
+					<tr class="item">
 						<td>
-							<a href="{{ url('finance/point/'.$type.'/'. $report->payment_flow .'/'.$report->id) }}" @if($report->formulir->form_status == -1) style="background:red;color:white !important" @endif>{{ $report->formulir->form_number}}</a>
+								Pembayaran {{ \Point\Framework\Models\Master\Coa::find($report_detail->coa_id)->name }}
+								{{$report->payment_flow === 'in' ? 'dari' : 'ke' }}
+								<strong>{{ ucwords($report->person->codeName) }}</strong>
+
+								<br>
+
+								Nomor formulir 
+								<a href="{{ url('finance/point/'.$type.'/'. $report->payment_flow .'/'.$report->id) }}" @if($report->formulir->form_status == -1) style="background:red;color:white !important" @endif>{{ $report->formulir->form_number}}</a>
+
+								<br>
+
+								Tanggal {{ date_format_view($report->formulir->form_date) }}
+
+								<br>
+
+								<strong>NOTES:</strong> {{ strtoupper($report_detail->notes_detail) }}
 						</td>
-						<td>{{ strtoupper($report->person->codeName) }}</td>
-						<td>{{ \Point\Framework\Models\Master\Coa::find($report_detail->coa_id)->account }}</td>
-						<td class="text-right">
+						<td class="text-right" style="width: 1px; white-space: nowrap;">
 							@if($report->payment_flow == 'in')
 								<b>{{ number_format_price($report_detail->amount) }}</b>
 								<?php $total_received += $report_detail->amount; ?>
@@ -211,27 +219,27 @@
 								0.00
 							@endif
 						</td>
-						<td class="text-right">
+						<td class="text-right" style="width: 1px; white-space: nowrap;">
 							@if($report->payment_flow == 'out')
 								<b>{{ number_format_price($report_detail->amount) }}</b>
-								<?php $total_disbursed += $report_detail->amount * -1; ?>
+								<?php $total_disbursed += $report_detail->amount; ?>
 							@else
 								0.00
 							@endif
 						</td>
 					</tr>
-					<tr class="item">
-						<td colspan="6">
-							<strong>NOTES:</strong>
-							{{ strtoupper($report_detail->notes_detail) }}
-						</td>
-					</tr>
 				@endforeach
 			@endforeach
 			<tr class="total">
-				<td colspan="4" class="text-right">TOTAL</td>
-				<td class="text-right">{{ number_format_price($total_received) }}</td>
-				<td class="text-right">{{ number_format_price($total_disbursed) }}</td>
+				<td></td>
+				<td class="text-right" style="width: 1px; white-space: nowrap;">{{ number_format_price($total_received) }}</td>
+				<td class="text-right" style="width: 1px; white-space: nowrap;">{{ number_format_price($total_disbursed) }}</td>
+			</tr>
+			<tr class="total">
+				<td colspan="2" class="text-right">Total</td>
+				<td class="text-right" style="width: 1px; white-space: nowrap;">
+					{{ number_format_price($total_received - $total_disbursed) }}
+				</td>
 			</tr>
 		
 			<tr>
