@@ -102,11 +102,11 @@ class DeliveryOrderController extends Controller
             'warehouse_id' => 'required',
         ]);
 
-        if (number_format_db($request->input('is_cash')) > 0 && (number_format_db($request->input('value_deliver')) + number_format_db($request->input('dp_amount'))) > number_format_db($request->input('dp_amount'))) {
-            $this->validate($request, [
-                'approval_to' => 'required',
-            ]);
-        }
+//        if (number_format_db($request->input('is_cash')) > 0 && (number_format_db($request->input('value_deliver')) + number_format_db($request->input('dp_amount'))) > number_format_db($request->input('dp_amount'))) {
+//            $this->validate($request, [
+//                'approval_to' => 'required',
+//            ]);
+//        }
 
         $reference_sales_type = $request->input('reference_sales_order');
         $reference_sales_id = $request->input('reference_sales_order_id');

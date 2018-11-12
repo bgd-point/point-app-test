@@ -275,7 +275,7 @@
                                 {{auth()->user()->name}}
                             </div>
                         </div>
-                        @if($reference_sales_order->is_cash > 0)
+                        @if($reference_sales_order->is_cash == -1)
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Ask Approval To</label>
                                 <div class="col-md-6">
