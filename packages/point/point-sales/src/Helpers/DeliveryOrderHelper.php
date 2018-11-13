@@ -98,6 +98,10 @@ class DeliveryOrderHelper
             }
         }
 
+        $delivery_order->formulir->approval_status = 1;
+        $delivery_order->formulir->approval_to = 1;
+        $delivery_order->formulir->approval_at = \Carbon::now();
+
         $delivery_order->formulir->save();
 
         for ($i=0 ; $i<count($request->input('item_id')) ; $i++) {
