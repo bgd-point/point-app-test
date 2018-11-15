@@ -23,7 +23,7 @@ class PointPurchasingPermissionSeeder extends Seeder
      *
      * @return void
      */
-    
+
     public function run()
     {
         $this->basicPurchasing();
@@ -55,6 +55,7 @@ class PointPurchasingPermissionSeeder extends Seeder
         $group = 'POINT PURCHASING SERVICE';
 
         PermissionHelper::create('POINT PURCHASING SERVICE', ['menu'], $group);
+        PermissionHelper::create('POINT PURCHASING SERVICE ORDER', ['create', 'read', 'update', 'delete', 'approval'], $group);
         PermissionHelper::create('POINT PURCHASING SERVICE INVOICE', ['create', 'read', 'update', 'delete', 'approval'], $group);
         PermissionHelper::create('POINT PURCHASING SERVICE DOWNPAYMENT', ['create', 'read', 'update', 'delete', 'approval'], $group);
         PermissionHelper::create('POINT PURCHASING SERVICE PAYMENT ORDER', ['create', 'read', 'update', 'delete', 'approval'], $group);
@@ -64,7 +65,7 @@ class PointPurchasingPermissionSeeder extends Seeder
     private function fixedAssetsPurchasing()
     {
         $group = 'POINT PURCHASING FIXED ASSETS';
-        
+
         PermissionHelper::create('POINT PURCHASING FIXED ASSETS', ['menu'], $group);
         PermissionHelper::create('POINT PURCHASING ORDER FIXED ASSETS', ['create', 'read', 'update', 'delete', 'approval'], $group);
         PermissionHelper::create('POINT PURCHASING REQUISITION FIXED ASSETS', ['create', 'read', 'update', 'delete', 'approval'], $group);
