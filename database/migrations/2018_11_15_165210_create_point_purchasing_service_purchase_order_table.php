@@ -15,15 +15,13 @@ class CreatePointPurchasingServicePurchaseOrderTable extends Migration
         Schema::create('point_purchasing_service_purchase_order', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('formulir_id')->unsigned()->index();
-            $table->foreign('formulir_id')
-                ->references('id')->on('formulir')
+            $table->integer('formulir_id')->unsigned();
+            $table->foreign('formulir_id')->references('id')->on('formulir')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->integer('supplier_id')->unsigned()->index();
-            $table->foreign('supplier_id')
-                ->references('id')->on('person')
+            $table->integer('person_id')->unsigned();
+            $table->foreign('person_id')->references('id')->on('person')
                 ->onUpdate('restrict')
                 ->onDelete('restrict');
 

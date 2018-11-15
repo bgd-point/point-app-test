@@ -55,7 +55,7 @@ class PointPurchasingPermissionSeeder extends Seeder
         $group = 'POINT PURCHASING SERVICE';
 
         PermissionHelper::create('POINT PURCHASING SERVICE', ['menu'], $group);
-        PermissionHelper::create('POINT PURCHASING SERVICE ORDER', ['create', 'read', 'update', 'delete', 'approval'], $group);
+        PermissionHelper::create('POINT PURCHASING SERVICE PURCHASE ORDER', ['create', 'read', 'update', 'delete', 'approval'], $group);
         PermissionHelper::create('POINT PURCHASING SERVICE INVOICE', ['create', 'read', 'update', 'delete', 'approval'], $group);
         PermissionHelper::create('POINT PURCHASING SERVICE DOWNPAYMENT', ['create', 'read', 'update', 'delete', 'approval'], $group);
         PermissionHelper::create('POINT PURCHASING SERVICE PAYMENT ORDER', ['create', 'read', 'update', 'delete', 'approval'], $group);
