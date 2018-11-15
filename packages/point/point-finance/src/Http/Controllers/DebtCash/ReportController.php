@@ -3,6 +3,7 @@
 namespace Point\PointFinance\Http\Controllers\DebtCash;
 
 use Illuminate\Routing\Controller;
+use Point\Core\Models\User;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Coa;
@@ -39,7 +40,7 @@ class ReportController extends Controller
         } elseif ($type == 'cash') {
             access_is_allowed('read.point.finance.cash.report');
         } else {
-            abort(404);
+            abort(403);
         }
     }
 
@@ -81,13 +82,15 @@ class ReportController extends Controller
             ->handedOver()
             ->sum('remaining_amount');
 
-        \Log::info('amount ' . $view->total_cash_advance);
-        \Log::info('used ' . $view->total_cash_advance_used);
+        // \Log::info('amount ' . $view->total_cash_advance);
+        // \Log::info('used ' . $view->total_cash_advance_used);
 
 
         $view->opening_balance = $report['journal_debit'] - $report['journal_credit'];
-        $view->url = url('finance/point/debt-report/export/?type='.$type.'&subledger_id='.$subledger.'&coa_id='.$coa_id.'&date_from='.$date_from.'&date_to='.$date_to);
-        $view->url_pdf = url('finance/point/debt-report/export/pdf?type='.$type.'&subledger_id='.$subledger.'&coa_id='.$coa_id.'&date_from='.$date_from.'&date_to='.$date_to);
+        $view->url = url('finance/point/debt-report/export/?type=' . $type . '&subledger_id=' . $subledger . '&coa_id=' . $coa_id . '&date_from=' . $date_from . '&date_to=' . $date_to);
+        $view->url_pdf = url('finance/point/debt-report/export/pdf?type=' . $type . '&subledger_id=' . $subledger . '&coa_id=' . $coa_id . '&date_from=' . $date_from . '&date_to=' . $date_to);
+
+        $view->list_user = User::active()->get();
 
         return $view;
     }
@@ -106,7 +109,7 @@ class ReportController extends Controller
         $type = $type;
         $list_report = $report['report'];
         $pdf = \PDF::loadView('point-finance::app.finance.point.debt-cash-report.report-pdf', ['list_report' => $list_report, 'opening_balance' => $opening_balance, 'type' => $type]);
-        
+
         return $pdf->stream();
     }
 
@@ -130,8 +133,8 @@ class ReportController extends Controller
 
         // filter subledger
         $report = $report_type
-                ->whereBetween('form_date', array(\DateHelper::formatDB($date_from), \DateHelper::formatDB($date_to, 'end')))
-                ->get();
+            ->whereBetween('form_date', array(\DateHelper::formatDB($date_from), \DateHelper::formatDB($date_to, 'end')))
+            ->get();
 
         if ($subledger) {
             $report = $report_type
@@ -155,7 +158,7 @@ class ReportController extends Controller
         $date_from = \Input::get('date_from');
         $date_to = \Input::get('date_to');
 
-        \Excel::create($type. ' Report', function ($excel) use ($type, $coa_id, $subledger_id, $date_from, $date_to) {
+        \Excel::create($type . ' Report', function ($excel) use ($type, $coa_id, $subledger_id, $date_from, $date_to) {
             # Sheet Data
             $excel->sheet('Data', function ($sheet) use ($type, $coa_id, $subledger_id, $date_from, $date_to) {
                 $sheet->setWidth(array(
@@ -175,8 +178,8 @@ class ReportController extends Controller
                     'I' => '#,##0.00'
                 ));
 
-                $title = strtoupper($type." REPORT FROM " . $date_from . " - " . $date_to);
-                $info_export = "DATE EXPORT ". \Carbon::now();
+                $title = strtoupper($type . " REPORT FROM " . $date_from . " - " . $date_to);
+                $info_export = "DATE EXPORT " . \Carbon::now();
                 $sheet->cell('A1', function ($cell) use ($title) {
                     $cell->setValue($title);
                 });
@@ -189,36 +192,36 @@ class ReportController extends Controller
                 $sheet->cell('A4', function ($cell) use ($type) {
                     // Set font
                     $cell->setFont(array(
-                        'family'     => 'Times New Roman',
-                        'size'       => '14',
-                        'bold'       =>  true
+                        'family' => 'Times New Roman',
+                        'size' => '14',
+                        'bold' => true
                     ));
 
-                    $cell->setValue(strtoupper($type.' REPORT'));
+                    $cell->setValue(strtoupper($type . ' REPORT'));
                 });
 
                 $sheet->mergeCells('A5:I5', 'center');
                 $sheet->cell('A5', function ($cell) use ($date_from, $date_to) {
                     // Set font
                     $cell->setFont(array(
-                        'family'     => 'Times New Roman',
-                        'size'       => '14',
-                        'bold'       =>  true
+                        'family' => 'Times New Roman',
+                        'size' => '14',
+                        'bold' => true
                     ));
-                    
+
                     if ($date_from && $date_to) {
-                        $cell->setValue('PERIOD : '. strtoupper(\DateHelper::formatView(date_format_db($date_from)) . ' TO ' . \DateHelper::formatView(date_format_db($date_to))));
+                        $cell->setValue('PERIOD : ' . strtoupper(\DateHelper::formatView(date_format_db($date_from)) . ' TO ' . \DateHelper::formatView(date_format_db($date_to))));
                     } else {
-                        $cell->setValue('PERIOD : '. strtoupper(\DateHelper::formatView(\Carbon::now())));
+                        $cell->setValue('PERIOD : ' . strtoupper(\DateHelper::formatView(\Carbon::now())));
                     }
                 });
 
                 $sheet->cell('A6:I6', function ($cell) {
                     // Set font
                     $cell->setFont(array(
-                        'family'     => 'Times New Roman',
-                        'size'       => '12',
-                        'bold'       =>  true
+                        'family' => 'Times New Roman',
+                        'size' => '12',
+                        'bold' => true
                     ));
                 });
 
@@ -234,7 +237,7 @@ class ReportController extends Controller
                 $total_received = 0;
                 $total_disbursed = 0;
                 // $received = 0;
-                for ($i=0; $i < $total_data; $i++) {
+                for ($i = 0; $i < $total_data; $i++) {
                     foreach ($data_report['report'][$i]->detail as $report_detail) {
                         $total_row++;
                         $received = '0.00';
@@ -251,7 +254,8 @@ class ReportController extends Controller
 
                         $coa = Coa::find($report_detail->coa_id);
 
-                        array_push($header, [$total_row,
+                        array_push($header, [
+                            $total_row,
                             date_format_view($data_report['report'][$i]->formulir->form_date),
                             $data_report['report'][$i]->formulir->form_number,
                             $data_report['report'][$i]->person->codeName,
@@ -266,54 +270,189 @@ class ReportController extends Controller
 
                 $total_row = $total_row + 6;
                 $sheet->fromArray($header, null, 'A6', false, false);
-                $sheet->setBorder('A6:I'.$total_row, 'thin');
+                $sheet->setBorder('A6:I' . $total_row, 'thin');
 
                 $next_row = $total_row + 1;
-                $sheet->cell('G'.$next_row, function ($cell) {
+                $sheet->cell('G' . $next_row, function ($cell) {
                     $cell->setValue('TOTAL');
                     $cell->setFont(array(
-                        'family'     => 'Times New Roman',
-                        'size'       => '12',
-                        'bold'       =>  true
+                        'family' => 'Times New Roman',
+                        'size' => '12',
+                        'bold' => true
                     ));
                 });
 
-                $sheet->cell('H'.$next_row, function ($cell) use ($total_received) {
+                $sheet->cell('H' . $next_row, function ($cell) use ($total_received) {
                     $cell->setValue($total_received);
                 });
-                
-                $sheet->cell('I'.$next_row, function ($cell) use ($total_disbursed) {
+
+                $sheet->cell('I' . $next_row, function ($cell) use ($total_disbursed) {
                     $cell->setValue($total_disbursed);
                 });
 
                 $next_row = $next_row + 1;
-                $sheet->cell('G'.$next_row, function ($cell) {
+                $sheet->cell('G' . $next_row, function ($cell) {
                     $cell->setValue('OPENING BALANCE');
                     $cell->setFont(array(
-                        'family'     => 'Times New Roman',
-                        'size'       => '12',
-                        'bold'       =>  true
+                        'family' => 'Times New Roman',
+                        'size' => '12',
+                        'bold' => true
                     ));
                 });
 
-                $sheet->cell('H'.$next_row, function ($cell) use ($data_report) {
+                $sheet->cell('H' . $next_row, function ($cell) use ($data_report) {
                     $cell->setValue($data_report['journal_debit'] - $data_report['journal_credit']);
                 });
 
                 $next_row = $next_row + 1;
-                $sheet->cell('G'.$next_row, function ($cell) {
+                $sheet->cell('G' . $next_row, function ($cell) {
                     $cell->setValue('ENDING BALANCE');
                     $cell->setFont(array(
-                        'family'     => 'Times New Roman',
-                        'size'       => '12',
-                        'bold'       =>  true
+                        'family' => 'Times New Roman',
+                        'size' => '12',
+                        'bold' => true
                     ));
                 });
 
-                $sheet->cell('H'.$next_row, function ($cell) use ($data_report, $total_received, $total_disbursed) {
+                $sheet->cell('H' . $next_row, function ($cell) use ($data_report, $total_received, $total_disbursed) {
                     $cell->setValue(($data_report['journal_debit'] - $data_report['journal_credit']) + $total_received - $total_disbursed);
                 });
             });
         })->export('xls');
     }
+
+    public function sendRequestApproval($type)
+    {
+        self::checkingPermission($type);
+
+        if (!$this->validateCSRF()) {
+            return response()->json($this->restrictionAccessMessage());
+        }
+        $data = [];
+        $approver = \Input::get('approver');
+        $data['approver'] = User::find($approver);
+
+        $subledger = \Input::get('subledger_id');
+        $coa_id = \Input::get('coa_id');
+        $date_from = \Input::get('date_from') ? \Input::get('date_from') : date('d-m-Y');
+        $date_to = \Input::get('date_to') ? \Input::get('date_to') : date('d-m-Y');
+
+        $report = self::dataReport($type, $date_from, $date_to, $coa_id, $subledger);
+        $data['list_report'] = $report['report'];
+        $data['type'] = $type;
+        $data['total_cash_advance'] = CashAdvance::joinFormulir()->selectOriginal()->notArchived()->notCanceled()
+            ->where('formulir.form_date', '<=', date_format_db($date_to, 'end'))
+            ->where('is_payed', true)
+            ->where('amount', '>', 0)
+            ->where('coa_id', $coa_id)
+            ->handedOver()
+            ->sum('amount');
+
+        $data['total_cash_advance_used'] = CashCashAdvance::joinFormulir()->selectOriginal()->notArchived()->notCanceled()
+            ->where('formulir.form_date', '<=', date_format_db($date_to, 'end'))
+            ->where('cash_advance_amount', '>', 0)
+            ->sum('cash_advance_amount');
+
+        $data['total_cash_advance_remaining'] = CashAdvance::joinFormulir()->selectOriginal()->notArchived()->notCanceled()
+            ->where('formulir.form_date', '<=', date_format_db($date_to, 'end'))
+            ->where('is_payed', true)
+            ->where('amount', '>', 0)
+            ->where('coa_id', $coa_id)
+            ->handedOver()
+            ->sum('remaining_amount');
+
+        $data['opening_balance'] = $report['journal_debit'] - $report['journal_credit'];
+
+        self::sendingRequestApproval($data, auth()->user()->name, url('/'));
+    }
+
+    public static function sendingRequestApproval($data, $requester, $domain)
+    {
+        $data['token'] = md5(date('ymdhis'));
+        $data['requester'] = $requester;
+        $data['url'] = $domain;
+
+        sendEmail('point-finance::emails.finance.point.approval.cash-mirna', $data, $data['approver']->email, 'Debt Cash Report #' . date('ymdHi'));
+
+        // foreach ($list_downpayment as $downpayment) {
+        //     formulir_update_token($downpayment->formulir, $token);
+        // }
+    }
+
+    // public function approve(Request $request, $id)
+    // {
+    //     $downpayment = Downpayment::find($id);
+    //     $approval_message = \Input::get('approval_message') ? : '';
+    //     $token = \Input::get('token');
+
+    //     DB::beginTransaction();
+
+    //     FormulirHelper::approve($downpayment->formulir, $approval_message, 'approval.point.sales.service.downpayment', $token);
+    //     self::addPaymentReference($downpayment);
+    //     timeline_publish('approve', 'downpayment ' . $downpayment->formulir->form_number . ' approved', $this->getUserForTimeline($request, $downpayment->formulir->approval_to));
+    //     DB::commit();
+
+    //     gritter_success('form approved', 'false');
+    //     return $this->getRedirectLink($request, $downpayment->formulir);
+    // }
+
+    // public function reject(Request $request, $id)
+    // {
+    //     $downpayment = Downpayment::find($id);
+    //     $approval_message = \Input::get('approval_message') ? : '';
+    //     $token = \Input::get('token');
+
+    //     DB::beginTransaction();
+
+    //     FormulirHelper::reject($downpayment->formulir, $approval_message, 'approval.point.sales.service.downpayment', $token);
+    //     timeline_publish('reject', 'downpayment ' . $downpayment->formulir->form_number . ' rejected', $this->getUserForTimeline($request, $downpayment->formulir->approval_to));
+
+    //     DB::commit();
+
+    //     gritter_success('form rejected', 'false');
+    //     return $this->getRedirectLink($request, $downpayment->formulir);
+    // }
+
+    // public function approveAll()
+    // {
+    //     $token = \Input::get('token');
+    //     $array_formulir_id = explode(',', \Input::get('formulir_id'));
+    //     $approval_message = '';
+
+    //     DB::beginTransaction();
+    //     foreach ($array_formulir_id as $id) {
+    //         $downpayment = Downpayment::where('formulir_id', $id)->first();
+    //         FormulirHelper::approve($downpayment->formulir, $approval_message, 'approval.point.sales.service.downpayment', $token);
+    //         self::addPaymentReference($downpayment);
+    //         timeline_publish('approve', $downpayment->formulir->form_number . ' approved', $downpayment->formulir->approval_to);
+    //     }
+    //     DB::commit();
+
+    //     $view = view('framework::app.approval-all-status');
+    //     $view->array_formulir_id = $array_formulir_id;
+    //     $view->formulir = \Input::get('formulir_id');
+
+    //     return $view;
+    // }
+
+    // public function rejectAll()
+    // {
+    //     $token = \Input::get('token');
+    //     $array_formulir_id = explode(',', \Input::get('formulir_id'));
+    //     $approval_message = '';
+
+    //     DB::beginTransaction();
+    //     foreach ($array_formulir_id as $id) {
+    //         $downpayment = Downpayment::where('formulir_id', $id)->first();
+    //         FormulirHelper::reject($downpayment->formulir, $approval_message, 'approval.point.sales.service.downpayment', $token);
+    //         timeline_publish('reject', $downpayment->formulir->form_number . ' rejected', $downpayment->formulir->approval_to);
+    //     }
+    //     DB::commit();
+
+    //     $view = view('framework::app.approval-all-status');
+    //     $view->array_formulir_id = $array_formulir_id;
+    //     $view->formulir = \Input::get('formulir_id');
+
+    //     return $view;
+    // }
 }
