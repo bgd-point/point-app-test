@@ -5,7 +5,7 @@
     <table class="table table-striped table-bordered">
         <thead>
         <tr>
-            <th>&nbsp;</th>
+            <th></th>
             <th>form date</th>
             <th>form number</th>
             <th>person</th>
@@ -13,12 +13,14 @@
             <th>notes</th>
             <th class="text-right">received</th>
             <th class="text-right">disbursed</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
         <?php
         $total_received = 0;
         $total_disbursed = 0;
+        $audited_id = 0;
         ?>
         @foreach($list_report as $report)
             @foreach($report->detail as $report_detail)
@@ -47,6 +49,12 @@
                             <?php $total_disbursed += $report_detail->amount * -1; ?>
                         @else
                             0.00
+                        @endif
+                    </td>
+                    <td>
+                        @if($audited_id != $report->formulir->id)
+                            <?php $audited_id = $report->formulir->id; ?>
+                        <input type="checkbox" onclick="updateAudit({{$report->formulir->id}})" @if($report->formulir->audited) checked @endif>
                         @endif
                     </td>
                 </tr>
@@ -92,5 +100,20 @@
       printWindow.print();
 
     }, true);
+  }
+
+  function updateAudit(form_id) {
+      $.ajax({
+          url: "{{URL::to('formulir/audited')}}",
+          type: 'POST',
+          data: {
+              form_id: form_id
+          },
+          success: function(data) {
+              // notification('success', '');
+          },error: function(data){
+              notification('Failed', 'Something went wrong');
+          }
+      });
   }
 </script>

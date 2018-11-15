@@ -28,6 +28,8 @@ Route::group(['namespace' => 'Point\Framework\Http\Controllers'], function () {
     Route::get('formulir/{id}/cancel/approve/{token}', 'FormulirController@cancelApproved');
     Route::get('formulir/{id}/cancel/reject/{token}', 'FormulirController@cancelRejected');
 
+    Route::post('formulir/audited', 'FormulirController@audited');
+
     Route::group(['middleware' => 'auth'], function () {
 
         // formulir request routes

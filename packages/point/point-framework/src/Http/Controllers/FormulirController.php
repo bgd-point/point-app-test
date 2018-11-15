@@ -376,4 +376,35 @@ class FormulirController extends Controller
 
         return view('framework::app.approval-status')->with('formulir', $formulir);
     }
+
+    /**
+     * User pressed CANCEL button on the app
+     *
+     * @param Request $request
+     * @return array|\Illuminate\Http\JsonResponse
+     */
+    public function audited(Request $request)
+    {
+        if (!$this->validateCSRF()) {
+            return response()->json($this->restrictionAccessMessage());
+        }
+
+        $formulir_id = \Input::get('form_id');
+
+        DB::beginTransaction();
+
+        $formulir = Formulir::findOrFail($formulir_id);
+        $formulir->audited = !$formulir->audited;
+        $formulir->save();
+
+        DB::commit();
+
+        $response = array(
+            'status' => 'success',
+            'title' => 'Success',
+            'msg' => 'Canceled Form Success'
+        );
+
+        return $response;
+    }
 }
