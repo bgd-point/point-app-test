@@ -60,7 +60,7 @@ class StockOpnameHelper
             $stock_opname_items->opname_notes = app('request')->input('opname_notes')[$i];
             $unit = $stock_opname_items->item->unit()->first();
             $stock_opname_items->unit = $unit->name;
-            $stock_opname_items->converter = $unit->converter[$i];
+            $stock_opname_items->converter = $unit->converter;
             $stock_opname_items->save();
         }
 
