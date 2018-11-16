@@ -12,6 +12,27 @@
 
         @include('core::app.error._alert')
 
+        @if(count($debt_invoices)>0)
+        <div class="alert alert-danger">
+            <i class="fa fa-warning"></i> Terdapat invoice yang belum terbayar lebih dari 60 hari
+            <ul>
+                @foreach($debt_invoices as $debt)
+                    <?php
+                    $model = $debt->formulirReference->formulirable_type;
+                    $url = $model::showUrl($debt->formulirReference->formulirable_id);
+                    ?>
+                    <li><a style="color: white;" href="{{url($url)}}">{{$debt->formulirReference->form_number}}</a></li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+        @if(!$is_first_delivery)
+        <div class="alert alert-info">
+            <i class="fa fa-info-circle"></i> Berikut adalah customer baru, dan ini adalah pengiriman pertama
+        </div>
+        @endif
+
         <div class="panel panel-default">
             <div class="panel-body">
                 <form action="{{url('sales/point/indirect/delivery-order')}}" method="post"
@@ -293,11 +314,30 @@
                         @endif
                     </fieldset>
 
-                    <div class="form-group">
-                        <div class="col-md-6 col-md-offset-3">
-                            <button type="submit" class="btn btn-effect-ripple btn-primary">Submit</button>
+                    @if(count($blocked_debt_invoices)>0)
+                        <div class="form-group">
+                            <div class="col-md-6 col-md-offset-3">
+                                <div class="alert alert-danger">
+                                    <i class="fa fa-warning"></i> Anda tidak dapat membuat surat jalan karena terdapat invoice yang belum terbayar lebih dari 65 hari,
+                                    <ul>
+                                        @foreach($blocked_debt_invoices as $debt)
+                                            <?php
+                                            $model = $debt->formulirReference->formulirable_type;
+                                            $url = $model::showUrl($debt->formulirReference->formulirable_id);
+                                            ?>
+                                            <li><a style="color: white;" href="{{url($url)}}">{{$debt->formulirReference->form_number}}</a></li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                        @else
+                        <div class="form-group">
+                            <div class="col-md-6 col-md-offset-3">
+                                <button type="submit" class="btn btn-effect-ripple btn-primary">Submit</button>
+                            </div>
+                        </div>
+                    @endif
                 </form>
             </div>
         </div>

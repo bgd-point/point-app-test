@@ -3,6 +3,7 @@
 namespace Point\PointSales\Http\Controllers\Sales;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Point\Core\Exceptions\PointException;
@@ -11,6 +12,7 @@ use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Models\AccountPayableAndReceivable;
 use Point\Framework\Models\FormulirLock;
+use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\Framework\Models\Master\Warehouse;
 use Point\PointExpedition\Models\ExpeditionOrder;
@@ -78,7 +80,24 @@ class DeliveryOrderController extends Controller
         $view = view('point-sales::app.sales.point.sales.delivery-order.create-step-2');
         $view->reference_expedition_order = $expedition_id ? ExpeditionOrder::find($expedition_id) : '';
         $view->reference_sales_order = SalesOrder::find($sales_order_id);
-        ;
+        $view->is_first_delivery = DeliveryOrder::where('person_id', $view->reference_sales_order->person->id)->first();
+        $coa = Coa::where('coa_category_id', 3)->lists('id');
+        $debt_invoices = AccountPayableAndReceivable::whereIn('account_id', $coa)
+            ->where('form_date', '<=', Carbon::parse(Carbon::now())->subDay(60))
+            ->where('done', 0)
+            ->where('amount', '>', 0)
+            ->where('person_id', $view->reference_sales_order->person->id)
+            ->get();
+
+        $blocked_debt_invoices = AccountPayableAndReceivable::whereIn('account_id', $coa)
+            ->where('form_date', '<=', Carbon::parse(Carbon::now())->subDay(65))
+            ->where('done', 0)
+            ->where('amount', '>', 0)
+            ->where('person_id', $view->reference_sales_order->person->id)
+            ->get();
+
+        $view->debt_invoices = $debt_invoices;
+        $view->blocked_debt_invoices = $blocked_debt_invoices;
         $view->list_warehouse = Warehouse::all();
         $view->list_user_approval = UserHelper::getAllUser();
         $expedition_reference = '';
@@ -124,7 +143,6 @@ class DeliveryOrderController extends Controller
 
             $total += $quantity * ($price - $price * $discount / 100);
         }
-
 
         $reference_type = $request->input('reference_sales_order');
         $reference_id = $request->input('reference_sales_order_id');
