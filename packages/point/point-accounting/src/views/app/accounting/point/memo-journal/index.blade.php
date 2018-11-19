@@ -43,7 +43,7 @@
             <br/>
 
             <div class="table-responsive">
-                <?php 
+                <?php
                     $order_by = \Input::get('order_by') ? : 0;
                     $order_type = \Input::get('order_type') ? : 0;
                 ?>
@@ -79,34 +79,18 @@
                                 <td class="text-right">{{ number_format_accounting($detail->credit) }}</td>
                             </tr>
                             @endforeach
-
-                        @endforeach  
-                    </tbody> 
+                        @endforeach
+                    </tbody>
                 </table>
                 {!! $list_memo_journal->appends(['order_by'=>app('request')->get('order_by'), 'order_type'=>app('request')->get('order_type'), 'status'=>app('request')->get('status'), 'search'=>app('request')->get('search'), 'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to') ])->render() !!}
             </div>
         </div>
-    </div>  
+    </div>
 </div>
 @stop
 
 @section('scripts')
 <script>
-function showAll(){
-    $('.th-detail').show();
-    $('.td-detail').show();
-    $('.tr-detail').show();
-    $('#full_view').attr('onclick','compact()');
-    $('#full_view').text('Compact');
-}
-compact();
-function compact(){
-    $('.th-detail').hide();   
-    $('.td-detail').hide();   
-    $('.tr-detail').hide();   
-    $('#full_view').attr('onclick','showAll()');
-    $('#full_view').text('Show All');
-}
 function selectData(order_by, order_type) {
     var status = $("#status option:selected").val();
     var date_from = $("#date-from").val();

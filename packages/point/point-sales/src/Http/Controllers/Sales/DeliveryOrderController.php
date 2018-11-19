@@ -85,6 +85,7 @@ class DeliveryOrderController extends Controller
         $debt_invoices = AccountPayableAndReceivable::whereIn('account_id', $coa)
             ->where('form_date', '<=', Carbon::parse(Carbon::now())->subDay(60))
             ->where('done', 0)
+            ->where('account_id', 3)
             ->where('amount', '>', 0)
             ->where('person_id', $view->reference_sales_order->person->id)
             ->get();
@@ -92,6 +93,7 @@ class DeliveryOrderController extends Controller
         $blocked_debt_invoices = AccountPayableAndReceivable::whereIn('account_id', $coa)
             ->where('form_date', '<=', Carbon::parse(Carbon::now())->subDay(65))
             ->where('done', 0)
+            ->where('account_id', 3)
             ->where('amount', '>', 0)
             ->where('person_id', $view->reference_sales_order->person->id)
             ->get();
