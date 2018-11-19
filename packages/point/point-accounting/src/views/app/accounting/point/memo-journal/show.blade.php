@@ -35,6 +35,7 @@
                                     'approval_at' => $memo_journal->formulir->approval_at,
                                     'approval_to' => $memo_journal->formulir->approvalTo->name,
                                 ])
+                                @include('framework::app.include._form_status_label', ['form_status' => $memo_journal->formulir->form_status])
                             </div>
                         </div>
                     </fieldset>
