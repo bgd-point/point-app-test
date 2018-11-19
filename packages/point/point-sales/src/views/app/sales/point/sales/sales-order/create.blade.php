@@ -437,7 +437,7 @@
                     });
 
                 }, error: function (data) {
-                    swal('Failed', 'Something went wrong', 'error');
+                    // swal('Failed', 'Something went wrong', 'error');
                 }
             });
         }
