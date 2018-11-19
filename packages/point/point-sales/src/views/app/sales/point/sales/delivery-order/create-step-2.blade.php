@@ -331,6 +331,11 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-md-offset-3">
+                                <button type="submit" class="btn btn-effect-ripple btn-primary">Submit</button>
+                            </div>
+                        </div>
                         @else
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-3">
