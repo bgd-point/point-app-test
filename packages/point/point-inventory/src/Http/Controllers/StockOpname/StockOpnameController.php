@@ -3,6 +3,7 @@
 namespace Point\PointInventory\Http\Controllers\StockOpname;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Point\Core\Helpers\TempDataHelper;
 use Point\Core\Helpers\UserHelper;
@@ -77,7 +78,7 @@ class StockOpnameController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StockOpnameRequest $request)
+    public function store(Request $request)
     {
         formulir_is_allowed_to_create('create.point.inventory.stock.opname', date_format_db($request->input('form_date')), []);
 
