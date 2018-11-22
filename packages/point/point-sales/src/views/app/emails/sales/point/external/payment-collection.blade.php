@@ -30,7 +30,7 @@
         .invoice-box table td {
             padding: 5px;
             vertical-align: top;
-            
+
         }
 
         .invoice-box table tr td:nth-child(2) {
@@ -133,12 +133,12 @@
     <strong style="font-size:18px; text-transform: uppercase;">{{$warehouse->store_name}}</strong> <br/>
     <font style="font-size:12px;text-transform: capitalize;">
         {{$warehouse->address}} <br/>
-        {{$warehouse->phone}} 
+        {{$warehouse->phone}}
     </font>
     @else
         Store Name <br/>
         Addess......... <br/>
-        Phone Number 
+        Phone Number
     @endif
     <br/> <br/>
     <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
@@ -185,7 +185,7 @@
             <td>
                 Notes
             </td>
-            <td align="right">
+            <td align="right" style="text-align: right;">
                 Amount
             </td>
         </tr>
@@ -198,7 +198,7 @@
                 <td>
                     {{$payment_collection_detail->detail_notes}}
                 </td>
-                <td>
+                <td align="right" style="text-align: right;">
                     {{number_format_quantity($payment_collection_detail->amount)}}
                 </td>
             </tr>
@@ -212,7 +212,7 @@
             <td>
                 Notes
             </td>
-            <td align="right">
+            <td align="right" style="text-align: right;">
                 Amount
             </td>
         </tr>
@@ -225,18 +225,16 @@
             <td>
                 {{$payment_collection_other->other_notes}}
             </td>
-            <td align="right">
+            <td align="right" style="text-align: right;">
                 {{number_format_quantity($payment_collection_other->amount)}}
             </td>
         </tr>
         @endforeach
         <tr></tr>
         <tr class="heading">
-            <td>Total
-            </td>
-            <td>
-            </td>
-            <td align="right">
+            <td>Total</td>
+            <td></td>
+            <td align="right" style="text-align: right;">
                 {{number_format_quantity($payment_collection->total_payment)}}
             </td>
         </tr>
