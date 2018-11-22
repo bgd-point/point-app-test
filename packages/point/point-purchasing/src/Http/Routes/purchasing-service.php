@@ -9,7 +9,13 @@ Route::group(['prefix' => 'purchasing/point/service', 'namespace' => 'Point\Poin
     Route::get('/report', 'ServiceReportController@index');
 
     // PURCHASE ORDER
+    Route::get('/purchase-order/reject-all', 'PurchaseOrderApprovalController@rejectAll');
+    Route::get('/purchase-order/approve-all', 'PurchaseOrderApprovalController@approveAll');
+    Route::any('/purchase-order/{id}/approve', 'PurchaseOrderApprovalController@approve');
+    Route::any('/purchase-order/{id}/reject', 'PurchaseOrderApprovalController@reject');
     Route::group(['middleware' => 'auth'], function () {
+        Route::get('/purchase-order/request-approval', 'PurchaseOrderApprovalController@requestApproval');
+        Route::post('/purchase-order/send-request-approval', 'PurchaseOrderApprovalController@sendRequestApproval');
         Route::resource('/purchase-order', 'PurchaseOrderController');
     });
 
