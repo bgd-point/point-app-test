@@ -126,7 +126,7 @@
                                                         <td>
                                                             <a href="{{ url('sales/point/indirect/invoice/'.$invoice->id) }}">{{ $invoice->formulir->form_number}}</a>
                                                         </td>
-                                                        <td>{{ $invoice->formulir->notes }}</td>
+                                                        <td><input type="text" name="invoice_notes[]" class="form-control" style="min-width: 300px;" value="{{ $invoice->formulir->notes }}"></td>
                                                         <td>
                                                             @foreach($invoice->items as $invoice_item)
                                                                 {{ $invoice_item->item->codeName }} {{ number_format_price($invoice_item->quantity) .' '.$invoice_item->unit }}

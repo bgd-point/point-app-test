@@ -146,6 +146,7 @@ class PaymentCollectionController extends Controller
         $view->list_invoice = Invoice::whereIn('formulir_id', \Input::get('invoice_id'))->get();
         $view->invoice_rid = \Input::get('invoice_rid');
         $view->invoice_id = \Input::get('invoice_id');
+        $view->invoice_notes = \Input::get('invoice_notes');
         $view->invoice_reference_id = \Input::get('invoice_reference_id');
         $view->invoice_reference_type = \Input::get('invoice_reference_type');
         $view->amount_invoice = number_format_db(\Input::get('amount_invoice'));
@@ -371,6 +372,7 @@ class PaymentCollectionController extends Controller
         $view->list_invoice = Invoice::whereIn('formulir_id', \Input::get('invoice_id'))->get();
         $view->invoice_rid = \Input::get('invoice_rid');
         $view->invoice_id = \Input::get('invoice_id');
+        $view->invoice_notes = \Input::get('invoice_notes');
         $view->invoice_reference_id = \Input::get('invoice_reference_id');
         $view->invoice_reference_type = \Input::get('invoice_reference_type');
         $view->amount_invoice = number_format_db(\Input::get('amount_invoice'));
@@ -600,6 +602,8 @@ class PaymentCollectionController extends Controller
         $warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
         if ($warehouse_id > 0) {
             $warehouse = Warehouse::find($warehouse_id);
+        } else {
+            $warehouse = Warehouse::first();
         }
 
         if (! $payment_collection) {

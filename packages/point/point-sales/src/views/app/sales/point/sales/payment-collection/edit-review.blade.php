@@ -83,7 +83,7 @@
                                                 {{ date_Format_view($invoice->formulir->form_date) }}
                                                 <input type="hidden" name="invoice_id[]" value="{{$invoice->id}}"/>
                                                 <input type="hidden" name="invoice_notes[]"
-                                                       value="{{$invoice->formulir->notes}}"/>
+                                                       value="{{$invoice_notes[$i]}}"/>
                                                 <input type="hidden" name="invoice_amount[]"
                                                        value="{{$amount_invoice[$i]}}"/>
                                                 <input type="hidden" name="invoice_amount_original[]"
@@ -98,7 +98,7 @@
                                             <td>
                                                 <a href="{{ url('sales/point/indirect/invoice/'.$invoice->id) }}">{{ $invoice->formulir->form_number}}</a>
                                             </td>
-                                            <td>{{ $invoice->formulir->notes }}</td>
+                                            <td>{{$invoice_notes[$i]}}</td>
                                             <td class="text-right">{{ number_format_quantity($amount_invoice[$i]) }}</td>
                                         </tr>
                                     @endforeach
