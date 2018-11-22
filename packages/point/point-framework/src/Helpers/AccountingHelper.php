@@ -66,8 +66,14 @@ class AccountingHelper
 
     public static function coaOpeningBalance($coa_id, $date_from)
     {
-        $journal = Journal::whereIn('coa_id', $coa_id)
-            ->where('form_date', '<', $date_from)
+        $journal = Journal::where('form_date', '<', $date_from);
+        if (is_array($coa_id)) {
+            $journal = $journal->whereIn('coa_id', $coa_id);
+        } else {
+            $journal = $journal->where('coa_id', $coa_id);
+        }
+
+        $journal = $journal
             ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
             ->groupBy('coa_id')
             ->first();

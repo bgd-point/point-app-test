@@ -13,7 +13,7 @@
     </tr>
     </thead>
     <tbody>
-    <?php $balance = Point\Framework\Helpers\AccountingHelper::coaOpeningBalance($coa_id, $date_from); ?>
+    <?php $balance = Point\Framework\Helpers\AccountingHelper::coaOpeningBalance($coa->id, $date_from); ?>
     <tr>
         <td>{{ date_format_view($date_from) }}</td>
         <td></td>
