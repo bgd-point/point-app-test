@@ -142,7 +142,7 @@
                                         @foreach($invoice->services as $invoice_service)
                                             <tr>
                                                 <td>
-                                                    <a href="{{ url('master/item/'.$invoice_service->item_id) }}">{{ $invoice_service->service->name }}</a>
+                                                    <a href="{{ url('master/service/'.$invoice_service->service_id) }}">{{ $invoice_service->service->name }}</a>
                                                 </td>
                                                 <td>{{$invoice_service->service_notes}}</td>
                                                 <td>@if($invoice_service->allocation){{$invoice_service->allocation->name}}@endif</td>
