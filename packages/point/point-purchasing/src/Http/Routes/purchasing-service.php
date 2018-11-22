@@ -40,6 +40,10 @@ Route::group(['prefix' => 'purchasing/point/service', 'namespace' => 'Point\Poin
         Route::get('/invoice/pdf', 'InvoiceController@indexPDF');
         Route::post('/invoice/send-email', 'InvoiceController@sendEmail');
         Route::get('/invoice/detail/{id}', 'InvoiceController@ajaxDetailItem');
+
+        Route::get('/invoice/create-step-1', 'InvoiceController@createStep1');
+        Route::get('/invoice/create-step-2/{id}', 'InvoiceController@createStep2');
+
         Route::resource('/invoice', 'InvoiceController');
     });
 

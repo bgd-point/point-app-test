@@ -170,29 +170,43 @@
                                 <div class="table-responsive">
                                     <table  class="table">
                                         <tr>
-                                            <td colspan="4"></td>
-                                            <td class="text-right"><strong>SUB TOTAL</strong></td>
-                                            <td class="text-right">{{ number_format_quantity($purchase_order->subtotal) }}</td>
+                                            <td style="width: 100%;" class="text-right">
+                                                <strong>SUB TOTAL</strong>
+                                            </td>
+                                            <td class="text-right">
+                                                {{ number_format_quantity($purchase_order->subtotal) }}
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4"></td>
-                                            <td class="text-right"><strong>DISCOUNT (%)</strong></td>
-                                            <td class="text-right">{{ number_format_quantity($purchase_order->discount) }}</td>
+                                            <td style="width: 100%;" class="text-right">
+                                                <strong>DISCOUNT (%)</strong>
+                                            </td>
+                                            <td class="text-right">
+                                                {{ number_format_quantity($purchase_order->discount) }}
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4"></td>
-                                            <td class="text-right"><strong>TAX BASE</strong></td>
-                                            <td class="text-right">{{ number_format_quantity($purchase_order->tax_base) }}</td>
+                                            <td style="width: 100%;" class="text-right">
+                                                <strong>TAX BASE</strong>
+                                            </td>
+                                            <td class="text-right">
+                                                {{ number_format_quantity($purchase_order->tax_base) }}
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4"></td>
-                                            <td class="text-right"><strong>TAX ({{$purchase_order->type_of_tax}})</strong></td>
-                                            <td class="text-right">{{ number_format_quantity($purchase_order->tax) }}</td>
+                                            <td style="width: 100%;" class="text-right">
+                                                <strong>TAX ({{$purchase_order->type_of_tax}})</strong>
+                                            </td>
+                                            <td class="text-right">
+                                                {{ number_format_quantity($purchase_order->tax) }}
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4"></td>
-                                            <td class="text-right"><strong>TOTAL</strong></td>
-                                            <td class="text-right">{{ number_format_quantity($purchase_order->total) }}</td>
+                                            <td style="width: 100%;" class="text-right">
+                                                <strong>TOTAL</strong></td>
+                                            <td class="text-right">
+                                                {{ number_format_quantity($purchase_order->total) }}
+                                            </td>
                                         </tr>
                                     </table>
                                 </div>
