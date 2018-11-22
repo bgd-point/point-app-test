@@ -127,6 +127,26 @@
                                 </div>
                             </div>
                         </div>
+
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <legend><i class="fa fa-angle-right"></i> Authorized User</legend>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Form Creator</label>
+                                <div class="col-md-6 content-show">
+                                    {{ $payment_collection->formulir->createdBy->name }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Request Approval To</label>
+                                <div class="col-md-6 content-show">
+                                    {{ $payment_collection->formulir->approvalTo->name }}
+                                </div>
+                            </div>
+                        </fieldset>
                     </div>
                 </div>
 
