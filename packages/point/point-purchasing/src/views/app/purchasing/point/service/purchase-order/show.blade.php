@@ -134,7 +134,7 @@
                                         @foreach($purchase_order->services as $services)
                                             <tr>
                                                 <td>
-                                                    <a href="{{ url('master/item/'.$services->item_id) }}">
+                                                    <a href="{{ url('master/service/'.$services->service_id) }}">
                                                         {{ $services->service->name }}
                                                     </a>
                                                 </td>

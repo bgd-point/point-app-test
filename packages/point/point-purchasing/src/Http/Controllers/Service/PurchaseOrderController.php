@@ -96,9 +96,9 @@ class PurchaseOrderController extends Controller {
     public function archived($id) {
         $view = view('point-purchasing::app.purchasing.point.service.purchase-order.archived');
 
-        $view->purchase_order_archived = PurchaseOrder::find($id);
+        $view->purchase_order_archived = PurchaseOrder::findOrFail($id);
 
-        // $view->purchase_order = PurchaseOrder::joinFormulir()->notArchived($view->purchase_order_archived->formulir->archived)->selectOriginal()->first();
+        $view->purchase_order = PurchaseOrder::joinFormulir()->notArchived($view->purchase_order_archived->formulir->archived)->selectOriginal()->first();
 
         return $view;
     }

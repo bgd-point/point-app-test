@@ -14,8 +14,12 @@ Route::group(['prefix' => 'purchasing/point/service', 'namespace' => 'Point\Poin
     Route::any('/purchase-order/{id}/approve', 'PurchaseOrderApprovalController@approve');
     Route::any('/purchase-order/{id}/reject', 'PurchaseOrderApprovalController@reject');
     Route::group(['middleware' => 'auth'], function () {
+
         Route::get('/purchase-order/request-approval', 'PurchaseOrderApprovalController@requestApproval');
         Route::post('/purchase-order/send-request-approval', 'PurchaseOrderApprovalController@sendRequestApproval');
+
+        Route::get('/purchase-order/{id}/export', 'PurchaseOrderController@exportPDF');
+        Route::get('/purchase-order/{id}/archived', 'PurchaseOrderController@archived');
         Route::resource('/purchase-order', 'PurchaseOrderController');
     });
 
