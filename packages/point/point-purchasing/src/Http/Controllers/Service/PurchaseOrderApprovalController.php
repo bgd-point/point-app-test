@@ -87,7 +87,7 @@ class PurchaseOrderApprovalController extends Controller {
 
         DB::beginTransaction();
 
-        FormulirHelper::approve($purchase_order->formulir, $approval_message, 'approval.point.purchasing.service.purchase-order', $token);
+        FormulirHelper::approve($purchase_order->formulir, $approval_message, 'approval.point.purchasing.service.purchase.order', $token);
         // timeline_publish('approve', $purchase_order->formulir->form_number . ' approved', $this->getUserForTimeline($request, $purchase_order->formulir->approval_to));
 
         DB::commit();
@@ -110,7 +110,7 @@ class PurchaseOrderApprovalController extends Controller {
 
         DB::beginTransaction();
 
-        FormulirHelper::reject($purchase_order->formulir, $approval_message, 'approval.point.purchasing.service.purchase-order', $token);
+        FormulirHelper::reject($purchase_order->formulir, $approval_message, 'approval.point.purchasing.service.purchase.order', $token);
         // timeline_publish('reject', 'invoice ' . $purchase_order->formulir->form_number . ' rejected', $this->getUserForTimeline($request, $purchase_order->formulir->approval_to));
 
         DB::commit();
@@ -131,7 +131,7 @@ class PurchaseOrderApprovalController extends Controller {
         DB::beginTransaction();
         foreach ($array_formulir_id as $id) {
             $purchase_order = PurchaseOrder::where('formulir_id', $id)->first();
-            FormulirHelper::approve($purchase_order->formulir, $approval_message, 'approval.point.purchasing.service.purchase-order', $token);
+            FormulirHelper::approve($purchase_order->formulir, $approval_message, 'approval.point.purchasing.service.purchase.order', $token);
             //   timeline_publish('approve', $purchase_order->formulir->form_number . ' approved', $purchase_order->formulir->approval_to);
         }
         DB::commit();
@@ -154,7 +154,7 @@ class PurchaseOrderApprovalController extends Controller {
         DB::beginTransaction();
         foreach ($array_formulir_id as $id) {
             $purchase_order = PurchaseOrder::where('formulir_id', $id)->first();
-            FormulirHelper::reject($purchase_order->formulir, $approval_message, 'approval.point.purchasing.service.purchase-order', $token);
+            FormulirHelper::reject($purchase_order->formulir, $approval_message, 'approval.point.purchasing.service.purchase.order', $token);
             //   timeline_publish('reject', $purchase_order->formulir->form_number . ' rejected', $purchase_order->formulir->approval_to);
         }
         DB::commit();
