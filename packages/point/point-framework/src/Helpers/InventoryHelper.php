@@ -241,7 +241,11 @@ class InventoryHelper
             // ->get();
             ->first();
 
-        $average_cost_of_sales = $inventories['cogs'];
+        if ($inventories) {
+            $average_cost_of_sales = $inventories['cogs'];
+        } else {
+            $average_cost_of_sales = 0;
+        }
         // $average_cost_of_sales = 0;
         // $count_warehouse = 0;
 

@@ -34,7 +34,7 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Form Date *</label>
                     <div class="col-md-3">
-                        <input type="text" id="form_date" name="form_date" class="form-control date input-datepicker" data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}" value="{{ date(date_format_get(), strtotime(\Carbon::now())) }}">
+                        <input type="text" id="form_date" name="form_date" class="form-control date input-datepicker" data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}" value="{{ date(date_format_get(), strtotime($stock_opname->formulir->form_date)) }}">
                     </div>
                     <div class="col-md-3">
                         <div class="input-group bootstrap-timepicker">
@@ -68,17 +68,21 @@
                                             <th style="min-width:250px;">ITEM</th>
                                             <th style="min-width:160px;">STOCK IN DATABASE</th>
                                             <th style="min-width:160px;">STOCK OPNAME</th>
+                                            <th style="min-width:160px;">HPP</th>
+                                            <th style="min-width:160px;">EDIT HPP</th>
                                             <th style="min-width:250px;">NOTES *</th>
                                         </tr>
                                     </thead>
                                     <tbody class="manipulate-row">
                                     @if(count($details>0))
-                                        @include('point-inventory::app.inventory.point.stock-opname._details',['details'=>$details])
+                                        @include('point-inventory::app.inventory.point.stock-opname._details',['details'=>$details, 'stockOpname' => $stock_opname])
                                     @endif
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <td><input type="button" onclick="validateRow()" id="addItemRow" class="btn btn-primary" value="Add Item"></td>
+                                            <td></td>
+                                            <td></td>
                                             <td></td>
                                             <td></td>
                                             <td></td>
