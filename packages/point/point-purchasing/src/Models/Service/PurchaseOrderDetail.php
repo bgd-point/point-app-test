@@ -6,20 +6,34 @@ use Illuminate\Database\Eloquent\Model;
 use Point\Core\Traits\ByTrait;
 use Point\Framework\Traits\FormulirTrait;
 
-class PurchaseOrderDetail extends Model
-{
-    use ByTrait, FormulirTrait, ServicePaymentOrderVesa;
+class PurchaseOrderDetail extends Model {
+  use ByTrait, FormulirTrait;
 
-    protected $table = 'point_purchasing_service_purchase_order_detail';
-    public $timestamps = false;
+  /**
+   * @var string
+   */
+  protected $table = 'point_purchasing_service_purchase_order_detail';
+  /**
+   * @var mixed
+   */
+  public $timestamps = false;
 
-    public function service()
-    {
-        return $this->belongsTo('\Point\Framework\Models\Master\Service', 'service_id');
-    }
+  /**
+   * @var array
+   */
+  protected $guarded = [];
 
-    public function allocation()
-    {
-        return $this->belongsTo('\Point\Framework\Models\Master\Allocation', 'allocation_id');
-    }
+  /**
+   * @return mixed
+   */
+  public function service() {
+    return $this->belongsTo('\Point\Framework\Models\Master\Service', 'service_id');
+  }
+
+  /**
+   * @return mixed
+   */
+  public function allocation() {
+    return $this->belongsTo('\Point\Framework\Models\Master\Allocation', 'allocation_id');
+  }
 }

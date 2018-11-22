@@ -12,7 +12,7 @@
         </h2>
 
         <div class="row">
-            @if(auth()->user()->may('read.point.purchasing.service.order'))
+            @if(auth()->user()->may('read.point.purchasing.service.purchase.order'))
                 <div class="col-md-4 col-lg-3">
                     <a href="{{url('purchasing/point/service/purchase-order')}}" class="widget widget-button">
                         <div class="widget-content text-right clearfix">

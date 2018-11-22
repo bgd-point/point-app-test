@@ -8,6 +8,11 @@ Route::group(['prefix' => 'purchasing/point/service', 'namespace' => 'Point\Poin
     Route::get('/report/export', 'ServiceReportController@export');
     Route::get('/report', 'ServiceReportController@index');
 
+    // PURCHASE ORDER
+    Route::group(['middleware' => 'auth'], function () {
+        Route::resource('/purchase-order', 'PurchaseOrderController');
+    });
+
     // INVOICE
     Route::get('/invoice/reject-all', 'InvoiceApprovalController@rejectAll');
     Route::get('/invoice/approve-all', 'InvoiceApprovalController@approveAll');

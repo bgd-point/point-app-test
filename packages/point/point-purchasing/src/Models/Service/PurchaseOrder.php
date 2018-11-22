@@ -8,7 +8,7 @@ use Point\Framework\Traits\FormulirTrait;
 
 class PurchaseOrder extends Model
 {
-    use ByTrait, FormulirTrait, ServicePaymentOrderVesa;
+    use ByTrait, FormulirTrait;
 
     protected $table = 'point_purchasing_service_purchase_order';
     public $timestamps = false;
