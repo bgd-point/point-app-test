@@ -101,10 +101,10 @@
                                         <th style="min-width:220px">SERVICE</th>
                                         <th style="min-width:220px">ALLOCATION</th>
                                         <th style="min-width:220px">NOTES</th>
-                                        <th style="min-width:120px">QUANTITY</th>
-                                        <th style="min-width:220px">PRICE</th>
-                                        <th style="min-width:100px">DISCOUNT</th>
-                                        <th style="min-width:220px">TOTAL</th>
+                                        <th style="min-width:120px" class="text-right">QUANTITY</th>
+                                        <th style="min-width:120px" class="text-right">PRICE</th>
+                                        <th style="min-width:100px" class="text-right">DISCOUNT</th>
+                                        <th style="min-width:150px" class="text-right">TOTAL</th>
                                     </tr>
                                     </thead>
                                     <tbody class="manipulate-row">
