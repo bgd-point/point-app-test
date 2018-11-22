@@ -78,7 +78,7 @@
                                 @foreach($invoice_archived->services as $invoice_service)
                                     <tr>
                                         <td>
-                                            <a href="{{ url('master/item/'.$invoice_service->item_id) }}">{{ $invoice_service->service->name }}</a>
+                                            <a href="{{ url('master/service/'.$invoice_service->service_id) }}">{{ $invoice_service->service->name }}</a>
                                         </td>
                                         <td>{{$invoice_service->service_notes}}</td>
                                         <td class="text-right">{{ number_format_quantity($invoice_service->quantity) }} {{ $invoice_service->unit }}</td>
