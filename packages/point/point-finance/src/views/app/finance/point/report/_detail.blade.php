@@ -54,7 +54,15 @@
                     <td>
                         @if($audited_id != $report->formulir->id)
                             <?php $audited_id = $report->formulir->id; ?>
-                        <input type="checkbox" onclick="updateAudit({{$report->formulir->id}})" @if($report->formulir->audited) checked @endif>
+                            @if($isAdministrator)
+                            <input type="checkbox" onclick="updateAudit({{$report->formulir->id}})" @if($report->formulir->audited) checked @endif>
+                                @else
+                                    @if($report->formulir->audited)
+                                        <i class="fa fa-check-circle-o"></i>
+                                        @else
+                                        <i class="fa fa-minus"></i>
+                                    @endif
+                            @endif
                         @endif
                     </td>
                 </tr>

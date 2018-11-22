@@ -2,6 +2,7 @@
 
 namespace Point\PointFinance\Http\Controllers;
 
+use Point\Core\Models\Master\RoleUser;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Coa;
@@ -87,6 +88,13 @@ class ReportController extends Controller
         $view->opening_balance = $report['journal_debit'] - $report['journal_credit'];
         $view->url = url('finance/point/report/export/?type='.$type.'&subledger_id='.$subledger.'&coa_id='.$coa_id.'&date_from='.$date_from.'&date_to='.$date_to);
         $view->url_pdf = url('finance/point/report/export/pdf?type='.$type.'&subledger_id='.$subledger.'&coa_id='.$coa_id.'&date_from='.$date_from.'&date_to='.$date_to);
+
+        $roleUser = RoleUser::where('user_id', auth()->user()->id)->where('role_id', 1)->first();
+        $isAdministrator = false;
+        if ($roleUser) {
+            $isAdministrator = true;
+        }
+        $view->isAdministrator = $isAdministrator;
 
         return $view;
     }
