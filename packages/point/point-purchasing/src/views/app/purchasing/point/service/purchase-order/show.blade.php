@@ -279,7 +279,7 @@
                         </div>
                     </fieldset>
 
-                    @if(formulir_view_approval($purchase_order->formulir, 'approval.point.purchasing.service.purchase-order'))
+                    @if(formulir_view_approval($purchase_order->formulir, 'approval.point.purchasing.service.purchase.order'))
                         <fieldset>
                             <div class="form-group">
                                 <div class="col-md-12">
