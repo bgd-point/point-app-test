@@ -250,6 +250,11 @@
                                        class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                 @endif
 
+                                @if(formulir_view_close($purchase_order->formulir, 'update.point.purchasing.service.purchase.order'))
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
+                                       onclick="secureCloseForm({{$purchase_order->formulir_id}},'{{url('formulir/close')}}')">Close Form</a>
+                                @endif
+
                                 @if(formulir_view_cancel_or_request_cancel($purchase_order->formulir, 'delete.point.purchasing.service.purchase.order', 'approval.point.purchasing.service.purchase.order') == 1)
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $purchase_order->formulir_id }}','approval.point.purchasing.service.purchase.order')">
                                         <i class="fa fa-times"></i> 
