@@ -67,7 +67,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Supplier</label>
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 content-show">
                             <input type="hidden" name="person_id" value="{{ $purchase_order->person_id }}">
                             {!! get_url_person($purchase_order->person->id) !!}
                         </div>
@@ -77,6 +77,14 @@
 
                         <div class="col-md-6">
                             <input type="text" name="notes" class="form-control" value="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">References To</label>
+
+                        <div class="col-md-6 content-show">
+                            <input type="hidden" name="reference_id" value="{{ $purchase_order->id }}">
+                            {!! formulir_url($purchase_order->formulir) !!}
                         </div>
                     </div>
                     <!-- LIST SERVICE -->
@@ -115,6 +123,7 @@
                                                 </a>
                                             </td> --}}
                                             <td>
+                                                <input type="hidden" name="detail_order_id[]" value="{{ $service->id }}">
                                                 <input type="hidden" name="service_id[]" value="{{ $service->service->id }}">
                                                 {{ $service->service->name }}
                                             </td>
@@ -141,10 +150,12 @@
                                                     value="{{ old('service_notes')[$key] }}">
                                             </td>
                                             <td class="text-right">
-                                                <input id="service-quantity-{{ $key }}" type="text"
-                                                        name="service_quantity[]"
-                                                        class="form-control format-quantity text-right calculate"
-                                                        value="{{ number_format_quantity($service->quantity) }}"/>
+                                                <input
+                                                    id="service-quantity-{{ $key }}"
+                                                    type="text"
+                                                    name="service_quantity[]"
+                                                    class="form-control format-quantity text-right calculate"
+                                                    value="{{ ReferHelper::remaining(get_class($service), $service->id, $service->quantity) }}"/>
                                             </td>
                                             <td>
                                                 <input
@@ -279,6 +290,16 @@
                                     @endforeach
                                     @endif
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="8">
+                                                <input type="button"
+                                                    id="addItemRow"
+                                                    class="btn btn-primary"
+                                                    value="add Item">
+                                            </td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>

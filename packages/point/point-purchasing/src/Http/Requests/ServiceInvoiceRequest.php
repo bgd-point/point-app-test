@@ -48,9 +48,6 @@ class ServiceInvoiceRequest extends Request
             if (! \Input::get('service_id')[$i]) {
                 $rules['[row_'.$i.']_service_required'] = 'accepted';
             }
-            if (number_format_db(\Input::get('service_quantity')[$i]) < 1) {
-                $rules['[row_'.$i.']_service_quantity_required'] = 'accepted';
-            }
         }
 
         // item
