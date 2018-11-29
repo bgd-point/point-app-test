@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Point\Framework\Helpers\AllocationHelper;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
+use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Item;
@@ -15,6 +17,9 @@ use Point\Framework\Models\Master\UserWarehouse;
 use Point\PointPurchasing\Models\Service\Invoice;
 use Point\PointPurchasing\Models\Service\InvoiceItem;
 use Point\PointPurchasing\Models\Service\InvoiceService;
+use Point\PointPurchasing\Models\Service\PurchaseOrder;
+use Point\Core\Exceptions\PointException;
+use Point\PointPurchasing\Models\Service\PurchaseOrderDetail;
 
 class ServiceInvoiceHelper
 {
@@ -76,11 +81,30 @@ class ServiceInvoiceHelper
             $invoice_service->allocation_id = $request->input('service_allocation_id')[$i];
             $invoice_service->save();
 
-            $amount = ($invoice_service->quantity * $invoice_service->price) - ($invoice_service->quantity * $invoice_service->price/100 * $invoice_service->discount);
+            $amount = $invoice_service->quantity * $invoice_service->price * (100 - $invoice_service->discount) / 100;
             AllocationHelper::save($invoice->formulir_id, $invoice_service->allocation_id, $amount * -1, $invoice_service->service_notes);
 
             $subtotal_service += $amount;
+
+            $by_type = get_class(new PurchaseOrderDetail());
+            $by_id   = $request['detail_order_id'][$i];
+            $to_type = get_class(new InvoiceService());
+            $to_id   = $invoice_service->id;
+            $to_parent_type = get_class($invoice);
+            $to_parent_id = $invoice->id;
+            $value   = $invoice_service->quantity;
+
+            ReferHelper::create(
+                $by_type,
+                $by_id,
+                $to_type,
+                $to_id,
+                $to_parent_type,
+                $to_parent_id,
+                $value
+            );
         }
+
         for ($i=0 ; $i < count($request->input('item_id')) ; $i++) {
             $item = Item::find($request->input('item_id')[$i]);
             $item_unit = ItemUnit::where('item_id', $item->id)->first();
@@ -131,6 +155,9 @@ class ServiceInvoiceHelper
 
             $subtotal += ($invoice_item->quantity * $invoice_item->price) - ($invoice_item->quantity * $invoice_item->price/100 * $invoice_item->discount);
         }
+
+        $reference = PurchaseOrder::findOrFail($request->input('reference_id'));
+        self::updateStatusReference($request, $reference, $invoice);
 
         $subtotal = $subtotal + $subtotal_service;
         $discount = $subtotal * $request->input('discount') / 100;
@@ -231,5 +258,27 @@ class ServiceInvoiceHelper
         $journal->subledger_id;
         $journal->subledger_type;
         $journal->save();
+    }
+
+    public static function updateStatusReference($request, $reference, $invoice)
+    {
+        // update status reference (purchase order) by remaining quantity
+        formulir_lock($reference->formulir_id, $invoice->formulir_id);
+        $close = true;
+        foreach ($reference->services as $reference_item) {
+            $remaining_quantity = ReferHelper::remaining(get_class($reference_item), $reference_item->id, $reference_item->quantity);
+            if ($remaining_quantity > 0) {
+                $close = false;
+            }
+            else if ($remaining_quantity < 0) {
+                throw new PointException("QUANTITY EXCEED PURCHASE ORDER");
+            }
+        }
+        // update by form close manual
+        if ($close) {
+            $reference->formulir->form_status = 1;
+        }
+
+        $reference->formulir->save();
     }
 }

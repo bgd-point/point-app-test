@@ -8,6 +8,21 @@ Route::group(['prefix' => 'purchasing/point/service', 'namespace' => 'Point\Poin
     Route::get('/report/export', 'ServiceReportController@export');
     Route::get('/report', 'ServiceReportController@index');
 
+    // PURCHASE ORDER
+    Route::get('/purchase-order/reject-all', 'PurchaseOrderApprovalController@rejectAll');
+    Route::get('/purchase-order/approve-all', 'PurchaseOrderApprovalController@approveAll');
+    Route::any('/purchase-order/{id}/approve', 'PurchaseOrderApprovalController@approve');
+    Route::any('/purchase-order/{id}/reject', 'PurchaseOrderApprovalController@reject');
+    Route::group(['middleware' => 'auth'], function () {
+
+        Route::get('/purchase-order/request-approval', 'PurchaseOrderApprovalController@requestApproval');
+        Route::post('/purchase-order/send-request-approval', 'PurchaseOrderApprovalController@sendRequestApproval');
+
+        Route::get('/purchase-order/{id}/export', 'PurchaseOrderController@exportPDF');
+        Route::get('/purchase-order/{id}/archived', 'PurchaseOrderController@archived');
+        Route::resource('/purchase-order', 'PurchaseOrderController');
+    });
+
     // INVOICE
     Route::get('/invoice/reject-all', 'InvoiceApprovalController@rejectAll');
     Route::get('/invoice/approve-all', 'InvoiceApprovalController@approveAll');
@@ -25,6 +40,10 @@ Route::group(['prefix' => 'purchasing/point/service', 'namespace' => 'Point\Poin
         Route::get('/invoice/pdf', 'InvoiceController@indexPDF');
         Route::post('/invoice/send-email', 'InvoiceController@sendEmail');
         Route::get('/invoice/detail/{id}', 'InvoiceController@ajaxDetailItem');
+
+        Route::get('/invoice/create-step-1', 'InvoiceController@createStep1');
+        Route::get('/invoice/create-step-2/{id}', 'InvoiceController@createStep2');
+
         Route::resource('/invoice', 'InvoiceController');
     });
 
