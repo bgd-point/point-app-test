@@ -47,7 +47,7 @@
                                     </td>
                                     <td>{{ date_format_view($purchase_order->formulir->form_date) }}</td>
                                     <td>
-                                        <a href="{{ url('purchasing/point/service/invoice/'.$purchase_order->id) }}">
+                                        <a href="{{ url('purchasing/point/service/purchase-order/'.$purchase_order->id) }}">
                                             {{ $purchase_order->formulir->form_number}}
                                         </a>
                                     </td>
