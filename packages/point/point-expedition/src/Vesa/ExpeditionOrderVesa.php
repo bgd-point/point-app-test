@@ -9,10 +9,10 @@ trait ExpeditionOrderVesa
 {
     public static function getVesa()
     {
-//        $array = self::vesaCreate();
-//        $array = self::vesaApproval($array);
-//        $array = self::vesaReject($array);
-//        return $array;
+        $array = self::vesaCreate();
+        $array = self::vesaApproval($array);
+        $array = self::vesaReject($array);
+        return $array;
     }
 
     public static function getVesaApproval()
