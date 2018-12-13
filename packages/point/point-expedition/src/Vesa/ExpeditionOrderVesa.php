@@ -12,7 +12,8 @@ trait ExpeditionOrderVesa
         $array = self::vesaCreate();
         $array = self::vesaApproval($array);
         $array = self::vesaReject($array);
-        return $array;
+        return [];
+//        return $array;
     }
 
     public static function getVesaApproval()
