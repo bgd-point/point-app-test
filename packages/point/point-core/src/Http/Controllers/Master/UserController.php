@@ -90,7 +90,7 @@ class UserController extends Controller
             'email' => 'required|unique:users',
             'name' => 'required|unique:users',
             'password' => 'required',
-            'password' => 'required|confirmed'
+//            'password' => 'required|confirmed'
         ]);
 
         DB::beginTransaction();
@@ -116,16 +116,16 @@ class UserController extends Controller
 
         DB::commit();
 
-        if (!file_exists('uploads/avatar/' . config('point.client.slug'))) {
-            \File::makeDirectory('uploads/avatar/' . config('point.client.slug'), 0775, true);
-        }
-
-        if (\Input::hasFile('photo')) {
-            $image = \Image::make(\Input::file('photo'));
-            $image->fit(300, 300)->save('uploads/avatar/' . config('point.client.slug') . '/' . $user->id . '.jpg');
-        } else {
-            \Image::make(asset('core/assets/img/avatar/avatar.jpg'))->fit(300, 300)->save('uploads/avatar/' . $user->id . '.jpg');
-        }
+//        if (!file_exists('uploads/avatar/' . config('point.client.slug'))) {
+//            \File::makeDirectory('uploads/avatar/' . config('point.client.slug'), 0775, true);
+//        }
+//
+//        if (\Input::hasFile('photo')) {
+//            $image = \Image::make(\Input::file('photo'));
+//            $image->fit(300, 300)->save('uploads/avatar/' . config('point.client.slug') . '/' . $user->id . '.jpg');
+//        } else {
+//            \Image::make(asset('core/assets/img/avatar/avatar.jpg'))->fit(300, 300)->save('uploads/avatar/' . $user->id . '.jpg');
+//        }
 
         gritter_success(trans('core::core/master.user.create.success', ['name' => $user->name]));
         timeline_publish('create.user', trans('core::core/master.user.create.timeline', ['name' => $user->name]));
