@@ -50,4 +50,15 @@ class StockOpname extends Model
     {
         return 'point-inventory::emails.inventory.point.approval.stock-opname-email';
     }
+
+    public static function showUrl($id)
+    {
+        $class = self::find($id);
+
+        if ($class->formulir->form_number) {
+            return '/inventory/point/stock-opname/' . $id;
+        }
+
+        return '/inventory/point/stock-opname/' . $id . '/archived';
+    }
 }
