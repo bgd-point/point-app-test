@@ -3,7 +3,7 @@
     $data = \Point\Core\Helpers\TempDataHelper::searchKeyValue('stock.opname', ['item_id', 'stock_in_database', 'quantity_opname', 'unit1','unit2', 'notes'],
         [$details[$i]['item_id'], $details[$i]['stock_in_database'], $details[$i]['quantity_opname'], $details[$i]['unit1'],$details[$i]['unit2'], $details[$i]['notes']]);
     $item = \Point\Framework\Models\Master\Item::findOrFail($details[$i]['item_id']);
- 	$cogs_in_database = number_format_price($item->averageCostOfSales($stockOpname->formulir->form_date));
+ 	$cogs_in_database = $item->averageCostOfSales($stockOpname->formulir->form_date);
     ?>
 
 	<tr>
