@@ -23,4 +23,8 @@ class InventoryUsageItem extends Model
     {
         return $this->belongsTo('Point\Framework\Models\Master\ItemUnit', 'item_id');
     }
+    public function coa()
+    {
+        return $this->belongsTo('Point\Framework\Models\Master\Coa', 'coa_id');
+    }
 }
