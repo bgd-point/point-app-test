@@ -43,15 +43,15 @@ class StockOpnameRequest extends Request
         for ($i=0 ; $i<count(\Input::get('item_id')) ; $i++) {
             $j = $i+1;
 
-            if (! \Input::get('item_id')[$i] || \Input::get('item_id')[$i] == '') {
-                $rules['[row_'.$j.']_item_required'] = 'accepted';
-            }
-            if (number_format_db(\Input::get('quantity_in_warehouse')[$i]) < 0) {
-                $rules['[row_'.$j.']_quantity_should_greater_than_zero'] = 'accepted';
-            }
-            if (! \Input::get('opname_notes')[$i]) {
-                $rules['[row_'.$j.']_notes_required'] = 'accepted';
-            }
+//            if (! \Input::get('item_id')[$i] || \Input::get('item_id')[$i] == '') {
+//                $rules['[row_'.$j.']_item_required'] = 'accepted';
+//            }
+//            if (number_format_db(\Input::get('quantity_in_warehouse')[$i]) < 0) {
+//                $rules['[row_'.$j.']_quantity_should_greater_than_zero'] = 'accepted';
+//            }
+//            if (! \Input::get('opname_notes')[$i]) {
+//                $rules['[row_'.$j.']_notes_required'] = 'accepted';
+//            }
         }
 
         return $rules;

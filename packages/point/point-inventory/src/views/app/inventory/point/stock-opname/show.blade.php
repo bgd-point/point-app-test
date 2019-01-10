@@ -59,7 +59,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Form Date</label>
                         <div class="col-md-6 content-show">
-                            {{ date_format_view($stock_opname->formulir->form_date, false) }}
+                            {{ date_format_view($stock_opname->formulir->form_date, true) }}
                         </div>
                     </div>
                     <div class="form-group">

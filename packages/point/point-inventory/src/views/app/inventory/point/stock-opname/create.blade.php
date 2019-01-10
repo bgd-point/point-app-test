@@ -179,7 +179,6 @@ function validateItem(item_id, counter) {
     getItemUnit(item_id, ".unit-"+counter, "html");
     getItemUnit(item_id, ".input-unit-"+counter, "input");
     getItemQuantity(item_id, $('#warehouse-id').val(), $("#form_date").val(), $("#time").val(), "#stok-program-"+counter, 'input');
-
 }
 
 function selectWarehouse(value){

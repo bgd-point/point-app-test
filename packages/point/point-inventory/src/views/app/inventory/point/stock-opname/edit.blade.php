@@ -11,7 +11,7 @@
 
     @include('core::app.error._alert')
 
-    <div class="panel panel-default"> 
+    <div class="panel panel-default">
         <div class="panel-body">
             <form action="{{url('inventory/point/stock-opname/'.$stock_opname->formulir_id)}}" method="post" class="form-horizontal form-bordered">
                 {!! csrf_field() !!}
@@ -29,7 +29,7 @@
                         <div class="col-md-12">
                             <legend><i class="fa fa-angle-right"></i> Form</legend>
                         </div>
-                    </div> 
+                    </div>
                 </fieldset>
                 <div class="form-group">
                     <label class="col-md-3 control-label">Form Date *</label>
@@ -60,7 +60,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <div class="table-responsive"> 
+                            <div class="table-responsive">
                                 <table id="item-datatable" class="table table-striped">
                                     <thead>
                                         <tr>
@@ -88,9 +88,9 @@
                                             <td></td>
                                         </tr>
                                     </tfoot>
-                                </table> 
+                                </table>
                             </div>
-                        </div>                                           
+                        </div>
                     </div>
                 </fieldset>
 
@@ -99,13 +99,13 @@
                         <div class="col-md-12">
                             <legend><i class="fa fa-angle-right"></i> Authorized User</legend>
                         </div>
-                    </div>  
+                    </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label">Form Creator</label>
                         <div class="col-md-6 content-show">
                             {{auth()->user()->name}}
                         </div>
-                    </div>                  
+                    </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label">Request Approval To *</label>
                         <div class="col-md-6">
@@ -127,7 +127,7 @@
                 </div>
             </form>
         </div>
-    </div>  
+    </div>
 </div>
 
 @include('framework::scripts.item')
@@ -155,7 +155,7 @@ $('#addItemRow').on( 'click', function () {
             +'<input type="text" id="stok-program-'+counter+'" name="stock_in_database[]" class="form-control text-right format-quantity" value=0  readonly/>'
             +'<span class="input-group-addon unit-'+counter+'"></span>'
             +'<input type="hidden" name="unit1[]" class="input-unit-'+counter+'">'
-            
+
         +'</div>',
         '<div class="input-group">'
             +'<input type="text" id="stok-warehouse-'+counter+'" name="quantity_opname[]" class="form-control format-quantity text-right" value=0 />'
@@ -164,7 +164,7 @@ $('#addItemRow').on( 'click', function () {
         +'</div>',
         '<input type="text" name="opname_notes[]" class="form-control" value="" />'
     ] ).draw( false );
-    
+
     initFormatNumber();
     initSelectize('#item-id-'+counter);
     reloadItemInSelectize("#item-id-"+counter);
@@ -179,7 +179,7 @@ function validateItem(item_id, counter) {
             selectizeInFocus('#item-id-'+counter);
             return false;
             break;
-            
+
         }
     };
     getItemUnit(item_id, ".unit-"+counter, "html");
