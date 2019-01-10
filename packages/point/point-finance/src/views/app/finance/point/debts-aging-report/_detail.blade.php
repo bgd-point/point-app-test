@@ -44,7 +44,7 @@
 			<td>{{$report->person->name}}</td>
 			<td>{{$report->formulirReference->form_number}}</td>
 			<td>{{$report->notes}}</td>
-			<td>{{date_format_view($report->form_date)}}</td>
+			<td>{{$report->form_date}}</td>
 			<td class="text-right">{{number_format_price($report->amount)}}</td>
 			<td class="text-right">{{number_format_price($remaining)}}</td>
 			<td class="text-right">@if($position <= 15){{number_format_price($remaining)}} <?php $a=$a+$remaining; ?> @endif </td>
