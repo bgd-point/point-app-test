@@ -7,6 +7,7 @@
 	        <th>Form Reference</th>
 	        <th>Description</th>
 	        <th>Date</th>
+	        <th>Time</th>
 	        <th>Amount</th>
 	        <th>Remaining</th>
 	        <th>15 Days</th>
@@ -44,7 +45,8 @@
 			<td>{{$report->person->name}}</td>
 			<td>{{$report->formulirReference->form_number}}</td>
 			<td>{{$report->notes}}</td>
-			<td>{{date_format_view($report->form_date)}}</td>
+			<td>{{date('Y-m-d', strtotime($report->form_date))}}</td>
+			<td>{{date('H:i:s', strtotime($report->form_date))}}</td>
 			<td class="text-right">{{number_format_price($report->amount)}}</td>
 			<td class="text-right">{{number_format_price($remaining)}}</td>
 			<td class="text-right">@if($position <= 15){{number_format_price($remaining)}} <?php $a=$a+$remaining; ?> @endif </td>
@@ -57,7 +59,7 @@
 		</tbody>
 		<tfoot>
 		<tr>
-			<td colspan="5"></td>
+			<td colspan="6"></td>
 			<td class="text-right">@if($amount > 0){{number_format_price($amount)}}@endif</td>
 			<td class="text-right">@if($remain > 0){{number_format_price($remain)}}@endif</td>
 			<td class="text-right">@if($a > 0){{number_format_price($a)}}@endif</td>

@@ -62,7 +62,7 @@ class Recalculate extends Command
                     $l_inventory->form_date = date('Y-m-d 00:00:00', strtotime($l_inventory->form_date));
                     $l_inventory->save();
                 } else {
-                    $l_inventory->form_date = date('Y-m-d 23:59:58', strtotime($l_inventory->form_date));
+                    $l_inventory->form_date = date('Y-m-d 23:59:59', strtotime($l_inventory->form_date));
                     $l_inventory->save();
                 }
             }
