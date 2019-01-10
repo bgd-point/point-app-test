@@ -4,6 +4,8 @@ namespace Point\Framework\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Support\Facades\DB;
+use Point\Core\Exceptions\PointException;
 use Point\Core\Traits\ByTrait;
 
 class Formulir extends Model
@@ -11,6 +13,17 @@ class Formulir extends Model
     protected $table = 'formulir';
 
     use ByTrait;
+
+    public function save(array $options = [])
+    {
+        $lockedDate = strtotime('2018-11-01');
+
+        if (strtotime($this->form_date) < $lockedDate) {
+            throw new PointException('Whooops, Harap Lapor Yuvelin');
+        }
+
+        return parent::save($options);
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
