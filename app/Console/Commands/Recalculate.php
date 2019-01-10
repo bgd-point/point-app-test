@@ -53,6 +53,7 @@ class Recalculate extends Command
                 ->get();
 
             foreach ($list_inventory as $l_inventory) {
+                $l_inventory->recalculate = false;
                 if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
                     $l_inventory->form_date = date('Y-m-d 23:59:59', strtotime($l_inventory->form_date));
                     $l_inventory->save();
