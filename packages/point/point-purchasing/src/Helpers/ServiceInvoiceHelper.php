@@ -156,8 +156,10 @@ class ServiceInvoiceHelper
             $subtotal += ($invoice_item->quantity * $invoice_item->price) - ($invoice_item->quantity * $invoice_item->price/100 * $invoice_item->discount);
         }
 
-        $reference = PurchaseOrder::findOrFail($request->input('reference_id'));
-        self::updateStatusReference($request, $reference, $invoice);
+        $reference = PurchaseOrder::find($request->input('reference_id'));
+        if ($reference) {
+            self::updateStatusReference($request, $reference, $invoice);
+        }
 
         $subtotal = $subtotal + $subtotal_service;
         $discount = $subtotal * $request->input('discount') / 100;
