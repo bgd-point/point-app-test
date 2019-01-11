@@ -64,7 +64,8 @@
                     <thead>
                         <tr>
                             <th>Form Number</th>
-                            <th>Form Date - Due Date</th>
+                            <th>Form Date</th>
+                            <th>Due Date</th>
                             <th>Group</th>
                             <th>Bank</th>
                             <th>No Bilyet</th>
@@ -90,7 +91,8 @@
                                @elseif(date('Y-m-d H:i:s', strtotime("+7 day")) > $deposit->due_date)style="background-color: yellow;"@endif
                             >{{ $deposit->formulir->form_number }}</a>
                         </td>
-                        <td>{{ date_format_view($deposit->formulir->form_date) }} - {{ date_format_view($deposit->due_date) }}</td>
+                        <td>{{ date_format_view($deposit->formulir->form_date) }}</td>
+                        <td>{{ date_format_view($deposit->due_date) }}</td>
                         <td>{{ $deposit->group->name }}</td>
                         <td>{{ $deposit->bank->name }}</td>
                         <td>{{ $deposit->deposit_number }}</td>
@@ -108,7 +110,8 @@
 
                     @if($deposit->important_notes)
                         <tr>
-                            <td colspan="11" style="background-color: red;color:white"> IMPORTANT NOTES : {!! nl2br(e($deposit->important_notes)) !!}</td>
+                            <td colspan="12" style="background-color: red;color:white"> IMPORTANT NOTES : {!! nl2br(e($deposit->important_notes)) !!}</td>
+                            <td style="display:none"></td>
                             <td style="display:none"></td>
                             <td style="display:none"></td>
                             <td style="display:none"></td>
