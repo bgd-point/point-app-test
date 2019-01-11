@@ -18,8 +18,8 @@ class Formulir extends Model
     {
         $lockedDate = strtotime('2018-11-01');
 
-        if (strtotime($this->form_date) < $lockedDate) {
-            throw new PointException('Whooops, Harap Lapor Yuvelin');
+        if (request()->get('database_name') == 'p_kbretail' && strtotime($this->form_date) < $lockedDate) {
+            throw new PointException('You cannot change data before 01 November 2018, or you can contact your administrator');
         }
 
         return parent::save($options);
