@@ -8,17 +8,29 @@ use Point\BumiDeposit\Models\Deposit;
 
 class DepositHelper
 {
-    public static function searchList($list_deposit, $date_from, $date_to, $search, $select_field)
+    public static function searchList($list_deposit, $form_date_from, $form_date_to, $due_date_from, $due_date_to, $search, $select_field)
     {
-        if ($date_from) {
-            $list_deposit = $list_deposit->where(function ($q) use ($date_from) {
-                $q->where('formulir.form_date', '>=', date_format_db($date_from, 'start'));
+        if ($form_date_from) {
+            $list_deposit = $list_deposit->where(function ($q) use ($form_date_from) {
+                $q->where('formulir.form_date', '>=', date_format_db($form_date_from, 'start'));
             });
         }
 
-        if ($date_to) {
-            $list_deposit = $list_deposit->where(function ($q) use ($date_to) {
-                $q->where('due_date', '<=', date_format_db($date_to, 'end'));
+        if ($form_date_to) {
+            $list_deposit = $list_deposit->where(function ($q) use ($form_date_to) {
+                $q->where('formulir.form_date', '<=', date_format_db($form_date_to, 'end'));
+            });
+        }
+
+        if ($due_date_from) {
+            $list_deposit = $list_deposit->where(function ($q) use ($due_date_from) {
+                $q->where('due_date', '>=', date_format_db($due_date_from, 'start'));
+            });
+        }
+
+        if ($due_date_to) {
+            $list_deposit = $list_deposit->where(function ($q) use ($due_date_to) {
+                $q->where('due_date', '<=', date_format_db($due_date_to, 'end'));
             });
         }
 

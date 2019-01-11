@@ -46,7 +46,13 @@ class DepositController extends Controller
             });
         }
 
-        $deposits = DepositHelper::searchList($deposits, \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'), \Input::get('select_field'));
+        $deposits = DepositHelper::searchList($deposits,
+            \Input::get('form_date_from'),
+            \Input::get('form_date_to'),
+            \Input::get('due_date_from'),
+            \Input::get('due_date_to'),
+            \Input::get('search'),
+            \Input::get('select_field'));
 
         return view('bumi-deposit::app.facility.bumi-deposit.deposit.index', array(
             'deposits' => $deposits->paginate(100)

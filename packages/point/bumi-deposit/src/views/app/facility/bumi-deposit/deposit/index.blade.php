@@ -26,11 +26,22 @@
                 <div class="form-group">
                     <div class="col-sm-6">
                         <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
-                            <input type="text" name="date_from" class="form-control date input-datepicker" placeholder="From"  value="{{\Input::get('date_from') ? \Input::get('date_from') : ''}}">
+                            <input type="text" name="form_date_from" class="form-control date input-datepicker" placeholder="Form Date From"  value="{{\Input::get('form_date_from') ? \Input::get('form_date_from') : ''}}">
                             <span class="input-group-addon"><i class="fa fa-chevron-right"></i></span>
-                            <input type="text" name="date_to" class="form-control date input-datepicker" placeholder="To" value="{{\Input::get('date_to') ? \Input::get('date_to') : ''}}">
+                            <input type="text" name="form_date_to" class="form-control date input-datepicker" placeholder="Form Date To" value="{{\Input::get('form_date_to') ? \Input::get('form_date_to') : ''}}">
                         </div>
                     </div>
+
+                    <div class="col-sm-6">
+                        <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
+                            <input type="text" name="due_date_from" class="form-control date input-datepicker" placeholder="Due Date From"  value="{{\Input::get('due_date_from') ? \Input::get('due_date_from') : ''}}">
+                            <span class="input-group-addon"><i class="fa fa-chevron-right"></i></span>
+                            <input type="text" name="due_date_to" class="form-control date input-datepicker" placeholder="Due Date To" value="{{\Input::get('due_date_to') ? \Input::get('due_date_to') : ''}}">
+                        </div>
+                    </div>
+
+                    <br>
+                    <br>
 
                     <div class="col-sm-3">
                         <select class="selectize" style="width: 100%;" data-placeholder="Choose one.." name="select_field">
