@@ -12,7 +12,7 @@ class DepositHelper
     {
         if ($date_from) {
             $list_deposit = $list_deposit->where(function ($q) use ($date_from) {
-                $q->where('due_date', '>=', date_format_db($date_from, 'start'));
+                $q->where('formulir.form_date', '>=', date_format_db($date_from, 'start'));
             });
         }
 
