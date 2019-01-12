@@ -32,6 +32,7 @@ class Kernel extends ConsoleKernel
         Commands\Reinvoice::class,
         Commands\InventoryCheck::class,
         Commands\Masking::class,
+        Commands\CheckInventoryCommand::class,
     ];
 
     /**
