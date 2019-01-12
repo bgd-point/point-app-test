@@ -42,7 +42,8 @@ class CheckInventoryCommand extends Command
 
         foreach ($inventories as $inventory) {
             if ($inventory->formulir->form_number == null) {
-                $this->line('ketchup');
+                $this->line('ketchup ' . $inventory->formulir->archived);
+                $inventory->delete();
             }
         }
     }
