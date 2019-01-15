@@ -168,6 +168,73 @@
                             </div>
                         </div>
 
+                        @if($returs->count() > 0)
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <legend><i class="fa fa-angle-right"></i> Retur</legend>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    @foreach($returs as $retur)
+                                        <table id="table" class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>RETUR {{ date_format_view($retur->formulir->form_date) }}</th>
+                                                <th class="text-right">QTY RETUR</th>
+                                                <th class="text-right">PRICE</th>
+                                                <th class="text-right">TOTAL RETUR</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody class="">
+                                            @foreach($retur->items as $retur_item)
+                                                <tr>
+                                                    <td>
+                                                        <a href="{{ url('master/item/'.$retur_item->item_id) }}">{{ $retur_item->item->codeName }}</a>
+                                                        <input type="hidden" name="item_id[]"
+                                                                value="{{$retur_item->item_id}}"/>
+                                                    </td>
+                                                    <td class="text-right">{{ number_format_quantity($retur_item->quantity) }} {{ $retur_item->unit }}</td>
+                                                    <td class="text-right">{{ number_format_quantity($retur_item->price) }}</td>
+                                                    <td class="text-right">{{ number_format_quantity($retur_item->quantity * $retur_item->price) }}</td>
+                                                </tr>
+                                            @endforeach
+                                            </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <td colspan="3" class="text-right">TOTAL</td>
+                                                <td class="text-right">{{ number_format_quantity($retur->subtotal) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3" class="text-right">TAX</td>
+                                                <td class="text-right">{{ number_format_quantity($retur->tax) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3" class="text-right">TOTAL</td>
+                                                <td class="text-right">{{ number_format_quantity($retur->total) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3" class="text-right"></td>
+                                                <td class="text-right">
+                                                    <form method="POST" action="{{ url('sales/point/indirect/invoice/'. $retur->point_sales_invoice_id.'/retur/' . $retur->id . '/delete') }}">
+                                                        {!! csrf_field() !!}
+                                                        <button class="btn btn-danger">
+                                                            Delete Retur
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            </tfoot>
+                                        </table>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
                         <fieldset>
                             <div class="form-group">
                                 <div class="col-md-12">
@@ -181,7 +248,6 @@
                                     {{ $invoice->formulir->createdBy->name }}
                                 </div>
                             </div>
-
                         </fieldset>
                     </div>
                 </div>
@@ -196,7 +262,7 @@
                         <div class="form-group">
                             <div class="col-md-12">
                                 @if(formulir_view_edit($invoice->formulir, 'update.point.sales.invoice'))
-                                    <?php $parent_refer = ReferHelper::getRefers(get_class($invoice), $invoice->id); ?>
+                                    <?php $parent_refer = Point\Framework\Helpers\ReferHelper::getRefers(get_class($invoice), $invoice->id); ?>
                                     @if(count($parent_refer) > 0)
                                         <a href="{{url('sales/point/indirect/invoice/'.$invoice->id.'/edit')}}"
                                            class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
@@ -206,14 +272,17 @@
                                     @endif
                                 @endif
 
+                                <a href="{{url('sales/point/indirect/invoice/'.$invoice->id.'/retur')}}"
+                                        class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Retur</a>
+
                                 @if(formulir_view_cancel_or_request_cancel($invoice->formulir, 'delete.point.sales.invoice', 'approval.point.sales.invoice') == 1)
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $invoice->formulir_id }}','approval.point.sales.invoice')">
-                                        <i class="fa fa-times"></i> 
+                                        <i class="fa fa-times"></i>
                                         Cancel Form
                                     </a>
                                 @elseif(formulir_view_cancel_or_request_cancel($invoice->formulir, 'delete.point.sales.invoice', 'approval.point.sales.invoice') == 2)
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm(this, '{{url('formulir/requestCancel')}}', '{{ $invoice->formulir_id }}', 'delete.point.sales.invoice')">
-                                        <i class="fa fa-times"></i> 
+                                        <i class="fa fa-times"></i>
                                         Request Cancel Form
                                     </a>
                                 @endif

@@ -236,7 +236,7 @@ class PaymentCollectionController extends Controller
             array_push($references_type, $reference_type);
             array_push($references_detail_id, $request->input('retur_reference_id')[$i]);
             array_push($references_detail_type, $request->input('retur_reference_type')[$i]);
-            // array_push($references_account, SettingJournal::where('group', 'point sales indirect')->where('name', 'account receivable')->first()->coa_id);
+            array_push($references_account, SettingJournal::where('group', 'point sales indirect')->where('name', 'account receivable')->first()->coa_id);
             array_push($references_amount, $request->input('retur_amount')[$i]);
             array_push($references_amount_original, $request->input('retur_amount_original')[$i]);
             array_push($references_notes, $request->input('retur_notes')[$i]);

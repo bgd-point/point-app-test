@@ -33,6 +33,12 @@ Route::group(['prefix' => 'sales/point/indirect', 'namespace' => 'Point\PointSal
         Route::post('/invoice/send-email', 'InvoiceController@sendEmail');
         
         Route::get('/invoice/detail/{id}', 'InvoiceController@ajaxDetailItem');
+
+        // RETURN
+        Route::get('/invoice/{id}/retur', 'InvoiceController@retur');
+        Route::post('/invoice/{id}/retur', 'InvoiceController@storeRetur');
+        Route::post('/invoice/{id}/retur/{returId}/delete', 'InvoiceController@deleteRetur');
+
         Route::resource('/invoice', 'InvoiceController');
     });
 

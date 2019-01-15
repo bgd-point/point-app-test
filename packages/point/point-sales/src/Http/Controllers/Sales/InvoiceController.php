@@ -9,9 +9,14 @@ use Point\Core\Helpers\QueueHelper;
 use Point\Core\Helpers\UserHelper;
 use Point\Core\Models\User;
 use Point\Core\Traits\ValidationTrait;
+use Point\Framework\Helpers\AllocationHelper;
 use Point\Framework\Helpers\FormulirHelper;
+use Point\Framework\Helpers\InventoryHelper;
+use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\EmailHistory;
+use Point\Framework\Models\Inventory;
+use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Permission;
 use Point\Framework\Models\Master\Person;
 use Point\Framework\Models\Master\UserWarehouse;
@@ -20,6 +25,8 @@ use Point\PointSales\Helpers\InvoiceHelper;
 use Point\PointSales\Models\Sales\DeliveryOrder;
 use Point\PointSales\Models\Sales\Invoice;
 use Point\PointSales\Models\Sales\InvoiceItem;
+use Point\PointSales\Models\Sales\Retur;
+use Point\PointSales\Models\Sales\ReturItem;
 
 class InvoiceController extends Controller
 {
@@ -158,6 +165,7 @@ class InvoiceController extends Controller
         $view->revision = $view->list_invoice_archived->count();
         $view->list_referenced = FormulirLock::where('locked_id', '=', $view->invoice->formulir_id)->where('locked', true)->get();
         $view->email_history = EmailHistory::where('formulir_id', $view->invoice->formulir_id)->get();
+        $view->returs = Retur::joinFormulir()->where('formulir.form_status', '!=', -1)->where('point_sales_invoice_id', $id)->select('point_sales_retur.*')->get();
         return $view;
     }
 
@@ -306,5 +314,259 @@ class InvoiceController extends Controller
 
         $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.invoice-pdf', $data);
         return $pdf->stream($invoice->formulir->form_number.'.pdf');
+    }
+
+    public function retur($id)
+    {
+        $view = view('point-sales::app.sales.point.sales.invoice.retur');
+        $view->invoice = Invoice::find($id);
+        return $view;
+    }
+
+    public function deleteRetur(Request $request, $id, $returId)
+    {
+        $retur = Retur::findOrFail($returId);
+        $formulir_id = $retur->formulir_id;
+        $permission_slug = 'create.point.sales.invoice';
+
+        DB::beginTransaction();
+
+        try {
+            FormulirHelper::cancel($permission_slug, $formulir_id);
+        } catch (\Exception $e) {
+            return response()->json($this->errorDeleteMessage());
+        }
+
+        DB::commit();
+
+        gritter_success('delete retur success', false);
+        return redirect('sales/point/indirect/invoice/'.$retur->point_sales_invoice_id);
+    }
+
+    public function storeRetur(Request $request, $id)
+    {
+        $validator = \Validator::make($request->all(), [
+            'form_date' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back();
+        }
+
+        DB::beginTransaction();
+
+        $invoice = Invoice::findOrFail($id);
+
+        $formulir = FormulirHelper::create($request->input(), 'point-sales-return');
+
+        $retur = new Retur;
+        $retur->formulir_id = $formulir->id;
+        $retur->person_id = $invoice->person_id;
+        $retur->point_sales_invoice_id = $invoice->id;
+        $retur->save();
+
+        $subtotal = 0;
+        $amount = 0;
+        for ($i=0 ; $i < count($request->input('item_id')) ; $i++) {
+            if ($request->input('item_quantity')[$i] > 0) {
+                $invoiceItem = InvoiceItem::where('item_id', $request->input('item_id')[$i])->where('point_sales_invoice_id', $invoice->id)->first();
+                $retur_item = new ReturItem;
+                $retur_item->point_sales_retur_id = $retur->id;
+                $retur_item->item_id = $request->input('item_id')[$i];
+                $retur_item->quantity = number_format_db($request->input('item_quantity')[$i]);
+                $retur_item->price = $invoiceItem->price;
+                $retur_item->discount = $invoiceItem->discount;
+                $retur_item->unit = $invoiceItem->unit;
+                $retur_item->allocation_id = $invoiceItem->allocation_id;
+                $retur_item->converter = 1;
+                $retur_item->save();
+            }
+
+            $amount = ($retur_item->quantity * $retur_item->price) - ($retur_item->quantity * $retur_item->price/100 * $retur_item->discount);
+            AllocationHelper::save($retur->formulir_id, $retur_item->allocation_id, $amount, $formulir->notes);
+            $subtotal += $amount;
+        }
+
+        $formulir->approval_status = 1;
+        $formulir->save();
+
+        $discount = 0;
+        $tax_base = 0;
+        $tax = 0;
+        if ($invoice->tax > 0) {
+            $tax = $subtotal / $invoice->tax;
+        }
+        $total = $subtotal - $tax;
+
+        $retur->subtotal = $subtotal;
+        $retur->tax = $tax;
+        $retur->total = $total;
+        $retur->save();
+
+        $formDeliveryOrder = FormulirLock::where('locking_id', $invoice->formulir_id)->first()->lockedForm;
+        $deliveryOrder = DeliveryOrder::findOrFail($formDeliveryOrder->formulirable_id);
+
+        $cost_of_sales = 0;
+        foreach ($invoice->items as $invoice_detail) {
+            $warehouse_id = $deliveryOrder->warehouse_id;
+
+            $retur_item = ReturItem::where('item_id', $invoice_detail->item_id)->where('point_sales_retur_id', $retur->id)->first();
+
+            info('retur = ' . $retur_item->item_id . ' : ' . $retur_item->quantity);
+
+            // insert new inventory
+            $inventory = new Inventory();
+            $inventory->formulir_id = $formulir->id;
+            $inventory->item_id = $retur_item->item_id;
+            $inventory->quantity = $retur_item->quantity * $retur_item->converter;
+            $inventory->price = $invoice_detail->price / $invoice_detail->converter;
+            $inventory->form_date = $formulir->form_date;
+            $inventory->warehouse_id = $warehouse_id;
+
+            $inventory_helper = new InventoryHelper($inventory);
+            $inventory_helper->in();
+
+            $cost = InventoryHelper::getCostOfSales(\Carbon::now(), $inventory->item_id, $inventory->warehouse_id) * abs($inventory->quantity);
+            $cost_of_sales += $cost;
+
+            $journal = new Journal;
+            $journal->form_date = $retur->formulir->form_date;
+            $journal->coa_id = $inventory->item->account_asset_id;
+            $journal->description = 'invoice "' . $inventory->item->codeName.'"';
+            $journal->debit = $cost;
+            $journal->form_journal_id = $retur->formulir_id;
+            $journal->form_reference_id = $invoice->formulir_id;
+            $journal->subledger_id = $inventory->item_id;
+            $journal->subledger_type = get_class($inventory->item);
+            $journal->save();
+        }
+
+        // Journal tax exclude and non-tax
+        if ($invoice->type_of_tax == 'exclude' || $invoice->type_of_tax == 'non') {
+            $data = array(
+                'value_of_account_receivable' => $total * -1,
+                'value_of_income_tax_payable' => $tax * -1,
+                'value_of_sale_of_goods' => $subtotal * -1,
+                'value_of_cost_of_sales' => $cost_of_sales * -1,
+                'value_of_discount' => $discount,
+                'formulir' => $formulir,
+                'invoice' => $invoice
+            );
+            self::journal($data);
+        }
+
+        // Journal tax include
+        if ($request->input('type_of_tax') == 'include') {
+            $data = array(
+                'value_of_account_receivable' => $total * -1,
+                'value_of_income_tax_payable' => $tax * -1,
+                'value_of_sale_of_goods' => $tax_base * -1,
+                'value_of_cost_of_sales' => $cost_of_sales * -1,
+                'value_of_discount' => $discount,
+                'formulir' => $formulir,
+                'invoice' => $invoice
+            );
+            self::journal($data);
+        }
+
+        JournalHelper::checkJournalBalance($invoice->formulir_id);
+
+        timeline_publish('create.retur', 'added retur '  . $invoice->formulir->form_number);
+
+        DB::commit();
+
+        gritter_success('retur form success', false);
+        return redirect('sales/point/indirect/invoice/'.$id);
+    }
+
+    public static function journal($data)
+    {
+        // 1. Journal Account Receivable
+        $account_receivable = JournalHelper::getAccount('point sales indirect', 'account receivable');
+        $position = JournalHelper::position($account_receivable);
+        $journal = new Journal;
+        $journal->form_date = $data['formulir']->form_date;
+        $journal->coa_id = $account_receivable;
+        $journal->description = 'invoice indirect sales [' . $data['formulir']->form_number.']';
+        $journal->$position = $data['value_of_account_receivable'];
+        $journal->form_journal_id = $data['formulir']->id;
+        $journal->form_reference_id;
+        $journal->subledger_id = $data['invoice']->person_id;
+        $journal->subledger_type = get_class($data['invoice']->person);
+        $journal->save();
+
+        // 2. Journal Income Tax  Payable
+        if ($data['invoice']->tax != 0) {
+            $income_tax_receivable = JournalHelper::getAccount('point sales indirect', 'income tax payable');
+            $position = JournalHelper::position($income_tax_receivable);
+            $journal = new Journal;
+            $journal->form_date = $data['formulir']->form_date;
+            $journal->coa_id = $income_tax_receivable;
+            $journal->description = 'invoice indirect sales [' . $data['formulir']->form_number.']';
+            $journal->$position = $data['value_of_income_tax_payable'];
+            $journal->form_journal_id = $data['formulir']->id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $data['invoice']->person_id;
+            $journal->subledger_type = get_class($data['invoice']->person);
+            $journal->save();
+        }
+
+        // 3. Journal Sales Of Goods
+        $sales_of_goods = JournalHelper::getAccount('point sales indirect', 'sale of goods');
+        $position = JournalHelper::position($sales_of_goods);
+        $journal = new Journal;
+        $journal->form_date = $data['formulir']->form_date;
+        $journal->coa_id = $sales_of_goods;
+        $journal->description = 'invoice indirect sales [' . $data['formulir']->form_number.']';
+        $journal->$position = $data['value_of_sale_of_goods'];
+        $journal->form_journal_id = $data['formulir']->id;
+        $journal->form_reference_id;
+        $journal->subledger_id = $data['invoice']->person_id;
+        $journal->subledger_type = get_class($data['invoice']->person);
+        $journal->save();
+
+        // 4. Journal Sales Discount
+        if ($data['invoice']->discount > 0) {
+            $sales_discount = JournalHelper::getAccount('point sales indirect', 'sales discount');
+            $position = JournalHelper::position($sales_discount);
+            $journal = new Journal;
+            $journal->form_date = $data['formulir']->form_date;
+            $journal->coa_id = $sales_discount;
+            $journal->description = 'invoice indirect sales [' . $data['formulir']->form_number.']';
+            $journal->$position = $data['value_of_discount'];
+            $journal->form_journal_id = $data['formulir']->id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $data['invoice']->person_id;
+            $journal->subledger_type = get_class($data['invoice']->person);
+            $journal->save();
+        }
+
+        // 5. Journal Expedition Cost
+        if ($data['invoice']->expedition_fee > 0) {
+            $cost_of_sales = JournalHelper::getAccount('point sales indirect', 'expedition income');
+            $position = JournalHelper::position($cost_of_sales);
+            $journal = new Journal;
+            $journal->form_date = $data['formulir']->form_date;
+            $journal->coa_id = $cost_of_sales;
+            $journal->description = 'invoice indirect sales [' . $data['formulir']->form_number.']';
+            $journal->$position = $data['value_of_expedition_income'];
+            $journal->form_journal_id = $data['formulir']->id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $data['invoice']->person_id;
+            $journal->subledger_type = get_class($data['invoice']->person);
+            $journal->save();
+        }
+
+        $cost_of_sales_account = JournalHelper::getAccount('point sales indirect', 'cost of sales');
+        $journal = new Journal;
+        $journal->form_date = $data['formulir']->form_date;
+        $journal->coa_id = $cost_of_sales_account;
+        $journal->description = 'invoice indirect sales "' . $data['formulir']->form_number.'"';
+        $journal->debit = $data['value_of_cost_of_sales'];
+        $journal->form_journal_id = $data['formulir']->id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
     }
 }
