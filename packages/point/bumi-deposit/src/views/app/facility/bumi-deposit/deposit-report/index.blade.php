@@ -135,9 +135,7 @@
                         @endforeach
                         <tr>
                             <td colspan="7"></td>
-                            <td></td>
                             <td class="text-right"><b>{{ number_format_quantity($total_bank_interest) }}</b></td>
-                            <td></td>
                             <td class="text-right"><b>{{ number_format_quantity($total_tax_interest) }}</b></td>
                             <td class="text-right"><b>{{ number_format_quantity($total_interest) }}</b></td>
                             <td class="text-right"><b>{{ number_format_quantity($total_deposit) }}</b></td>
