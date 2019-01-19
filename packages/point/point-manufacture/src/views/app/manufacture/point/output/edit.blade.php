@@ -127,7 +127,7 @@
                                             </td>
                                             <td>
                                                 <div class="col-md-4">
-                                                    <input type="text" name="quantity_output-{{$counter}}"
+                                                    <input type="text" name="quantity_output[]"
                                                            class="form-control format-quantity"
                                                            value="{{$product->quantity }}">
                                                 </div>
