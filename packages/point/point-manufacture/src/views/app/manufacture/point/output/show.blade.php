@@ -93,7 +93,7 @@
                             <label class="col-md-3 control-label">notes</label>
 
                             <div class="col-md-6 content-show">
-                                {{ $output->notes }}
+                                {{ $output->formulir->notes }}
                             </div>
                         </div>
 
