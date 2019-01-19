@@ -203,8 +203,6 @@
                                                 <th></th>
                                                 <th>form date</th>
                                                 <th>form number</th>
-                                                <th>Created By</th>
-                                                <th>Updated By</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -220,8 +218,6 @@
                                                     </td>
                                                     <td>{{ \DateHelper::formatView($output->formulir->form_date) }}</td>
                                                     <td>{{ $output_archived->formulir->archived }}</td>
-                                                    <td>{{ $output_archived->createdBy->name }}</td>
-                                                    <td>{{ $output_archived->updatedBy->name }}</td>
                                                 </tr>
                                             @endforeach
                                             </tbody>
