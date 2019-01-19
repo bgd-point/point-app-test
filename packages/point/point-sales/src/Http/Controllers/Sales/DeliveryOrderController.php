@@ -91,7 +91,7 @@ class DeliveryOrderController extends Controller
             ->get();
 
         $blocked_debt_invoices = AccountPayableAndReceivable::whereIn('account_id', $coa)
-            ->where('form_date', '<=', Carbon::parse(Carbon::now())->subDay(65))
+            ->where('form_date', '<=', Carbon::parse(Carbon::now())->subDay(90))
             ->where('done', 0)
             ->where('account_id', 3)
             ->where('amount', '>', 0)
@@ -173,7 +173,7 @@ class DeliveryOrderController extends Controller
 
         $formulir = FormulirHelper::create($request->input(), 'point-sales-delivery-order');
         $delivery_order = DeliveryOrderHelper::create($request, $formulir);
-        timeline_publish('create.sales.order', 'added new delivery order '  . $delivery_order->formulir->form_number);
+        timeline_publish('create.delivery.order', 'added new delivery order '  . $delivery_order->formulir->form_number);
 
         DB::commit();
 
