@@ -141,7 +141,7 @@ class Journal extends Model
                 if ($check->reference_type == get_class(new CutOffReceivableDetail()) || $check->reference_type == get_class(new CutOffPayableDetail())) {
                     return true;
                 }
-                throw new PointException('PAYMENT HAS DONE #' . $account_payable_and_receivable_id);
+                throw new PointException('PAYMENT HAS DONE #' . $check->formulirReference->form_number);
             }
 
             $account_payable_and_receivable_detail = new AccountPayableAndReceivableDetail;
