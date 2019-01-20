@@ -131,6 +131,21 @@
     Hi, you have an request approval delivery order from <strong>{{ $requester }}</strong>. We would like to inform the
     details as follows :
 
+    @if(count($debt_invoices)>0)
+        <div class="alert alert-danger">
+            <i class="fa fa-warning"></i> Terdapat invoice yang belum terbayar lebih dari 60 hari
+            <ul>
+                @foreach($debt_invoices as $debt)
+                    <?php
+                    $model = $debt->formulirReference->formulirable_type;
+                    $url = $model::showUrl($debt->formulirReference->formulirable_id);
+                    ?>
+                    <li><a href="{{url($url)}}">{{$debt->formulirReference->form_number}}</a></li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     @foreach($list_data as $order)
 
         <table cellpadding="0" cellspacing="0" style="padding: 20px 0;">
@@ -244,23 +259,26 @@
             @endforeach
             <tr></tr>
             <tr>
-                <td colspan="6" >
-                    <a href="{{ $url . '/formulir/'.$order->formulir_id.'/approval/check-status/'.$token }}"><input
-                                type="button" class="btn btn-check" value="Check"></a>
-                    <a href="{{ $url . '/sales/point/indirect/delivery-order/'.$order->id.'/approve?token='.$token }}"><input
-                                type="button" class="btn btn-success" value="Approve"></a>
-                    <a href="{{ $url . '/sales/point/indirect/delivery-order/'.$order->id.'/reject?token='.$token }}"><input
-                                type="button" class="btn btn-danger" value="Reject"></a>
+                <td colspan="6">
+                    <a href="{{ url('/') . '/formulir/'.$order->formulir_id.'/approval/check-status/'.$token }}">
+                        <input type="button" class="btn btn-check" value="Check">
+                    </a>
+                    <a href="{{ url('/') . '/sales/point/indirect/delivery-order/'.$order->id.'/approve?token='.$token }}">
+                        <input type="button" class="btn btn-success" value="Approve">
+                    </a>
+                    <a href="{{ url('/') . '/sales/point/indirect/delivery-order/'.$order->id.'/reject?token='.$token }}">
+                        <input type="button" class="btn btn-danger" value="Reject">
+                    </a>
                 </td>
             </tr>
         </table>
     @endforeach
     @if($list_data->count() > 1)
     <br>
-    <a href="{{ $url . '/sales/point/indirect/delivery-order/approve-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
+    <a href="{{ url('/') . '/sales/point/indirect/delivery-order/approve-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
         <input type="button" class="btn btn-primary" value="Approve All">
     </a>
-    <a href="{{ $url . '/sales/point/indirect/delivery-order/reject-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
+    <a href="{{ url('/') . '/sales/point/indirect/delivery-order/reject-all/?formulir_id='.$array_formulir_id.'&token='.$token }}">
         <input type="button" class="btn btn-warning" value="Reject All">
     </a>
     @endif

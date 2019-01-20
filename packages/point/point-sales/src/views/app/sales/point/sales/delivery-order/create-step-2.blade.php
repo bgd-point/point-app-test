@@ -35,9 +35,13 @@
 
         <div class="panel panel-default">
             <div class="panel-body">
-                <form action="{{url('sales/point/indirect/delivery-order')}}" method="post"
-                      class="form-horizontal form-bordered">
+                <form action="{{url('sales/point/indirect/delivery-order')}}" method="post" class="form-horizontal form-bordered">
                     {!! csrf_field() !!}
+                    @if(count($blocked_debt_invoices) > 0 && request()->get('project')->url == 'bmr')
+                    <input type="hidden" name="request_approval" value="true">
+                        @else
+                    <input type="hidden" name="request_approval" value="false">
+                    @endif
                     <input type="hidden" name="reference_sales_order" value="{{ get_class($reference_sales_order) }}">
                     <input type="hidden" name="reference_sales_order_id" value="{{ $reference_sales_order->id }}">
                     <input type="hidden" name="reference_expedition_order" value="{{ $reference_expedition_order ? get_class($reference_expedition_order) : '' }}">
@@ -331,11 +335,28 @@
                                 </div>
                             </div>
                         </div>
-                        {{--<div class="form-group">--}}
-                            {{--<div class="col-md-6 col-md-offset-3">--}}
-                                {{--<button type="submit" class="btn btn-effect-ripple btn-primary">Submit</button>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Request Approval To *</label>
+
+                            <div class="col-md-6">
+                                <select name="approval_to" class="selectize" style="width: 100%;"
+                                        data-placeholder="Choose one..">
+                                    @foreach($list_user_approval as $user_approval)
+
+                                        @if($user_approval->may('approval.point.sales.quotation'))
+                                            <option value="{{$user_approval->id}}"
+                                                    @if(old('approval_to') == $user_approval->id) selected @endif>{{$user_approval->name}}</option>
+                                        @endif
+
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-md-offset-3">
+                                <button type="submit" class="btn btn-effect-ripple btn-primary">Request Approval</button>
+                            </div>
+                        </div>
                         @else
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-3">

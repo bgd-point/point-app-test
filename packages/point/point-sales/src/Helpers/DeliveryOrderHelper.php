@@ -98,9 +98,14 @@ class DeliveryOrderHelper
             }
         }
 
-        $delivery_order->formulir->approval_status = 1;
-        $delivery_order->formulir->approval_to = 1;
-        $delivery_order->formulir->approval_at = \Carbon::now();
+        if ($request->get('request_approval') == 'true') {
+            $delivery_order->formulir->approval_status = 0;
+            $delivery_order->formulir->approval_to = $request->get('approval_to');
+        } else {
+            $delivery_order->formulir->approval_status = 1;
+            $delivery_order->formulir->approval_to = 1;
+            $delivery_order->formulir->approval_at = \Carbon::now();
+        }
 
         $delivery_order->formulir->save();
 

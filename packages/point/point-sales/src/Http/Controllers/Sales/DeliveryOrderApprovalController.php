@@ -3,12 +3,15 @@
 namespace Point\PointSales\Http\Controllers\Sales;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Point\Core\Helpers\QueueHelper;
 use Point\Core\Models\User;
 use Point\Core\Traits\ValidationTrait;
 use Point\Framework\Helpers\FormulirHelper;
+use Point\Framework\Models\AccountPayableAndReceivable;
+use Point\Framework\Models\Master\Coa;
 use Point\Framework\Traits\RequestApprovalTrait;
 use Point\PointSales\Models\Sales\DeliveryOrder;
 
@@ -51,7 +54,16 @@ class DeliveryOrderApprovalController extends Controller
 
             $array_formulir_id = implode(',', $array_formulir_id);
             $approver = User::find($data_approver->approval_to);
+            $coa = Coa::where('coa_category_id', 3)->lists('id');
+            $debt_invoices = AccountPayableAndReceivable::whereIn('account_id', $coa)
+                ->where('form_date', '<=', Carbon::parse(Carbon::now())->subDay(60))
+                ->where('done', 0)
+                ->where('account_id', 3)
+                ->where('amount', '>', 0)
+                ->where('person_id', $delivery_order->person_id)
+                ->get();
             $data = [
+                'debt_invoices' => $debt_invoices,
                 'list_data' => $list_delivery_order,
                 'token' => $token,
                 'requester' => $requester,
