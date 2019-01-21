@@ -37,7 +37,7 @@
             <div class="panel-body">
                 <form action="{{url('sales/point/indirect/delivery-order')}}" method="post" class="form-horizontal form-bordered">
                     {!! csrf_field() !!}
-                    @if(count($blocked_debt_invoices) > 0 && request()->get('project')->url == 'bmr')
+                    @if(count($debt_invoices) > 0 && request()->get('project')->url == 'bmr')
                     <input type="hidden" name="request_approval" value="true">
                         @else
                     <input type="hidden" name="request_approval" value="false">
@@ -325,6 +325,23 @@
                                     <i class="fa fa-warning"></i> Anda tidak dapat membuat surat jalan karena terdapat invoice yang belum terbayar lebih dari 90 hari,
                                     <ul>
                                         @foreach($blocked_debt_invoices as $debt)
+                                            <?php
+                                            $model = $debt->formulirReference->formulirable_type;
+                                            $url = $model::showUrl($debt->formulirReference->formulirable_id);
+                                            ?>
+                                            <li><a style="color: white;" href="{{url($url)}}">{{$debt->formulirReference->form_number}}</a></li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    @elseif(count($debt_invoices)>0)
+                        <div class="form-group">
+                            <div class="col-md-6 col-md-offset-3">
+                                <div class="alert alert-danger">
+                                    <i class="fa fa-warning"></i> Anda tidak dapat membuat surat jalan karena terdapat invoice yang belum terbayar lebih dari 60 hari,
+                                    <ul>
+                                        @foreach($debt_invoices as $debt)
                                             <?php
                                             $model = $debt->formulirReference->formulirable_type;
                                             $url = $model::showUrl($debt->formulirReference->formulirable_id);

@@ -133,7 +133,7 @@
 
     @if(count($debt_invoices)>0)
         <div class="alert alert-danger">
-            <i class="fa fa-warning"></i> Terdapat invoice yang belum terbayar lebih dari 90 hari
+            <i class="fa fa-warning"></i> Terdapat invoice yang belum terbayar lebih dari 60 hari
             <ul>
                 @foreach($debt_invoices as $debt)
                     <?php
