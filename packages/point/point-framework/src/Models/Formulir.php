@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Point\Core\Exceptions\PointException;
 use Point\Core\Traits\ByTrait;
+use Point\PointFinance\Models\CashAdvance;
 
 class Formulir extends Model
 {
@@ -18,7 +19,9 @@ class Formulir extends Model
     {
         $lockedDate = strtotime('2018-11-01');
 
-        if (request()->get('database_name') == 'p_kbretail' && strtotime($this->form_date) < $lockedDate) {
+        if (request()->get('database_name') == 'p_kbretail'
+            && strtotime($this->form_date) < $lockedDate
+            && $this->formulirable_type != CashAdvance::class) {
             throw new PointException('You cannot change data before 01 November 2018, or you can contact your administrator');
         }
 
