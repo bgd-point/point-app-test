@@ -139,10 +139,10 @@ class GoodsReceivedHelper
         }
         // update by form close manual
         if ($request->input('close') != null || $close === true) {
-            $reference->formulir->form_status = 1;
+            $reference->formulir->update([
+                'form_status' => 1
+            ]);
         }
-
-        $reference->formulir->save();
     }
 
     public static function updateExpeditionReference($expedition_order_id)
