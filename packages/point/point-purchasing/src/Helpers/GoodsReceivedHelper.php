@@ -139,7 +139,7 @@ class GoodsReceivedHelper
         }
         // update by form close manual
         if ($request->input('close') != null || $close === true) {
-            $reference->formulir->update([
+            Formulir::where('id', $reference->formulir_id)->update([
                 'form_status' => 1
             ]);
         }
