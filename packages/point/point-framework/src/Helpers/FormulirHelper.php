@@ -719,9 +719,9 @@ class FormulirHelper
         $list_formulir_lock = FormulirLock::where('locking_id', '=', $locking_id)->get();
 
         foreach ($list_formulir_lock as $formulir_lock) {
-            $locked_form = Formulir::find($formulir_lock->locked_id);
-            $locked_form->form_status = 0;
-            $locked_form->save();
+            Formulir::where('id', $formulir_lock->locked_id)->update([
+                'form_status' => 0
+            ]);
 
             $formulir_lock->locked = false;
             $formulir_lock->save();
@@ -733,9 +733,9 @@ class FormulirHelper
      */
     public static function close($formulir_id)
     {
-        $formulir = Formulir::find($formulir_id);
-        $formulir->form_status = 1;
-        $formulir->save();
+        Formulir::where('id', $formulir_id)->update([
+            'form_status' => 1
+        ]);
     }
 
     /**
