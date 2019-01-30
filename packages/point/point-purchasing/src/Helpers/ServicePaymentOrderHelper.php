@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Point\Core\Exceptions\PointException;
 use Point\Framework\Helpers\AllocationHelper;
 use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Models\Formulir;
 use Point\PointPurchasing\Models\Service\PaymentOrder;
 use Point\PointPurchasing\Models\Service\PaymentOrderDetail;
 use Point\PointPurchasing\Models\Service\PaymentOrderOther;
@@ -89,8 +90,9 @@ class ServicePaymentOrderHelper
             formulir_lock($reference->formulir_id, $payment_order->formulir_id);
 
             if ($close_status) {
-                $reference->formulir->form_status = 1;
-                $reference->formulir->save();
+                Formulir::where('id', $reference->formulir_id)->update([
+                    'form_status' => 1
+                ]);
             }
         }
 

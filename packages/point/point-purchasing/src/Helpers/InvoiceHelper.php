@@ -7,6 +7,7 @@ use Point\Framework\Helpers\AllocationHelper;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Item;
@@ -92,8 +93,9 @@ class InvoiceHelper
         if ($references != null) {
             foreach ($references as $reference) {
                 formulir_lock($reference->formulir_id, $invoice->formulir_id);
-                $reference->formulir->form_status = 1;
-                $reference->formulir->save();
+                Formulir::where('id', $reference->formulir_id)->update([
+                    'form_status' => 1
+                ]);
             }
         }
 

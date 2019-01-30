@@ -8,6 +8,7 @@ use Point\Core\Exceptions\PointException;
 use Point\Framework\Helpers\AllocationHelper;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Master\Person;
 use Point\PointAccounting\Models\CutOffPayableDetail;
 use Point\PointFinance\Models\PaymentReference;
@@ -112,8 +113,9 @@ class PaymentOrderHelper
 
             if ($close_status) {
                 if (get_class($reference) != get_class(new CutOffPayableDetail())) {
-                    $reference->formulir->form_status = 1;
-                    $reference->formulir->save();
+                    Formulir::where('id', $reference->formulir_id)->update([
+                        'form_status' => 1
+                    ]);
                 }
             }
         }

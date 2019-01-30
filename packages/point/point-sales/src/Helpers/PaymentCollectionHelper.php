@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Point\Core\Exceptions\PointException;
 use Point\Framework\Helpers\AllocationHelper;
 use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Models\Formulir;
 use Point\PointAccounting\Models\CutOffReceivableDetail;
 use Point\PointSales\Models\Sales\PaymentCollection;
 use Point\PointSales\Models\Sales\PaymentCollectionDetail;
@@ -108,8 +109,9 @@ class PaymentCollectionHelper
 
             if ($close_status) {
                 if (get_class($reference) != get_class(new CutOffReceivableDetail())) {
-                    $reference->formulir->form_status = 1;
-                    $reference->formulir->save();
+                    Formulir::where('id', $reference->formulir_id)->update([
+                        'form_status' => 1
+                    ]);
                 }
             }
         }
