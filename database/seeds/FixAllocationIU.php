@@ -10,13 +10,24 @@ class FixAllocationIU extends Seeder
     {
         \DB::beginTransaction();
 
-        foreach (InventoryUsage::all() as $inventory_usage) {
-            foreach ($inventory_usage->listInventoryUsage as $inventory_usage_item) {
-                $inventory_quantity = $inventory_usage_item->quantity_usage;
-                $inventory_price =  InventoryHelper::getCostOfSales($inventory_usage->formulir->form_date, $inventory_usage_item->item_id, $inventory_usage->warehouse_id);
+        $salesReturns = \Point\PointSales\Models\Sales\Retur::all();
 
-                AllocationHelper::save($inventory_usage->formulir->id, $inventory_usage_item->allocation_id, $inventory_quantity * $inventory_price, $inventory_usage_item->usage_notes);
-            }
+        foreach ($salesReturns as $return)
+        {
+            $ac = \Point\Framework\Models\AccountPayableAndReceivable::join('formulir',
+                'formulir.id', '=', 'account_payable_and_receivable.formulir_reference_id')
+                ->where('formulir.formulirable_type', \Point\PointSales\Models\Sales\Invoice::class)
+                ->where('formulir.formulirable_id', $return->point_sales_invoice_id)
+                ->select('account_payable_and_receivable.*')
+                ->first();
+
+            $accountP = new \Point\Framework\Models\AccountPayableAndReceivableDetail();
+            $accountP->form_date = $return->formulir->form_date;
+            $accountP->account_payable_and_receivable_id = $ac->id;
+            $accountP->formulir_reference_id = $return->formulir_id;
+            $accountP->amount = $return->total;
+            $accountP->notes = 'Retur';
+            $accountP->save();
         }
 
         \DB::commit();
