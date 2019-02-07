@@ -366,7 +366,7 @@ class InventoryHelper
             ->first();
 
         if (!$last) {
-            throw new PointException('STOCK NOT AVAILABLE');
+            throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE');
         }
 
         $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
