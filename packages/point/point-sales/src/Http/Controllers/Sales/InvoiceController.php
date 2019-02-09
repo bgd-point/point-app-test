@@ -368,6 +368,7 @@ class InvoiceController extends Controller
         $subtotal = 0;
         $amount = 0;
         for ($i=0 ; $i < count($request->input('item_id')) ; $i++) {
+            $amount = 0;
             if ($request->input('item_quantity')[$i] > 0) {
                 $invoiceItem = InvoiceItem::where('item_id', $request->input('item_id')[$i])->where('point_sales_invoice_id', $invoice->id)->first();
                 $retur_item = new ReturItem;
@@ -380,10 +381,11 @@ class InvoiceController extends Controller
                 $retur_item->allocation_id = $invoiceItem->allocation_id;
                 $retur_item->converter = 1;
                 $retur_item->save();
+
+                $amount = ($retur_item->quantity * $retur_item->price) - ($retur_item->quantity * $retur_item->price/100 * $retur_item->discount);
+                AllocationHelper::save($retur->formulir_id, $retur_item->allocation_id, $amount, $formulir->notes);
             }
 
-            $amount = ($retur_item->quantity * $retur_item->price) - ($retur_item->quantity * $retur_item->price/100 * $retur_item->discount);
-            AllocationHelper::save($retur->formulir_id, $retur_item->allocation_id, $amount, $formulir->notes);
             $subtotal += $amount;
         }
 
