@@ -414,33 +414,33 @@ class InvoiceController extends Controller
 
             $retur_item = ReturItem::where('item_id', $invoice_detail->item_id)->where('point_sales_retur_id', $retur->id)->first();
 
-            info('retur = ' . $retur_item->item_id . ' : ' . $retur_item->quantity);
+            if ($retur_item) {
+                // insert new inventory
+                $inventory = new Inventory();
+                $inventory->formulir_id = $formulir->id;
+                $inventory->item_id = $retur_item->item_id;
+                $inventory->quantity = $retur_item->quantity * $retur_item->converter;
+                $inventory->price = $invoice_detail->price / $invoice_detail->converter;
+                $inventory->form_date = $formulir->form_date;
+                $inventory->warehouse_id = $warehouse_id;
 
-            // insert new inventory
-            $inventory = new Inventory();
-            $inventory->formulir_id = $formulir->id;
-            $inventory->item_id = $retur_item->item_id;
-            $inventory->quantity = $retur_item->quantity * $retur_item->converter;
-            $inventory->price = $invoice_detail->price / $invoice_detail->converter;
-            $inventory->form_date = $formulir->form_date;
-            $inventory->warehouse_id = $warehouse_id;
+                $inventory_helper = new InventoryHelper($inventory);
+                $inventory_helper->in();
 
-            $inventory_helper = new InventoryHelper($inventory);
-            $inventory_helper->in();
+                $cost = InventoryHelper::getCostOfSales(\Carbon::now(), $inventory->item_id, $inventory->warehouse_id) * abs($inventory->quantity);
+                $cost_of_sales += $cost;
 
-            $cost = InventoryHelper::getCostOfSales(\Carbon::now(), $inventory->item_id, $inventory->warehouse_id) * abs($inventory->quantity);
-            $cost_of_sales += $cost;
-
-            $journal = new Journal;
-            $journal->form_date = $retur->formulir->form_date;
-            $journal->coa_id = $inventory->item->account_asset_id;
-            $journal->description = 'invoice "' . $inventory->item->codeName.'"';
-            $journal->debit = $cost;
-            $journal->form_journal_id = $retur->formulir_id;
-            $journal->form_reference_id = $invoice->formulir_id;
-            $journal->subledger_id = $inventory->item_id;
-            $journal->subledger_type = get_class($inventory->item);
-            $journal->save();
+                $journal = new Journal;
+                $journal->form_date = $retur->formulir->form_date;
+                $journal->coa_id = $inventory->item->account_asset_id;
+                $journal->description = 'invoice "' . $inventory->item->codeName.'"';
+                $journal->debit = $cost;
+                $journal->form_journal_id = $retur->formulir_id;
+                $journal->form_reference_id = $invoice->formulir_id;
+                $journal->subledger_id = $inventory->item_id;
+                $journal->subledger_type = get_class($inventory->item);
+                $journal->save();
+            }
         }
 
         // Journal tax exclude and non-tax
