@@ -6,6 +6,7 @@ use Point\Core\Exceptions\PointException;
 use Point\Framework\Helpers\AllocationHelper;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\JournalHelper;
+use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Journal;
 use Point\PointFinance\Models\Bank\Bank;
 use Point\PointFinance\Models\Bank\BankDetail;
@@ -81,13 +82,15 @@ class PaymentHelper
                 $cash_cash_advance->cashAdvance->save();
 
                 if ($cash_cash_advance->cashAdvance->remaining_amount == 0) {
-                    $cash_cash_advance->cashAdvance->formulir->form_status = 1;
-                    $cash_cash_advance->cashAdvance->formulir->save();
+                    Formulir::where('id', $cash_cash_advance->cashAdvance->formulir->id)->update([
+                        'form_status' => 1
+                    ]);
                 }
 
                 if ($cash_cash_advance->close) {
-                    $cash_cash_advance->cashAdvance->formulir->form_status = 1;
-                    $cash_cash_advance->cashAdvance->formulir->save();
+                    Formulir::where('id', $cash_cash_advance->cashAdvance->formulir->id)->update([
+                        'form_status' => 1
+                    ]);
                     $cash_cash_advance->cashAdvance->remaining_amount = 0;
                     $cash_cash_advance->cashAdvance->save();
                 }
@@ -236,13 +239,15 @@ class PaymentHelper
                 $cash_cash_advance->cashAdvance->save();
 
                 if ($cash_cash_advance->cashAdvance->remaining_amount == 0) {
-                    $cash_cash_advance->cashAdvance->formulir->form_status = 1;
-                    $cash_cash_advance->cashAdvance->formulir->save();
+                    Formulir::where('id', $cash_cash_advance->cashAdvance->formulir->id)->update([
+                        'form_status' => 1
+                    ]);
                 }
 
                 if ($cash_cash_advance->close) {
-                    $cash_cash_advance->cashAdvance->formulir->form_status = 1;
-                    $cash_cash_advance->cashAdvance->formulir->save();
+                    Formulir::where('id', $cash_cash_advance->cashAdvance->formulir->id)->update([
+                        'form_status' => 1
+                    ]);
                     $cash_cash_advance->cashAdvance->remaining_amount = 0;
                     $cash_cash_advance->cashAdvance->save();
                 }
@@ -376,8 +381,9 @@ class PaymentHelper
                 $cash_advance = CashAdvance::find($cash_cash_advance->cash_advance_id);
                 $cash_advance->remaining_amount += $cash_cash_advance->cash_advance_amount;
                 $cash_advance->save();
-                $cash_advance->formulir->form_status = 0;
-                $cash_advance->formulir->save();
+                Formulir::where('id', $cash_advance->formulir->id)->update([
+                    'form_status' => 1
+                ]);
             }
 
             if ($payment_reference->reference->formulirable_type == 'Point\PointPurchasing\Models\Inventory\Downpayment'
