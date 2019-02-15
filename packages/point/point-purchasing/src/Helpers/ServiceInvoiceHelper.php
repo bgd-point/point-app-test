@@ -12,6 +12,7 @@ use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\ItemUnit;
+use Point\Framework\Models\Master\Person;
 use Point\Framework\Models\Master\Service;
 use Point\Framework\Models\Master\UserWarehouse;
 use Point\PointPurchasing\Models\Service\Invoice;
@@ -214,7 +215,7 @@ class ServiceInvoiceHelper
         $journal->form_journal_id = $data['formulir']->id;
         $journal->form_reference_id;
         $journal->subledger_id = $data['invoice']->person_id;
-        $journal->subledger_type = get_class($data['invoice']->supplier);
+        $journal->subledger_type = Person::class;
         $journal->save();
 
         // 2. Journal income tax receivable
