@@ -104,174 +104,352 @@ class InventoryValueReportController extends Controller
         \Queue::push(function ($job) use ($request, $fileName, $storage) {
             \Excel::create($fileName, function ($excel) use ($storage, $request) {
                 // Sheet Data
-                $excel->sheet('Data', function ($sheet) use ($request) {
-                    $sheet->setWidth(array(
-                        'A' => 30,
-                        'B' => 15,
-                        'C' => 20,
-                        'D' => 20,
-                        'E' => 15,
-                        'F' => 20,
-                        'G' => 15,
-                        'H' => 20,
-                        'I' => 15,
-                        'J' => 20,
-                        'K' => 20,
-                    ));
+                $warehouse = $request['warehouse'] ? : 0;
 
-                    // Set Header Style
-                    $sheet->mergeCells('A1:K1', 'center');
-                    $sheet->mergeCells('A2:A3');
-                    $sheet->mergeCells('B2:D2', 'center');
-                    $sheet->mergeCells('E2:F2', 'center');
-                    $sheet->mergeCells('G2:H2', 'center');
-                    $sheet->mergeCells('I2:K2', 'center');
-                    $sheet->mergeCells('B3:D3', 'center');
-                    $sheet->mergeCells('E3:F3', 'center');
-                    $sheet->mergeCells('G3:H3', 'center');
-                    $sheet->mergeCells('I3:K3', 'center');
+                if ($warehouse == 0) {
+                    info('warehouse ' . $warehouse);
+                    $whAll = Warehouse::all();
+                    foreach ($whAll as $wh) {
+                        $excel->sheet($wh->name, function ($sheet) use ($request, $wh, $storage) {
+                            $sheet->setWidth(array(
+                                'A' => 30,
+                                'B' => 15,
+                                'C' => 20,
+                                'D' => 20,
+                                'E' => 15,
+                                'F' => 20,
+                                'G' => 15,
+                                'H' => 20,
+                                'I' => 15,
+                                'J' => 20,
+                                'K' => 20,
+                            ));
 
-                    $sheet->cell('A1:K4', function ($cell) {
-                        $cell->setFont(array(
-                            'size'       => '14',
-                            'bold'       =>  true
-                        ));
-                        $cell->setValignment('center');
-                    });
-                    
-                    // Set Header Text
-                    $sheet->setCellValue('A1', 'INVENTORY VALUE REPORT');
-                    $sheet->setCellValue('A2', 'ITEM');
-                    $sheet->setCellValue('B2', 'OPENING STOCK');
-                    $sheet->setCellValue('E2', 'STOCK IN');
-                    $sheet->setCellValue('G2', 'STOCK OUT');
-                    $sheet->setCellValue('I2', 'CLOSING STOCK');
-                    
-                    $date_from = date_format_db($request['date_from']) ?: date('Y-m-01 00:00:00');
-                    $date_to = date_format_db($request['date_to'], 'end') ?: date('Y-m-d 23:59:59');
-                    
-                    $sheet->setCellValue('B3', '(' . date_format_view($date_from) . ')');
-                    $sheet->setCellValue('E3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
-                    $sheet->setCellValue('G3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
-                    $sheet->setCellValue('I3', '(' . date_format_view($date_to) . ')');
+                            // Set Header Style
+                            $sheet->mergeCells('A1:K1', 'center');
+                            $sheet->mergeCells('A2:A3');
+                            $sheet->mergeCells('B2:D2', 'center');
+                            $sheet->mergeCells('E2:F2', 'center');
+                            $sheet->mergeCells('G2:H2', 'center');
+                            $sheet->mergeCells('I2:K2', 'center');
+                            $sheet->mergeCells('B3:D3', 'center');
+                            $sheet->mergeCells('E3:F3', 'center');
+                            $sheet->mergeCells('G3:H3', 'center');
+                            $sheet->mergeCells('I3:K3', 'center');
 
-                    $sheet->cell('B3:K3', function ($cell) {
-                        $cell->setFont(array(
-                            'size'       => '10',
-                            'bold'       =>  true
-                        ));
-                    });
+                            $sheet->cell('A1:K4', function ($cell) {
+                                $cell->setFont(array(
+                                    'size'       => '14',
+                                    'bold'       =>  true
+                                ));
+                                $cell->setValignment('center');
+                            });
 
-                    $sheet->setCellValue('B4', 'QTY');
-                    $sheet->setCellValue('C4', 'COST OF SALES');
-                    $sheet->setCellValue('D4', 'TOTAL VALUE');
-                    $sheet->setCellValue('E4', 'QTY');
-                    $sheet->setCellValue('F4', 'TOTAL VALUE');
-                    $sheet->setCellValue('G4', 'QTY');
-                    $sheet->setCellValue('H4', 'TOTAL VALUE');
-                    $sheet->setCellValue('I4', 'QTY');
-                    $sheet->setCellValue('J4', 'COST OF SALES');
-                    $sheet->setCellValue('K4', 'TOTAL VALUE');
-                    
-                    // Get inventory list
-                    $warehouse = $request['warehouse'] ? : 0;
-                    $array_of_search = explode(' ', $request['search']);
-                    $list_report = Inventory::joinItem()
-                        ->groupBy('inventory.item_id')
-                        ->where('inventory.total_quantity', '>', 0)
-                        ->where(function ($query) use ($array_of_search, $warehouse) {
-                            if ($warehouse > 0) {
-                                $query->where('inventory.warehouse_id', $warehouse);
-                            }
-                            else {
-                                foreach ($array_of_search as $search) {
-                                    $query->where(function ($q) use ($search) {
-                                        $q->where('item.name', 'like', '%'.$search.'%')
-                                            ->orWhere('item.code', 'like', '%'.$search.'%')
-                                            ->orWhere('item.notes', 'like', '%'.$search.'%');
+                            // Set Header Text
+                            $sheet->setCellValue('A1', 'INVENTORY VALUE REPORT');
+                            $sheet->setCellValue('A2', 'ITEM');
+                            $sheet->setCellValue('B2', 'OPENING STOCK');
+                            $sheet->setCellValue('E2', 'STOCK IN');
+                            $sheet->setCellValue('G2', 'STOCK OUT');
+                            $sheet->setCellValue('I2', 'CLOSING STOCK');
+
+                            $date_from = date_format_db($request['date_from']) ?: date('Y-m-01 00:00:00');
+                            $date_to = date_format_db($request['date_to'], 'end') ?: date('Y-m-d 23:59:59');
+
+                            $sheet->setCellValue('B3', '(' . date_format_view($date_from) . ')');
+                            $sheet->setCellValue('E3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
+                            $sheet->setCellValue('G3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
+                            $sheet->setCellValue('I3', '(' . date_format_view($date_to) . ')');
+
+                            $sheet->cell('B3:K3', function ($cell) {
+                                $cell->setFont(array(
+                                    'size'       => '10',
+                                    'bold'       =>  true
+                                ));
+                            });
+
+                            $sheet->setCellValue('B4', 'QTY');
+                            $sheet->setCellValue('C4', 'COST OF SALES');
+                            $sheet->setCellValue('D4', 'TOTAL VALUE');
+                            $sheet->setCellValue('E4', 'QTY');
+                            $sheet->setCellValue('F4', 'TOTAL VALUE');
+                            $sheet->setCellValue('G4', 'QTY');
+                            $sheet->setCellValue('H4', 'TOTAL VALUE');
+                            $sheet->setCellValue('I4', 'QTY');
+                            $sheet->setCellValue('J4', 'COST OF SALES');
+                            $sheet->setCellValue('K4', 'TOTAL VALUE');
+
+                            // Get inventory list
+                            $warehouse = $wh->id;
+                            $array_of_search = explode(' ', $request['search']);
+                            $list_report = Inventory::joinItem()
+                                ->groupBy('inventory.item_id')
+                                ->where('inventory.total_quantity', '>', 0)
+                                ->where(function ($query) use ($array_of_search, $warehouse) {
+                                    if ($warehouse > 0) {
+                                        $query->where('inventory.warehouse_id', $warehouse);
+                                    }
+                                    else {
+                                        foreach ($array_of_search as $search) {
+                                            $query->where(function ($q) use ($search) {
+                                                $q->where('item.name', 'like', '%'.$search.'%')
+                                                    ->orWhere('item.code', 'like', '%'.$search.'%')
+                                                    ->orWhere('item.notes', 'like', '%'.$search.'%');
+                                            });
+                                        }
+                                    }
+                                })
+                                ->where(function ($query) use ($date_from, $date_to) {
+                                    $query->whereBetween('inventory.form_date', [$date_from, $date_to])
+                                        ->orWhere('inventory.form_date', '<', $date_from);
+                                })
+                                ->get();
+
+                            $content = array();
+                            $total_closing_value = 0;
+
+                            foreach ($list_report as $index=>$report) {
+                                if ($warehouse) {
+                                    $opening_stock = inventory_get_opening_stock($date_from, $report->item_id, $warehouse);
+                                    $opening_cogs = inventory_get_cost_of_sales_value($date_from, $report->item_id, $warehouse);
+                                    $opening_value = inventory_get_opening_value($date_from, $report->item_id, $warehouse);
+                                    $stock_in = inventory_get_stock_in($date_from, $date_to, $report->item_id, $warehouse);
+                                    $value_in = inventory_get_value_in($date_from, $date_to, $report->item_id, $warehouse);
+                                    $stock_out = inventory_get_stock_out($date_from, $date_to, $report->item_id, $warehouse);
+                                    $value_out = inventory_get_value_out($date_from, $date_to, $report->item_id, $warehouse);
+                                    $closing_stock = inventory_get_closing_stock($date_from, $date_to, $report->item_id, $warehouse);
+                                    $closing_cogs = inventory_get_cost_of_sales_value($date_to, $report->item_id, $warehouse);
+                                    $closing_value = inventory_get_closing_value($date_from, $date_to, $report->item_id, $warehouse);
+                                } else {
+                                    $opening_stock = inventory_get_opening_stock_all($date_from, $report->item_id);
+                                    $opening_cogs = inventory_get_cost_of_sales_value_all($date_from, $report->item_id);
+                                    $opening_value = inventory_get_opening_value_all($date_from, $report->item_id);
+                                    $stock_in = inventory_get_stock_in_all($date_from, $date_to, $report->item_id);
+                                    $value_in = inventory_get_value_in_all($date_from, $date_to, $report->item_id);
+                                    $stock_out = inventory_get_stock_out_all($date_from, $date_to, $report->item_id);
+                                    $value_out = inventory_get_value_out_all($date_from, $date_to, $report->item_id);
+                                    $closing_stock = inventory_get_closing_stock_all($date_from, $date_to, $report->item_id);
+                                    $closing_cogs = inventory_get_cost_of_sales_value_all($date_to, $report->item_id);;
+                                    $closing_value = inventory_get_closing_value_all($date_from, $date_to, $report->item_id);
+                                }
+                                $total_closing_value += $closing_value;
+
+                                // Store each report in array
+                                array_push($content, [
+                                    $report->item->codeName,
+                                    number_format_quantity($opening_stock),
+                                    number_format_quantity($opening_cogs),
+                                    number_format_quantity($opening_value),
+                                    number_format_quantity($stock_in),
+                                    number_format_quantity($value_in),
+                                    number_format_quantity($stock_out),
+                                    number_format_quantity($value_out),
+                                    number_format_quantity($closing_stock),
+                                    number_format_quantity($closing_cogs),
+                                    number_format_quantity($closing_value)
+                                ]);
+
+                                // If item needs recalculate stock
+                                if($report->recalculate === 1) {
+                                    $sheet->cell('A'.($index+5), function($cell) {
+                                        $cell->setFont(array(
+                                            'bold' => true,
+                                            'underline' => true
+                                        ));
+                                        $cell->setFontColor('#F00');
                                     });
                                 }
                             }
-                        })
-                        ->where(function ($query) use ($date_from, $date_to) {
-                            $query->whereBetween('inventory.form_date', [$date_from, $date_to])
-                                ->orWhere('inventory.form_date', '<', $date_from);
-                        })
-                        ->get();
+                            // Prints all list report into excel sheet
+                            $sheet->fromArray($content, null, 'A5', false, false);
 
-                    $content = array();
-                    $total_closing_value = 0;
+                            $end_row = $list_report->count()+5;
 
-                    foreach ($list_report as $index=>$report) {
-                        if ($warehouse) {
-                            $opening_stock = inventory_get_opening_stock($date_from, $report->item_id, $warehouse);
-                            $opening_cogs = inventory_get_cost_of_sales_value($date_from, $report->item_id, $warehouse);
-                            $opening_value = inventory_get_opening_value($date_from, $report->item_id, $warehouse);
-                            $stock_in = inventory_get_stock_in($date_from, $date_to, $report->item_id, $warehouse);
-                            $value_in = inventory_get_value_in($date_from, $date_to, $report->item_id, $warehouse);
-                            $stock_out = inventory_get_stock_out($date_from, $date_to, $report->item_id, $warehouse);
-                            $value_out = inventory_get_value_out($date_from, $date_to, $report->item_id, $warehouse);
-                            $closing_stock = inventory_get_closing_stock($date_from, $date_to, $report->item_id, $warehouse);
-                            $closing_cogs = inventory_get_cost_of_sales_value($date_to, $report->item_id, $warehouse);
-                            $closing_value = inventory_get_closing_value($date_from, $date_to, $report->item_id, $warehouse);
-                        } else {
-                            $opening_stock = inventory_get_opening_stock_all($date_from, $report->item_id);
-                            $opening_cogs = inventory_get_cost_of_sales_value_all($date_from, $report->item_id);
-                            $opening_value = inventory_get_opening_value_all($date_from, $report->item_id);
-                            $stock_in = inventory_get_stock_in_all($date_from, $date_to, $report->item_id);
-                            $value_in = inventory_get_value_in_all($date_from, $date_to, $report->item_id);
-                            $stock_out = inventory_get_stock_out_all($date_from, $date_to, $report->item_id);
-                            $value_out = inventory_get_value_out_all($date_from, $date_to, $report->item_id);
-                            $closing_stock = inventory_get_closing_stock_all($date_from, $date_to, $report->item_id);
-                            $closing_cogs = inventory_get_cost_of_sales_value_all($date_to, $report->item_id);;
-                            $closing_value = inventory_get_closing_value_all($date_from, $date_to, $report->item_id);
-                        }
-                        $total_closing_value += $closing_value;
-
-                        // Store each report in array
-                        array_push($content, [
-                            $report->item->codeName,
-                            number_format_quantity($opening_stock),
-                            number_format_quantity($opening_cogs),
-                            number_format_quantity($opening_value),
-                            number_format_quantity($stock_in),
-                            number_format_quantity($value_in),
-                            number_format_quantity($stock_out),
-                            number_format_quantity($value_out),
-                            number_format_quantity($closing_stock),
-                            number_format_quantity($closing_cogs),
-                            number_format_quantity($closing_value)
-                        ]);
-                        
-                        // If item needs recalculate stock
-                        if($report->recalculate === 1) {
-                            $sheet->cell('A'.($index+5), function($cell) {
-                                $cell->setFont(array(
-                                    'bold' => true,
-                                    'underline' => true
-                                ));
-                                $cell->setFontColor('#F00');
+                            // Set table border
+                            $sheet->setBorder('A2:K'.$end_row, 'thin');
+                            $sheet->cell('K'.$end_row, function ($cell) use ($total_closing_value) {
+                                $cell->setFontWeight(true);
+                                $cell->setValue(number_format_quantity($total_closing_value));
                             });
-                        }
+                            $sheet->setBorder('I'.$end_row, 'thin');
+
+                            // Right alignment for cells with number
+                            $sheet->cell('B4:K'.$end_row, function($cell) {
+                                $cell->setAlignment('right');
+                            });
+                        });
                     }
-                    // Prints all list report into excel sheet
-                    $sheet->fromArray($content, null, 'A5', false, false);
-                    
-                    $end_row = $list_report->count()+5;
+                } else {
+                    $excel->sheet('Data', function ($sheet) use ($request) {
+                        $sheet->setWidth(array(
+                            'A' => 30,
+                            'B' => 15,
+                            'C' => 20,
+                            'D' => 20,
+                            'E' => 15,
+                            'F' => 20,
+                            'G' => 15,
+                            'H' => 20,
+                            'I' => 15,
+                            'J' => 20,
+                            'K' => 20,
+                        ));
 
-                    // Set table border
-                    $sheet->setBorder('A2:K'.$end_row, 'thin');
-                    $sheet->cell('K'.$end_row, function ($cell) use ($total_closing_value) {
-                        $cell->setFontWeight(true);
-                        $cell->setValue(number_format_quantity($total_closing_value));
-                    });
-                    $sheet->setBorder('I'.$end_row, 'thin');
+                        // Set Header Style
+                        $sheet->mergeCells('A1:K1', 'center');
+                        $sheet->mergeCells('A2:A3');
+                        $sheet->mergeCells('B2:D2', 'center');
+                        $sheet->mergeCells('E2:F2', 'center');
+                        $sheet->mergeCells('G2:H2', 'center');
+                        $sheet->mergeCells('I2:K2', 'center');
+                        $sheet->mergeCells('B3:D3', 'center');
+                        $sheet->mergeCells('E3:F3', 'center');
+                        $sheet->mergeCells('G3:H3', 'center');
+                        $sheet->mergeCells('I3:K3', 'center');
 
-                    // Right alignment for cells with number
-                    $sheet->cell('B4:K'.$end_row, function($cell) {
-                        $cell->setAlignment('right');
+                        $sheet->cell('A1:K4', function ($cell) {
+                            $cell->setFont(array(
+                                'size'       => '14',
+                                'bold'       =>  true
+                            ));
+                            $cell->setValignment('center');
+                        });
+
+                        // Set Header Text
+                        $sheet->setCellValue('A1', 'INVENTORY VALUE REPORT');
+                        $sheet->setCellValue('A2', 'ITEM');
+                        $sheet->setCellValue('B2', 'OPENING STOCK');
+                        $sheet->setCellValue('E2', 'STOCK IN');
+                        $sheet->setCellValue('G2', 'STOCK OUT');
+                        $sheet->setCellValue('I2', 'CLOSING STOCK');
+
+                        $date_from = date_format_db($request['date_from']) ?: date('Y-m-01 00:00:00');
+                        $date_to = date_format_db($request['date_to'], 'end') ?: date('Y-m-d 23:59:59');
+
+                        $sheet->setCellValue('B3', '(' . date_format_view($date_from) . ')');
+                        $sheet->setCellValue('E3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
+                        $sheet->setCellValue('G3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
+                        $sheet->setCellValue('I3', '(' . date_format_view($date_to) . ')');
+
+                        $sheet->cell('B3:K3', function ($cell) {
+                            $cell->setFont(array(
+                                'size'       => '10',
+                                'bold'       =>  true
+                            ));
+                        });
+
+                        $sheet->setCellValue('B4', 'QTY');
+                        $sheet->setCellValue('C4', 'COST OF SALES');
+                        $sheet->setCellValue('D4', 'TOTAL VALUE');
+                        $sheet->setCellValue('E4', 'QTY');
+                        $sheet->setCellValue('F4', 'TOTAL VALUE');
+                        $sheet->setCellValue('G4', 'QTY');
+                        $sheet->setCellValue('H4', 'TOTAL VALUE');
+                        $sheet->setCellValue('I4', 'QTY');
+                        $sheet->setCellValue('J4', 'COST OF SALES');
+                        $sheet->setCellValue('K4', 'TOTAL VALUE');
+
+                        // Get inventory list
+                        $warehouse = $request['warehouse'] ? : 0;
+                        $array_of_search = explode(' ', $request['search']);
+                        $list_report = Inventory::joinItem()
+                            ->groupBy('inventory.item_id')
+                            ->where('inventory.total_quantity', '>', 0)
+                            ->where(function ($query) use ($array_of_search, $warehouse) {
+                                if ($warehouse > 0) {
+                                    $query->where('inventory.warehouse_id', $warehouse);
+                                }
+                                else {
+                                    foreach ($array_of_search as $search) {
+                                        $query->where(function ($q) use ($search) {
+                                            $q->where('item.name', 'like', '%'.$search.'%')
+                                                ->orWhere('item.code', 'like', '%'.$search.'%')
+                                                ->orWhere('item.notes', 'like', '%'.$search.'%');
+                                        });
+                                    }
+                                }
+                            })
+                            ->where(function ($query) use ($date_from, $date_to) {
+                                $query->whereBetween('inventory.form_date', [$date_from, $date_to])
+                                    ->orWhere('inventory.form_date', '<', $date_from);
+                            })
+                            ->get();
+
+                        $content = array();
+                        $total_closing_value = 0;
+
+                        foreach ($list_report as $index=>$report) {
+                            if ($warehouse) {
+                                $opening_stock = inventory_get_opening_stock($date_from, $report->item_id, $warehouse);
+                                $opening_cogs = inventory_get_cost_of_sales_value($date_from, $report->item_id, $warehouse);
+                                $opening_value = inventory_get_opening_value($date_from, $report->item_id, $warehouse);
+                                $stock_in = inventory_get_stock_in($date_from, $date_to, $report->item_id, $warehouse);
+                                $value_in = inventory_get_value_in($date_from, $date_to, $report->item_id, $warehouse);
+                                $stock_out = inventory_get_stock_out($date_from, $date_to, $report->item_id, $warehouse);
+                                $value_out = inventory_get_value_out($date_from, $date_to, $report->item_id, $warehouse);
+                                $closing_stock = inventory_get_closing_stock($date_from, $date_to, $report->item_id, $warehouse);
+                                $closing_cogs = inventory_get_cost_of_sales_value($date_to, $report->item_id, $warehouse);
+                                $closing_value = inventory_get_closing_value($date_from, $date_to, $report->item_id, $warehouse);
+                            } else {
+                                $opening_stock = inventory_get_opening_stock_all($date_from, $report->item_id);
+                                $opening_cogs = inventory_get_cost_of_sales_value_all($date_from, $report->item_id);
+                                $opening_value = inventory_get_opening_value_all($date_from, $report->item_id);
+                                $stock_in = inventory_get_stock_in_all($date_from, $date_to, $report->item_id);
+                                $value_in = inventory_get_value_in_all($date_from, $date_to, $report->item_id);
+                                $stock_out = inventory_get_stock_out_all($date_from, $date_to, $report->item_id);
+                                $value_out = inventory_get_value_out_all($date_from, $date_to, $report->item_id);
+                                $closing_stock = inventory_get_closing_stock_all($date_from, $date_to, $report->item_id);
+                                $closing_cogs = inventory_get_cost_of_sales_value_all($date_to, $report->item_id);;
+                                $closing_value = inventory_get_closing_value_all($date_from, $date_to, $report->item_id);
+                            }
+                            $total_closing_value += $closing_value;
+
+                            // Store each report in array
+                            array_push($content, [
+                                $report->item->codeName,
+                                number_format_quantity($opening_stock),
+                                number_format_quantity($opening_cogs),
+                                number_format_quantity($opening_value),
+                                number_format_quantity($stock_in),
+                                number_format_quantity($value_in),
+                                number_format_quantity($stock_out),
+                                number_format_quantity($value_out),
+                                number_format_quantity($closing_stock),
+                                number_format_quantity($closing_cogs),
+                                number_format_quantity($closing_value)
+                            ]);
+
+                            // If item needs recalculate stock
+                            if($report->recalculate === 1) {
+                                $sheet->cell('A'.($index+5), function($cell) {
+                                    $cell->setFont(array(
+                                        'bold' => true,
+                                        'underline' => true
+                                    ));
+                                    $cell->setFontColor('#F00');
+                                });
+                            }
+                        }
+                        // Prints all list report into excel sheet
+                        $sheet->fromArray($content, null, 'A5', false, false);
+
+                        $end_row = $list_report->count()+5;
+
+                        // Set table border
+                        $sheet->setBorder('A2:K'.$end_row, 'thin');
+                        $sheet->cell('K'.$end_row, function ($cell) use ($total_closing_value) {
+                            $cell->setFontWeight(true);
+                            $cell->setValue(number_format_quantity($total_closing_value));
+                        });
+                        $sheet->setBorder('I'.$end_row, 'thin');
+
+                        // Right alignment for cells with number
+                        $sheet->cell('B4:K'.$end_row, function($cell) {
+                            $cell->setAlignment('right');
+                        });
                     });
-                });
+                }
+
             })->store('xls', $storage);
 
             $job->delete();
