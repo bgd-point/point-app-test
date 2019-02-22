@@ -81,6 +81,9 @@ class DeliveryOrderController extends Controller
         $view->reference_expedition_order = $expedition_id ? ExpeditionOrder::find($expedition_id) : '';
         $view->reference_sales_order = SalesOrder::find($sales_order_id);
         $view->is_first_delivery = DeliveryOrder::where('person_id', $view->reference_sales_order->person->id)->first();
+
+        $view->isCash = $view->reference_sales_order->is_cash;
+
         $coa = Coa::where('coa_category_id', 3)->lists('id');
         $debt_invoices = AccountPayableAndReceivable::whereIn('account_id', $coa)
             ->where('form_date', '<=', Carbon::parse(Carbon::now())->subDay(60))

@@ -318,7 +318,13 @@
                         @endif
                     </fieldset>
 
-                    @if(count($blocked_debt_invoices)>0)
+                    @if($isCash)
+                        <div class="form-group">
+                            <div class="col-md-6 col-md-offset-3">
+                                <button type="submit" class="btn btn-effect-ripple btn-primary">Submit</button>
+                            </div>
+                        </div>
+                    @elseif(count($blocked_debt_invoices)>0)
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-3">
                                 <div class="alert alert-danger">
@@ -374,7 +380,7 @@
                                 <button type="submit" class="btn btn-effect-ripple btn-primary">Request Approval</button>
                             </div>
                         </div>
-                        @else
+                    @else
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-3">
                                 <button type="submit" class="btn btn-effect-ripple btn-primary">Submit</button>
