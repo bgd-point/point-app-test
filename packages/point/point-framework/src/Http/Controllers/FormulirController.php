@@ -137,7 +137,7 @@ class FormulirController extends Controller
         DB::beginTransaction();
 
         try {
-            FormulirHelper::cancelWithoutPermission($formulir_id);
+            $formulir = Formulir::find($formulir_id);
             $formulir->cancel_request_status = 1;
             $formulir->save();
         } catch (\Exception $e) {
