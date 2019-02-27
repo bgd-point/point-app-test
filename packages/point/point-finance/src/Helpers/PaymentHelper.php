@@ -125,9 +125,9 @@ class PaymentHelper
                     || $cash_detail->reference->formulirable_type == 'Point\PointExpedition\Models\Downpayment') {
 
                     $model = $cash_detail->reference->formulirable_type;
-                    $dp = $model::find($cash_detail->reference->formulirable_id);
-                    $dp->remaining_amount = $cash_detail->amount;
-                    $dp->save();
+                    $model::where('id', $cash_detail->reference->formulirable_id)->update([
+                        'remaining_amount' => $cash_detail->amount
+                    ]);
                 }
             }
         }
