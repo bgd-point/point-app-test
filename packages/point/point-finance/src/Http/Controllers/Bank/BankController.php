@@ -26,7 +26,7 @@ class BankController extends Controller
         access_is_allowed('read.point.finance.cashier.bank');
 
         $view = view('point-finance::app.finance.point.bank.index');
-        $view->list_bank = Bank::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
+        $view->list_bank = Bank::joinFormulir()->joinPerson()->join('coa', 'coa.id', '=', 'point_finance_bank.coa_id')->notArchived()->selectOriginal();
         
         if (\Input::has('order_by')) {
             $view->list_bank = $view->list_bank->orderBy(\Input::get('order_by'), \Input::get('order_type'));
@@ -52,6 +52,10 @@ class BankController extends Controller
                     ->orWhere('formulir.form_number', 'like', '%'.\Input::get('search').'%')
                     ->orWhere('person.name', 'like', '%'.\Input::get('search').'%');
             });
+        }
+
+        if (request()->get('database_name') == 'p_kbretail' && auth()->user()->name == 'mirnagmb') {
+            $view->list_bank = $view->list_bank->where('coa.name', '!=', 'BANK BCA GIRO PUSAT KE 2 - 2582611000');
         }
 
         $view->list_bank = $view->list_bank->paginate(100);
