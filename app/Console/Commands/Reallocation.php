@@ -14,6 +14,7 @@ use Point\PointFinance\Models\Cash\CashDetail;
 use Point\PointInventory\Models\InventoryUsage\InventoryUsage;
 use Point\PointSales\Models\Sales\Invoice;
 use Point\PointSales\Models\Sales\PaymentCollection;
+use Point\PointSales\Models\Sales\Retur;
 
 class Reallocation extends Command
 {
@@ -231,7 +232,19 @@ class Reallocation extends Command
         $allocationReports = AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
             ->join('formulir', 'formulir.id', '=', 'allocation_report.formulir_id')
             ->where('allocation.name', 'like', '%(CASH FLOW)')
-            ->where('formulir.formulirable_type', InventoryUsage::class)
+            ->where('formulir.formulirable_type', Retur::class)
+            ->select('allocation_report.*')
+            ->get();
+
+        foreach ($allocationReports as $allocationReport) {
+            $this->line($allocationReport->formulir->form_number);
+            $allocationReport->delete();
+        }
+
+        $allocationReports = AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
+            ->join('formulir', 'formulir.id', '=', 'allocation_report.formulir_id')
+            ->where('allocation.name', 'like', '%(CASH FLOW)')
+            ->where('formulir.formulirable_type', \Point\PointPurchasing\Models\Inventory\Retur::class)
             ->select('allocation_report.*')
             ->get();
 
