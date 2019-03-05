@@ -229,28 +229,71 @@ class Reallocation extends Command
 //            }
 //        }
 
+//        $allocationReports = AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
+//            ->join('formulir', 'formulir.id', '=', 'allocation_report.formulir_id')
+//            ->where('allocation.name', 'like', '%(CASH FLOW)')
+//            ->where('formulir.formulirable_type', Retur::class)
+//            ->select('allocation_report.*')
+//            ->get();
+//
+//        foreach ($allocationReports as $allocationReport) {
+//            $this->line($allocationReport->formulir->form_number);
+//            $allocationReport->delete();
+//        }
+//
+//        $allocationReports = AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
+//            ->join('formulir', 'formulir.id', '=', 'allocation_report.formulir_id')
+//            ->where('allocation.name', 'like', '%(CASH FLOW)')
+//            ->where('formulir.formulirable_type', \Point\PointPurchasing\Models\Inventory\Retur::class)
+//            ->select('allocation_report.*')
+//            ->get();
+//
+//        foreach ($allocationReports as $allocationReport) {
+//            $this->line($allocationReport->formulir->form_number);
+//            $allocationReport->delete();
+//        }
+
         $allocationReports = AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
             ->join('formulir', 'formulir.id', '=', 'allocation_report.formulir_id')
             ->where('allocation.name', 'like', '%(CASH FLOW)')
-            ->where('formulir.formulirable_type', Retur::class)
+            ->where(function ($q) {
+                $q->where('formulir.formulirable_type', Bank::class)->orWhere('formulir.formulirable_type', Cash::class);
+            })
             ->select('allocation_report.*')
+            ->groupBy('allocation_report.formulir_id')
             ->get();
 
         foreach ($allocationReports as $allocationReport) {
+            $allocation_id = $allocationReport->allocation_id;
+            $formulir_id = $allocationReport->formulir_id;
             $this->line($allocationReport->formulir->form_number);
-            $allocationReport->delete();
-        }
-
-        $allocationReports = AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
-            ->join('formulir', 'formulir.id', '=', 'allocation_report.formulir_id')
-            ->where('allocation.name', 'like', '%(CASH FLOW)')
-            ->where('formulir.formulirable_type', \Point\PointPurchasing\Models\Inventory\Retur::class)
-            ->select('allocation_report.*')
-            ->get();
-
-        foreach ($allocationReports as $allocationReport) {
-            $this->line($allocationReport->formulir->form_number);
-            $allocationReport->delete();
+            AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
+                ->join('formulir', 'formulir.id', '=', 'allocation_report.formulir_id')
+                ->where('allocation.name', 'like', '%(CASH FLOW)')
+                ->where('formulir.id', $allocationReport->formulir_id)
+                ->select('formulir.*')
+                ->delete();
+            if ($allocationReport->formulir->formulirable_type == Cash::class) {
+                $cashDetails = CashDetail::where('point_finance_cash_id', $allocationReport->formulir->formulirable_id)->get();
+                foreach ($cashDetails as $detail) {
+                    $alReport = new AllocationReport;
+                    $alReport->formulir_id = $formulir_id;
+                    $alReport->allocation_id = $allocation_id;
+                    $alReport->amount = $detail->cash->payment_flow == 'out' ? $detail->amount * -1 : $detail->amount;
+                    $alReport->notes = $detail->notes_detail;
+                    $alReport->save();
+                }
+            } else if ($allocationReport->formulir->formulirable_type == Bank::class) {
+                $bankDetails = BankDetail::where('point_finance_bank_id', $allocationReport->formulir->formulirable_id)->get();
+                foreach ($bankDetails as $detail) {
+                    $alReport = new AllocationReport;
+                    $alReport->formulir_id = $formulir_id;
+                    $alReport->allocation_id = $allocation_id;
+                    $alReport->amount = $detail->bank->payment_flow == 'out' ? $detail->amount * -1 : $detail->amount;
+                    $alReport->notes = $detail->notes_detail;
+                    $alReport->save();
+                }
+            }
         }
     }
 }
