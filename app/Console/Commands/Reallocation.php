@@ -162,71 +162,82 @@ class Reallocation extends Command
 //            }
 //        }
 
-        $cashDetails = CashDetail::join('allocation','allocation.id', '=', 'point_finance_cash_detail.allocation_id')
-            ->where('allocation.id', '=', 1)
-            ->select('point_finance_cash_detail.*')
+//        $cashDetails = CashDetail::join('allocation','allocation.id', '=', 'point_finance_cash_detail.allocation_id')
+//            ->where('allocation.id', '=', 1)
+//            ->select('point_finance_cash_detail.*')
+//            ->get();
+//
+//        foreach ($cashDetails as $cashDetail) {
+//            $this->line($cashDetail->cash->formulir->form_number . ' - ' . $cashDetail->allocation->name);
+//
+//            $alr = AllocationReport::join('allocation', 'allocation.id', '=', 'allocation_report.allocation_id')
+//                ->where('allocation_report.formulir_id', $cashDetail->cash->formulir_id)
+//                ->where('allocation.name', 'like', '%(CASH FLOW)')
+//                ->select('allocation_report.*')
+//                ->first();
+//
+//            if ($alr) {
+//                $newReport = AllocationReport::where('formulir_id', '=', $cashDetail->cash->formulir_id)
+//                    ->where('allocation_id', $alr->allocation_id)
+//                    ->where('amount', $cashDetail->cash->payment_flow == 'out' ? abs($cashDetail->amount) * -1 : abs($cashDetail->amount))
+//                    ->where('notes', $cashDetail->notes_detail)
+//                    ->first();
+//
+//                if ($newReport) {
+//                    continue;
+//                }
+//                $alReport = new AllocationReport;
+//                $alReport->formulir_id = $cashDetail->cash->formulir_id;
+//                $alReport->allocation_id = $alr->allocation_id;
+//                $alReport->amount = $cashDetail->cash->payment_flow == 'out' ? abs($cashDetail->amount) * -1 : abs($cashDetail->amount);
+//                $alReport->notes = $cashDetail->notes_detail;
+//                $alReport->save();
+//            }
+//        }
+//
+//        $bankDetails = BankDetail::join('allocation','allocation.id', '=', 'point_finance_bank_detail.allocation_id')
+//            ->where('allocation.id', '=', 1)
+//            ->select('point_finance_bank_detail.*')
+//            ->get();
+//
+//        foreach ($bankDetails as $bankDetail) {
+//            $this->line($bankDetail->bank->formulir->form_number . ' - ' . $bankDetail->allocation->name);
+//
+//            $alr = AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
+//                ->where('allocation_report.formulir_id', $bankDetail->bank->formulir_id)
+//                ->where('allocation.name', 'like', '%(CASH FLOW)')
+//                ->select('allocation_report.*')
+//                ->first();
+//
+//            if ($alr) {
+//                $newReport = AllocationReport::where('formulir_id', '=', $bankDetail->bank->formulir_id)
+//                    ->where('allocation_id', $alr->allocation_id)
+//                    ->where('amount', $bankDetail->bank->payment_flow == 'out' ? abs($bankDetail->amount) * -1 : abs($bankDetail->amount))
+//                    ->where('notes', $bankDetail->notes_detail)
+//                    ->first();
+//
+//                if ($newReport) {
+//                    continue;
+//                }
+//                $alReport = new AllocationReport;
+//                $alReport->formulir_id = $bankDetail->bank->formulir_id;
+//                $alReport->allocation_id = $alr->allocation_id;
+//                $alReport->amount = $bankDetail->bank->payment_flow == 'out' ? abs($bankDetail->amount) * -1 : abs($bankDetail->amount);
+//                $alReport->notes = $bankDetail->notes_detail;
+//                $alReport->save();
+//            }
+//        }
+
+        $allocationReports = AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
+            ->join('formulir', 'formulir.id', '=', 'allocation_report.formulir_id')
+            ->where('allocation.name', 'like', '%(CASH FLOW)')
+            ->where('formulir.formulirable_type', InventoryUsage::class)
+            ->select('allocation_report.*')
             ->get();
 
-        foreach ($cashDetails as $cashDetail) {
-            $this->line($cashDetail->cash->formulir->form_number . ' - ' . $cashDetail->allocation->name);
-
-            $alr = AllocationReport::join('allocation', 'allocation.id', '=', 'allocation_report.allocation_id')
-                ->where('allocation_report.formulir_id', $cashDetail->cash->formulir_id)
-                ->where('allocation.name', 'like', '%(CASH FLOW)')
-                ->select('allocation_report.*')
-                ->first();
-
-            if ($alr) {
-                $newReport = AllocationReport::where('formulir_id', '=', $cashDetail->cash->formulir_id)
-                    ->where('allocation_id', $alr->allocation_id)
-                    ->where('amount', $cashDetail->cash->payment_flow == 'out' ? abs($cashDetail->amount) * -1 : abs($cashDetail->amount))
-                    ->where('notes', $cashDetail->notes_detail)
-                    ->first();
-
-                if ($newReport) {
-                    continue;
-                }
-                $alReport = new AllocationReport;
-                $alReport->formulir_id = $cashDetail->cash->formulir_id;
-                $alReport->allocation_id = $alr->allocation_id;
-                $alReport->amount = $cashDetail->cash->payment_flow == 'out' ? abs($cashDetail->amount) * -1 : abs($cashDetail->amount);
-                $alReport->notes = $cashDetail->notes_detail;
-                $alReport->save();
-            }
+        foreach ($allocationReports as $allocationReport) {
+            $this->line($allocationReport->formulir->form_number);
+            $allocationReport->delete();
         }
-
-        $bankDetails = BankDetail::join('allocation','allocation.id', '=', 'point_finance_bank_detail.allocation_id')
-            ->where('allocation.id', '=', 1)
-            ->select('point_finance_bank_detail.*')
-            ->get();
-
-        foreach ($bankDetails as $bankDetail) {
-            $this->line($bankDetail->bank->formulir->form_number . ' - ' . $bankDetail->allocation->name);
-
-            $alr = AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
-                ->where('allocation_report.formulir_id', $bankDetail->bank->formulir_id)
-                ->where('allocation.name', 'like', '%(CASH FLOW)')
-                ->select('allocation_report.*')
-                ->first();
-
-            if ($alr) {
-                $newReport = AllocationReport::where('formulir_id', '=', $bankDetail->bank->formulir_id)
-                    ->where('allocation_id', $alr->allocation_id)
-                    ->where('amount', $bankDetail->bank->payment_flow == 'out' ? abs($bankDetail->amount) * -1 : abs($bankDetail->amount))
-                    ->where('notes', $bankDetail->notes_detail)
-                    ->first();
-
-                if ($newReport) {
-                    continue;
-                }
-                $alReport = new AllocationReport;
-                $alReport->formulir_id = $bankDetail->bank->formulir_id;
-                $alReport->allocation_id = $alr->allocation_id;
-                $alReport->amount = $bankDetail->bank->payment_flow == 'out' ? abs($bankDetail->amount) * -1 : abs($bankDetail->amount);
-                $alReport->notes = $bankDetail->notes_detail;
-                $alReport->save();
-            }
-        }
-
     }
 }
