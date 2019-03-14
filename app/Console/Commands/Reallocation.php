@@ -42,10 +42,7 @@ class Reallocation extends Command
         $this->comment('recalculating');
 
         AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
-            ->join('formulir', 'formulir.id', '=', 'allocation_report.formulir_id')
             ->where('allocation.name', 'like', '%(CASH FLOW)')
-            ->where('formulir.id', $allocationReport->formulir_id)
-            ->select('formulir.*')
             ->delete();
 
         $allocationReports = AllocationReport::with('formulir')->get();
