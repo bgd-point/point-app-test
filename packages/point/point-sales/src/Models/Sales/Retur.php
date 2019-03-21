@@ -4,6 +4,7 @@ namespace Point\PointSales\Models\Sales;
 
 use Illuminate\Database\Eloquent\Model;
 use Point\Core\Traits\ByTrait;
+use Point\Framework\Models\Formulir;
 use Point\Framework\Traits\FormulirTrait;
 use Point\PointSales\Vesa\ReturVesa;
 
@@ -52,6 +53,10 @@ class Retur extends Model
             ->where('person.id', '=', $person_id)
             ->orWhereIn('point_sales_retur.id', $retur_edit)
             ->orderByStandard();
+    }
+
+    public function formulir() {
+        return $this->belongsTo('\Point\Framework\Models\Formulir', 'formulir_id');
     }
 
     public function person()

@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\Inspire::class,
         Commands\CleanFile::class,
+        Commands\DebtChecker::class,
         Commands\SeedDummy::class,
         Commands\ResetDatabase::class,
         Commands\SettingResetDatabase::class,
