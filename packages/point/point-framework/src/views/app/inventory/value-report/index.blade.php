@@ -137,21 +137,33 @@
                                 if ($ci) {
                                     $price = $ci->amount / $ci->stock;
                                 } else {
-                                    $product = \Point\PointManufacture\Models\InputProduct::where('product_id', $item->item_id)->first();
+                                    $product = \Point\PointManufacture\Models\InputProduct::join('point_manufacture_input', 'point_manufacture_input.id', '=', 'point_manufacture_input_product.input_id')
+                                        ->join('formulir', 'point_manufacture_input.formulir_id', '=', 'formulir.id')
+                                        ->where('formulir.form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
+                                        ->whereNotNull('formulir.form_number')
+                                        ->where('product_id', $item->item_id)->first();
                                     if ($product) {
                                         $materials = \Point\PointManufacture\Models\InputMaterial::where('input_id', $product->input_id)->get();
                                         $price = 0;
+                                        info('======'.$product->item->name.'====='. $product->input_id);
                                         foreach ($materials as $material) {
                                             $lastBuyMaterial = \Point\PointPurchasing\Models\Inventory\InvoiceItem::join('point_purchasing_invoice', 'point_purchasing_invoice.id', '=', 'point_purchasing_invoice_item.point_purchasing_invoice_id')
                                                 ->join('formulir', 'point_purchasing_invoice.formulir_id', '=', 'formulir.id')
                                                 ->where('point_purchasing_invoice_item.item_id', '=', $material->material_id)
                                                 ->where('formulir.form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
+                                                ->whereNotNull('formulir.form_number')
                                                 ->first();
+
+                                            info($material->item->name);
 
                                             if ($lastBuyMaterial) {
                                                 $price += ($material->quantity * $lastBuyMaterial->price) / $product->quantity;
+                                                info($product->item->name .'=  '.$material->quantity .'*'. $lastBuyMaterial->price .'/'. $product->quantity);
                                             }
+
+                                            info ('price = ' . $price);
                                         }
+                                        info('========');
                                     }
                                     else {
                                         $oi = \Point\Framework\Models\OpeningInventory::where('item_id', '=', $item->item_id)->first();
@@ -229,7 +241,7 @@
         var date_to = $("#date_to").val();
         var search = $('#search').val();
         var warehouse = $('#warehouse_id').val();
-        
+
         $(e.currentTarget).html(spinner).addClass('disabled');
 
         $.ajax({

@@ -252,7 +252,10 @@ class InventoryValueReportController extends Controller
                                     if ($ci) {
                                         $price = $ci->amount / $ci->stock;
                                     } else {
-                                        $product = \Point\PointManufacture\Models\InputProduct::where('product_id', $item->item_id)->first();
+                                        $product = \Point\PointManufacture\Models\InputProduct::join('point_manufacture_input', 'point_manufacture_input.id', '=', 'point_manufacture_input_product.input_id')
+                                            ->join('formulir', 'point_manufacture_input.formulir_id', '=', 'formulir.id')
+                                            ->where('formulir.form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
+                                            ->whereNotNull('formulir.form_number')->where('product_id', $item->item_id)->first();
                                         if ($product) {
                                             $materials = \Point\PointManufacture\Models\InputMaterial::where('input_id', $product->input_id)->get();
                                             $price = 0;
@@ -261,6 +264,7 @@ class InventoryValueReportController extends Controller
                                                     ->join('formulir', 'point_purchasing_invoice.formulir_id', '=', 'formulir.id')
                                                     ->where('point_purchasing_invoice_item.item_id', '=', $material->material_id)
                                                     ->where('formulir.form_date', '<=', $date_to)
+                                                    ->whereNotNull('formulir.form_number')
                                                     ->first();
 
                                                 if ($lastBuyMaterial) {
@@ -447,7 +451,6 @@ class InventoryValueReportController extends Controller
                                 $closing_cogs = inventory_get_cost_of_sales_value_all($date_to, $report->item_id);;
                                 $closing_value = inventory_get_closing_value_all($date_from, $date_to, $report->item_id);
                             }
-                            $total_closing_value += $closing_value;
 
                             // Store each report in array
                             array_push($content, [
