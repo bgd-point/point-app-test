@@ -17,7 +17,7 @@ class Formulir extends Model
 
     public function save(array $options = [])
     {
-        $lockedDate = strtotime('2018-12-01');
+        $lockedDate = strtotime('2019-01-01');
 
         if (request()->get('database_name') == 'p_kbretail'
             && strtotime($this->form_date) < $lockedDate
