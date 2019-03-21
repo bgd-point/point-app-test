@@ -703,7 +703,7 @@ class ItemController extends Controller
             return response()->json($this->restrictionAccessMessage());
         }
 
-        $date_from = date_format_db(\Input::get('form_date'), \Input::get('time'));
+        $date_from = date_format_db(\Input::get('form_date'), \Input::get('time') . ':59');
         $item_id = \Input::get('item_id');
         $warehouse_id = \Input::get('warehouse_id');
         $quantity = InventoryHelper::getAvailableStock($date_from, $item_id, $warehouse_id);

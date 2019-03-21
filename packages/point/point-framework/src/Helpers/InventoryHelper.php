@@ -191,6 +191,7 @@ class InventoryHelper
             ->where('form_date', '<=', $date)
             ->where('warehouse_id', '=', $warehouse_id)
             ->orderBy('form_date', 'desc')
+            ->orderBy('formulir_id', 'desc')
             ->first();
 
         if (!$inventory) {
