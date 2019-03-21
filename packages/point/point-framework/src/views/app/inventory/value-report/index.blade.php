@@ -131,12 +131,16 @@
 
                             if ($lastBuy) {
                                 $price = $lastBuy->price;
+                                if ($item->item_id == 24) { info('here A');}
                             } else {
+                                if ($item->item_id == 24) { info('here B');}
                                 $ci = \Point\PointAccounting\Models\CutOffInventoryDetail::where('subledger_id', $item->item_id)->first();
 
                                 if ($ci) {
+                                    if ($item->item_id == 24) { info('here C');}
                                     $price = $ci->amount / $ci->stock;
                                 } else {
+                                    if ($item->item_id == 24) { info('here D');}
                                     $product = \Point\PointManufacture\Models\InputProduct::join('point_manufacture_input', 'point_manufacture_input.id', '=', 'point_manufacture_input_product.input_id')
                                         ->join('formulir', 'point_manufacture_input.formulir_id', '=', 'formulir.id')
                                         ->where('formulir.form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
@@ -146,6 +150,7 @@
                                         $materials = \Point\PointManufacture\Models\InputMaterial::where('input_id', $product->input_id)->get();
                                         $price = 0;
                                         info('======'.$product->item->name.'====='. $product->input_id);
+                                        if ($item->item_id == 24) { info('here E');}
                                         foreach ($materials as $material) {
                                             $lastBuyMaterial = \Point\PointPurchasing\Models\Inventory\InvoiceItem::join('point_purchasing_invoice', 'point_purchasing_invoice.id', '=', 'point_purchasing_invoice_item.point_purchasing_invoice_id')
                                                 ->join('formulir', 'point_purchasing_invoice.formulir_id', '=', 'formulir.id')
@@ -164,16 +169,17 @@
                                             info ('price = ' . $price);
                                         }
                                         info('========');
-                                    }
-                                    else {
+                                    } else {
+                                        if ($item->item_id == 24) { info('here F');}
                                         $oi = \Point\Framework\Models\OpeningInventory::where('item_id', '=', $item->item_id)->first();
                                         if ($oi) {
+                                            if ($item->item_id == 24) { info('here G');}
                                             $price = $oi->price;
                                         }
                                     }
                                 }
 
-                                $total_closing_value += $price;
+                                $total_closing_value += ($closing_stock * $price);
                             }
                             ?>
                             <tr>
@@ -216,7 +222,7 @@
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td style="text-align: right;font-weight: bold">{{ number_format_accounting($total_closing_value) }}</td>
+                            <td style="text-align: right;font-weight: bold">{{ number_format_quantity($total_closing_value) }}</td>
                         </tr>
                         </tbody>
                     </table>

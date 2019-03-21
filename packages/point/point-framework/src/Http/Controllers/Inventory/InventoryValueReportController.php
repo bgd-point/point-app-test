@@ -281,7 +281,7 @@ class InventoryValueReportController extends Controller
                                     }
                                 }
 
-                                $total_closing_value += $price;
+                                $total_closing_value += ($closing_stock * $price);
 
                                 // Store each report in array
                                 array_push($content, [
