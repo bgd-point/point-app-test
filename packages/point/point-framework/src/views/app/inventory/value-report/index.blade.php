@@ -124,7 +124,7 @@
                             $lastBuy = \Point\PointPurchasing\Models\Inventory\InvoiceItem::join('point_purchasing_invoice', 'point_purchasing_invoice.id', '=', 'point_purchasing_invoice_item.point_purchasing_invoice_id')
                                 ->join('formulir', 'point_purchasing_invoice.formulir_id', '=', 'formulir.id')
                                 ->where('point_purchasing_invoice_item.item_id', '=', $item->item_id)
-                                ->where('formulir.form_date', '<=', request()->get('date_to'))
+                                ->where('formulir.form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
                                 ->first();
 
                             $price = 0;
@@ -136,6 +136,8 @@
 
                                 if ($ci) {
                                     $price = $ci->amount / $ci->stock;
+                                } else {
+
                                 }
                             }
                             ?>
