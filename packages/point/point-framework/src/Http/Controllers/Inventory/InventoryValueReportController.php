@@ -255,10 +255,15 @@ class InventoryValueReportController extends Controller
                                         $product = \Point\PointManufacture\Models\InputProduct::join('point_manufacture_input', 'point_manufacture_input.id', '=', 'point_manufacture_input_product.input_id')
                                             ->join('formulir', 'point_manufacture_input.formulir_id', '=', 'formulir.id')
                                             ->where('formulir.form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
-                                            ->whereNotNull('formulir.form_number')->where('product_id', $item->item_id)->first();
+                                            ->whereNotNull('formulir.form_number')
+                                            ->where('formulir.form_status', '!=', -1)
+                                            ->where('product_id', $item->item_id)->first();
                                         if ($product) {
                                             $materials = \Point\PointManufacture\Models\InputMaterial::where('input_id', $product->input_id)->get();
                                             $price = 0;
+                                            $outputProduct = \Point\PointManufacture\Models\OutputProduct::join('point_manufacture_output', 'point_manufacture_output.id', '=', 'point_manufacture_output_product.output_id')
+                                                ->where('point_manufacture_output.input_id', $product->input_id)
+                                                ->first();
                                             foreach ($materials as $material) {
                                                 $lastBuyMaterial = \Point\PointPurchasing\Models\Inventory\InvoiceItem::join('point_purchasing_invoice', 'point_purchasing_invoice.id', '=', 'point_purchasing_invoice_item.point_purchasing_invoice_id')
                                                     ->join('formulir', 'point_purchasing_invoice.formulir_id', '=', 'formulir.id')
@@ -267,8 +272,8 @@ class InventoryValueReportController extends Controller
                                                     ->whereNotNull('formulir.form_number')
                                                     ->first();
 
-                                                if ($lastBuyMaterial) {
-                                                    $price += ($material->quantity * $lastBuyMaterial->price) / $product->quantity;
+                                                if ($lastBuyMaterial && $outputProduct) {
+                                                    $price += ($material->quantity * $lastBuyMaterial->price) / $outputProduct->quantity;
                                                 }
                                             }
                                         }

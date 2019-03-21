@@ -131,26 +131,31 @@
 
                             if ($lastBuy) {
                                 $price = $lastBuy->price;
-                                if ($item->item_id == 24) { info('here A');}
+                                if ($item->item_id == 89) { info('here A');}
                             } else {
-                                if ($item->item_id == 24) { info('here B');}
+                                if ($item->item_id == 89) { info('here B');}
                                 $ci = \Point\PointAccounting\Models\CutOffInventoryDetail::where('subledger_id', $item->item_id)->first();
 
                                 if ($ci) {
-                                    if ($item->item_id == 24) { info('here C');}
+                                    if ($item->item_id == 89) { info('here C');}
                                     $price = $ci->amount / $ci->stock;
                                 } else {
-                                    if ($item->item_id == 24) { info('here D');}
+                                    if ($item->item_id == 89) { info('here D');}
                                     $product = \Point\PointManufacture\Models\InputProduct::join('point_manufacture_input', 'point_manufacture_input.id', '=', 'point_manufacture_input_product.input_id')
                                         ->join('formulir', 'point_manufacture_input.formulir_id', '=', 'formulir.id')
                                         ->where('formulir.form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
                                         ->whereNotNull('formulir.form_number')
+                                        ->where('formulir.form_status', '!=', -1)
                                         ->where('product_id', $item->item_id)->first();
+
                                     if ($product) {
+                                        $outputProduct = \Point\PointManufacture\Models\OutputProduct::join('point_manufacture_output', 'point_manufacture_output.id', '=', 'point_manufacture_output_product.output_id')
+                                            ->where('point_manufacture_output.input_id', $product->input_id)
+                                            ->first();
                                         $materials = \Point\PointManufacture\Models\InputMaterial::where('input_id', $product->input_id)->get();
                                         $price = 0;
                                         info('======'.$product->item->name.'====='. $product->input_id);
-                                        if ($item->item_id == 24) { info('here E');}
+                                        if ($item->item_id == 89) { info('here E' . $product->input_id);}
                                         foreach ($materials as $material) {
                                             $lastBuyMaterial = \Point\PointPurchasing\Models\Inventory\InvoiceItem::join('point_purchasing_invoice', 'point_purchasing_invoice.id', '=', 'point_purchasing_invoice_item.point_purchasing_invoice_id')
                                                 ->join('formulir', 'point_purchasing_invoice.formulir_id', '=', 'formulir.id')
@@ -159,21 +164,20 @@
                                                 ->whereNotNull('formulir.form_number')
                                                 ->first();
 
-                                            info($material->item->name);
+                                            info($material->item->name .' ' . $outputProduct);
 
-                                            if ($lastBuyMaterial) {
-                                                $price += ($material->quantity * $lastBuyMaterial->price) / $product->quantity;
-                                                info($product->item->name .'=  '.$material->quantity .'*'. $lastBuyMaterial->price .'/'. $product->quantity);
+                                            if ($lastBuyMaterial && $outputProduct) {
+                                                $price += ($material->quantity * $lastBuyMaterial->price) / $outputProduct->quantity;
                                             }
 
                                             info ('price = ' . $price);
                                         }
                                         info('========');
                                     } else {
-                                        if ($item->item_id == 24) { info('here F');}
+                                        if ($item->item_id == 89) { info('here F');}
                                         $oi = \Point\Framework\Models\OpeningInventory::where('item_id', '=', $item->item_id)->first();
                                         if ($oi) {
-                                            if ($item->item_id == 24) { info('here G');}
+                                            if ($item->item_id == 89) { info('here G');}
                                             $price = $oi->price;
                                         }
                                     }
