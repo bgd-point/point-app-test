@@ -176,7 +176,7 @@ class InventoryValueReportController extends Controller
                             $sheet->setCellValue('G4', 'QTY');
                             $sheet->setCellValue('H4', 'TOTAL VALUE');
                             $sheet->setCellValue('I4', 'QTY');
-                            $sheet->setCellValue('J4', 'COST OF SALES');
+                            $sheet->setCellValue('J4', 'LAST BUY PRICE');
                             $sheet->setCellValue('K4', 'TOTAL VALUE');
 
                             // Get inventory list
@@ -234,6 +234,49 @@ class InventoryValueReportController extends Controller
                                 }
                                 $total_closing_value += $closing_value;
 
+                                $item = $report;
+
+                                $lastBuy = \Point\PointPurchasing\Models\Inventory\InvoiceItem::join('point_purchasing_invoice', 'point_purchasing_invoice.id', '=', 'point_purchasing_invoice_item.point_purchasing_invoice_id')
+                                    ->join('formulir', 'point_purchasing_invoice.formulir_id', '=', 'formulir.id')
+                                    ->where('point_purchasing_invoice_item.item_id', '=', $item->item_id)
+                                    ->where('formulir.form_date', '<=', $date_to)
+                                    ->first();
+
+                                $price = 0;
+
+                                if ($lastBuy) {
+                                    $price = $lastBuy->price;
+                                } else {
+                                    $ci = \Point\PointAccounting\Models\CutOffInventoryDetail::where('subledger_id', $item->item_id)->first();
+
+                                    if ($ci) {
+                                        $price = $ci->amount / $ci->stock;
+                                    } else {
+                                        $product = \Point\PointManufacture\Models\InputProduct::where('product_id', $item->item_id)->first();
+                                        if ($product) {
+                                            $materials = \Point\PointManufacture\Models\InputMaterial::where('input_id', $product->input_id)->get();
+                                            $price = 0;
+                                            foreach ($materials as $material) {
+                                                $lastBuyMaterial = \Point\PointPurchasing\Models\Inventory\InvoiceItem::join('point_purchasing_invoice', 'point_purchasing_invoice.id', '=', 'point_purchasing_invoice_item.point_purchasing_invoice_id')
+                                                    ->join('formulir', 'point_purchasing_invoice.formulir_id', '=', 'formulir.id')
+                                                    ->where('point_purchasing_invoice_item.item_id', '=', $material->material_id)
+                                                    ->where('formulir.form_date', '<=', $date_to)
+                                                    ->first();
+
+                                                if ($lastBuyMaterial) {
+                                                    $price += ($material->quantity * $lastBuyMaterial->price) / $product->quantity;
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            $oi = \Point\Framework\Models\OpeningInventory::where('item_id', '=', $item->item_id)->first();
+                                            if ($oi) {
+                                                $price = $oi->price;
+                                            }
+                                        }
+                                    }
+                                }
+
                                 // Store each report in array
                                 array_push($content, [
                                     $report->item->codeName,
@@ -245,8 +288,8 @@ class InventoryValueReportController extends Controller
                                     number_format_quantity($stock_out),
                                     number_format_quantity($value_out),
                                     number_format_quantity($closing_stock),
-                                    number_format_quantity($closing_cogs),
-                                    number_format_quantity($closing_value)
+                                    number_format_quantity($price),
+                                    number_format_quantity($closing_stock * $price)
                                 ]);
 
                                 // If item needs recalculate stock
