@@ -119,7 +119,7 @@
                                 $closing_value = inventory_get_closing_value_all($date_from, $date_to, $item->item_id);
                                 $warehouse_id = 0;
                             }
-                            $total_closing_value += $closing_value;
+
                             $recalculate_stock = \Point\Framework\Models\Inventory::where('item_id', '=', $item->item_id)->where('recalculate', '=', 1)->orderBy('form_date', 'asc')->count() > 0;
                             $lastBuy = \Point\PointPurchasing\Models\Inventory\InvoiceItem::join('point_purchasing_invoice', 'point_purchasing_invoice.id', '=', 'point_purchasing_invoice_item.point_purchasing_invoice_id')
                                 ->join('formulir', 'point_purchasing_invoice.formulir_id', '=', 'formulir.id')
@@ -160,6 +160,8 @@
                                         }
                                     }
                                 }
+
+                                $total_closing_value += $price;
                             }
                             ?>
                             <tr>

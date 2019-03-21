@@ -232,7 +232,7 @@ class InventoryValueReportController extends Controller
                                     $closing_cogs = inventory_get_cost_of_sales_value_all($date_to, $report->item_id);;
                                     $closing_value = inventory_get_closing_value_all($date_from, $date_to, $report->item_id);
                                 }
-                                $total_closing_value += $closing_value;
+
 
                                 $item = $report;
 
@@ -276,6 +276,8 @@ class InventoryValueReportController extends Controller
                                         }
                                     }
                                 }
+
+                                $total_closing_value += $price;
 
                                 // Store each report in array
                                 array_push($content, [
