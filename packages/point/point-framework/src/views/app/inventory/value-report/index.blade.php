@@ -147,7 +147,8 @@
                                         ->where('formulir.form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
                                         ->whereNotNull('formulir.form_number')
                                         ->where('formulir.form_status', '!=', -1)
-                                        ->where('product_id', $item->item_id)->first();
+                                        ->where('product_id', $item->item_id)
+                                        ->first();
 
                                     if ($product) {
                                         $outputProduct = \Point\PointManufacture\Models\OutputProduct::join('point_manufacture_output', 'point_manufacture_output.id', '=', 'point_manufacture_output_product.output_id')
@@ -163,6 +164,7 @@
                                                 ->where('point_purchasing_invoice_item.item_id', '=', $material->material_id)
                                                 ->where('formulir.form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
                                                 ->whereNotNull('formulir.form_number')
+                                                ->orderBy('formulir.form_date', 'desc')
                                                 ->first();
 
                                             info($material->item->name .' ' . $outputProduct);

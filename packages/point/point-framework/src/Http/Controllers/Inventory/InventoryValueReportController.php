@@ -272,6 +272,7 @@ class InventoryValueReportController extends Controller
                                                     ->where('point_purchasing_invoice_item.item_id', '=', $material->material_id)
                                                     ->where('formulir.form_date', '<=', $date_to)
                                                     ->whereNotNull('formulir.form_number')
+                                                    ->orderBy('formulir.form_date', 'desc')
                                                     ->first();
 
                                                 if ($lastBuyMaterial && $outputProduct) {
