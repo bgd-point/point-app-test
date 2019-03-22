@@ -240,6 +240,7 @@ class InventoryValueReportController extends Controller
                                     ->join('formulir', 'point_purchasing_invoice.formulir_id', '=', 'formulir.id')
                                     ->where('point_purchasing_invoice_item.item_id', '=', $item->item_id)
                                     ->where('formulir.form_date', '<=', $date_to)
+                                    ->orderBy('formulir.form_date', 'desc')
                                     ->first();
 
                                 $price = 0;
@@ -257,7 +258,8 @@ class InventoryValueReportController extends Controller
                                             ->where('formulir.form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
                                             ->whereNotNull('formulir.form_number')
                                             ->where('formulir.form_status', '!=', -1)
-                                            ->where('product_id', $item->item_id)->first();
+                                            ->where('product_id', $item->item_id)
+                                            ->first();
                                         if ($product) {
                                             $materials = \Point\PointManufacture\Models\InputMaterial::where('input_id', $product->input_id)->get();
                                             $price = 0;

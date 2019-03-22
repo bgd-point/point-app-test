@@ -125,6 +125,7 @@
                                 ->join('formulir', 'point_purchasing_invoice.formulir_id', '=', 'formulir.id')
                                 ->where('point_purchasing_invoice_item.item_id', '=', $item->item_id)
                                 ->where('formulir.form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
+                                ->orderBy('formulir.form_date', 'desc')
                                 ->first();
 
                             $price = 0;
