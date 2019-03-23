@@ -5,6 +5,7 @@ namespace Point\PointSales\Helpers;
 use Illuminate\Http\Request;
 use Point\Core\Exceptions\PointException;
 use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Models\Formulir;
 use Point\PointExpedition\Models\ExpeditionOrder;
 use Point\PointSales\Models\Sales\DeliveryOrder;
 use Point\PointSales\Models\Sales\DeliveryOrderItem;
@@ -71,8 +72,9 @@ class DeliveryOrderHelper
         // 1. user check 'close checkbox'
         // 2. all item have been withdrawn
         if ($request->input('close') != null || $close === true) {
-            $reference->formulir->form_status = 1;
-            $reference->formulir->save();
+            Formulir::where('id', $reference->formulir_id)->update([
+                'form_status' => 1
+            ]);
         }
     }
 
