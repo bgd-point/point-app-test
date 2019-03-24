@@ -108,6 +108,15 @@
                         </div>
                     </a>
                 </div>
+                <div class="col-md-4 col-lg-3">
+                    <a href="{{url('sales/point/indirect/retur-report')}}" class="widget widget-button">
+                        <div class="widget-content text-right clearfix">
+                            <i class="fa fa-4x fa-file-text push-bit pull-left"></i>
+                            <h4 class="widget-heading"><strong>Retur</strong></h4>
+                            <span class="text-muted"></span>
+                        </div>
+                    </a>
+                </div>
             @endif
         </div>
     </div>
