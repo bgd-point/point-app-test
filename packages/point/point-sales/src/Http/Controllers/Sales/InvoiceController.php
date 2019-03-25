@@ -473,16 +473,16 @@ class InvoiceController extends Controller
             self::journal($data);
         }
 
-        $invoice = Invoice::find($retur->point_sales_invoice_id);
-        $apr = AccountPayableAndReceivable::where('formulir_reference_id', $invoice->formulir_id)->first();
-
-        $account_payable_and_receivable_detail = new AccountPayableAndReceivableDetail;
-        $account_payable_and_receivable_detail->account_payable_and_receivable_id = $apr->id;
-        $account_payable_and_receivable_detail->formulir_reference_id = $retur->formulir->id;
-        $account_payable_and_receivable_detail->amount = $retur->total;
-        $account_payable_and_receivable_detail->form_date = $retur->formulir->form_date;
-        $account_payable_and_receivable_detail->notes = 'RETUR';
-        $account_payable_and_receivable_detail->save();
+//        $invoice = Invoice::find($retur->point_sales_invoice_id);
+//        $apr = AccountPayableAndReceivable::where('formulir_reference_id', $invoice->formulir_id)->first();
+//
+//        $account_payable_and_receivable_detail = new AccountPayableAndReceivableDetail;
+//        $account_payable_and_receivable_detail->account_payable_and_receivable_id = $apr->id;
+//        $account_payable_and_receivable_detail->formulir_reference_id = $retur->formulir->id;
+//        $account_payable_and_receivable_detail->amount = $retur->total;
+//        $account_payable_and_receivable_detail->form_date = $retur->formulir->form_date;
+//        $account_payable_and_receivable_detail->notes = 'RETUR';
+//        $account_payable_and_receivable_detail->save();
 
         JournalHelper::checkJournalBalance($invoice->formulir_id);
 
