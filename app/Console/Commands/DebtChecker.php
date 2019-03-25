@@ -81,18 +81,18 @@ class DebtChecker extends Command
             $apr->delete();
         }
 
-        $returs = Retur::all();
-        foreach ($returs as $retur) {
-            $invoice = Invoice::find($retur->point_sales_invoice_id);
-            $apr = AccountPayableAndReceivable::where('formulir_reference_id', $invoice->formulir_id)->first();
-
-            $aprd = new AccountPayableAndReceivableDetail;
-            $aprd->form_date = $retur->formulir->form_date;
-            $aprd->account_payable_and_receivable_id = $apr->id;
-            $aprd->formulir_reference_id = $retur->formulir->id;
-            $aprd->amount = $retur->total;
-            $aprd->notes = 'RETUR';
-            $aprd->save();
-        }
+//        $returs = Retur::all();
+//        foreach ($returs as $retur) {
+//            $invoice = Invoice::find($retur->point_sales_invoice_id);
+//            $apr = AccountPayableAndReceivable::where('formulir_reference_id', $invoice->formulir_id)->first();
+//
+//            $aprd = new AccountPayableAndReceivableDetail;
+//            $aprd->form_date = $retur->formulir->form_date;
+//            $aprd->account_payable_and_receivable_id = $apr->id;
+//            $aprd->formulir_reference_id = $retur->formulir->id;
+//            $aprd->amount = $retur->total;
+//            $aprd->notes = 'RETUR';
+//            $aprd->save();
+//        }
     }
 }
