@@ -76,6 +76,7 @@ class ReturController extends Controller
         FormulirHelper::isAllowedToCreate('create.point.sales.return', date_format_db($request->input('form_date'), $request->input('time')), [$invoice->formulir_id]);
 
         $formulir = FormulirHelper::create($request->input(), 'point-sales-return');
+
         $retur = ReturHelper::create($request, $formulir);
         timeline_publish('create.retur', 'added new retur '  . $retur->formulir->form_number);
 

@@ -7,6 +7,8 @@ use Point\Core\Models\Vesa;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\ReferHelper;
+use Point\Framework\Models\AccountPayableAndReceivable;
+use Point\Framework\Models\AccountPayableAndReceivableDetail;
 use Point\Framework\Models\Journal;
 use Point\PointSales\Models\Sales\Invoice;
 use Point\PointSales\Models\Sales\Retur;
@@ -95,6 +97,16 @@ class ReturHelper
         $retur->total = $tax_base + $tax + $retur->expedition_fee;
         $retur->save();
 
+        $invoice = Invoice::find($retur->point_sales_invoice_id);
+        $apr = AccountPayableAndReceivable::where('formulir_reference_id', $invoice->formulir_id)->first();
+
+        $account_payable_and_receivable_detail = new AccountPayableAndReceivableDetail;
+        $account_payable_and_receivable_detail->account_payable_and_receivable_id = $apr->id;
+        $account_payable_and_receivable_detail->formulir_reference_id = $retur->formulir->id;
+        $account_payable_and_receivable_detail->amount = $retur->total;
+        $account_payable_and_receivable_detail->form_date = $retur->formulir->form_date;
+        $account_payable_and_receivable_detail->notes = 'RETUR';
+        $account_payable_and_receivable_detail->save();
         return $retur;
     }
 

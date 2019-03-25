@@ -8,6 +8,7 @@ use Point\Framework\Helpers\AccountPayableAndReceivableHelper;
 use Point\Framework\Traits\FormulirTrait;
 use Point\PointAccounting\Models\CutOffPayableDetail;
 use Point\PointAccounting\Models\CutOffReceivableDetail;
+use Point\PointSales\Models\Sales\Retur;
 
 class Journal extends Model
 {
@@ -160,7 +161,7 @@ class Journal extends Model
 
     private function insertSubledgerMutation($options)
     {
-        if ($this->coa->has_subledger) {
+        if ($this->coa->has_subledger && $this->reference && $this->reference->formulirable_type != Retur::class) {
             if ($this->coa->category->name == 'Current Liability') {
                 return $this->insertSubledgerAccountPayable($options);
             }

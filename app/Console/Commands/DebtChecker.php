@@ -33,7 +33,7 @@ class DebtChecker extends Command
     public function handle()
     {
         $journals = Journal::where('coa_id', 4)->get();
-        \Log::info('Check : ' . $journals->count());
+        info('Check : ' . $journals->count());
         foreach ($journals as $journal) {
             if ($journal->debit > 0) {
                 $debts = AccountPayableAndReceivable::where('formulir_reference_id', $journal->form_journal_id)->get();
@@ -64,13 +64,27 @@ class DebtChecker extends Command
             }
         }
 
+        $aprs = AccountPayableAndReceivable::where('reference_type', Retur::class)->get();
+
+        foreach ($aprs as $apr) {
+            $apr->delete();
+        }
+
+        $aprs = AccountPayableAndReceivableDetail::join('formulir', 'formulir.id', '=', 'account_payable_and_receivable_detail.formulir_reference_id')
+            ->where('formulir.formulirable_type', Retur::class)
+            ->select('account_payable_and_receivable_detail.*')
+            ->get();
+
+        $this->line('COUNT : ' . $aprs->count());
+
+        foreach ($aprs as $apr) {
+            $apr->delete();
+        }
 
         $returs = Retur::all();
         foreach ($returs as $retur) {
             $invoice = Invoice::find($retur->point_sales_invoice_id);
             $apr = AccountPayableAndReceivable::where('formulir_reference_id', $invoice->formulir_id)->first();
-
-            info ($retur->formulir->form_date);
 
             $aprd = new AccountPayableAndReceivableDetail;
             $aprd->form_date = $retur->formulir->form_date;
