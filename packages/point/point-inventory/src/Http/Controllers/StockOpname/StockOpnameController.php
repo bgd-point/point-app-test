@@ -113,13 +113,17 @@ class StockOpnameController extends Controller
                     'date_from' => $date_from
                 );
                 $sheet->setColumnFormat(array(
-                    'D' => '#,##0.00',
-                    'E' => '#,##0.00'
+                    'E' => '#,##0.00',
+                    'F' => '#,##0.00',
+                    'G' => '#,##0.00',
+                    'H' => '#,##0.00'
                 ));
                 $sheet->loadView('point-inventory::app.inventory.point.stock-opname.export', $data);
                 $sheet->setColumnFormat(array(
-                    'D' => '#,##0.00',
-                    'E' => '#,##0.00'
+                    'E' => '#,##0.00',
+                    'F' => '#,##0.00',
+                    'G' => '#,##0.00',
+                    'H' => '#,##0.00'
                 ));
             });
         })->export('xls');
