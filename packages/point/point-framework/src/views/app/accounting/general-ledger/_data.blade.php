@@ -46,7 +46,11 @@
                 <td>{{ date_format_view($journal->form_date) }}</td>
                 <td><a href="{{ $class::showUrl($journal->formulir->formulirable_id) }}">{{ $journal->formulir->form_number }}</a></td>
                 <td>{{ $name }}</td>
-                <td>{{ $journal->description }}</td>
+                @if ($journal->coa->category->name == 'Account Receivable' && $journal->form_reference_id !== null)
+                    <td>{{ $journal->reference->form_number }}</td>
+                    @else
+                    <td>{{ $journal->description }}</td>
+                @endif
                 <td>{{ number_format_accounting($journal->debit) }}</td>
                 <td>{{ number_format_accounting($journal->credit) }}</td>
                 <td>{{ number_format_accounting($balance) }}</td>
