@@ -95,6 +95,36 @@ class StockOpnameController extends Controller
         return redirect('inventory/point/stock-opname/'.$stock_opname->id);
     }
 
+    public function export() {
+        $file_name = 'Stock Opname Report '.auth()->user()->id . '' . date('Y-m-d_His');
+        $date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : date('Y-m-01 00:00:00');
+        $date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : date('Y-m-d 23:59:59');
+        $list_report = StockOpname::joinFormulir()
+            ->selectOriginal()->orderBy(\DB::raw('CAST(form_date as date)'), 'asc')
+            ->whereNotNull('formulir.form_number')
+//            ->whereBetween('formulir.form_date', [$date_from, $date_to])
+            ->orderBy('form_raw_number', 'desc')->get();
+
+        \Excel::create($file_name, function ($excel) use ($date_from, $date_to, $list_report) {
+            $excel->sheet('Stock Opname', function ($sheet) use ($date_from, $date_to, $list_report) {
+                $data = array(
+                    'list_report' => $list_report,
+                    'date_to' => $date_to,
+                    'date_from' => $date_from
+                );
+                $sheet->setColumnFormat(array(
+                    'D' => '#,##0.00',
+                    'E' => '#,##0.00'
+                ));
+                $sheet->loadView('point-inventory::app.inventory.point.stock-opname.export', $data);
+                $sheet->setColumnFormat(array(
+                    'D' => '#,##0.00',
+                    'E' => '#,##0.00'
+                ));
+            });
+        })->export('xls');
+    }
+
     /**
      * Display the specified resource.
      *

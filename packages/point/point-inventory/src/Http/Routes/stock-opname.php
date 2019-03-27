@@ -7,6 +7,7 @@ Route::group(['prefix' => 'inventory/point', 'namespace' => 'Point\PointInventor
     Route::any('stock-opname/{id}/reject', 'StockOpnameApprovalController@reject');
     
     Route::group(['middleware' => 'auth'], function () {
+        Route::get('stock-opname/export', 'StockOpnameController@export');
         Route::get('stock-opname/vesa-approval', 'StockOpnameVesaController@approval');
         Route::get('stock-opname/vesa-rejected', 'StockOpnameVesaController@rejected');
         Route::get('stock-opname/request-approval', 'StockOpnameApprovalController@requestApproval');
