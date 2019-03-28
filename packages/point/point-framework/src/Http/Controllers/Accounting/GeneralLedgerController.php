@@ -20,13 +20,7 @@ class GeneralLedgerController extends Controller
         $date_from = date('Y-m-01 00:00:00');
         $date_to = date('Y-m-d 23:59:59');
         $view = view('framework::app.accounting.general-ledger.index');
-
-        if (request()->get('database_name') == 'p_kbretail' && auth()->user()->name == 'mirnagmb') {
-            $view->list_coa = Coa::active()->where('name', '!=', 'BANK BCA GIRO PUSAT KE 2 - 2582611000')->orderBy('coa_number')->orderBy('name')->get();
-        } else {
-            $view->list_coa = Coa::active()->orderBy('coa_number')->orderBy('name')->get();
-        }
-
+        $view->list_coa = Coa::active()->orderBy('coa_number')->orderBy('name')->get();
         $view->coa_id = \Input::get('coa_filter') ?: [];
         $view->date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : $date_from;
         $view->date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : $date_to;

@@ -54,10 +54,6 @@ class BankController extends Controller
             });
         }
 
-        if (request()->get('database_name') == 'p_kbretail' && auth()->user()->name == 'mirnagmb') {
-            $view->list_bank = $view->list_bank->where('coa.name', '!=', 'BANK BCA GIRO PUSAT KE 2 - 2582611000');
-        }
-
         $view->list_bank = $view->list_bank->paginate(100);
 
         return $view;

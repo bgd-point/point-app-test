@@ -24,11 +24,6 @@ class ReportController extends Controller
             $view->list_coa = Coa::where('coa_category_id', 1)->active()->get();
         } elseif ($type == 'bank') {
             $view->list_coa = Coa::where('coa_category_id', 2)->active();
-
-            if (request()->get('database_name') == 'p_kbretail' && auth()->user()->name == 'mirnagmb') {
-                $view->list_coa = $view->list_coa->where('name', '!=', 'BANK BCA GIRO PUSAT KE 2 - 2582611000');
-            }
-
             $view->list_coa = $view->list_coa->get();
         }
 
