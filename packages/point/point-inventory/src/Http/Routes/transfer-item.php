@@ -19,6 +19,7 @@ Route::group(['prefix' => 'inventory/point','namespace' => 'Point\PointInventory
         Route::get('send/{id}/archived', 'TransferItemController@archived');
         Route::get('send/request-approval', 'TransferItemApprovalController@requestApproval');
         Route::post('send/send-request-approval', 'TransferItemApprovalController@sendRequestApproval');
+        Route::get('send/{id}/print', 'TransferItemController@printPdf');
         Route::resource('send', 'TransferItemController');
 
         // Receive Item

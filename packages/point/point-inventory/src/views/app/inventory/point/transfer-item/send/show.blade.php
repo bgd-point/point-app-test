@@ -149,6 +149,7 @@
                                     '{{ $transfer_item->formulir_id }}',
                                     'delete.point.inventory.transfer.item')"><i class="fa fa-times"></i> Cancel Form</a>
                             @endif
+                            <a class="btn btn-effect-ripple btn-info" href="{{url('inventory/point/transfer-item/send/'.$transfer_item->id.'/print')}}">Print</a>
                         </div>
                     </div>
                 </fieldset>

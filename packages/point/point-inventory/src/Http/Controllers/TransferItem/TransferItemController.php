@@ -2,7 +2,6 @@
 
 namespace Point\PointInventory\Http\Controllers\TransferItem;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Point\Core\Traits\ValidationTrait;
 use Point\Core\Helpers\UserHelper;
@@ -11,13 +10,10 @@ use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Master\Warehouse;
-use Point\PointInventory\Vesa\TransferItemVesa;
 use Point\PointInventory\Vesa\TransferItemReceiveVesa;
 use Point\PointInventory\Http\Requests\TransferItemRequest;
 use Point\PointInventory\Models\TransferItem\TransferItem;
-use Point\PointInventory\Models\TransferItem\TransferItemDetail;
 use Point\PointInventory\Helpers\TransferItemHelper;
-use Point\PointInventory\Helpers\ReceiveItemHelper;
 
 class TransferItemController extends Controller
 {
@@ -125,5 +121,18 @@ class TransferItemController extends Controller
 
         gritter_success('Form transfer item "'. $formulir->form_number .'" Success to update', 'false');
         return redirect('inventory/point/transfer-item/send/'.$transfer_item->id);
+    }
+
+    public function printPdf($id)
+    {
+        $transferItem = TransferItem::find($id);
+
+        $data = array(
+            'transferItem' => $transferItem,
+            'warehouse' => $transferItem->warehouseFrom
+        );
+
+        $pdf = \PDF::loadView('point-inventory::app.inventory.point.transfer-item.send.print', $data);
+        return $pdf->stream($transferItem->formulir->form_number.'.pdf');
     }
 }
