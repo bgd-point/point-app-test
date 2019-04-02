@@ -15,7 +15,11 @@
         <tr>
             <td>To</td>
             <td>:</td>
-            <td>{{ ucwords($transferItem->warehouseTo->name) }}</td>
+            <td>
+                {{ ucwords($transferItem->warehouseTo->name) }} <br/>
+                {{ ucwords($transferItem->warehouseTo->address) }} <br/>
+                {{ ucwords($transferItem->warehouseTo->phone) }}
+            </td>
         </tr>
     @endif
 @stop

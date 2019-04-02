@@ -14,7 +14,11 @@
     <tr>
         <td>Warehouse</td>
         <td>:</td>
-        <td>{{ ucwords($inventory_usage->warehouse->name) }}</td>
+        <td>
+            {{ ucwords($inventory_usage->warehouse->name) }} <br/>
+            {{ ucwords($inventory_usage->warehouse->address) }} <br/>
+            {{ ucwords($inventory_usage->warehouse->phone) }} <br/>
+        </td>
     </tr>
 @stop
 
