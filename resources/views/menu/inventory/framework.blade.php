@@ -9,7 +9,7 @@
         {{--</a>--}}
     {{--</div>--}}
 @endif
-@if(\Auth::user()->may('read.inventory.value.report'))
+@if(\Auth::user()->may('read.inventory.report') || \Auth::user()->may('read.inventory.value.report'))
     <div class="col-md-4 col-lg-3">
         <a href="{{url('inventory/value-report')}}" class="widget widget-button">
             <div class="widget-content text-right clearfix">
