@@ -282,7 +282,7 @@ class PaymentHelper
                     || $bank_detail->reference->formulirable_type == 'Point\PointExpedition\Models\Downpayment') {
                     $model = $bank_detail->reference->formulirable_type;
                     $model::find($bank_detail->reference->formulirable_id)->update([
-                        'remaining_amount' => $bank_detail->amount;
+                        'remaining_amount' => $bank_detail->amount
                     ]);
                 }
             }
