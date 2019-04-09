@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\AllocationReport;
+use Point\Framework\Models\Master\Person;
 use Point\PointExpedition\Models\PaymentOrder;
 use Point\PointFinance\Models\Bank\Bank;
 use Point\PointFinance\Models\Bank\BankDetail;
@@ -73,6 +74,16 @@ class Reallocation extends Command
 
                             $cash = Cash::where('formulir_id', $lock2->locking->id)->first();
                             if ($cash) {
+                                if ($allocationReport->formulir->formulirable_type == \Point\PointPurchasing\Models\Service\Invoice::class
+                                    || $allocationReport->formulir->formulirable_type ==  \Point\PointSales\Models\Service\Invoice::class) {
+                                    foreach ($cash->detail as $cashDetail) {
+                                        if ($cashDetail->subledger_type == Person::class) {
+                                            $cashDetail->reference_type = $allocationReport->formulir->formulirable_type;
+                                            $cashDetail->reference_id = $allocationReport->formulir->formulirable_id;
+                                            $cashDetail->save();
+                                        }
+                                    }
+                                }
                                 foreach ($cash->detail as $detail) {
                                     $type3 = $detail->reference_type;
                                     if ($type3 == \Point\PointPurchasing\Models\Inventory\Invoice::class
@@ -110,6 +121,16 @@ class Reallocation extends Command
 
                             $bank = Bank::where('formulir_id', $lock2->locking->id)->first();
                             if ($bank) {
+                                if ($allocationReport->formulir->formulirable_type == \Point\PointPurchasing\Models\Service\Invoice::class
+                                    || $allocationReport->formulir->formulirable_type ==  \Point\PointSales\Models\Service\Invoice::class) {
+                                    foreach ($bank->detail as $bankDetail) {
+                                        if ($bankDetail->subledger_type == Person::class) {
+                                            $bankDetail->reference_type = $allocationReport->formulir->formulirable_type;
+                                            $bankDetail->reference_id = $allocationReport->formulir->formulirable_id;
+                                            $bankDetail->save();
+                                        }
+                                    }
+                                }
                                 foreach ($bank->detail as $detail) {
                                     $type3 = $detail->reference_type;
                                     if ($type3 == \Point\PointPurchasing\Models\Inventory\Invoice::class
