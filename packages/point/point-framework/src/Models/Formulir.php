@@ -22,7 +22,7 @@ class Formulir extends Model
         if (request()->get('database_name') == 'p_kbretail'
             && strtotime($this->form_date) < $lockedDate
             && $this->formulirable_type != CashAdvance::class) {
-            throw new PointException('You cannot change data before 01 November 2018, or you can contact your administrator');
+            throw new PointException('You cannot change data before 01 April 2019, or you can contact your administrator');
         }
 
         return parent::save($options);
