@@ -27,7 +27,7 @@ class PurchaseOrderController extends Controller {
     public function index() {
         $view = view('point-purchasing::app.purchasing.point.service.purchase-order.index');
 
-        $list_purchase_order = PurchaseOrder::joinFormulir()->notArchived()->with('person')->selectOriginal();
+        $list_purchase_order = PurchaseOrder::joinFormulir()->joinSupplier()->notArchived()->with('person')->selectOriginal();
         $list_purchase_order = ServicePurchaseOrderHelper::searchList($list_purchase_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'));
 
         $view->list_purchase_order = $list_purchase_order->paginate(100);

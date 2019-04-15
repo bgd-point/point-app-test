@@ -42,6 +42,11 @@ class PurchaseOrder extends Model {
         return $this->belongsTo('\Point\Framework\Models\Master\Person', 'person_id');
     }
 
+    public function scopeJoinSupplier($q)
+    {
+        $q->join('person', 'person.id', '=', 'point_purchasing_service_purchase_order.person_id');
+    }
+
     /**
      * @return mixed
      */
