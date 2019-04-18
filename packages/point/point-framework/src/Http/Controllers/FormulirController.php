@@ -226,9 +226,9 @@ class FormulirController extends Controller
 
         try {
             DB::beginTransaction();
-            $formulir = Formulir::find($formulir_id);
-            $formulir->form_status = 1;
-            $formulir->save();
+            Formulir::where('id', $formulir_id)->update([
+                'form_status' => 1
+            ]);
 
             \Log::info(get_class(new CashAdvance()));
             if ($formulir->formulirable_type == get_class(new CashAdvance())) {
@@ -275,9 +275,9 @@ class FormulirController extends Controller
 
         try {
             DB::beginTransaction();
-            $formulir = Formulir::find($formulir_id);
-            $formulir->form_status = 0;
-            $formulir->save();
+            Formulir::where('id', $formulir_id)->update([
+                'form_status' => 0
+            ]);
 
             timeline_publish('reopen.formulir', trans('framework::framework/global.formulir.reopen.timeline', ['form_number' => $formulir->form_number]));
 
