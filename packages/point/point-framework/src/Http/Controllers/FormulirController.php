@@ -11,6 +11,7 @@ use Point\Framework\Models\Formulir;
 use Point\PointFinance\Models\CashAdvance;
 use Point\Core\Models\User;
 use Point\Core\Helpers\QueueHelper;
+use Symfony\Component\DomCrawler\Form;
 
 class FormulirController extends Controller
 {
@@ -223,15 +224,13 @@ class FormulirController extends Controller
         }
 
         $formulir_id = \Input::get('id');
-
         try {
             DB::beginTransaction();
             Formulir::where('id', $formulir_id)->update([
                 'form_status' => 1
             ]);
-
-            \Log::info(get_class(new CashAdvance()));
-            if ($formulir->formulirable_type == get_class(new CashAdvance())) {
+            $formulir = Formulir::findOrFail($formulir_id);
+            if ($formulir->formulirable_type == CashAdvance::class) {
                 $cashAdvance = CashAdvance::find($formulir->formulirable_id);
                 $cashAdvance->remaining_amount = 0;
                 $cashAdvance->save();
