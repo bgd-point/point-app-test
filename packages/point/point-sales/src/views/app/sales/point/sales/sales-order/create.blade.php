@@ -258,7 +258,7 @@
                                         data-placeholder="Choose one..">
                                     @foreach($list_user_approval as $user_approval)
 
-                                        @if($user_approval->may('approval.point.sales.quotation'))
+                                        @if($user_approval->may('approval.point.sales.order'))
                                             <option value="{{$user_approval->id}}"
                                                     @if(old('approval_to') == $user_approval->id) selected @endif>{{$user_approval->name}}</option>
                                         @endif
