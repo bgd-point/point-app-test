@@ -55,6 +55,7 @@
                             <th class="text-right">Price</th>
                             <th class="text-right">Discount</th>
                             <th class="text-right">Total</th>
+                            <th>Allocation</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -74,10 +75,15 @@
                                 <td class="text-right">{{number_format_quantity($report->price)}}</td>
                                 <td class="text-right">{{number_format_quantity($report->discount)}}</td>
                                 <td class="text-right">{{number_format_quantity($total)}}</td>
+                                <td class="text-right">
+                                    @if($report->invoice->allocation)
+                                        {{$report->invoice->allocation->name}}
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                         <tr>
-                            <td class="text-right" colspan="7"><h4><strong>{{number_format_quantity($total_value)}}</strong></h4></td>
+                            <td class="text-right" colspan="8"><h4><strong>{{number_format_quantity($total_value)}}</strong></h4></td>
                         </tr>
                         </tbody>
                     </table>
