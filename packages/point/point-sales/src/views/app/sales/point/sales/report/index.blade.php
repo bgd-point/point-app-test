@@ -76,8 +76,8 @@
                                 <td class="text-right">{{number_format_quantity($report->discount)}}</td>
                                 <td class="text-right">{{number_format_quantity($total)}}</td>
                                 <td class="text-right">
-                                    @if($report->invoice->allocation)
-                                        {{$report->invoice->allocation->name}}
+                                    @if($report->allocation)
+                                        {{$report->allocation->name}}
                                     @endif
                                 </td>
                             </tr>

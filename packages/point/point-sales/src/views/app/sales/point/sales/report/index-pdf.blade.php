@@ -20,6 +20,7 @@
             <th class="text-right">Price</th>
             <th class="text-right">Discount</th>
             <th class="text-right">Total</th>
+            <th class="text-right">Allocation</th>
         </tr>
     </thead>
     <tbody>
@@ -40,6 +41,11 @@
                 <td class="text-right">{{number_format_quantity($report->price)}}</td>
                 <td class="text-right">{{number_format_quantity($report->discount)}} %</td>
                 <td class="text-right">{{number_format_quantity($total)}}</td>
+                <td class="text-right">
+                    @if($report->allocation)
+                        {{$report->allocation->name}}
+                    @endif
+                </td>
             </tr>
         @endforeach
     </tbody> 
