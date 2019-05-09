@@ -153,7 +153,12 @@
                             <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                onclick="secureCancelForm('{{url('formulir/cancel')}}',
                                     '{{ $stock_opname->formulir_id }}',
-                                    'delete.point.inventory.usage')"><i class="fa fa-times"></i> Cancel Form</a>
+                                    'delete.point.inventory.stock.opname')"><i class="fa fa-times"></i> Cancel Form</a>
+                            @endif
+                            @if(formulir_view_close($stock_opname->formulir, 'update.point.inventory.stock.opname'))
+                                <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
+                                        onclick="secureCloseForm({{$stock_opname->formulir_id}},'{{url('formulir/close')}}')">Close
+                                    Form</a>
                             @endif
                         </div>
                     </div>

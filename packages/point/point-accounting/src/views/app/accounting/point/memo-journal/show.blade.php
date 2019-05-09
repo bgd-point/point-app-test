@@ -162,6 +162,11 @@
                                onclick="secureCancelForm('{{url('formulir/cancel')}}', {{$memo_journal->formulir_id}},
                                'delete.point.accounting.memo.journal')"><i class="fa fa-times"></i> cancel</a>
                             @endif
+                            @if(formulir_view_close($memo_journal->formulir, 'update.point.accounting.memo.journal'))
+                                <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
+                                        onclick="secureCloseForm({{$memo_journal->formulir_id}},'{{url('formulir/close')}}')">Close
+                                    Form</a>
+                            @endif
                         </div>
                     </div>
                 </fieldset>

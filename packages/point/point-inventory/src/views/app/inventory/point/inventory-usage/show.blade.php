@@ -152,6 +152,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
+
                             @if(formulir_view_edit($inventory_usage->formulir, 'update.point.inventory.usage'))
                             <a href="{{url('inventory/point/inventory-usage/'.$inventory_usage->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                             @endif
@@ -160,6 +161,11 @@
                                onclick="secureCancelForm('{{url('formulir/cancel')}}',
                                     '{{ $inventory_usage->formulir_id }}',
                                     'delete.point.inventory.usage')"><i class="fa fa-times"></i> Cancel Form</a>
+                            @endif
+                            @if(formulir_view_close($inventory_usage->formulir, 'update.point.inventory.usage'))
+                                <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
+                                        onclick="secureCloseForm({{$inventory_usage->formulir_id}},'{{url('formulir/close')}}')">Close
+                                    Form</a>
                             @endif
                                 <a class="btn btn-effect-ripple btn-info"
                                         href="{{url('inventory/point/inventory-usage/'.$inventory_usage->id.'/export')}}">Print</a>
