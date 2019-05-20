@@ -80,6 +80,22 @@ class Recalculate extends Command
                     ->select('point_inventory_stock_opname_item.quantity_opname')
                     ->first();
 
+                    $st = Inventory::where('item_id', $l_inventory->item_id)
+                        ->where('warehouse_id', $l_inventory->warehouse_id)
+                        ->where('form_date', '<', $l_inventory->form_date)
+                        ->orderBy('form_date', 'desc')
+                        ->orderBy('formulir_id', 'desc')
+                        ->orderBy('id', 'desc')
+                        ->first();
+
+                    foreach($stockopname->items as $sItem) {
+                        if ($sItem == $l_inventory->item_id) {
+                            $sItem->stock_in_database = $st->total_quantity;
+                            $sItem->save();
+                            break;
+                        }
+                    }
+
                     $total_quantity = $stockopname->quantity_opname;
                     $l_inventory->total_quantity = $total_quantity;
                     $l_inventory->quantity = $total_quantity - $list_inventory[$index-1]->total_quantity;
