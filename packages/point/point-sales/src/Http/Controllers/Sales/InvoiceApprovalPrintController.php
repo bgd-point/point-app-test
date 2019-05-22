@@ -26,10 +26,10 @@ class InvoiceApprovalPrintController extends Controller
 
     public function sendRequestApproval(Request $request)
     {
-        self::sendingRequestApproval($request->input('id'), auth()->user()->name);
+        $invoice = self::sendingRequestApproval($request->input('id'), auth()->user()->name);
 
         gritter_success('send approval success');
-        return redirect('sales/point/indirect/invoice/'.$invoice->id);
+        return redirect('sales/point/indirect/invoice/' . $invoice->id);
     }
 
     public static function sendingRequestApproval($invoice_id, $requester="VESA")
@@ -51,6 +51,8 @@ class InvoiceApprovalPrintController extends Controller
         $invoice->request_approval_print_at = date('Y-m-d H:i:s');
         $invoice->approval_print_to = $approver->id;
         $invoice->save();
+
+        return $invoice;
     }
 
     public function approve(Request $request, $id)
