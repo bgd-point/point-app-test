@@ -393,8 +393,10 @@ class FormulirController extends Controller
         DB::beginTransaction();
 
         $formulir = Formulir::findOrFail($formulir_id);
-        $formulir->audited = !$formulir->audited;
-        $formulir->save();
+
+        Formulir::where('id', $formulir_id)->update([
+            'audited' => !$formulir->audited
+        ]);
 
         DB::commit();
 
