@@ -34,7 +34,7 @@ class TransferItem extends Model
 
     public function scopeJoinDependencies($q)
     {
-        $q->joinFormulir()->notArchived()->notCanceled()->selectOriginal();
+        $q->joinFormulir()->notArchived()->selectOriginal();
     }
 
     public function warehouseFrom()
