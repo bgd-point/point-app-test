@@ -245,7 +245,7 @@
                                 <label class="col-md-3 control-label">Form Creator</label>
 
                                 <div class="col-md-6 content-show">
-                                    {{ $invoice->formulir->createdBy->name }}
+                                    {{ $invoice->formulir->createdBy->name }} {{ \Point\Core\Helpers\DateHelper::formatView($invoice->formulir->created_at) }}
                                 </div>
                             </div>
                         </fieldset>
