@@ -179,9 +179,9 @@ class PaymentHelper
                 if ($cash_detail->reference->formulirable_type == 'Point\PointSales\Models\Sales\Downpayment'
                     || $cash_detail->reference->formulirable_type == 'Point\PointSales\Models\Service\Downpayment') {
                     $model = $cash_detail->reference->formulirable_type;
-                    $dp = $model::find($cash_detail->reference->formulirable_id);
-                    $dp->remaining_amount = $cash_detail->amount;
-                    $dp->save();
+                    $model::where('id', $cash_detail->reference->formulirable_id)->update([
+                        'remaining_amount' => $cash_detail->amount
+                    ]);
                 }
             }
 
@@ -333,9 +333,9 @@ class PaymentHelper
                 if ($bank_detail->reference->formulirable_type == 'Point\PointSales\Models\Sales\Downpayment'
                     || $bank_detail->reference->formulirable_type == 'Point\PointSales\Models\Service\Downpayment') {
                     $model = $bank_detail->reference->formulirable_type;
-                    $dp = $model::find($bank_detail->reference->formulirable_id);
-                    $dp->remaining_amount = $bank_detail->amount;
-                    $dp->save();
+                    $model::where('id', $bank_detail->reference->formulirable_id)->update([
+                        'remaining_amount' => $bank_detail->amount
+                    ]);
                 }
             }
 
@@ -392,9 +392,9 @@ class PaymentHelper
                 || $payment_reference->reference->formulirable_type == 'Point\PointSales\Models\Service\Downpayment'
                 || $payment_reference->reference->formulirable_type == 'Point\PointExpedition\Models\Downpayment') {
                 $model = $payment_reference->reference->formulirable_type;
-                $dp = $model::find($payment_reference->reference->formulirable_id);
-                $dp->remaining_amount = 0;
-                $dp->save();
+                $model::where('id', $payment_reference->reference->formulirable_id)->update([
+                    'remaining_amount' => 0
+                ]);
             }
         }
     }
