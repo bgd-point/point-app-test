@@ -9,7 +9,9 @@ use Point\Framework\Models\Formulir;
 use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\FormulirNumber;
 use Point\PointExpedition\Models\ExpeditionOrderReference;
+use Point\PointFinance\Models\PaymentOrder\PaymentOrder;
 use Point\PointFinance\Models\PaymentReference;
+use Point\PointSales\Models\Sales\PaymentCollection;
 
 class FormulirHelper
 {
@@ -748,10 +750,23 @@ class FormulirHelper
 
         self::isAllowedToCancel($permission_slug, $formulir);
 
-        $formulir->form_status = -1;
-        $formulir->canceled_at = date('Y-m-d H:i:s');
-        $formulir->canceled_by = auth()->user()->id;
-        $formulir->save();
+        if ($formulir->formulirable_type == PaymentOrder::class
+            || \Point\PointExpedition\Models\PaymentOrder::class
+            || \Point\PointPurchasing\Models\Service\PaymentOrder::class
+            || \Point\PointPurchasing\Models\Inventory\PaymentOrder::class
+            || PaymentCollection::class
+            || \Point\PointSales\Models\Service\PaymentCollection::class) {
+            Formulir::where('id', $formulir_id)->update([
+                'form_status' => -1,
+                'canceled_at' =>  date('Y-m-d H:i:s'),
+                'canceled_by' => auth()->user()->id
+            ]);
+        } else {
+            $formulir->form_status = -1;
+            $formulir->canceled_at = date('Y-m-d H:i:s');
+            $formulir->canceled_by = auth()->user()->id;
+            $formulir->save();
+        }
 
         self::clearRelation($formulir);
 

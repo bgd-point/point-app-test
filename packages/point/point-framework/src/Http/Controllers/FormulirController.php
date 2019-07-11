@@ -2,6 +2,7 @@
 
 namespace Point\Framework\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Point\Core\Exceptions\PointException;
@@ -19,7 +20,9 @@ class FormulirController extends Controller
 
     /**
      * User pressed CANCEL button on the app
-     * @return array|\Illuminate\Http\JsonResponse
+     *
+     * @param Request $request
+     * @return array|JsonResponse
      */
     public function cancel(Request $request)
     {
@@ -57,7 +60,8 @@ class FormulirController extends Controller
      * User pressed REQUEST CANCEL button on the app
      * User pressed CANCEL button but doesn't have enough previlege
      * App then will send email to ask for approval
-     * @return array|\Illuminate\Http\JsonResponse
+     *
+     * @return array|JsonResponse
      */
     public function requestCancel(Request $request) {
         if (!$this->validateCSRF()) {
@@ -211,7 +215,7 @@ class FormulirController extends Controller
     /**
      * Close form
      *
-     * @return array|\Illuminate\Http\JsonResponse
+     * @return array|JsonResponse
      */
     public function close()
     {
@@ -257,7 +261,7 @@ class FormulirController extends Controller
     /**
      * Open form
      *
-     * @return array|\Illuminate\Http\JsonResponse
+     * @return array|JsonResponse
      */
     public function reopen()
     {
@@ -302,7 +306,7 @@ class FormulirController extends Controller
      * @param Request $request
      * @param $form
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function upload(Request $request, $form, $id)
     {
@@ -380,7 +384,7 @@ class FormulirController extends Controller
      * User pressed CANCEL button on the app
      *
      * @param Request $request
-     * @return array|\Illuminate\Http\JsonResponse
+     * @return array|JsonResponse
      */
     public function audited(Request $request)
     {
