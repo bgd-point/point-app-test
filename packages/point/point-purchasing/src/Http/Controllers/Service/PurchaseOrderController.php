@@ -14,6 +14,7 @@ use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\PersonGroup;
 use Point\Framework\Models\Master\PersonType;
+use Point\Framework\Models\Master\Warehouse;
 use Point\PointPurchasing\Helpers\ServicePurchaseOrderHelper;
 use Point\PointPurchasing\Http\Requests\ServicePurchaseOrderRequest;
 use Point\PointPurchasing\Models\Service\PurchaseOrder;
@@ -137,5 +138,17 @@ class PurchaseOrderController extends Controller {
         gritter_success('update form success', 'false');
 
         return redirect('purchasing/point/service/purchase-order/' . $purchase_order->id);
+    }
+
+    public function exportPDF($id)
+    {
+        $purchase_order = PurchaseOrder::find($id);
+        $data = array(
+            'warehouse' => Warehouse::find(1),
+            'purchase_order' => $purchase_order
+        );
+
+        $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.purchase-order-service-pdf', $data);
+        return $pdf->stream($purchase_order->formulir->form_number.'.pdf');
     }
 }
