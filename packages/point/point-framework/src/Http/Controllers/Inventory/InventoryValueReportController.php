@@ -294,16 +294,16 @@ class InventoryValueReportController extends Controller
                                 // Store each report in array
                                 array_push($content, [
                                     $report->item->codeName,
-                                    $opening_stock,
-                                    $opening_cogs,
-                                    $opening_value,
-                                    $stock_in,
-                                    $value_in,
-                                    $stock_out,
-                                    $value_out,
-                                    $closing_stock,
-                                    $price,
-                                    $closing_stock * $price
+                                    number_format($opening_stock, 0),
+                                    number_format($opening_cogs, 0),
+                                    number_format($opening_value, 0),
+                                    number_format($stock_in, 0),
+                                    number_format($value_in, 0),
+                                    number_format($stock_out, 0),
+                                    number_format($value_out, 0),
+                                    number_format($closing_stock, 0),
+                                    number_format($price, 0),
+                                    number_format($closing_stock * $price, 0)
                                 ]);
 
                                 // If item needs recalculate stock
@@ -326,7 +326,7 @@ class InventoryValueReportController extends Controller
                             $sheet->setBorder('A2:K'.$end_row, 'thin');
                             $sheet->cell('K'.$end_row, function ($cell) use ($total_closing_value) {
                                 $cell->setFontWeight(true);
-                                $cell->setValue($total_closing_value);
+                                $cell->setValue(number_format($total_closing_value, 0));
                             });
                             $sheet->setBorder('I'.$end_row, 'thin');
 
@@ -463,16 +463,16 @@ class InventoryValueReportController extends Controller
                             // Store each report in array
                             array_push($content, [
                                 $report->item->codeName,
-                                $opening_stock,
-                                $opening_cogs,
-                                $opening_value,
-                                $stock_in,
-                                $value_in,
-                                $stock_out,
-                                $value_out,
-                                $closing_stock,
-                                $closing_cogs,
-                                $closing_value
+                                number_format($opening_stock, 0),
+                                number_format($opening_cogs, 0),
+                                number_format($opening_value, 0),
+                                number_format($stock_in, 0),
+                                number_format($value_in, 0),
+                                number_format($stock_out, 0),
+                                number_format($value_out, 0),
+                                number_format($closing_stock, 0),
+                                number_format($closing_cogs, 0),
+                                number_format($closing_value, 0)
                             ]);
 
                             // If item needs recalculate stock
@@ -495,7 +495,7 @@ class InventoryValueReportController extends Controller
                         $sheet->setBorder('A2:K'.$end_row, 'thin');
                         $sheet->cell('K'.$end_row, function ($cell) use ($total_closing_value) {
                             $cell->setFontWeight(true);
-                            $cell->setValue($total_closing_value);
+                            $cell->setValue(number_format($total_closing_value, 0));
                         });
                         $sheet->setBorder('I'.$end_row, 'thin');
 
