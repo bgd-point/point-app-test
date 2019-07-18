@@ -17,6 +17,7 @@
                         <tr class="th-head">
                             <th>Date</th>
                             <th>#</th>
+                            <th>Invoice</th>
                             <th>Customer</th>
                             <th>Item</th>
                             <th>Quantity</th>
@@ -32,6 +33,9 @@
                                 <td>
                                     <a href="{{ url('sales/point/indirect/invoice/'.$retur->point_sales_invoice_id) }}">{{ $retur->formulir->form_number }}</a>
                                 </td>
+                                 <td>
+                                     <a href="{{ url('sales/point/indirect/invoice/'.$retur->point_sales_invoice_id) }}">{{ $retur->invoice->formulir->form_number }}</a>
+                                 </td>
                                 <td>
                                     {!! get_url_person($retur->person_id) !!}
                                 </td>

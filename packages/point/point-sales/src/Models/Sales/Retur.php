@@ -59,6 +59,11 @@ class Retur extends Model
         return $this->belongsTo('\Point\Framework\Models\Formulir', 'formulir_id');
     }
 
+    public function invoice()
+    {
+        return $this->belongsTo('\Point\PointSales\Models\Sales\Invoice', 'point_sales_invoice_id');
+    }
+
     public function person()
     {
         return $this->belongsTo('\Point\Framework\Models\Master\Person', 'person_id');
