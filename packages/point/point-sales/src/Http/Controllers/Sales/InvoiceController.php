@@ -414,7 +414,10 @@ class InvoiceController extends Controller
         foreach ($invoice->items as $invoice_detail) {
             $warehouse_id = $deliveryOrder->warehouse_id;
 
-            $retur_item = ReturItem::where('item_id', $invoice_detail->item_id)->where('point_sales_retur_id', $retur->id)->first();
+            $retur_item = ReturItem::where('item_id', $invoice_detail->item_id)
+                ->where('point_sales_retur_id', $retur->id)
+                ->where('price', $invoice_detail->price)
+                ->first();
 
             if ($retur_item) {
                 // insert new inventory
