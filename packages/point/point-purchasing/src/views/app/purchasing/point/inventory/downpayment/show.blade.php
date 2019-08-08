@@ -64,6 +64,21 @@
                             @endif
 
                             <div class="form-group">
+                                <label class="col-md-3 control-label">Reference</label>
+
+                                <div class="col-md-6 content-show">
+                                    @foreach($list_referenced as $referenced)
+                                        <?php
+                                        $model = $referenced->locking->formulirable_type;
+                                        $url = $model::showUrl($referenced->locking->formulirable_id);
+                                        ?>
+                                        <a href="{{ url($url) }}">{{ $referenced->locking->form_number }}</a> <br/>
+                                        <br>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            <div class="form-group">
                                 <div class="col-md-12">
                                     <legend><i class="fa fa-angle-right"></i> Downpayment Form</legend>
                                 </div>
