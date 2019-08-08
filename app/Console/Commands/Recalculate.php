@@ -56,7 +56,7 @@ class Recalculate extends Command
                 $l_inventory->recalculate = false;
                 if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
                     $st = StockOpname::where('formulir_id', '=', $l_inventory->formulir->id)->first();
-                    $l_inventory->form_date = date('Y-m-d h:i:s', strtotime($st->formulir->form_date));
+                    $l_inventory->form_date = date('Y-m-d H:i:s', strtotime($st->formulir->form_date));
                     $l_inventory->save();
                 } else if ($l_inventory->quantity >= 0) {
                     $l_inventory->form_date = date('Y-m-d 00:00:00', strtotime($l_inventory->form_date));
