@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Master\CoaCategory;
 use Point\Framework\Models\Master\CoaGroup;
