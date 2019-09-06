@@ -53,7 +53,7 @@ class Recalculate extends Command
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
-                ->where('form_date', '>=', '2019-07-01')
+                ->where('form_date', '>=', '2019-08-01')
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->orderBy('id', 'asc')
