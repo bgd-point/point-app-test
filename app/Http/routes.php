@@ -26,3 +26,15 @@ Route::get('mobile-version', function () {
 Route::get('desktop-version', function () {
     return redirect()->back()->withCookie(cookie('is-responsive', 0, 3600));
 });
+
+Route::get('recalculate', function () {
+    \Illuminate\Support\Facades\Artisan::call('dev:recalculate');
+
+    return 'done';
+});
+
+Route::get('reallocation', function () {
+    \Illuminate\Support\Facades\Artisan::queue('dev:reallocation');
+
+    return 'please wait at least 3 minutes';
+});
