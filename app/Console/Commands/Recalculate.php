@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Point\Framework\Models\Inventory;
+use Point\Framework\Models\Master\Allocation;
 use Point\PointInventory\Models\StockOpname\StockOpname;
 
 class Recalculate extends Command
@@ -32,6 +33,12 @@ class Recalculate extends Command
         $this->comment('recalculating inventory');
 
         \DB::beginTransaction();
+
+        $alsd = Allocation::find(1);
+        if ($alsd) {
+            $alsd->created_at = now();
+            $alsd->save();
+        }
 
         $inventories = Inventory::orderBy('form_date', 'asc')
             ->orderBy('formulir_id', 'asc')

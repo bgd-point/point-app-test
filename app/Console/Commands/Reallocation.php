@@ -42,6 +42,13 @@ class Reallocation extends Command
     {
         $this->comment('recalculating');
 
+        $alsd = Allocation::find(1);
+        if ($alsd) {
+            $alsd->updated_at = now();
+            $alsd->save();
+        }
+
+
         AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
             ->where('allocation.name', 'like', '%(CASH FLOW)')
             ->delete();

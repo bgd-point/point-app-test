@@ -28,7 +28,7 @@ Route::get('desktop-version', function () {
 });
 
 Route::get('recalculate', function () {
-    \Illuminate\Support\Facades\Artisan::call('dev:recalculate');
+    \Illuminate\Support\Facades\Artisan::queue('dev:recalculate');
 
     return 'done';
 });
