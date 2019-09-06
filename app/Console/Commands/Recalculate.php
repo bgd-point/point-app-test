@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Master\Allocation;
@@ -36,7 +37,7 @@ class Recalculate extends Command
 
         $alsd = Allocation::find(1);
         if ($alsd) {
-            $alsd->created_at = now();
+            $alsd->created_at = Carbon::now();
             $alsd->save();
         }
 

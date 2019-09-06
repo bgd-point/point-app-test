@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Point\Framework\Models\FormulirLock;
 use Point\Framework\Models\Master\Allocation;
@@ -44,7 +45,7 @@ class Reallocation extends Command
 
         $alsd = Allocation::find(1);
         if ($alsd) {
-            $alsd->updated_at = now();
+            $alsd->updated_at = Carbon::now();
             $alsd->save();
         }
 
