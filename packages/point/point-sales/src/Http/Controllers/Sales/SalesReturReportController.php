@@ -40,7 +40,12 @@ class SalesReturReportController extends Controller
         access_is_allowed('read.point.sales.invoice');
 
         $view = view('point-sales::app.sales.point.sales.retur-report.index');
-        $view->listRetur = Retur::paginate(100);
+        $view->listRetur = Retur::joinFormulir()
+            ->where('formulir.form_status', '>=', 0)
+            ->notArchived()
+            ->approvalApproved()
+            ->select('point_sales_retur.*')
+            ->paginate(100);
         return $view;
     }
 }
