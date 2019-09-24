@@ -25,10 +25,6 @@ class Formulir extends Model
             throw new PointException('You cannot change data before 01 April 2019, or you can contact your administrator');
         }
 
-        if (request()->get('database_name') == 'p_kbretail') {
-            throw new PointException('Maintenance');
-        }
-
         return parent::save($options);
     }
 
