@@ -22,8 +22,6 @@ class RejournalReturSeeder extends Seeder
 
         Journal::whereIn('form_journal_id', $listRetur)->delete();
 
-        info('start rejournal retur');
-
         $listRetur = \Point\PointSales\Models\Sales\Retur::joinFormulir()
             ->where('formulir.form_status', '>=', 0)
             ->notArchived()
@@ -31,11 +29,7 @@ class RejournalReturSeeder extends Seeder
             ->select('point_sales_retur.*')
             ->get();
 
-        info('count: ' . $listRetur->count());
-
         foreach ($listRetur as $retur) {
-            info($retur);
-
             // PENJUALAN (DEBIT)
             $sales_of_goods = JournalHelper::getAccount('point sales indirect', 'sale of goods');
             $journal = new Journal;
@@ -65,7 +59,7 @@ class RejournalReturSeeder extends Seeder
             // INVENTORY (DEBIT)
             foreach ($retur->items as $returItem) {
 
-                $hpp = \Point\PointPurchasing\Models\Inventory\InvoiceItem::where('id', $returItem->item->id)
+                $hpp = \Point\PointPurchasing\Models\Inventory\InvoiceItem::where('item_id', $returItem->item->id)
                     ->orderBy('id', 'desc')
                     ->first();
 
