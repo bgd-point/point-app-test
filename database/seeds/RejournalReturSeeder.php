@@ -64,11 +64,16 @@ class RejournalReturSeeder extends Seeder
 
             // INVENTORY (DEBIT)
             foreach ($retur->items as $returItem) {
+
+                $hpp = \Point\PointPurchasing\Models\Inventory\InvoiceItem::where('id', $returItem->item->id)
+                    ->orderBy('id', 'desc')
+                    ->first();
+
                 $journal = new Journal;
                 $journal->form_date = $retur->formulir->form_date;
                 $journal->coa_id = $returItem->item->account_asset_id;
                 $journal->description = 'retur item "' . $returItem->item->codeName.'"';
-                $journal->credit = $returItem->price * $returItem->quantity;
+                $journal->credit = $hpp->price * $returItem->quantity;
                 $journal->form_journal_id = $retur->formulir_id;
                 $journal->form_reference_id;
                 $journal->subledger_id = $returItem->item_id;
@@ -81,7 +86,7 @@ class RejournalReturSeeder extends Seeder
                 $journal->form_date = $retur->formulir->form_date;
                 $journal->coa_id = $cost_of_sales_account;
                 $journal->description = 'retur item "' . $retur->formulir->form_number.'"';
-                $journal->debit = $returItem->price * $returItem->quantity;
+                $journal->debit = $hpp->price * $returItem->quantity;
                 $journal->form_journal_id = $retur->formulir_id;
                 $journal->form_reference_id;
                 $journal->subledger_id;
