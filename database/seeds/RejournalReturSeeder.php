@@ -386,7 +386,7 @@ class RejournalReturSeeder extends Seeder
                     0,
                     5031,
                     5000,
-                    4200,
+                    415,
                     525,
                     525,
                     525,
