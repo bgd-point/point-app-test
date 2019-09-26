@@ -79,7 +79,7 @@ class OutputProcess extends Model
 
     public static function material($formulir_id)
     {
-        return Material::where('formulir_id', $formulir_id)->get();
+        return InputMaterial::where('formulir_id', $formulir_id)->get();
     }
 
     /*public function details()

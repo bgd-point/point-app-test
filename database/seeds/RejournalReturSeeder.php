@@ -63,17 +63,44 @@ class RejournalReturSeeder extends Seeder
                     ->orderBy('id', 'desc')
                     ->first();
 
-                if (!$hpp) {
-                    $hpp = \Point\Framework\Models\Inventory::where('item_id', $returItem->item_id)
-                        ->where('quantity', '>', 0)
-                        ->first();
-                }
+                $price = 0;
 
-                $price = $hpp->price;
+                if (!$hpp) {
+                    $outputItem = \Point\PointManufacture\Models\OutputProduct::where('product_id', '=', $returItem->item_id)
+                        ->orderBy('id', 'desc')
+                        ->first();
+
+                    $input = \Point\PointManufacture\Models\InputProcess::find($outputItem->output->input_id);
+
+                    $price = 0;
+
+                    foreach ($input->material as $material) {
+                        $item = \Point\PointPurchasing\Models\Inventory\InvoiceItem::where('item_id', $material->material_id)
+                            ->orderBy('id', 'desc')
+                            ->first();
+
+                        if ($item) {
+                            $price += $item->price;
+                        } else {
+//                            echo 'product ' . $returItem->item_id . ' | ';
+//                            echo $material->material_id;
+                            $price = 0;
+                        }
+                    }
+
+//                    $hpp = \Point\Framework\Models\Inventory::where('item_id', $returItem->item_id)
+//                        ->where('quantity', '>', 0)
+//                        ->first();
+                }
 
                 if (!$hpp) {
                     info($returItem->item_id);
+                } else {
+                    $price = $hpp->price;
                 }
+
+                echo $returItem->item->code . ' ' . $returItem->item->name . ' | HPP ' . $price;
+                echo PHP_EOL;
 
                 $journal = new Journal;
                 $journal->form_date = $retur->formulir->form_date;
