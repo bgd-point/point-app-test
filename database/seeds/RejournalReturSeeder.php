@@ -72,6 +72,11 @@ class RejournalReturSeeder extends Seeder
 
                     $input = \Point\PointManufacture\Models\InputProcess::find($outputItem->output->input_id);
 
+                    if ($returItem->item_id == 22) {
+//                        echo $outputItem->output_id;
+//                        echo PHP_EOL;
+                    }
+
                     $price = 0;
 
                     foreach ($input->material as $material) {
@@ -81,20 +86,34 @@ class RejournalReturSeeder extends Seeder
 
                         if ($item) {
                             $price += $item->price * $material->quantity;
+                            if ($returItem->item_id == 22) {
+//                                echo $item->item->name . ' = ' .$item->price . ' * '. $material->quantity;
+//                                echo PHP_EOL;
+                            }
                         } else {
-//                            echo 'product ' . $returItem->item_id . ' | ';
-//                            echo $material->material_id;
-                            $price = 0;
+//                            if ($returItem->item_id == 22) {
+//                                echo $item->item->name . ' = ' .$item->price . ' * '. $material->quantity;
+//                                echo PHP_EOL;
+//                            }
+//                            $price = 0;
+                        }
+                    }
+
+                    if ($price > 0) {
+                        if ($returItem->item_id == 22) {
+//                            echo $price . ' / ' . $outputItem->quantity;
+//                            echo PHP_EOL;
+                        }
+                        $price = $price / $outputItem->quantity;
+                        if ($returItem->item_id == 22) {
+//                            echo $price;
+//                            echo PHP_EOL;
                         }
                     }
 
 //                    $hpp = \Point\Framework\Models\Inventory::where('item_id', $returItem->item_id)
 //                        ->where('quantity', '>', 0)
 //                        ->first();
-
-                    if ($price > 0) {
-                        $price = $price / $outputItem->quantity;
-                    }
                 }
 
                 if (!$hpp) {
@@ -103,7 +122,7 @@ class RejournalReturSeeder extends Seeder
                     $price = $hpp->price;
                 }
 
-                echo $returItem->item->code . ' ' . $returItem->item->name . ' | HPP ' . number_format($price);
+                echo $returItem->item->code . ' ' . $returItem->item->name . ',HPP ' . number_format($price);
                 echo PHP_EOL;
 
                 $journal = new Journal;
