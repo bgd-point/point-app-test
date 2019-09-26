@@ -28,6 +28,6 @@ class OutputProduct extends Model
 
     public function output()
     {
-        return $this->belongsTo('Point\PointManufacture\Models\outputProcess', 'output_id');
+        return $this->belongsTo('Point\PointManufacture\Models\OutputProcess', 'output_id');
     }
 }
