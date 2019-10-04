@@ -3,7 +3,7 @@
     $data = \Point\Core\Helpers\TempDataHelper::searchKeyValue('stock.opname', ['item_id', 'stock_in_database', 'quantity_opname', 'unit1','unit2', 'notes'],
         [$details[$i]['item_id'], $details[$i]['stock_in_database'], $details[$i]['quantity_opname'], $details[$i]['unit1'],$details[$i]['unit2'], $details[$i]['notes']]);
     $item = \Point\Framework\Models\Master\Item::findOrFail($details[$i]['item_id']);
- 	$cogs_in_database = $item->averageCostOfSales($stockOpname->formulir->form_date);
+ 	$cogs_in_database = 0;
     ?>
 
 	<tr>
@@ -26,12 +26,6 @@
 	            <span class="input-group-addon unit-{{$i}}">{{$details[$i]['unit2']}}</span>
 	            <input type="hidden" name="unit2[]" class="input-unit-{{$i}}" value="{{$details[$i]['unit2']}}">
 	        </div>
-		</td>
-		<td>
-			<input type="text" readonly id="cogs-{{$i}}" name="cogs[]" class="form-control format-quantity text-right" value="{{ $cogs_in_database }}" />
-		</td>
-		<td>
-			<input type="text" id="cogs-{{$i}}" name="cogs[]" class="form-control format-quantity text-right" value="{{ $cogs_in_database }}" />
 		</td>
 		<td><input type="text" name="opname_notes[]" class="form-control" value="{{$details[$i]['notes']}}" /></td>
 	</tr>
