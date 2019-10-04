@@ -103,6 +103,7 @@
                                                     $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice),
                                                             $invoice->id, $invoice->total);
                                                     ?>
+                                                    @if($invoice_remaining > 0)
                                                         <tr>
                                                             <td class="text-center" rowspan="2">
                                                                 <input type="hidden" name="invoice_reference_id[]" value="{{$invoice->id}}">
@@ -158,6 +159,7 @@
                                                             </td>
                                                         </tr>
                                                         <?php $i++;?>
+                                                        @endif
                                                     @endforeach
                                                     </tbody>
                                                 </table>
@@ -243,6 +245,7 @@
                                                         }
 
                                                         ?>
+                                                        @if($downpayment_remaining > 0)
                                                         <tr>
                                                             <td class="text-center">
                                                                 <input type="hidden" name="downpayment_reference_id[]" value="{{$downpayment->id}}">
@@ -254,7 +257,7 @@
                                                                        value="{{$downpayment->formulir_id}}"
                                                                        onclick="calculateDownpayment()">
                                                             </td>
-                                                            <td>{{ date_Format_view($downpayment->formulir->form_date) }}</td>
+                                                            <td>{{ date_format_view($downpayment->formulir->form_date) }}</td>
                                                             <td>
                                                                 <a href="{{ url('expedition/point/downpayment/'.$downpayment->id) }}">{{ $downpayment->formulir->form_number}}</a>
                                                             </td>
@@ -274,6 +277,7 @@
                                                                        value="{{$downpayment->amount}}"/>
                                                             </td>
                                                         </tr>
+                                                        @endif
                                                     @endforeach
                                                     </tbody>
                                                 </table>
@@ -455,7 +459,7 @@
                     total_invoice += dbNum($("#total-invoice-" + i).val());
                 }
             }
-            
+
             var total_downpayment = dbNum($('#total-downpayment').val());
             var total_cutoff = dbNum($('#total-cutoff').val());
             var total_other = dbNum($('#total-other').val());
