@@ -279,9 +279,9 @@ class ServiceInvoiceHelper
         }
         // update by form close manual
         if ($close) {
-            $reference->formulir->form_status = 1;
+            Formulir::where('id', $reference->formulir->id)->update([
+                'form_status' => 1
+            ]);
         }
-
-        $reference->formulir->save();
     }
 }
