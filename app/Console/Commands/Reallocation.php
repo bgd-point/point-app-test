@@ -54,7 +54,7 @@ class Reallocation extends Command
 
 
         AllocationReport::join('formulir','formulir.id', '=', 'alocation_report.formulir_id')
-            ->where('formulir.form_status', -1)
+            ->where('formulir.form_status', '=', -1)
             ->delete();
 
         $allocationReports = AllocationReport::with('formulir')->get();
