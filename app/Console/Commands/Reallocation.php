@@ -49,7 +49,7 @@ class Reallocation extends Command
             $alsd->save();
         }
 
-        AllocationReport::join('formulir','formulir.id', '=', 'alocation_report.formulir_id')
+        AllocationReport::join('formulir','formulir.id', '=', 'allocation_report.formulir_id')
             ->where('formulir.form_status', '=', -1)
             ->delete();
 
