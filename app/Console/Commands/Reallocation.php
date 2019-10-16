@@ -49,9 +49,12 @@ class Reallocation extends Command
             $alsd->save();
         }
 
-
         AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
-            ->where('allocation.name', 'like', '%(CASH FLOW)')
+            ->where();
+
+
+        AllocationReport::join('formulir','formulir.id', '=', 'alocation_report.formulir_id')
+            ->where('formulir.form_status', -1)
             ->delete();
 
         $allocationReports = AllocationReport::with('formulir')->get();
