@@ -181,7 +181,7 @@
                                         <td colspan="5"></td>
                                         <td>
                                             <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
-                                                   {{ $invoice->type_of_tax == 'include' ? 'checked'  : '' }} checked
+                                                   {{ $invoice->type_of_tax == 'include' ? 'checked'  : '' }}
                                                    onchange="calculate()" value="include"> Include Tax <br/>
                                             <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
                                                    {{ $invoice->type_of_tax == 'exclude'  ? 'checked'  : '' }} onchange="calculate()"
