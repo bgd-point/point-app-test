@@ -36,12 +36,12 @@ class Recalculate extends Command
 
         \DB::beginTransaction();
 
-//        $alsd = Allocation::find(1);
-//        if ($alsd) {
-//            $alsd->created_at = Carbon::now();
-//            $alsd->save();
-//        }
-//
+        $alsd = Allocation::find(1);
+        if ($alsd) {
+            $alsd->created_at = Carbon::now();
+            $alsd->save();
+        }
+
 //        $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
 //            ->where('formulir.form_date', '>=', '2019-10-01')
 //            ->where('formulir.form_status', '>=', 1)
@@ -166,6 +166,16 @@ class Recalculate extends Command
                     $l_inventory->save();
                 } else {
                     // UPDATE TOTAL QUANTITY IF FORMULIR TYPE IS NOT STOCKOPNAME
+                    if ($index == 0) {
+                        $inv = Inventory::where('inventory.item_id', $l_inventory->item_id)
+                            ->where('form_date', '<', $l_inventory->formulir->form_date)
+                            ->where('warehouse_id', $l_inventory->warehouse_id)
+                            ->orderBy('form_date', 'desc')
+                            ->first();
+                        if ($inv) {
+                            $total_quantity = $inv->total_quantity;
+                        }
+                    }
                     $total_quantity += $l_inventory->quantity;
                     if ($l_inventory->quantity > 0) {
                         // STOCK IN
