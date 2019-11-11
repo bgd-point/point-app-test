@@ -397,11 +397,13 @@ class ItemController extends Controller
 
         DB::beginTransaction();
         $this->validate($request, [
+            'code' => 'required|unique:item,code,' . $id,
             'name' => 'required|unique:item,name,' . $id,
             'account_asset_id' => 'required'
         ]);
 
         $item = Item::find($id);
+        $item->code = $request->input('code');
         $item->name = $request->input('name');
         $item->notes = $request->input('notes');
         $item->reminder = $request->input('reminder') == 'on' ? true : false;
