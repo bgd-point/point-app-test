@@ -168,15 +168,19 @@ class Recalculate extends Command
                     // UPDATE TOTAL QUANTITY IF FORMULIR TYPE IS NOT STOCKOPNAME
                     if ($index == 0) {
                         $inv = Inventory::where('inventory.item_id', $l_inventory->item_id)
-                            ->where('form_date', '<', $l_inventory->formulir->form_date)
+                            ->where('form_date', '<', $l_inventory->form_date)
                             ->where('warehouse_id', $l_inventory->warehouse_id)
                             ->orderBy('form_date', 'desc')
                             ->first();
                         if ($inv) {
                             $total_quantity = $inv->total_quantity;
+                        } else {
+                            $total_quantity = 0;
                         }
                     }
+
                     $total_quantity += $l_inventory->quantity;
+
                     if ($l_inventory->quantity > 0) {
                         // STOCK IN
                         if ($total_quantity <= 0) {
