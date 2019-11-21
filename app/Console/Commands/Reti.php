@@ -18,7 +18,7 @@ class Reti extends Command
      *
      * @var string
      */
-    protected $signature = 'dev:recalculate';
+    protected $signature = 'dev:reti';
 
     /**
      * The console command description.
