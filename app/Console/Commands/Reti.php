@@ -51,6 +51,7 @@ class Reti extends Command
             ->get();
 
         foreach ($formulirs as $formulir) {
+            $qty = 0;
             $inventories = Inventory::where('formulir_id', $formulir->id)->get();
 
             Inventory::where('formulir_id', $formulir->id)->delete();
