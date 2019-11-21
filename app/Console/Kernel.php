@@ -29,6 +29,8 @@ class Kernel extends ConsoleKernel
         Commands\MethodChecker::class,
         Commands\RemoveSpace::class,
         Commands\Reallocation::class,
+        Commands\Reti::class,
+        Commands\Reopname::class,
         Commands\Recalculate::class,
         Commands\Recalculate2::class,
         Commands\Reinvoice::class,
