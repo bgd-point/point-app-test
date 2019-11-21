@@ -46,6 +46,29 @@ class Reti extends Command
 
         $formulirs = Formulir::where('formulirable_type', '=', TransferItem::class)
             ->whereNotNull('form_number')
+            ->whereNull('canceled_at')
+            ->where('form_date', '>=', '2019-10-01 00:00:00')
+            ->get();
+
+        foreach ($formulirs as $formulir) {
+            $inventories = Inventory::where('formulir_id', $formulir->id)->get();
+
+            Inventory::where('formulir_id', $formulir->id)->delete();
+
+            foreach ($inventories as $inventory) {
+
+                $qty += $inventory->quantity;
+            }
+            $this->line('DEL : '.$formulir->form_number);
+            if ($qty != 0) {
+                $this->line('DEL : '.$formulir->form_number . ' = ' . $qty . ' = ' . $formulir->id);
+                $this->line('DEL : '.$formulir->form_number . ' = ' . $qty . ' = ' . $formulir->id);
+            }
+        }
+
+        $formulirs = Formulir::where('formulirable_type', '=', TransferItem::class)
+            ->whereNotNull('form_number')
+            ->whereNotNull('canceled_at')
             ->where('form_date', '>=', '2019-10-01 00:00:00')
             ->get();
 
