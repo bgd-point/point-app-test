@@ -40,7 +40,19 @@ class Reopname extends Command
 
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
             ->where('formulir.form_date', '>=', '2019-10-01')
-            ->where('formulir.form_status', '>=', 0)
+            ->where('formulir.form_status', '<=', 0)
+            ->whereNotNull('formulir.form_number')
+            ->orderBy('formulir.form_date', 'asc')
+            ->select('point_inventory_stock_opname.*')
+            ->get();
+
+        foreach($opnames as $opname) {
+            Inventory::where('formulir_id', $opname->formulir_id)->delete();
+        }
+
+        $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
+            ->where('formulir.form_date', '>=', '2019-10-01')
+            ->where('formulir.form_status', '>=', 1)
             ->whereNotNull('formulir.form_number')
             ->orderBy('formulir.form_date', 'asc')
             ->select('point_inventory_stock_opname.*')
