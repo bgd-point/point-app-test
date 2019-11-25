@@ -64,6 +64,7 @@ class Reopname extends Command
                     ->where('form_date', '<', $opname->formulir->form_date)
                     ->where('warehouse_id', $opname->warehouse_id)
                     ->orderBy('form_date', 'desc')
+                    ->orderBy('id', 'desc')
                     ->first();
 
                 $stock = 0;
