@@ -58,6 +58,7 @@ class Recalculate extends Command
                 ->get();
 
             foreach ($list_inventory as $l_inventory) {
+                $this->line($l_inventory->formulir->form_number);
                 $l_inventory->recalculate = false;
                 if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
                     $st = StockOpname::where('formulir_id', '=', $l_inventory->formulir->id)->first();
