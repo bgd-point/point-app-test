@@ -118,6 +118,7 @@ class Recalculate extends Command
                             ->where('form_date', '<', $l_inventory->form_date)
                             ->where('warehouse_id', $l_inventory->warehouse_id)
                             ->orderBy('form_date', 'desc')
+                            ->orderBy('id', 'desc')
                             ->first();
                         if ($inv) {
                             $total_quantity = $inv->total_quantity;
@@ -125,14 +126,10 @@ class Recalculate extends Command
                             $total_quantity = 0;
                         }
                     }
-
                     $total_quantity += $l_inventory->quantity;
 
                     if ($l_inventory->quantity > 0) {
                         // STOCK IN
-                        if ($l_inventory->item_id == 97 && $l_inventory->warehouse_id == 1) {
-                            $this->line('2. ' . $l_inventory->formulir_id . ' = ' . $total_quantity);
-                        }
                         if ($total_quantity <= 0) {
                             // IGNORE VALUE BECAUSE USER ERROR (STOCK MINUS)
                             $total_value = 0;
@@ -144,9 +141,6 @@ class Recalculate extends Command
                         $l_inventory->cogs = $cogs;
                     } else {
                         // STOCK OUT
-                        if ($l_inventory->item_id == 97 && $l_inventory->warehouse_id == 1) {
-                            $this->line('3. ' . $l_inventory->formulir_id . ' = ' . $total_quantity);
-                        }
                         if ($total_quantity < 0) {
                             // STOCK MINUS = NEED FIX FROM USER
                             $l_inventory->recalculate = true;
@@ -160,9 +154,6 @@ class Recalculate extends Command
 
                     $l_inventory->total_quantity = $total_quantity;
                     $l_inventory->total_value = $total_value;
-                    if ($l_inventory->item_id == 97 && $l_inventory->warehouse_id == 1) {
-                        $this->line('4. ' . $l_inventory->formulir_id . ' = ' . $total_quantity);
-                    }
                     $l_inventory->save();
                 }
             }
