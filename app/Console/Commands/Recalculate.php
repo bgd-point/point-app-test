@@ -58,7 +58,6 @@ class Recalculate extends Command
                 ->get();
 
             foreach ($list_inventory as $l_inventory) {
-                $this->line($l_inventory->formulir->form_number);
                 $l_inventory->recalculate = false;
                 if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
                     $st = StockOpname::where('formulir_id', '=', $l_inventory->formulir->id)->first();
@@ -79,7 +78,13 @@ class Recalculate extends Command
             $cogs_tmp = 0;
             foreach ($list_inventory as $index => $l_inventory) {
                 // UPDATE QUANTITY IF FORMULIR TYPE IS STOCKOPNAME
+                if ($l_inventory->item_id == 97 && $l_inventory->warehouse_id == 1) {
+                    $this->line($l_inventory->formulir_id .' = '.$l_inventory->formulir->form_number);
+                }
                 if ($l_inventory->formulir->formulirable_type === StockOpname::class && $index > 0) {
+                    if ($l_inventory->item_id == 97 && $l_inventory->warehouse_id == 1) {
+                        $this->line('1');
+                    }
                     $stockopname = StockOpname::join('point_inventory_stock_opname_item', 'point_inventory_stock_opname.id', '=', 'point_inventory_stock_opname_item.stock_opname_id')
                     ->where('point_inventory_stock_opname.formulir_id', $l_inventory->formulir_id)
                     ->where('point_inventory_stock_opname_item.item_id', $l_inventory->item_id)
@@ -125,6 +130,9 @@ class Recalculate extends Command
 
                     if ($l_inventory->quantity > 0) {
                         // STOCK IN
+                        if ($l_inventory->item_id == 97 && $l_inventory->warehouse_id == 1) {
+                            $this->line('2. ' . $l_inventory->formulir_id . ' = ' . $total_quantity);
+                        }
                         if ($total_quantity <= 0) {
                             // IGNORE VALUE BECAUSE USER ERROR (STOCK MINUS)
                             $total_value = 0;
@@ -136,6 +144,9 @@ class Recalculate extends Command
                         $l_inventory->cogs = $cogs;
                     } else {
                         // STOCK OUT
+                        if ($l_inventory->item_id == 97 && $l_inventory->warehouse_id == 1) {
+                            $this->line('3. ' . $l_inventory->formulir_id . ' = ' . $total_quantity);
+                        }
                         if ($total_quantity < 0) {
                             // STOCK MINUS = NEED FIX FROM USER
                             $l_inventory->recalculate = true;
@@ -149,6 +160,9 @@ class Recalculate extends Command
 
                     $l_inventory->total_quantity = $total_quantity;
                     $l_inventory->total_value = $total_value;
+                    if ($l_inventory->item_id == 97 && $l_inventory->warehouse_id == 1) {
+                        $this->line('4. ' . $l_inventory->formulir_id . ' = ' . $total_quantity);
+                    }
                     $l_inventory->save();
                 }
             }
