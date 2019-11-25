@@ -53,8 +53,8 @@ class Recalculate extends Command
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
                 ->where('form_date', '>=', '2019-10-01')
                 ->orderBy('form_date', 'asc')
-                ->orderBy('formulir_id', 'asc')
-                ->orderBy('id', 'asc')
+//                ->orderBy('formulir_id', 'asc')
+//                ->orderBy('id', 'asc')
                 ->get();
 
             foreach ($list_inventory as $l_inventory) {
