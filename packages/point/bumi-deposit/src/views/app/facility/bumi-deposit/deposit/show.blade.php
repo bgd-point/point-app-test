@@ -104,12 +104,14 @@
                                 {{date_format_view($deposit->due_date)}}
                             </div>
                         </div>
+                        @if(auth()->user()->id < 5)
                         <div class="form-group">
                             <label class="col-md-3 control-label">Deposit Value</label>
                             <div class="col-md-9 content-show">
                                 {{ number_format_quantity($deposit->original_amount) }}
                             </div>
                         </div>
+                        @endif
                         <div class="form-group">
                             <label class="col-md-3 control-label">Bank Interest</label>
                             <div class="col-md-9 content-show">
@@ -134,12 +136,14 @@
                                 {{number_format_quantity($deposit->total_interest)}}
                             </div>
                         </div>
+                        @if(auth()->user()->id < 5)
                         <div class="form-group">
                             <label class="col-md-3 control-label">Total Amount</label>
                             <div class="col-md-9 content-show">
                                 {{ number_format_quantity($deposit->total_amount) }}
                             </div>
                         </div>
+                        @endif
                         <div class="form-group">
                             <label class="col-md-3 control-label">Notes</label>
                             <div class="col-md-9 content-show">
