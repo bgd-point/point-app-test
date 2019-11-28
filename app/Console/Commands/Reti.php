@@ -49,16 +49,18 @@ class Reti extends Command
             $qty = 0;
             $inventories = Inventory::where('formulir_id', $formulir->id)->get();
 
+            $this->line('FORM NUMBER : ' . $formulir->form_number . ' DELETED');
+
             Inventory::where('formulir_id', $formulir->id)->delete();
 
             foreach ($inventories as $inventory) {
                 $qty += $inventory->quantity;
             }
 
-            $this->line('DEL : '.$formulir->form_number);
+//            $this->line('DEL : '.$formulir->form_number);
             if ($qty != 0) {
-                $this->line('DEL : '.$formulir->form_number . ' = ' . $qty . ' = ' . $formulir->id);
-                $this->line('DEL : '.$formulir->form_number . ' = ' . $qty . ' = ' . $formulir->id);
+//                $this->line('DEL : '.$formulir->form_number . ' = ' . $qty . ' = ' . $formulir->id);
+//                $this->line('DEL : '.$formulir->form_number . ' = ' . $qty . ' = ' . $formulir->id);
             }
         }
 
@@ -71,6 +73,8 @@ class Reti extends Command
 
         foreach ($formulirs as $formulir) {
             $qty = 0;
+
+            $this->line('FORM NUMBER : ' . $formulir->form_number . ' ADDED');
 
             $transfer_item = TransferItem::where('formulir_id', $formulir->id)->first();
 
