@@ -38,39 +38,12 @@ class Reti extends Command
 
         \DB::beginTransaction();
 
-        $alsd = Allocation::find(1);
-        if ($alsd) {
-            $alsd->created_at = Carbon::now();
-            $alsd->save();
-        }
-
         $formulirs = Formulir::where('formulirable_type', '=', TransferItem::class)
-            ->where('approval_status', -1)
-            ->where('form_date', '>=', '2019-10-01 00:00:00')
-            ->get();
-
-        foreach ($formulirs as $formulir) {
-            $qty = 0;
-            $inventories = Inventory::where('formulir_id', $formulir->id)->get();
-
-            Inventory::where('formulir_id', $formulir->id)->delete();
-
-            foreach ($inventories as $inventory) {
-                $qty += $inventory->quantity;
-            }
-
-            $this->line('DEL : '.$formulir->form_number);
-            if ($qty != 0) {
-                $this->line('DEL : '.$formulir->form_number . ' = ' . $qty . ' = ' . $formulir->id);
-                $this->line('DEL : '.$formulir->form_number . ' = ' . $qty . ' = ' . $formulir->id);
-            }
-        }
-
-        $formulirs = Formulir::where('formulirable_type', '=', TransferItem::class)
-            ->whereNotNull('form_number')
-            ->whereNull('canceled_at')
-            ->where('form_date', '>=', '2019-10-01 00:00:00')
-            ->get();
+            ->where(function ($q) {
+                $q->where('approval_status', -1)
+                    ->orWhereNull('form_number')
+                    ->orWhere('form_status', -1);
+            })->where('form_date', '>=', '2019-10-01 00:00:00')->get();
 
         foreach ($formulirs as $formulir) {
             $qty = 0;
