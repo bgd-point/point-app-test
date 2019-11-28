@@ -66,7 +66,7 @@ class Reti extends Command
 
         $formulirs = Formulir::where('formulirable_type', '=', TransferItem::class)
             ->whereNotNull('form_number')
-            ->whereNotNull('canceled_at')
+            ->whereNull('canceled_at')
             ->where('approval_status', '=', 1)
             ->where('form_date', '>=', '2019-10-01 00:00:00')
             ->get();
