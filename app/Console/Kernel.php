@@ -30,6 +30,7 @@ class Kernel extends ConsoleKernel
         Commands\RemoveSpace::class,
         Commands\Reallocation::class,
         Commands\Reti::class,
+        Commands\Reiu::class,
         Commands\Reopname::class,
         Commands\Recalculate::class,
         Commands\Recalculate2::class,

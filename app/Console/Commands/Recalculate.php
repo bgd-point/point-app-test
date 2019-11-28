@@ -53,8 +53,8 @@ class Recalculate extends Command
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
                 ->where('form_date', '>=', '2019-10-01')
                 ->orderBy('form_date', 'asc')
-//                ->orderBy('formulir_id', 'asc')
-//                ->orderBy('id', 'asc')
+                ->orderBy('formulir_id', 'asc')
+                ->orderBy('id', 'asc')
                 ->get();
 
             foreach ($list_inventory as $l_inventory) {
@@ -78,11 +78,11 @@ class Recalculate extends Command
             $cogs_tmp = 0;
             foreach ($list_inventory as $index => $l_inventory) {
                 // UPDATE QUANTITY IF FORMULIR TYPE IS STOCKOPNAME
-                if ($l_inventory->item_id == 97 && $l_inventory->warehouse_id == 1) {
+                if ($l_inventory->item_id == 7) {
                     $this->line($l_inventory->formulir_id .' = '.$l_inventory->formulir->form_number);
                 }
                 if ($l_inventory->formulir->formulirable_type === StockOpname::class && $index > 0) {
-                    if ($l_inventory->item_id == 97 && $l_inventory->warehouse_id == 1) {
+                    if ($l_inventory->item_id == 7) {
                         $this->line('1');
                     }
                     $stockopname = StockOpname::join('point_inventory_stock_opname_item', 'point_inventory_stock_opname.id', '=', 'point_inventory_stock_opname_item.stock_opname_id')
