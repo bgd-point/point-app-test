@@ -52,6 +52,35 @@ class Reopname extends Command
 
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
             ->where('formulir.form_date', '>=', '2019-10-01')
+            ->where('formulir.form_status', '=', 0)
+            ->whereNotNull('formulir.form_number')
+            ->orderBy('formulir.form_date', 'asc')
+            ->select('point_inventory_stock_opname.*')
+            ->get();
+
+        foreach($opnames as $opname) {
+            foreach ($opname->items as $opnameItem) {
+                $inv = Inventory::where('inventory.item_id', $opnameItem->item_id)
+                    ->where('form_date', '<', $opname->formulir->form_date)
+                    ->where('warehouse_id', $opname->warehouse_id)
+                    ->orderBy('form_date', 'desc')
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                $stock = 0;
+
+                if ($inv) {
+                    $this->line('TOTAL QUANTITY ' . $inv->total_quantity);
+                    $stock = $inv->total_quantity;
+                }
+
+                $opnameItem->stock_in_database = $stock;
+                $opnameItem->save();
+            }
+        }
+
+        $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
+            ->where('formulir.form_date', '>=', '2019-10-01')
             ->where('formulir.form_status', '>=', 1)
             ->whereNotNull('formulir.form_number')
             ->orderBy('formulir.form_date', 'asc')
