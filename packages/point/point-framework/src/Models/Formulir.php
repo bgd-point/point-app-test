@@ -17,12 +17,12 @@ class Formulir extends Model
 
     public function save(array $options = [])
     {
-        $lockedDate = strtotime('2019-10-01');
+        $lockedDate = strtotime('2019-12-01');
 
         if (request()->get('database_name') == 'p_kbretail'
             && strtotime($this->form_date) < $lockedDate
             && $this->formulirable_type != CashAdvance::class) {
-            throw new PointException('You cannot change data before 01 August 2019, or you can contact your administrator. Affected Form : ' . $this->form_number);
+            throw new PointException('You cannot change data before 01 Dec 2019, or you can contact your administrator. Affected Form : ' . $this->form_number);
         }
 
         return parent::save($options);
