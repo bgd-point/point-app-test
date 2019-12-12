@@ -45,6 +45,7 @@ class SalesReturReportController extends Controller
             ->notArchived()
             ->approvalApproved()
             ->select('point_sales_retur.*')
+            ->orderBy('formulir.form_date', 'desc')
             ->paginate(100);
         return $view;
     }
