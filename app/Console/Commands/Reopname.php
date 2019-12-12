@@ -39,7 +39,7 @@ class Reopname extends Command
         \DB::beginTransaction();
 
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-            ->where('formulir.form_date', '>=', '2019-12-01')
+            ->where('formulir.form_date', '>=', '2019-10-01')
             ->where('formulir.form_status', '<=', 0)
             ->whereNotNull('formulir.form_number')
             ->orderBy('formulir.form_date', 'asc')
@@ -51,7 +51,7 @@ class Reopname extends Command
         }
 
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-            ->where('formulir.form_date', '>=', '2019-12-01')
+            ->where('formulir.form_date', '>=', '2019-10-01')
             ->where('formulir.form_status', '=', 0)
             ->whereNotNull('formulir.form_number')
             ->orderBy('formulir.form_date', 'asc')
@@ -80,7 +80,7 @@ class Reopname extends Command
         }
 
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-            ->where('formulir.form_date', '>=', '2019-12-01')
+            ->where('formulir.form_date', '>=', '2019-10-01')
             ->where('formulir.form_status', '>=', 1)
             ->whereNotNull('formulir.form_number')
             ->orderBy('formulir.form_date', 'asc')
