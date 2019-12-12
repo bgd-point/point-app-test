@@ -18,6 +18,13 @@ class Formulir extends Model
     public function save(array $options = [])
     {
         $lockedDate = strtotime('2019-12-01');
+        if ($this->formulirable_type) {
+            if (Formulir::where('form_date', '>=', $this->form_date)
+                ->where('formulirable_type', '=', $this->formulirable_type)
+                ->first()) {
+                throw new PointException('You cannot input on this date');
+            }
+        }
 
         if (request()->get('database_name') == 'p_kbretail'
             && strtotime($this->form_date) < $lockedDate
