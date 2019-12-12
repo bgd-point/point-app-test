@@ -19,8 +19,9 @@ class Formulir extends Model
     {
         $lockedDate = strtotime('2019-12-01');
         if ($this->formulirable_type) {
-            if (Formulir::where('form_date', '>=', $this->form_date)
+            if (Formulir::where('form_date', '>', $this->form_date)
                 ->where('formulirable_type', '=', $this->formulirable_type)
+                ->where('updated_by', '=', auth()->user()->id)
                 ->first()) {
                 throw new PointException('You cannot input on this date');
             }
