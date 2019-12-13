@@ -22,7 +22,8 @@ class Formulir extends Model
             if (Formulir::where('form_date', '>', $this->form_date)
                 ->where('formulirable_type', '=', $this->formulirable_type)
                 ->where(function ($q) {
-                    $q->where('updated_by', '=', auth()->user()->id)->orWhere('updated_by', '=', auth()->user()->id)
+                    $q->where('updated_by', '=', auth()->user()->id)
+                        ->orWhere('updated_by', '=', auth()->user()->id);
                 })
                 ->where(function ($q) {
                     $q->whereNull('request_approval_at')->where('approval_status','=',0);
