@@ -21,9 +21,11 @@ class Formulir extends Model
         if ($this->formulirable_type && request()->get('database_name') == 'p_kbretail') {
             if (Formulir::where('form_date', '>', $this->form_date)
                 ->where('formulirable_type', '=', $this->formulirable_type)
-                ->where('updated_by', '=', auth()->user()->id)
                 ->where(function ($q) {
-                    $q->whereNotNull('request_approval_at')->where('approval_status','!=',0);
+                    $q->where('updated_by', '=', auth()->user()->id)->orWhere('updated_by', '=', auth()->user()->id)
+                })
+                ->where(function ($q) {
+                    $q->whereNull('request_approval_at')->where('approval_status','=',0);
                 })
                 ->first()) {
                 throw new PointException('You cannot input on this date');
