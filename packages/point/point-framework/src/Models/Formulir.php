@@ -19,16 +19,18 @@ class Formulir extends Model
     {
         $lockedDate = strtotime('2019-12-01');
         if ($this->formulirable_type && request()->get('database_name') == 'p_kbretail') {
-            if (Formulir::where('form_date', '>', $this->form_date)
+            $check = Formulir::where('form_date', '>', $this->form_date)
                 ->where('formulirable_type', '=', $this->formulirable_type)
                 ->where(function ($q) {
+                    $q->whereNull('request_approval_at')->where('approval_status','=',0);
+                });
+            if (auth()) {
+                $check->where(function ($q) {
                     $q->where('updated_by', '=', auth()->user()->id)
                         ->orWhere('updated_by', '=', auth()->user()->id);
-                })
-                ->where(function ($q) {
-                    $q->whereNull('request_approval_at')->where('approval_status','=',0);
-                })
-                ->first()) {
+                });
+            }
+            if ($check->first()) {
                 throw new PointException('You cannot input on this date');
             }
         }
