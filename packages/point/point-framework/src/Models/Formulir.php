@@ -24,7 +24,7 @@ class Formulir extends Model
                 ->where(function ($q) {
                     $q->whereNull('request_approval_at')->where('approval_status','=',0);
                 });
-            if (auth()) {
+            if (auth()->user()) {
                 $check->where(function ($q) {
                     $q->where('updated_by', '=', auth()->user()->id)
                         ->orWhere('updated_by', '=', auth()->user()->id);
