@@ -22,6 +22,7 @@ class Formulir extends Model
             $check = Formulir::where('form_date', '>', $this->form_date)
                 ->where('form_status', '>=', 0)
                 ->where('approval_status', '>=', 0)
+                ->whereNotNull('form_number')
                 ->where('formulirable_type', '=', $this->formulirable_type)
                 ->where(function ($q) {
                     $q->whereNull('request_approval_at')->where('approval_status','=',0);
