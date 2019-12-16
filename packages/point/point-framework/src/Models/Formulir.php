@@ -30,7 +30,8 @@ class Formulir extends Model
                         ->orWhere('updated_by', '=', auth()->user()->id);
                 });
             }
-            if ($check->first()) {
+            $check = $check->first();
+            if ($check) {
                 throw new PointException('You cannot input back date from ' . $check->form_number . ' ' . $check->form_date);
             }
         }
