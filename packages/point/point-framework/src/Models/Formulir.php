@@ -20,6 +20,8 @@ class Formulir extends Model
         $lockedDate = strtotime('2019-12-01');
         if ($this->formulirable_type && request()->get('database_name') == 'p_kbretail') {
             $check = Formulir::where('form_date', '>', $this->form_date)
+                ->where('form_status', '>=', 0)
+                ->where('approval_status', '>=', 0)
                 ->where('formulirable_type', '=', $this->formulirable_type)
                 ->where(function ($q) {
                     $q->whereNull('request_approval_at')->where('approval_status','=',0);
