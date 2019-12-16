@@ -31,7 +31,7 @@ class Formulir extends Model
                 });
             }
             if ($check->first()) {
-                throw new PointException('You cannot input back date from ' . $check->formulir->form_number . ' ' . $check->formulir->form_date);
+                throw new PointException('You cannot input back date from ' . $check->form_number . ' ' . $check->form_date);
             }
         }
 
