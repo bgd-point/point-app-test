@@ -183,7 +183,7 @@
                                         <table id="table" class="table table-striped">
                                             <thead>
                                             <tr>
-                                                <th>RETUR {{ date_format_view($retur->formulir->form_date) }}</th>
+                                                <th>RETUR {{ date_format_view($retur->formulir->form_date) }} | {{ $retur->formulir->form_number }}</th>
                                                 <th class="text-right">QTY RETUR</th>
                                                 <th class="text-right">PRICE</th>
                                                 <th class="text-right">TOTAL RETUR</th>
