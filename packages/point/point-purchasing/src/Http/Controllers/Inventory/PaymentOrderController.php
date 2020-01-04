@@ -102,7 +102,7 @@ class PaymentOrderController extends Controller
     {
         $view = view('point-purchasing::app.purchasing.point.inventory.payment-order.create-step-2');
         $view->supplier = Person::find($supplier_id);
-        $view->list_invoice = Invoice::availableToCreatePaymentOrder($supplier_id)->get();
+        $view->list_invoice = Invoice::availableToCreatePaymentOrder($supplier_id)->take(30)->get();
         $view->list_downpayment = Downpayment::availableToCreatePaymentOrder($supplier_id)->get();
         $view->list_retur = Retur::availableToCreatePaymentOrder($supplier_id)->get();
         $view->list_coa = Coa::getNonSubledger();
@@ -128,7 +128,6 @@ class PaymentOrderController extends Controller
             'payment_date' => 'required',
             'approval_to' => 'required',
         ]);
-
         $view = view('point-purchasing::app.purchasing.point.inventory.payment-order.create-step-3');
         $view->list_invoice = Invoice::whereIn('formulir_id', \Input::get('invoice_id'))->get();
         $view->invoice_rid = \Input::get('invoice_rid');

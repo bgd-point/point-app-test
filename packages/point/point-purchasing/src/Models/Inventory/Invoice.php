@@ -57,8 +57,7 @@ class Invoice extends Model
             ->open()
             ->approvalApproved()
             ->where('person.id', '=', $supplier_id)
-            ->selectOriginal()
-            ->orderByStandard();
+            ->selectOriginal();
     }
 
     public function scopeAvailableToEditPaymentOrder($q, $supplier_id, $invoice_edit)

@@ -100,8 +100,7 @@
                                                 <tbody>
                                                 @foreach($list_invoice as $invoice)
                                                     <?php
-                                                    $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice),
-                                                            $invoice->id, $invoice->total);
+                                                    $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice), $invoice->id, $invoice->total);
                                                     ?>
                                                     <tr>
                                                         <td class="text-center">
