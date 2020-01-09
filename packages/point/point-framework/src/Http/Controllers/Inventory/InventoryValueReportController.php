@@ -110,7 +110,7 @@ class InventoryValueReportController extends Controller
                     info('warehouse ' . $warehouse);
                     $whAll = Warehouse::all();
                     foreach ($whAll as $wh) {
-                        $excel->sheet($wh->name, function ($sheet) use ($request, $wh, $storage) {
+                        $excel->sheet(substr($wh->name,0, 20), function ($sheet) use ($request, $wh, $storage) {
                             $sheet->setWidth(array(
                                 'A' => 30,
                                 'B' => 15,
