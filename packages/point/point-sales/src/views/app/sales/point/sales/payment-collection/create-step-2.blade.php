@@ -77,6 +77,7 @@
                                 <div class="block-title">
                                     <ul class="nav nav-tabs" data-toggle="tabs">
                                         <li class="active"><a href="#block-tabs-invoice">INVOICE</a></li>
+                                        <li><a href="#block-tabs-memo-journal">MEMO JOURNAL</a></li>
                                         <li><a href="#block-tabs-cutoff">CUTOFF</a></li>
                                         <li><a href="#block-tabs-downpayment">DOWNPAYMENT</a></li>
                                         <li><a href="#block-tabs-retur">RETUR</a></li>
@@ -105,8 +106,7 @@
                                                 <tbody>
                                                 @foreach($list_invoice as $invoice)
                                                     <?php
-                                                    $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice),
-                                                            $invoice->id, $invoice->total);
+                                                    $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice), $invoice->id, $invoice->total);
                                                     if (! $invoice_remaining > 0) {
                                                         continue;
                                                     }
@@ -146,6 +146,72 @@
                                                                    value="{{$invoice->total}}"/>
                                                         </td>
                                                     </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- MEMO JOURNAL -->
+                                    <div class="tab-pane active" id="block-tabs-memo-journal">
+                                        <div class="table-responsive">
+                                            <table id="memo-journal-datatable" class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>DATE</th>
+                                                    <th>FORM NUMBER</th>
+                                                    <th>NOTES</th>
+                                                    <th>ITEM</th>
+                                                    <th>AVAILABLE MEMO JOURNAL</th>
+                                                    <th>MEMO JOURNAL</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @foreach($list_memo_journal as $memo_journal)
+                                                    @foreach($memo_journal->detail as $detail)
+                                                        @if ($detail->coa_id == 4 && $detail->subledger_id == $person->id && $detail->debit - $detail->credit > 0)
+                                                            <?php
+                                                            $mJTotal = $detail->debit - $detail->credit;
+                                                            $memo_journal_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($detail), $detail->id, $mJTotal);
+
+                                                            if (! $memo_journal_remaining > 0) {
+                                                                continue;
+                                                            }
+                                                            $detailTotal = $detail->debit - $detail->credit;
+                                                            ?>
+                                                            <tr>
+                                                                <td class="text-center">
+                                                                    <input type="hidden" name="memo_journal_detail_reference_id[]" value="{{$detail->id}}">
+                                                                    <input type="hidden" name="memo_journal_detail_reference_type[]" value="{{get_class($detail)}}">
+                                                                    <input type="hidden" name="memo_journal_detail_rid[]" value="{{$detail->id . 'mjd' }}">
+                                                                    <input type="checkbox"
+                                                                            id="id-memo-journal-{{$detail->id}}"
+                                                                            class="row-id" name="memo_journal_detail_id[]"
+                                                                            value="{{$detail->id}}"
+                                                                            onclick="updateMemoJournal()">
+                                                                </td>
+                                                                <td>{{ date_Format_view($memo_journal->formulir->form_date) }}</td>
+                                                                <td>
+                                                                    <a href="{{ url('accounting/point/memo-journal/'.$memo_journal->id) }}">{{ $memo_journal->formulir->form_number }}</a>
+                                                                </td>
+                                                                <td><input type="text" name="memo_journal_detail_notes[]" class="form-control" style="min-width: 300px;" value="{{ $memo_journal->formulir->notes . ' / ' . $detail->reference->form_number }}"></td>
+                                                                <td>{{ $detail->description }} / {{ $detail->reference->form_number }}</td>
+                                                                <td>{{ number_format_price($memo_journal_remaining) }}</td>
+                                                                <td>
+                                                                    <input type="text"
+                                                                            id="total-memo-journal-{{$memo_journal->formulir_id}}"
+                                                                            name="amount_memo_journal_detail[]"
+                                                                            class="form-control format-price row-total"
+                                                                            onkeyup="updateMemoJournal()" value="{{$memo_journal_remaining}}"/>
+                                                                    <input type="hidden" name="available_memo_journal_detail[]"
+                                                                            value="{{$memo_journal_remaining}}"/>
+                                                                    <input type="hidden" name="original_amount_memo_journal_detail[]"
+                                                                            value="{{$detailTotal}}"/>
+                                                                </td>
+                                                            </tr>
+                                                        @endif
+                                                    @endforeach
                                                 @endforeach
                                                 </tbody>
                                             </table>
@@ -289,8 +355,7 @@
                                                 <tbody>
                                                 @foreach($list_retur as $retur)
                                                     <?php
-                                                    $retur_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($retur),
-                                                            $retur->id, $retur->total);
+                                                    $retur_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($retur), $retur->id, $retur->total);
                                                     ?>
                                                     <tr>
                                                         <td class="text-center">
@@ -370,6 +435,8 @@
                         <div class="col-md-3 ">
                             <input readonly type="text" id="total-payment" name="total_payment"
                                    class="form-control format-price" value="0"/>
+                            <input readonly type="hidden" id="total-memo-journal" name="total_memo_journal"
+                                   class="form-control format-price" value="0"/>
                             <input readonly type="hidden" id="total-invoice" name="total_invoice"
                                    class="form-control format-price" value="0"/>
                             <input readonly type="hidden" id="total-downpayment" name="total_downpayment"
@@ -428,7 +495,8 @@
 
 @section('scripts')
     <script>
-        var item_table = initDatatable('#item-datatable')
+        var item_table = initDatatable('#item-datatable');
+        initDatatable('#memo-journal-datatable');
         initDatatable('#downpayment-datatable');
         initDatatable('#invoice-datatable');
         initDatatable('#retur-datatable');
@@ -499,12 +567,13 @@
                     total_downpayment += dbNum($(rows[i]).find(".row-amount").val());
                 }
             }
+            var total_memo_journal = dbNum($('#total-memo-journal').val());
             var total_invoice = dbNum($('#total-invoice').val());
             var total_retur = dbNum($('#total-retur').val());
             var total_cutoff = dbNum($('#total-cutoff').val());
             var total_other = dbNum($('#total-other').val());
             $('#total-downpayment').val(appNum(total_downpayment));
-            $('#total-payment').val(appNum(total_invoice + total_other + total_cutoff - total_downpayment - total_retur));
+            $('#total-payment').val(appNum(total_memo_journal + total_invoice + total_other + total_cutoff - total_downpayment - total_retur));
         }
 
         function updateInvoice() {
@@ -515,12 +584,30 @@
                     total_invoice += dbNum($(rows[i]).find(".row-total").val());
                 }
             }
+            var total_memo_journal = dbNum($('#total-memo-journal').val());
             var total_downpayment = dbNum($('#total-downpayment').val());
             var total_retur = dbNum($('#total-retur').val());
             var total_cutoff = dbNum($('#total-cutoff').val());
             var total_other = dbNum($('#total-other').val());
             $('#total-invoice').val(appNum(total_invoice));
-            $('#total-payment').val(appNum(total_invoice + total_other + total_cutoff - total_downpayment - total_retur));
+            $('#total-payment').val(appNum(total_memo_journal + total_invoice + total_other + total_cutoff - total_downpayment - total_retur));
+        }
+
+        function updateMemoJournal() {
+            var rows = $("#memo-journal-datatable").dataTable().fnGetNodes();
+            var total_memo_journal = 0;
+            for (var i = 0; i < rows.length; i++) {
+                if ($(rows[i]).find(".row-id").prop('checked')) {
+                    total_memo_journal += dbNum($(rows[i]).find(".row-total").val());
+                }
+            }
+            var total_downpayment = dbNum($('#total-downpayment').val());
+            var total_invoice = dbNum($('#total-invoice').val());
+            var total_retur = dbNum($('#total-retur').val());
+            var total_cutoff = dbNum($('#total-cutoff').val());
+            var total_other = dbNum($('#total-other').val());
+            $('#total-memo-journal').val(appNum(total_memo_journal));
+            $('#total-payment').val(appNum(total_memo_journal + total_invoice + total_other + total_cutoff - total_downpayment - total_retur));
         }
 
         function updateCutoff() {
@@ -531,12 +618,13 @@
                     total_cutoff += dbNum($(rows[i]).find(".row-total").val());
                 }
             }
+            var total_memo_journal = dbNum($('#total-memo-journal').val());
             var total_downpayment = dbNum($('#total-downpayment').val());
             var total_invoice = dbNum($('#total-invoice').val());
             var total_retur = dbNum($('#total-retur').val());
             var total_other = dbNum($('#total-other').val());
             $('#total-cutoff').val(appNum(total_cutoff));
-            $('#total-payment').val(appNum(total_invoice + total_other + total_cutoff - total_downpayment - total_retur));
+            $('#total-payment').val(appNum(total_memo_journal + total_invoice + total_other + total_cutoff - total_downpayment - total_retur));
         }
 
         function updateRetur() {
@@ -547,12 +635,13 @@
                     total_retur += dbNum($(rows[i]).find(".row-total").val());
                 }
             }
+            var total_memo_journal = dbNum($('#total-memo-journal').val());
             var total_downpayment = dbNum($('#total-downpayment').val());
             var total_invoice = dbNum($('#total-invoice').val());
             var total_cutoff = dbNum($('#total-cutoff').val());
             var total_other = dbNum($('#total-other').val());
             $('#total-retur').val(appNum(total_retur));
-            $('#total-payment').val(appNum(total_invoice + total_other + total_cutoff - total_downpayment - total_retur));
+            $('#total-payment').val(appNum(total_memo_journal + total_invoice + total_other + total_cutoff - total_downpayment - total_retur));
         }
 
         function calculate() {

@@ -29,6 +29,8 @@ use Point\Framework\Models\SettingJournal;
 use Point\Framework\Models\EmailHistory;
 use Point\PointAccounting\Models\CutOffReceivable;
 use Point\PointAccounting\Models\CutOffReceivableDetail;
+use Point\PointAccounting\Models\MemoJournal;
+use Point\PointAccounting\Models\MemoJournalDetail;
 use Point\PointFinance\Models\PaymentReference;
 use Point\PointSales\Helpers\PaymentCollectionHelper;
 use Point\PointSales\Models\Sales\Downpayment;
@@ -116,6 +118,11 @@ class PaymentCollectionController extends Controller
         $view = view('point-sales::app.sales.point.sales.payment-collection.create-step-2');
         $view->person = Person::find($person_id);
         $view->list_invoice = Invoice::joinFormulir()->joinPerson()->notArchived()->availableToCreatePaymentCollection($person_id)->selectOriginal()->get();
+        $view->list_memo_journal = MemoJournal::joinFormulir()->notArchived()->open()
+            ->approvalApproved()
+            ->orderByStandard()
+            ->selectOriginal()
+            ->get();
         $view->list_downpayment = Downpayment::availableToCreatePaymentCollection($person_id)->get();
         $view->list_retur = Retur::joinFormulir()->joinPerson()->notArchived()->availableToCreatePaymentCollection($person_id)->selectOriginal()->get();
         $view->list_item = Item::active()->get();
@@ -152,6 +159,16 @@ class PaymentCollectionController extends Controller
         $view->amount_invoice = number_format_db(\Input::get('amount_invoice'));
         $view->available_invoice = number_format_db(\Input::get('available_invoice'));
         $view->original_amount_invoice = number_format_db(\Input::get('original_amount_invoice'));
+
+        $view->list_memo_journal_detail = MemoJournalDetail::whereIn('id', \Input::get('memo_journal_detail_id'))->get();
+        $view->memo_journal_detail_rid = \Input::get('memo_journal_detail_rid');
+        $view->memo_journal_detail_id = \Input::get('memo_journal_detail_id');
+        $view->memo_journal_detail_notes = \Input::get('memo_journal_detail_notes');
+        $view->memo_journal_detail_reference_id = \Input::get('memo_journal_detail_reference_id');
+        $view->memo_journal_detail_reference_type = \Input::get('memo_journal_detail_reference_type');
+        $view->amount_memo_journal_detail = number_format_db(\Input::get('amount_memo_journal_detail'));
+        $view->available_memo_journal_detail = number_format_db(\Input::get('available_memo_journal_detail'));
+        $view->original_amount_memo_journal_detail = number_format_db(\Input::get('original_amount_memo_journal_detail'));
 
         $view->list_retur = Retur::whereIn('formulir_id', \Input::get('retur_id'))->get();
         $view->retur_rid = \Input::get('retur_rid');
@@ -227,6 +244,20 @@ class PaymentCollectionController extends Controller
             array_push($references_amount_original, $request->input('invoice_amount_original')[$i]);
             array_push($references_notes, $request->input('invoice_notes')[$i]);
             array_push($references, $reference_type::find($invoice_id[$i]));
+        }
+        $memo_journal_detail_id = $request->input('memo_journal_detail_id');
+        for ($i=0;$i < count($memo_journal_detail_id);$i++) {
+            $reference_type = get_class(new MemoJournalDetail());
+            array_push($formulir_id, MemoJournalDetail::find($memo_journal_detail_id[$i])->memoJournal->formulir_id);
+            array_push($references_id, $memo_journal_detail_id[$i]);
+            array_push($references_type, $reference_type);
+            array_push($references_detail_id, $request->input('memo_journal_detail_reference_id')[$i]);
+            array_push($references_detail_type, $request->input('memo_journal_detail_reference_type')[$i]);
+            array_push($references_account, SettingJournal::where('group', 'point sales indirect')->where('name', 'account receivable')->first()->coa_id);
+            array_push($references_amount, $request->input('memo_journal_detail_amount')[$i]);
+            array_push($references_amount_original, $request->input('memo_journal_detail_amount_original')[$i]);
+            array_push($references_notes, $request->input('memo_journal_detail_notes')[$i]);
+            array_push($references, $reference_type::find(MemoJournalDetail::find($memo_journal_detail_id[$i])->memo_journal_id));
         }
         $retur_id = $request->input('retur_id');
         for ($i=0;$i < count($retur_id);$i++) {

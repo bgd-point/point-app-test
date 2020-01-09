@@ -101,6 +101,34 @@
                                         </tr>
                                     @endforeach
 
+                                    @foreach($list_memo_journal_detail as $memo_journal_detail)
+                                        <?php
+                                        $i = array_search($memo_journal_detail->id.'mjd', $memo_journal_detail_rid);
+                                        $total_payment += $amount_memo_journal_detail[$i];
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                {{ date_Format_view($memo_journal_detail->memoJournal->formulir->form_date) }}
+                                                <input type="hidden" name="memo_journal_detail_id[]" value="{{$memo_journal_detail->id}}"/>
+                                                <input type="hidden" name="memo_journal_detail_notes[]"
+                                                        value="{{$memo_journal_detail_notes[$i]}}"/>
+                                                <input type="hidden" name="memo_journal_detail_amount[]"
+                                                        value="{{$amount_memo_journal_detail[$i]}}"/>
+                                                <input type="hidden" name="memo_journal_detail_amount_original[]"
+                                                        value="{{$memo_journal_detail->debit - $memo_journal_detail->credit}}"/>
+                                                <input type="hidden" name="memo_journal_detail_available[]"
+                                                        value="{{$available_memo_journal_detail[$i]}}"/>
+                                                <input type="hidden" name="memo_journal_detail_reference_id[]" value="{{$memo_journal_detail->id}}">
+                                                <input type="hidden" name="memo_journal_detail_reference_type[]" value="{{get_class($memo_journal_detail)}}">
+                                            </td>
+                                            <td>
+                                                <a href="{{ url('accounting/point/memo-journal/'.$memo_journal_detail->id) }}">{{ $memo_journal_detail->formulir->form_number}}</a>
+                                            </td>
+                                            <td>{{ $memo_journal_detail_notes[$i] }}</td>
+                                            <td class="text-right">{{ number_format_quantity($amount_memo_journal_detail[$i]) }}</td>
+                                        </tr>
+                                    @endforeach
+
                                     <!-- CUTOFF -->
                                     @foreach($list_cut_off_receivable as $cut_off)
                                         <?php

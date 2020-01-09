@@ -8,6 +8,7 @@ use Point\Framework\Helpers\AllocationHelper;
 use Point\Framework\Helpers\ReferHelper;
 use Point\Framework\Models\Formulir;
 use Point\PointAccounting\Models\CutOffReceivableDetail;
+use Point\PointAccounting\Models\MemoJournalDetail;
 use Point\PointSales\Models\Sales\PaymentCollection;
 use Point\PointSales\Models\Sales\PaymentCollectionDetail;
 use Point\PointSales\Models\Sales\PaymentCollectionOther;
@@ -70,6 +71,10 @@ class PaymentCollectionHelper
             $reference = $references[$i];
             if (get_class($reference) == get_class(new CutOffReceivableDetail())) {
                 $reference->formulir_id = $reference->cutoffReceivable->formulir_id;
+            }
+
+            if (get_class($reference) == get_class(new MemoJournalDetail())) {
+                $reference->formulir_id = $reference->memoJournal->formulir_id;
             }
 
             if ($references_amount[$i] > $references_amount_original[$i]) {
