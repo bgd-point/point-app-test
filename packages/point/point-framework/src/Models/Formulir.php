@@ -17,7 +17,7 @@ class Formulir extends Model
 
     public function save(array $options = [])
     {
-        $lockedDate = strtotime('2019-12-01');
+        $lockedDate = strtotime('2020-01-01');
         if ($this->formulirable_type && request()->get('database_name') == 'p_kbretail') {
             if (auth()->user() && auth()->user()->name != 'ratna') {
                 $check = Formulir::where('form_date', '>', $this->form_date)
