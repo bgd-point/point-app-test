@@ -100,7 +100,7 @@
 
 @section('end-notes')
     @if(get_end_notes('sales invoice'))
-        {{ get_end_notes('sales invoice') }}
+        {!! get_end_notes('sales invoice') !!}
         <br/><br/>
     @endif
 @stop
