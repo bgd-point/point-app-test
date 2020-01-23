@@ -108,7 +108,8 @@ class StockOpnameController extends Controller
 
         if (\Input::has('status')) {
             if (\Input::get('status') == 1) {
-                $list_report = $list_report->where('formulir.form_status', '=', 1);
+                $list_report = $list_report->where('formulir.form_status', '=', 1)
+                    ->where('formulir.approval_status', '=', 1);
             } else if (\Input::get('status') == 0) {
                 $list_report = $list_report->where('formulir.form_status', '=', 0);
             } else if (\Input::get('status') == -1) {
