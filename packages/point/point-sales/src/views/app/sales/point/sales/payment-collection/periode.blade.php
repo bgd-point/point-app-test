@@ -3,6 +3,14 @@
 @section('content')
     <div id="page-content">
         <table class="table table-striped">
+            <tr>
+                <th>ID</th>
+                <th>FORM</th>
+                <th>DATE</th>
+                <th>CUSTOMER</th>
+                <th>INVOICE</th>
+                <th>REMAINING</th>
+            </tr>
             @foreach ($invoices as $key => $invoice)
             <?php
                 $total = $invoice->total;
@@ -12,14 +20,7 @@
                     ->where('form_date', '<' , '2020-01-01 00:00:00')->where('coa_id', 4)->sum('credit');
                 $piutang = $total - ($debit + $credit);
             ?>
-                <tr>
-                    <th>ID</th>
-                    <th>FORM</th>
-                    <th>DATE</th>
-                    <th>CUSTOMER</th>
-                    <th>INVOICE</th>
-                    <th>REMAINING</th>
-                </tr>
+
             @if ($piutang > 0)
                 <tr>
                     <td>{{ $key + 1 }}</td>
