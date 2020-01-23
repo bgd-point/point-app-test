@@ -11,12 +11,27 @@
 |
 */
 
+use Point\PointAccounting\Models\MemoJournal;
+use Point\PointSales\Models\Sales\Invoice;
+
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', 'DashboardController@index');
 });
 
 Route::get('barcode', function () {
     return view('barcode');
+});
+
+Route::get('debt-age', function () {
+    $invoices = Invoice::join('formulir', 'formulir.id', '=', 'point_sales_invoice.formulir_id')
+        ->where('formulir.form_date', '<' , '2020-01-01 00:00:00')
+        ->where('formulir.form_status', '>=', 0)
+        ->where('formulir.approval_status', '=', 1)
+        ->whereNotNull('form_number')
+        ->orderBy('formulir.form_date', 'asc')
+        ->get();
+
+    return view('point-sales::app.sales.point.sales.payment-collection.periode')->with('invoices', $invoices);
 });
 
 Route::get('mobile-version', function () {
