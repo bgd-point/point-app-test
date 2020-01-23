@@ -110,7 +110,8 @@ function selectData(order_by, order_type) {
 function exportExcel() {
     var date_from = $("#date-from").val();
     var date_to = $("#date-to").val();
-    var url = '{{url()}}/inventory/point/stock-opname/export?date_from='+date_from+'&date_to='+date_to;
+    var status = $("#status").val();
+    var url = '{{url()}}/inventory/point/stock-opname/export?date_from='+date_from+'&status='+status+'&date_to='+date_to;
     location.href = url;
 }
 </script>

@@ -100,10 +100,23 @@ class StockOpnameController extends Controller
         $date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : date('Y-m-01 00:00:00');
         $date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : date('Y-m-d 23:59:59');
         $list_report = StockOpname::joinFormulir()
-            ->selectOriginal()->orderBy(\DB::raw('CAST(form_date as date)'), 'asc')
+            ->selectOriginal()
+            ->orderBy(\DB::raw('CAST(form_date as date)'), 'asc')
             ->whereNotNull('formulir.form_number')
-//            ->whereBetween('formulir.form_date', [$date_from, $date_to])
-            ->orderBy('form_raw_number', 'desc')->get();
+            ->whereBetween('formulir.form_date', [$date_from, $date_to])
+            ->orderBy('form_raw_number', 'desc');
+
+        if (\Input::has('status')) {
+            if (\Input::get('status') == 1) {
+                $list_report = $list_report->where('formulir.form_status', '=', 1);
+            } else if (\Input::get('status') == 0) {
+                $list_report = $list_report->where('formulir.form_status', '=', 0);
+            } else if (\Input::get('status') == -1) {
+                $list_report = $list_report->where('formulir.form_status', '=', -1);
+            }
+        }
+
+        $list_report = $list_report->get();
 
         \Excel::create($file_name, function ($excel) use ($date_from, $date_to, $list_report) {
             $excel->sheet('Stock Opname', function ($sheet) use ($date_from, $date_to, $list_report) {

@@ -4,6 +4,7 @@
 
 <tr>
     <td>#</td>
+    <td>STATUS</td>
     <td>DATE</td>
     <td>WAREHOUSE</td>
     <td>ITEM</td>
@@ -85,6 +86,15 @@
 
     <tr>
         <td>{{ $opname->formulir->form_number }}</td>
+        <td>
+            @if($opname->formulir->form_status == 0)
+                OPEN
+            @elseif($opname->formulir->form_status == 1)
+                CLOSED
+            @elseif($opname->formulir->form_status == -1)
+                CANCEL
+            @endif
+        </td>
         <td>{{ $opname->formulir->form_date }}</td>
         <td>{{ $opname->warehouse->name }}</td>
         <td>[{{ $detail->item->code }}] {{ $detail->item->name }}</td>
