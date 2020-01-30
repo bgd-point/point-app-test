@@ -1,6 +1,7 @@
 @extends('core::app.layout')
 
 @section('content')
+    <?php $totalInvoice = 0; $totalRemaining = 0;?>
     <div id="page-content">
         <table class="table table-striped">
             <tr>
@@ -19,6 +20,9 @@
                 $credit = \Point\Framework\Models\Journal::where('form_reference_id', $invoice->formulir_id)
                     ->where('form_date', '<' , '2020-01-01 00:00:00')->where('coa_id', 4)->sum('credit');
                 $piutang = $total - ($debit + $credit);
+
+                $totalRemaining += $piutang;
+                $totalInvoice += $total;
             ?>
 
             @if ($piutang > 0)
@@ -32,6 +36,11 @@
                 </tr>
             @endif
             @endforeach
+            <tr>
+                <td colspan="4">TOTAL</td>
+                <td>{{ number_format_price($totalInvoice) }}</td>
+                <td>{{ number_format_price($totalRemaining) }}</td>
+            </tr>
         </table>
     </div>
 @stop
