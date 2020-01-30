@@ -22,9 +22,9 @@ Route::get('barcode', function () {
     return view('barcode');
 });
 
-Route::get('debt-age', function () {
+Route::get('debt-age', function (\Illuminate\Http\Request $request) {
     $invoices = Invoice::join('formulir', 'formulir.id', '=', 'point_sales_invoice.formulir_id')
-        ->where('formulir.form_date', '<' , '2020-01-01 00:00:00')
+        ->where('formulir.form_date', '<' , $request->get('date'))
         ->where('formulir.form_status', '>=', 0)
         ->where('formulir.approval_status', '=', 1)
         ->whereNotNull('form_number')
