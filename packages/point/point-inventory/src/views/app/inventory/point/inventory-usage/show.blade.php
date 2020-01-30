@@ -167,8 +167,9 @@
                                         onclick="secureCloseForm({{$inventory_usage->formulir_id}},'{{url('formulir/close')}}')">Close
                                     Form</a>
                             @endif
-                                <a class="btn btn-effect-ripple btn-info"
-                                        href="{{url('inventory/point/inventory-usage/'.$inventory_usage->id.'/export')}}">Print</a>
+                            @if($inventory_usage->formulir->approval_status == 1)
+                                <a class="btn btn-effect-ripple btn-info" href="{{url('inventory/point/inventory-usage/'.$inventory_usage->id.'/export')}}">Print</a>
+                            @endif
                         </div>
                     </div>
                 </fieldset>
