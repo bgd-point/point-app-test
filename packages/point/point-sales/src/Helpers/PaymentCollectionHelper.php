@@ -67,6 +67,7 @@ class PaymentCollectionHelper
         $payment_collection->save();
 
         $total = 0;
+        info($references);
         for ($i=0 ; $i < count($references) ; $i++) {
             $reference = $references[$i];
             if (get_class($reference) == get_class(new CutOffReceivableDetail())) {
