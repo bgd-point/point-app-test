@@ -74,6 +74,7 @@ class PaymentCollectionHelper
             }
 
             if (get_class($reference) == get_class(new MemoJournalDetail())) {
+                info($reference);
                 $reference->formulir_id = $reference->memoJournal->formulir_id;
             }
 
