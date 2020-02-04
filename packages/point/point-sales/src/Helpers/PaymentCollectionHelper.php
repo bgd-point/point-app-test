@@ -69,55 +69,56 @@ class PaymentCollectionHelper
         $total = 0;
         for ($i=0 ; $i < count($references) ; $i++) {
             $reference = $references[$i];
-            if (get_class($reference) == get_class(new CutOffReceivableDetail())) {
-                $reference->formulir_id = $reference->cutoffReceivable->formulir_id;
-            }
+            if ($reference) {
+                if (get_class($reference) == get_class(new CutOffReceivableDetail())) {
+                    $reference->formulir_id = $reference->cutoffReceivable->formulir_id;
+                }
 
-            if (get_class($reference) == get_class(new MemoJournalDetail())) {
-                $reference->formulir_id = $reference->memoJournal->formulir_id;
-            }
+                if (get_class($reference) == get_class(new MemoJournalDetail())) {
+                    $reference->formulir_id = $reference->memoJournal->formulir_id;
+                }
 
-            if ($references_amount[$i] > $references_amount_original[$i]) {
-                throw new PointException("AMOUNT FROM ".$reference->formulir->form_number." CAN NOT BE MORE THAN ". number_format_price($references_amount_original[$i]));
-            }
+                if ($references_amount[$i] > $references_amount_original[$i]) {
+                    throw new PointException("AMOUNT FROM ".$reference->formulir->form_number." CAN NOT BE MORE THAN ". number_format_price($references_amount_original[$i]));
+                }
 
-            $payment_collection_detail = new PaymentCollectionDetail;
-            $payment_collection_detail->point_sales_payment_collection_id = $payment_collection->id;
-            $payment_collection_detail->detail_notes = $references_notes[$i];
-            $payment_collection_detail->amount = $references_amount[$i];
-            $payment_collection_detail->coa_id = $references_account[$i];
-            info($reference);
-            $payment_collection_detail->form_reference_id = $reference->formulir_id;
-            $payment_collection_detail->reference_id = $references_detail_id[$i];
-            $payment_collection_detail->reference_type = $references_detail_type[$i];
-            $payment_collection_detail->save();
+                $payment_collection_detail = new PaymentCollectionDetail;
+                $payment_collection_detail->point_sales_payment_collection_id = $payment_collection->id;
+                $payment_collection_detail->detail_notes = $references_notes[$i];
+                $payment_collection_detail->amount = $references_amount[$i];
+                $payment_collection_detail->coa_id = $references_account[$i];
+                $payment_collection_detail->form_reference_id = $reference->formulir_id;
+                $payment_collection_detail->reference_id = $references_detail_id[$i];
+                $payment_collection_detail->reference_type = $references_detail_type[$i];
+                $payment_collection_detail->save();
 
-            $total += $payment_collection_detail->amount;
+                $total += $payment_collection_detail->amount;
 
-            ReferHelper::create(
-                $references_type[$i],
-                $references_id[$i],
-                get_class($payment_collection_detail),
-                $payment_collection_detail->id,
-                get_class($payment_collection),
-                $payment_collection->id,
-                $payment_collection_detail->amount
-            );
+                ReferHelper::create(
+                    $references_type[$i],
+                    $references_id[$i],
+                    get_class($payment_collection_detail),
+                    $payment_collection_detail->id,
+                    get_class($payment_collection),
+                    $payment_collection->id,
+                    $payment_collection_detail->amount
+                );
 
-            $close_status = ReferHelper::closeStatus(
-                $references_type[$i],
-                $references_id[$i],
-                $references_amount_original[$i],
-                0
-            );
+                $close_status = ReferHelper::closeStatus(
+                    $references_type[$i],
+                    $references_id[$i],
+                    $references_amount_original[$i],
+                    0
+                );
 
-            formulir_lock($reference->formulir_id, $payment_collection->formulir_id);
+                formulir_lock($reference->formulir_id, $payment_collection->formulir_id);
 
-            if ($close_status) {
-                if (get_class($reference) != get_class(new CutOffReceivableDetail())) {
-                    Formulir::where('id', $reference->formulir_id)->update([
-                        'form_status' => 1
-                    ]);
+                if ($close_status) {
+                    if (get_class($reference) != get_class(new CutOffReceivableDetail())) {
+                        Formulir::where('id', $reference->formulir_id)->update([
+                            'form_status' => 1
+                        ]);
+                    }
                 }
             }
         }
