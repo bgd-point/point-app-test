@@ -86,6 +86,7 @@ class PaymentCollectionHelper
             $payment_collection_detail->detail_notes = $references_notes[$i];
             $payment_collection_detail->amount = $references_amount[$i];
             $payment_collection_detail->coa_id = $references_account[$i];
+            info('ref: '.$reference->formulir_id);
             $payment_collection_detail->form_reference_id = $reference->formulir_id;
             $payment_collection_detail->reference_id = $references_detail_id[$i];
             $payment_collection_detail->reference_type = $references_detail_type[$i];
