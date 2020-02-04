@@ -651,11 +651,12 @@
                 total_other += dbNum($(rows[i]).find(".row-total").val());
             }
             var total_invoice = dbNum($('#total-invoice').val());
+            var total_memo_journal = dbNum($('#total-memo-journal').val());
             var total_retur = dbNum($('#total-retur').val());
             var total_cutoff = dbNum($('#total-cutoff').val());
             var total_downpayment = dbNum($('#total-downpayment').val());
             $('#total-other').val(appNum(total_other));
-            $('#total-payment').val(appNum(total_other + total_cutoff + total_invoice - total_downpayment - total_retur));
+            $('#total-payment').val(appNum(total_other + total_memo_journal + total_cutoff + total_invoice - total_downpayment - total_retur));
         }
     </script>
 @stop
