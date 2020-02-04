@@ -67,15 +67,18 @@ class PaymentCollectionHelper
         $payment_collection->save();
 
         $total = 0;
-        info($references);
         for ($i=0 ; $i < count($references) ; $i++) {
             $reference = $references[$i];
+            if ($reference == null) {
+                $referenceType = $references_detail_type[$i];
+                $referenceId = $references_detail_id[$i];
+                $reference = $referenceType::find($referenceId)->memoJournal;
+            }
             if (get_class($reference) == get_class(new CutOffReceivableDetail())) {
                 $reference->formulir_id = $reference->cutoffReceivable->formulir_id;
             }
 
             if (get_class($reference) == get_class(new MemoJournalDetail())) {
-                info($reference);
                 $reference->formulir_id = $reference->memoJournal->formulir_id;
             }
 
