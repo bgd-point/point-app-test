@@ -77,10 +77,10 @@ class PurchaseReportController extends Controller
                             $report->invoice->formulir->form_number,
                             $report->invoice->supplier->codeName,
                             $report->item->codeName,
-                            number_format_quantity($report->quantity, 0),
+                            $report->quantity,
                             $report->unit,
-                            number_format_quantity($report->price),
-                            number_format_quantity($total)
+                            $report->price,
+                            $total
                         ]);
                     }
                     $total_data = $list_report->count()+2;
@@ -93,7 +93,7 @@ class PurchaseReportController extends Controller
                             'size'       => '14',
                             'bold'       =>  true
                         ));
-                        $cell->setValue(number_format_quantity($total_value));
+                        $cell->setValue($total_value);
                     });
                 });
             })->store('xls', $storage);
