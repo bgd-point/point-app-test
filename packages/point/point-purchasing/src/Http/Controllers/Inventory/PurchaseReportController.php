@@ -77,9 +77,9 @@ class PurchaseReportController extends Controller
                             $report->invoice->formulir->form_number,
                             $report->invoice->supplier->codeName,
                             $report->item->codeName,
-                            number_format_db($report->quantity),
+                            number_format_db(number_format_quantity($report->quantity, 0)),
                             $report->unit,
-                            number_format_db($report->price),
+                            number_format_db(number_format_quantity($report->price, 0)),
                             number_format_db($total)
                         ]);
                     }
