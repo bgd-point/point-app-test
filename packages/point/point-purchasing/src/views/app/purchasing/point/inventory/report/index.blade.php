@@ -70,14 +70,14 @@
                                 <td><a href="{{url('purchasing/point/invoice/'.$report->invoice->id)}}">{{ $report->invoice->formulir->form_number}} </a></td>
                                 <td>{!! get_url_person($report->invoice->supplier->id) !!}</td>
                                 <td><a href="{{url('master/item/'.$report->item_id)}}"> {{$report->item->codeName}}</a></td>
-                                <td class="text-center">{{number_format_quantity($report->quantity, 0) . ' ' . $report->unit}}</td>
-                                <td class="text-right">{{number_format_quantity($report->price)}}</td>
-                                <td class="text-right">{{number_format_quantity($report->discount)}} %</td>
-                                <td class="text-right">{{number_format_quantity($total)}}</td>
+                                <td class="text-center">{{$report->quantity}}</td>
+                                <td class="text-right">{{$report->price}}</td>
+                                <td class="text-right">{{$report->discount}} %</td>
+                                <td class="text-right">{{$total}}</td>
                             </tr>
                         @endforeach
                         <tr>
-                            <td class="text-right" colspan="8"><h4><strong>{{number_format_quantity($total_value)}}</strong></h4></td>
+                            <td class="text-right" colspan="8"><h4><strong>{{$total_value}}</strong></h4></td>
                         </tr>
                         </tbody>
                     </table>
