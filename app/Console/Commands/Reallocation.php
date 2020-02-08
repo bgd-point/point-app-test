@@ -257,7 +257,6 @@ class Reallocation extends Command
 //        $allocationReports = AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
 //            ->join('formulir', 'formulir.id', '=', 'allocation_report.formulir_id')
 //            ->where('allocation.name', 'like', '%(CASH FLOW)')
-//            ->where('allocation.id', '=', 163)
 //            ->where('formulir.formulirable_type', Retur::class)
 //            ->select('allocation_report.*')
 //            ->with('allocation')
@@ -272,15 +271,19 @@ class Reallocation extends Command
         $allocationReports = AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
             ->join('formulir', 'formulir.id', '=', 'allocation_report.formulir_id')
             ->where('allocation.name', 'like', '%(CASH FLOW)')
-            ->where('formulir.formulirable_type', Retur::class)
+            ->where('formulir.form_status', -1)
             ->select('allocation_report.*')
             ->with('allocation')
             ->with('formulir')
-            ->get();
+            ->delete();
 
-        foreach ($allocationReports as $allocationReport) {
-            $allocationReport->amount = abs($allocationReport->amount) * -1;
-            $allocationReport->save();
-        }
+        $allocationReports = AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
+            ->join('formulir', 'formulir.id', '=', 'allocation_report.formulir_id')
+            ->where('allocation.name', 'like', '%(CASH FLOW)')
+            ->whereNull('formulir.form_number')
+            ->select('allocation_report.*')
+            ->with('allocation')
+            ->with('formulir')
+            ->delete();
     }
 }
