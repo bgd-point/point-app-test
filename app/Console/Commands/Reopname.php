@@ -7,8 +7,11 @@ use Illuminate\Console\Command;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
+use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Allocation;
+use Point\Framework\Models\Master\Item;
 use Point\PointInventory\Models\StockOpname\StockOpname;
+use Point\PointInventory\Models\StockOpname\StockOpnameItem;
 use Point\PointInventory\Models\TransferItem\TransferItem;
 
 class Reopname extends Command
@@ -39,7 +42,7 @@ class Reopname extends Command
         \DB::beginTransaction();
 
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-            ->where('formulir.form_date', '>=', '2019-10-01')
+            ->where('formulir.form_date', '>=', '2020-01-01')
             ->where('formulir.form_status', '<=', 0)
             ->whereNotNull('formulir.form_number')
             ->orderBy('formulir.form_date', 'asc')
@@ -48,10 +51,24 @@ class Reopname extends Command
 
         foreach($opnames as $opname) {
             Inventory::where('formulir_id', $opname->formulir_id)->delete();
+            Journal::where('form_journal_id', $opname->formulir_id)->delete();
         }
 
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-            ->where('formulir.form_date', '>=', '2019-10-01')
+            ->where('formulir.form_date', '>=', '2020-01-01')
+            ->where('formulir.approval_status', '!=', 1)
+            ->whereNotNull('formulir.form_number')
+            ->orderBy('formulir.form_date', 'asc')
+            ->select('point_inventory_stock_opname.*')
+            ->get();
+
+        foreach($opnames as $opname) {
+            Inventory::where('formulir_id', $opname->formulir_id)->delete();
+            Journal::where('form_journal_id', $opname->formulir_id)->delete();
+        }
+
+        $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
+            ->where('formulir.form_date', '>=', '2020-01-01')
             ->where('formulir.form_status', '=', 0)
             ->whereNotNull('formulir.form_number')
             ->orderBy('formulir.form_date', 'asc')
@@ -80,8 +97,9 @@ class Reopname extends Command
         }
 
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-            ->where('formulir.form_date', '>=', '2019-10-01')
+            ->where('formulir.form_date', '>=', '2020-01-01')
             ->where('formulir.form_status', '>=', 1)
+            ->where('formulir.approval_status', '>=', 1)
             ->whereNotNull('formulir.form_number')
             ->orderBy('formulir.form_date', 'asc')
             ->select('point_inventory_stock_opname.*')
