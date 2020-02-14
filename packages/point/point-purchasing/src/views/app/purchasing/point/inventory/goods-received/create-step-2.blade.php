@@ -44,7 +44,7 @@
                             @foreach($list_purchase_include_expedition as $purchase_order)
                             @foreach($purchase_order->items as $purchase_order_item)
                                 <?php $deliver_qty = Point\Framework\Helpers\ReferHelper::remaining(get_class($purchase_order_item), $purchase_order_item->id, $purchase_order_item->quantity);?>
-                            @if($deliver_qty > 0 && $purchase_order_item->item_id == request()->get('item_id'))
+                            @if($deliver_qty > 0 && (!request()->get('item_id') || $purchase_order_item->item_id == request()->get('item_id')))
                                 <?php
                                 $totalQtyPending += $deliver_qty;
                                 $totalQtyOrder += $purchase_order_item->quantity;
