@@ -12,6 +12,12 @@
 
         <div class="panel panel-default">
             <div class="panel-body">
+                <select id="itemSearch" name="item" class="selectize" style="width: 100%;" data-placeholder="Choose one.." onchange="selectItem()">
+                    <option value=""></option>
+                    @foreach(\Point\Framework\Models\Master\Item::all() as $item)
+                        <option value="{{ $item->id }}" @if(request()->get('item_id') == $item->id) selected @endif>[{{ $item->code }}] {{ $item->name }}</option>
+                    @endforeach
+                </select>
                 @if(! $list_purchase_include_expedition->count() && ! $purchase_order_exclude_expedition->count())
                     Please make an order first
                 @endif
@@ -24,14 +30,25 @@
                             <thead>
                             <tr>
                                 <th width="100px" class="text-center"></th>
-                                <th>Form Number</th>
+                                <th>#</th>
+                                <th>Date</th>
                                 <th>Supplier</th>
                                 <th>Item</th>
-                                <th>Notes</th>
+                                <th>Qty. Order</th>
+                                <th>Qty. Pending</th>
                             </tr>
                             </thead>
                             <tbody>
+                            <?php $totalQtyPending = 0;?>
+                            <?php $totalQtyOrder = 0;?>
                             @foreach($list_purchase_include_expedition as $purchase_order)
+                            @foreach($purchase_order->items as $purchase_order_item)
+                                <?php $deliver_qty = Point\Framework\Helpers\ReferHelper::remaining(get_class($purchase_order_item), $purchase_order_item->id, $purchase_order_item->quantity);?>
+                            @if($deliver_qty > 0 && $purchase_order_item->item_id == request()->get('item_id'))
+                                <?php
+                                $totalQtyPending += $deliver_qty;
+                                $totalQtyOrder += $purchase_order_item->quantity;
+                                ?>
                             <tr>
                                 <td class="text-center">
                                     @if($purchase_order->is_cash == 1)
@@ -48,21 +65,21 @@
                                     </a>
                                     @endif
                                 </td>
-                                <td>
-                                    {{ date_format_view($purchase_order->formulir->form_date) }} <br>
-                                    <a href="{{ url('purchasing/point/purchase-order/'.$purchase_order->id) }}">{{ $purchase_order->formulir->form_number}}</a>
-                                </td>
+                                <td><a href="{{ url('purchasing/point/purchase-order/'.$purchase_order->id) }}">{{ $purchase_order->formulir->form_number}}</a></td>
+                                <td>{{ date_format_view($purchase_order->formulir->form_date) }} <br></td>
                                 <td>{!! get_url_person($purchase_order->supplier_id) !!}</td>
-                                <td>
-                                    <ul style="list-style:none; padding:0">
-                                        @foreach($purchase_order->items as $purchase_order_item)
-                                            <li> - {{$purchase_order_item->item->codeName}} {{$purchase_order_item->quantity}} {{$purchase_order_item->unit}} </li>
-                                        @endforeach
-                                    </ul>
-                                </td>
-                                <td>{{$purchase_order->formulir->notes}}</td>
+                                <td>{{$purchase_order_item->item->codeName}}</td>
+                                <td class="text-right">{{number_format_accounting($purchase_order_item->quantity)}}</td>
+                                <td class="text-right">{{number_format_accounting($deliver_qty)}}</td>
                             </tr>
+                            @endif
                             @endforeach
+                            @endforeach
+                            <tr>
+                                <td colspan="5"></td>
+                                <td class="text-right">{{ number_format_accounting($totalQtyOrder) }}</td>
+                                <td class="text-right">{{ number_format_accounting($totalQtyPending) }}</td>
+                            </tr>
                             </tbody>
                         </table>
                         {!! $list_purchase_include_expedition->render() !!}
@@ -85,6 +102,7 @@
                             </thead>
                             <tbody>
                             @foreach($list_purchase_exclude_expedition['expedition_order'] as $expedition_order)
+                                @foreach($expedition_order->reference()->items as $purchase_order_item)
                             <?php
                             if (! $expedition_order->reference()->checkExpeditionReference($expedition_order->reference()->formulir_id)) {
                                 continue;
@@ -108,14 +126,11 @@
                                     </td>
                                     <td>{!! get_url_person($expedition_order->reference()->supplier_id) !!}</td>
                                     <td>
-                                        <ul style="list-style:none; padding:0">
-                                        @foreach($expedition_order->reference()->items as $purchase_order_item)
-                                            <li> - {{$purchase_order_item->item->codeName}} {{$purchase_order_item->quantity}} {{$purchase_order_item->unit}} </li>
-                                        @endforeach
-                                        </ul>
+                                        {{$purchase_order_item->item->codeName}} {{ number_format_accounting($purchase_order_item->quantity) }} {{$purchase_order_item->unit}}
                                     </td>
                                     <td>{{$expedition_order->reference()->formulir->notes}}</td>
                                 </tr>
+                            @endforeach
                             @endforeach
                             </tbody>
                         </table>
@@ -126,3 +141,12 @@
         </div>
     </div>
 @stop
+
+@section('scripts')
+    <script>
+        function selectItem() {
+            window.location.replace("/purchasing/point/goods-received/create-step-2/{{ $supplier_id }}/?item_id="+document.getElementById('itemSearch').value)
+        }
+    </script>
+@stop
+

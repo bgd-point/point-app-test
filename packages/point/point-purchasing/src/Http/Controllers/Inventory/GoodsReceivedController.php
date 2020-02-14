@@ -71,7 +71,7 @@ class GoodsReceivedController extends Controller
         $view->list_purchase_include_expedition = PurchaseOrder::includeExpedition($supplier_id)->paginate(100);
         $view->list_purchase_exclude_expedition = PurchaseOrder::excludeExpedition($supplier_id);
         $view->purchase_order_exclude_expedition = ExpeditionOrder::joinFormulir()->approvalApproved()->notArchived()->where('done', 0)->whereIn('form_reference_id', $view->list_purchase_exclude_expedition['reference_id'])->selectOriginal()->get();
-
+        $view->supplier_id = $supplier_id;
         return $view;
     }
 
