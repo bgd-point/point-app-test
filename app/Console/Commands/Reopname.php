@@ -82,13 +82,13 @@ class Reopname extends Command
                     ->where('warehouse_id', $opname->warehouse_id)
                     ->orderBy('form_date', 'desc')
                     ->orderBy('id', 'desc')
-                    ->first();
+                    ->sum('quantity');
 
                 $stock = 0;
 
                 if ($inv) {
-                    $this->line('TOTAL QUANTITY ' . $inv->total_quantity);
-                    $stock = $inv->total_quantity;
+                    $this->line('TOTAL QUANTITY ' . $inv);
+                    $stock = $inv;
                 }
 
                 $opnameItem->stock_in_database = $stock;
@@ -112,13 +112,13 @@ class Reopname extends Command
                     ->where('warehouse_id', $opname->warehouse_id)
                     ->orderBy('form_date', 'desc')
                     ->orderBy('id', 'desc')
-                    ->first();
+                    ->sum('quantity');
 
                 $stock = 0;
 
                 if ($inv) {
-                    $this->line('TOTAL QUANTITY ' . $inv->total_quantity);
-                    $stock = $inv->total_quantity;
+                    $this->line('TOTAL QUANTITY ' . $inv);
+                    $stock = $inv;
                 }
 
                 $opnameItem->stock_in_database = $stock;
