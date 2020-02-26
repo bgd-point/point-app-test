@@ -41,6 +41,7 @@ class DepositController extends Controller
                     ->orWhere('bumi_deposit_group.name', 'K-BI')
                     ->orWhere('bumi_deposit_group.name', 'R-BI')
                     ->orWhere('bumi_deposit_group.name', 'T-BI')
+                    ->orWhere('bumi_deposit_group.name', 'T')
                     ->orWhere('bumi_deposit_group.name', 'T -BI')
                     ->orWhere('bumi_deposit_group.name', 'P- BI')
                     ->orWhere('bumi_deposit_group.name', 'D-BI')
