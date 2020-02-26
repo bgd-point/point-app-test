@@ -10,7 +10,7 @@
 
         <div class="panel panel-default">
             <div class="panel-body">
-                <form action="{{ url('inventory/value-report') }}" method="get" class="form-horizontal">
+                <form action="{{ url('inventory/report') }}" method="get" class="form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-4">
                             <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
