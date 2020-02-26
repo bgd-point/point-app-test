@@ -49,8 +49,8 @@
                         </div>
                         <div class="col-sm-8">
                             <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
-                            @if(access_is_allowed_to_view('export.inventory.value.report'))
-{{--                                <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-excel">Export to excel</a>--}}
+                            @if(access_is_allowed_to_view('export.inventory.report'))
+                                <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-excel">Export to excel</a>
                             @endif
                         </div>
                     </div>
@@ -193,7 +193,7 @@
                                 <td style="text-align: right">{{number_format_quantity($opening_stock)}}</td>
                                 <td style="text-align: right">{{number_format_quantity($stock_in)}}</td>
                                 <td style="text-align: right">{{number_format_quantity($stock_out)}}</td>
-                                <td style="text-align: right">{{number_format_quantity($closing_stock * $price)}}</td>
+                                <td style="text-align: right">{{number_format_quantity($closing_stock)}}</td>
                             </tr>
                         @endforeach
                         <tr>
@@ -233,7 +233,7 @@
             $(e.currentTarget).html(spinner).addClass('disabled');
 
             $.ajax({
-                url: '{{url("inventory/value-report/export")}}',
+                url: '{{url("inventory/report/export")}}',
                 data: {
                     date_from: date_from,
                     date_to: date_to,

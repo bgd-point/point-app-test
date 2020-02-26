@@ -149,17 +149,17 @@ class InventoryReportController extends Controller
                             $sheet->setCellValue('A1', 'INVENTORY VALUE REPORT');
                             $sheet->setCellValue('A2', 'ITEM');
                             $sheet->setCellValue('B2', 'OPENING STOCK');
-                            $sheet->setCellValue('E2', 'STOCK IN');
-                            $sheet->setCellValue('G2', 'STOCK OUT');
-                            $sheet->setCellValue('I2', 'CLOSING STOCK');
+                            $sheet->setCellValue('C2', 'STOCK IN');
+                            $sheet->setCellValue('D2', 'STOCK OUT');
+                            $sheet->setCellValue('E2', 'CLOSING STOCK');
 
                             $date_from = date_format_db($request['date_from']) ?: date('Y-m-01 00:00:00');
                             $date_to = date_format_db($request['date_to'], 'end') ?: date('Y-m-d 23:59:59');
 
                             $sheet->setCellValue('B3', '(' . date_format_view($date_from) . ')');
-                            $sheet->setCellValue('E3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
-                            $sheet->setCellValue('G3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
-                            $sheet->setCellValue('I3', '(' . date_format_view($date_to) . ')');
+                            $sheet->setCellValue('C3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
+                            $sheet->setCellValue('D3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
+                            $sheet->setCellValue('E3', '(' . date_format_view($date_to) . ')');
 
                             $sheet->cell('B3:K3', function ($cell) {
                                 $cell->setFont(array(
@@ -167,17 +167,6 @@ class InventoryReportController extends Controller
                                     'bold'       =>  true
                                 ));
                             });
-
-                            $sheet->setCellValue('B4', 'QTY');
-                            $sheet->setCellValue('C4', 'COST OF SALES');
-                            $sheet->setCellValue('D4', 'TOTAL VALUE');
-                            $sheet->setCellValue('E4', 'QTY');
-                            $sheet->setCellValue('F4', 'TOTAL VALUE');
-                            $sheet->setCellValue('G4', 'QTY');
-                            $sheet->setCellValue('H4', 'TOTAL VALUE');
-                            $sheet->setCellValue('I4', 'QTY');
-                            $sheet->setCellValue('J4', 'LAST BUY PRICE');
-                            $sheet->setCellValue('K4', 'TOTAL VALUE');
 
                             // Get inventory list
                             $warehouse = $wh->id;
@@ -211,26 +200,14 @@ class InventoryReportController extends Controller
                             foreach ($list_report as $index=>$report) {
                                 if ($warehouse) {
                                     $opening_stock = inventory_get_opening_stock($date_from, $report->item_id, $warehouse);
-                                    $opening_cogs = inventory_get_cost_of_sales_value($date_from, $report->item_id, $warehouse);
-                                    $opening_value = inventory_get_opening_value($date_from, $report->item_id, $warehouse);
                                     $stock_in = inventory_get_stock_in($date_from, $date_to, $report->item_id, $warehouse);
-                                    $value_in = inventory_get_value_in($date_from, $date_to, $report->item_id, $warehouse);
                                     $stock_out = inventory_get_stock_out($date_from, $date_to, $report->item_id, $warehouse);
-                                    $value_out = inventory_get_value_out($date_from, $date_to, $report->item_id, $warehouse);
                                     $closing_stock = inventory_get_closing_stock($date_from, $date_to, $report->item_id, $warehouse);
-                                    $closing_cogs = inventory_get_cost_of_sales_value($date_to, $report->item_id, $warehouse);
-                                    $closing_value = inventory_get_closing_value($date_from, $date_to, $report->item_id, $warehouse);
                                 } else {
                                     $opening_stock = inventory_get_opening_stock_all($date_from, $report->item_id);
-                                    $opening_cogs = inventory_get_cost_of_sales_value_all($date_from, $report->item_id);
-                                    $opening_value = inventory_get_opening_value_all($date_from, $report->item_id);
                                     $stock_in = inventory_get_stock_in_all($date_from, $date_to, $report->item_id);
-                                    $value_in = inventory_get_value_in_all($date_from, $date_to, $report->item_id);
                                     $stock_out = inventory_get_stock_out_all($date_from, $date_to, $report->item_id);
-                                    $value_out = inventory_get_value_out_all($date_from, $date_to, $report->item_id);
                                     $closing_stock = inventory_get_closing_stock_all($date_from, $date_to, $report->item_id);
-                                    $closing_cogs = inventory_get_cost_of_sales_value_all($date_to, $report->item_id);;
-                                    $closing_value = inventory_get_closing_value_all($date_from, $date_to, $report->item_id);
                                 }
 
 
@@ -295,15 +272,9 @@ class InventoryReportController extends Controller
                                 array_push($content, [
                                     $report->item->codeName,
                                     number_format($opening_stock, 0),
-                                    number_format($opening_cogs, 0),
-                                    number_format($opening_value, 0),
                                     number_format($stock_in, 0),
-                                    number_format($value_in, 0),
                                     number_format($stock_out, 0),
-                                    number_format($value_out, 0),
-                                    number_format($closing_stock, 0),
-                                    number_format($price, 0),
-                                    number_format($closing_stock * $price, 0)
+                                    number_format($closing_stock, 0)
                                 ]);
 
                                 // If item needs recalculate stock
@@ -376,17 +347,17 @@ class InventoryReportController extends Controller
                         $sheet->setCellValue('A1', 'INVENTORY VALUE REPORT');
                         $sheet->setCellValue('A2', 'ITEM');
                         $sheet->setCellValue('B2', 'OPENING STOCK');
-                        $sheet->setCellValue('E2', 'STOCK IN');
-                        $sheet->setCellValue('G2', 'STOCK OUT');
-                        $sheet->setCellValue('I2', 'CLOSING STOCK');
+                        $sheet->setCellValue('C2', 'STOCK IN');
+                        $sheet->setCellValue('D2', 'STOCK OUT');
+                        $sheet->setCellValue('E2', 'CLOSING STOCK');
 
                         $date_from = date_format_db($request['date_from']) ?: date('Y-m-01 00:00:00');
                         $date_to = date_format_db($request['date_to'], 'end') ?: date('Y-m-d 23:59:59');
 
                         $sheet->setCellValue('B3', '(' . date_format_view($date_from) . ')');
-                        $sheet->setCellValue('E3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
-                        $sheet->setCellValue('G3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
-                        $sheet->setCellValue('I3', '(' . date_format_view($date_to) . ')');
+                        $sheet->setCellValue('C3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
+                        $sheet->setCellValue('D3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
+                        $sheet->setCellValue('E3', '(' . date_format_view($date_to) . ')');
 
                         $sheet->cell('B3:K3', function ($cell) {
                             $cell->setFont(array(
@@ -396,15 +367,9 @@ class InventoryReportController extends Controller
                         });
 
                         $sheet->setCellValue('B4', 'QTY');
-                        $sheet->setCellValue('C4', 'COST OF SALES');
-                        $sheet->setCellValue('D4', 'TOTAL VALUE');
+                        $sheet->setCellValue('C4', 'QTY');
+                        $sheet->setCellValue('D4', 'QTY');
                         $sheet->setCellValue('E4', 'QTY');
-                        $sheet->setCellValue('F4', 'TOTAL VALUE');
-                        $sheet->setCellValue('G4', 'QTY');
-                        $sheet->setCellValue('H4', 'TOTAL VALUE');
-                        $sheet->setCellValue('I4', 'QTY');
-                        $sheet->setCellValue('J4', 'COST OF SALES');
-                        $sheet->setCellValue('K4', 'TOTAL VALUE');
 
                         // Get inventory list
                         $warehouse = $request['warehouse'] ? : 0;
@@ -438,41 +403,23 @@ class InventoryReportController extends Controller
                         foreach ($list_report as $index=>$report) {
                             if ($warehouse) {
                                 $opening_stock = inventory_get_opening_stock($date_from, $report->item_id, $warehouse);
-                                $opening_cogs = inventory_get_cost_of_sales_value($date_from, $report->item_id, $warehouse);
-                                $opening_value = inventory_get_opening_value($date_from, $report->item_id, $warehouse);
                                 $stock_in = inventory_get_stock_in($date_from, $date_to, $report->item_id, $warehouse);
-                                $value_in = inventory_get_value_in($date_from, $date_to, $report->item_id, $warehouse);
                                 $stock_out = inventory_get_stock_out($date_from, $date_to, $report->item_id, $warehouse);
-                                $value_out = inventory_get_value_out($date_from, $date_to, $report->item_id, $warehouse);
                                 $closing_stock = inventory_get_closing_stock($date_from, $date_to, $report->item_id, $warehouse);
-                                $closing_cogs = inventory_get_cost_of_sales_value($date_to, $report->item_id, $warehouse);
-                                $closing_value = inventory_get_closing_value($date_from, $date_to, $report->item_id, $warehouse);
                             } else {
                                 $opening_stock = inventory_get_opening_stock_all($date_from, $report->item_id);
-                                $opening_cogs = inventory_get_cost_of_sales_value_all($date_from, $report->item_id);
-                                $opening_value = inventory_get_opening_value_all($date_from, $report->item_id);
                                 $stock_in = inventory_get_stock_in_all($date_from, $date_to, $report->item_id);
-                                $value_in = inventory_get_value_in_all($date_from, $date_to, $report->item_id);
                                 $stock_out = inventory_get_stock_out_all($date_from, $date_to, $report->item_id);
-                                $value_out = inventory_get_value_out_all($date_from, $date_to, $report->item_id);
                                 $closing_stock = inventory_get_closing_stock_all($date_from, $date_to, $report->item_id);
-                                $closing_cogs = inventory_get_cost_of_sales_value_all($date_to, $report->item_id);;
-                                $closing_value = inventory_get_closing_value_all($date_from, $date_to, $report->item_id);
                             }
 
                             // Store each report in array
                             array_push($content, [
                                 $report->item->codeName,
                                 number_format($opening_stock, 0),
-                                number_format($opening_cogs, 0),
-                                number_format($opening_value, 0),
                                 number_format($stock_in, 0),
-                                number_format($value_in, 0),
                                 number_format($stock_out, 0),
-                                number_format($value_out, 0),
                                 number_format($closing_stock, 0),
-                                number_format($closing_cogs, 0),
-                                number_format($closing_value, 0)
                             ]);
 
                             // If item needs recalculate stock
