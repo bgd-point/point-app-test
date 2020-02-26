@@ -50,7 +50,7 @@
                         <div class="col-sm-8">
                             <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
                             @if(access_is_allowed_to_view('export.inventory.value.report'))
-                                <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-excel">Export to excel</a>
+{{--                                <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-excel">Export to excel</a>--}}
                             @endif
                         </div>
                     </div>
@@ -73,20 +73,10 @@
                             <th>Keterangan</th>
                             <th>Item</th>
                             <th>Unit</th>
-                            <th colspan="2">Opening Stock <br/> <span style="font-size:12px">({{date_format_view($date_from)}})</span></th>
-                            <th colspan="2">Stock In <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
-                            <th colspan="2">Stock Out <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
-                            <th colspan="3">Closing Stock <br/> <span style="font-size:12px"> ({{date_format_view($date_to)}})</th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th style="text-align: center">QTY</th>
-                            <th style="text-align: center">QTY</th>
-                            <th style="text-align: center">QTY</th>
-                            <th style="text-align: center">QTY</th>
+                            <th>Opening Stock <br/> <span style="font-size:12px">({{date_format_view($date_from)}})</span></th>
+                            <th>Stock In <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
+                            <th>Stock Out <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
+                            <th>Closing Stock <br/> <span style="font-size:12px"> ({{date_format_view($date_to)}})</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -188,7 +178,7 @@
                                 <td>{{ $item->item->accountAsset->coa_number }}</td>
                                 <td>{{ $item->item->accountAsset->name }}</td>
                                 <td style="{{$recalculate_stock == true ? 'color:red;font-weight: bold' : ''}}">
-                                    <a href="{{url('inventory/value-report/detail/'.$item->item_id.'?date_from='.$date_from.'&date_to='.$date_to.'&warehouse_id='.$warehouse_id)}}">
+                                    <a href="{{url('inventory/report/detail/'.$item->item_id.'?date_from='.$date_from.'&date_to='.$date_to.'&warehouse_id='.$warehouse_id)}}">
                                         @if($recalculate_stock == true)
                                             <span data-toggle="tooltip" data-placement="top" title="" style="overflow: hidden; position: relative;color:red !important" data-original-title="Stock value need to recalculate">
                                         <i class="fa fa-warning"></i>
