@@ -33,6 +33,7 @@ class DepositController extends Controller
         if (auth()->user()->id > 3) {
             $deposits = $deposits->where(function ($q) {
                 $q->where('bumi_deposit_group.name', 'BI')
+                    ->orWhere('bumi_deposit_group.name', 'AM')
                     ->orWhere('bumi_deposit_group.name', 'BNS')
                     ->orWhere('bumi_deposit_group.name', 'BIJ')
                     ->orWhere('bumi_deposit_group.name', 'BIM')
