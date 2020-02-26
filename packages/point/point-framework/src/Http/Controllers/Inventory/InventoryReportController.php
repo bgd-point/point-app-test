@@ -311,18 +311,6 @@ class InventoryReportController extends Controller
                             'K' => 20,
                         ));
 
-                        // Set Header Style
-                        $sheet->mergeCells('A1:K1', 'center');
-                        $sheet->mergeCells('A2:A3');
-                        $sheet->mergeCells('B2:D2', 'center');
-                        $sheet->mergeCells('E2:F2', 'center');
-                        $sheet->mergeCells('G2:H2', 'center');
-                        $sheet->mergeCells('I2:K2', 'center');
-                        $sheet->mergeCells('B3:D3', 'center');
-                        $sheet->mergeCells('E3:F3', 'center');
-                        $sheet->mergeCells('G3:H3', 'center');
-                        $sheet->mergeCells('I3:K3', 'center');
-
                         $sheet->cell('A1:K4', function ($cell) {
                             $cell->setFont(array(
                                 'size'       => '14',
