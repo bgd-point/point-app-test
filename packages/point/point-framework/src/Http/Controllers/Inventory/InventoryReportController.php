@@ -24,7 +24,7 @@ class InventoryReportController extends Controller
         WarehouseHelper::isAvailable();
 
         $array_of_search = explode(' ',\Input::get('search'));
-        $view = view('framework::app.inventory.value-report.index');
+        $view = view('framework::app.inventory.report.index');
         $view->list_warehouse = Warehouse::active()->get();
         $view->search_warehouse = \Input::get('warehouse_id') ? Warehouse::find(\Input::get('warehouse_id')) : 0;
         $view->date_from = \Input::get('date_from') ? date_format_db(\Input::get('date_from'), 'start') : date('Y-m-01 00:00:00');
@@ -66,7 +66,7 @@ class InventoryReportController extends Controller
         $date_from = date('Y-m-01 00:00:00');
         $date_to = date('Y-m-d 23:59:59');
         $warehouse_id = \Input::get('warehouse_id') ? \Input::get('warehouse_id') : 0;
-        $view = view('framework::app.inventory.value-report.detail');
+        $view = view('framework::app.inventory.report.detail');
         $view->date_from = \Input::get('date_from') ? \Input::get('date_from') : $date_from;
         $view->date_to = \Input::get('date_to') ? \Input::get('date_to') : $date_to;
         $view->warehouse = Warehouse::find($warehouse_id);
@@ -96,7 +96,7 @@ class InventoryReportController extends Controller
     public function export(Request $request)
     {
         access_is_allowed('export.inventory.value.report');
-        $storage = storage_path('app/'.$request->project->url.'/inventory-value-report/');
+        $storage = storage_path('app/'.$request->project->url.'/inventory-report/');
         $fileName = 'INVENTORY VALUE REPORT '.date('YmdHis');
         $cRequest = $request;
         $request = $request->input();
@@ -513,7 +513,7 @@ class InventoryReportController extends Controller
 
         $data_email = [
             'username' => auth()->user()->name,
-            'link' => url('download/'.$cRequest->project->url.'/inventory-value-report/'.$fileName.'.xls'),
+            'link' => url('download/'.$cRequest->project->url.'/inventory-report/'.$fileName.'.xls'),
             'email' => auth()->user()->email
         ];
 
