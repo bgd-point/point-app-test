@@ -52,16 +52,21 @@ class StockOpnameHelper
         $stock_opname->save();
 
         for ($i=0 ; $i<count(app('request')->input('item_id')) ; $i++) {
-            $stock_opname_items = new StockOpnameItem;
-            $stock_opname_items->stock_opname_id = $stock_opname->id;
-            $stock_opname_items->item_id = app('request')->input('item_id')[$i];
-            $stock_opname_items->stock_in_database = number_format_db(app('request')->input('stock_in_database')[$i]);
-            $stock_opname_items->quantity_opname = number_format_db(app('request')->input('quantity_opname')[$i]);
-            $stock_opname_items->opname_notes = app('request')->input('opname_notes')[$i];
-            $unit = $stock_opname_items->item->unit()->first();
-            $stock_opname_items->unit = $unit->name;
-            $stock_opname_items->converter = $unit->converter;
-            $stock_opname_items->save();
+            if (app('request')->input('item_id')[$i] &&
+                app('request')->input('stock_in_database')[$i] &&
+                app('request')->input('quantity_opname')[$i] &&
+                app('request')->input('opname_notes')[$i]) {
+                $stock_opname_items = new StockOpnameItem;
+                $stock_opname_items->stock_opname_id = $stock_opname->id;
+                $stock_opname_items->item_id = app('request')->input('item_id')[$i];
+                $stock_opname_items->stock_in_database = number_format_db(app('request')->input('stock_in_database')[$i]);
+                $stock_opname_items->quantity_opname = number_format_db(app('request')->input('quantity_opname')[$i]);
+                $stock_opname_items->opname_notes = app('request')->input('opname_notes')[$i];
+                $unit = $stock_opname_items->item->unit()->first();
+                $stock_opname_items->unit = $unit->name;
+                $stock_opname_items->converter = $unit->converter;
+                $stock_opname_items->save();
+            }
         }
 
         return $stock_opname;
