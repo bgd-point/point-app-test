@@ -52,10 +52,7 @@ class StockOpnameHelper
         $stock_opname->save();
 
         for ($i=0 ; $i<count(app('request')->input('item_id')) ; $i++) {
-            if (app('request')->input('item_id')[$i] &&
-                app('request')->input('stock_in_database')[$i] &&
-                app('request')->input('quantity_opname')[$i] &&
-                app('request')->input('opname_notes')[$i]) {
+            if ($i < 166) {
                 $stock_opname_items = new StockOpnameItem;
                 $stock_opname_items->stock_opname_id = $stock_opname->id;
                 $stock_opname_items->item_id = app('request')->input('item_id')[$i];
