@@ -34,6 +34,7 @@ class DepositController extends Controller
             $deposits = $deposits->where(function ($q) {
                 $q->where('bumi_deposit_group.name', 'BI')
                     ->orWhere('bumi_deposit_group.name', 'AM')
+                    ->orWhere('bumi_deposit_group.name', 'ANT-YK')
                     ->orWhere('bumi_deposit_group.name', 'BNS')
                     ->orWhere('bumi_deposit_group.name', 'BIJ')
                     ->orWhere('bumi_deposit_group.name', 'BIM')
