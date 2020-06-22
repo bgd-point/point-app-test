@@ -84,10 +84,8 @@
                             <th>Notes</th>
                             <th>Bank Interest</th>
                             <th>Bank Interest + Tax Fee</th>
-                            @if(auth()->user()->id < 5)
                             <th>Deposit Value</th>
                             <th>Withdrawal</th>
-                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -113,14 +111,12 @@
                         <td>{!! nl2br(e($deposit->formulir->notes)) !!}</td>
                         <td>{{ number_format_quantity($deposit->interest_percent) }} % @if($deposit->total_days_in_year > 0)({{ number_format_quantity(($deposit->deposit_time * $deposit->original_amount * $deposit->interest_percent) / ($deposit->total_days_in_year * 100)) }})@endif</td>
                         <td>{{ number_format_quantity($deposit->total_interest) }}</td>
-                        @if(auth()->user()->id < 5)
                         <td>{{ number_format_quantity($deposit->original_amount) }}</td>
                         <td>
                             @if(formulir_is_close($deposit->formulir_id))
                             {{ number_format_quantity($deposit->withdraw_amount) }} at {{ date_format_view($deposit->withdraw_date) }}
                             @endif
                         </td>
-                        @endif
                     </tr>
 
                     @if($deposit->important_notes)
