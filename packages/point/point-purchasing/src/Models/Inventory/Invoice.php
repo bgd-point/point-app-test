@@ -36,9 +36,6 @@ class Invoice extends Model
 
     public function scopeAvailableToPaymentOrder($q)
     {
-        // not relevant
-        $invoice_locked = Invoice::getLockedInvoice();
-
         $q->open()
             ->approvalApproved()
             ->notArchived()

@@ -27,6 +27,7 @@
                             <th width="100px" class="text-center"></th>
                             <th>Supplier</th>
                             <th>From Invoice</th>
+                            <th>Remaining</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -34,6 +35,20 @@
                             <td colspan="3">From Invoice</td>
                         </tr>
                         @foreach($list_invoice as $invoice)
+                            <?php
+                            $list_invoice_by_person = \Point\PointPurchasing\Models\Inventory\Invoice::joinFormulir()
+                                ->joinSupplier()
+                                ->notArchived()
+                                ->where('supplier_id', '=', $invoice->supplier_id)
+                                ->selectOriginal()
+                                ->orderByStandard()
+                                ->get();
+                            ?>
+                            @foreach($list_invoice_by_person as $invoice_by_person)
+                            <?php
+                            $amount = number_format_price(\Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice_by_person), $invoice_by_person->id, $invoice_by_person->total), 0);
+                            ?>
+                            @if ($amount > 0)
                             <tr id="list-{{$invoice->formulir_id}}">
                                 <td class="text-center">
                                     <a href="{{ url('purchasing/point/payment-order/create-step-2/'.$invoice->supplier_id) }}"
@@ -43,8 +58,12 @@
                                 <td>
                                     {!! get_url_person($invoice->supplier_id) !!}
                                 </td>
-                                <td> {{ $invoice->getListSupplier() }}</td>
+                                <td>{{date_format_view($invoice_by_person->formulir->form_date)}}</td>
+                                <td><a href="{{url('sales/point/indirect/invoice/'.$invoice_by_person->id)}}">{{$invoice_by_person->formulir->form_number}}</a></td>
+                                <td style="text-align: right">{{ $amount }}</td>
                             </tr>
+                            @endif
+                            @endforeach
                         @endforeach
                         @if(count($list_cut_off_payable) > 0)
                         <tr>
@@ -68,6 +87,7 @@
                                 {{date_format_view($reference_payable->formulir->form_date)}}
                                 <a href="{{url('accounting/point/cut-off/payable/'.$reference_payable->id)}}"> {{$reference_payable->formulir->form_number}}</a>
                             </td>
+                            <td></td>
                         </tr>
                         @endforeach
                         @endif
