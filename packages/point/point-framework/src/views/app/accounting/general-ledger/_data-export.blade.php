@@ -40,7 +40,7 @@
 
         $classMaster = $journal->subledger_type;
         $name = '';
-        if ($classMaster != null) {
+        if ($classMaster != null && $classMaster != 'RejournalPurchasingAndExpeditionSeeder') {
             $master = $classMaster::find($journal->subledger_id);
             $name = '['.$master->code . '] ' . $master->name;
         }
