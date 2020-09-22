@@ -147,19 +147,20 @@ class InventoryValueReportController extends Controller
 
                             // Set Header Text
                             $sheet->setCellValue('A1', 'INVENTORY VALUE REPORT');
-                            $sheet->setCellValue('A2', 'ITEM');
-                            $sheet->setCellValue('B2', 'OPENING STOCK');
-                            $sheet->setCellValue('E2', 'STOCK IN');
-                            $sheet->setCellValue('G2', 'STOCK OUT');
-                            $sheet->setCellValue('I2', 'CLOSING STOCK');
+                            $sheet->setCellValue('A2', 'CODE');
+                            $sheet->setCellValue('B2', 'ITEM');
+                            $sheet->setCellValue('C2', 'OPENING STOCK');
+                            $sheet->setCellValue('F2', 'STOCK IN');
+                            $sheet->setCellValue('H2', 'STOCK OUT');
+                            $sheet->setCellValue('H2', 'CLOSING STOCK');
 
                             $date_from = date_format_db($request['date_from']) ?: date('Y-m-01 00:00:00');
                             $date_to = date_format_db($request['date_to'], 'end') ?: date('Y-m-d 23:59:59');
 
-                            $sheet->setCellValue('B3', '(' . date_format_view($date_from) . ')');
-                            $sheet->setCellValue('E3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
-                            $sheet->setCellValue('G3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
-                            $sheet->setCellValue('I3', '(' . date_format_view($date_to) . ')');
+                            $sheet->setCellValue('C3', '(' . date_format_view($date_from) . ')');
+                            $sheet->setCellValue('F3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
+                            $sheet->setCellValue('H3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
+                            $sheet->setCellValue('J3', '(' . date_format_view($date_to) . ')');
 
                             $sheet->cell('B3:K3', function ($cell) {
                                 $cell->setFont(array(
@@ -293,7 +294,8 @@ class InventoryValueReportController extends Controller
 
                                 // Store each report in array
                                 array_push($content, [
-                                    $report->item->codeName,
+                                    $report->item->code,
+                                    $report->item->name,
                                     number_format($opening_stock, 0),
                                     number_format($opening_cogs, 0),
                                     number_format($opening_value, 0),
@@ -374,19 +376,20 @@ class InventoryValueReportController extends Controller
 
                         // Set Header Text
                         $sheet->setCellValue('A1', 'INVENTORY VALUE REPORT');
-                        $sheet->setCellValue('A2', 'ITEM');
-                        $sheet->setCellValue('B2', 'OPENING STOCK');
+                        $sheet->setCellValue('A2', 'CODE');
+                        $sheet->setCellValue('B2', 'ITEM');
+                        $sheet->setCellValue('C2', 'OPENING STOCK');
                         $sheet->setCellValue('E2', 'STOCK IN');
-                        $sheet->setCellValue('G2', 'STOCK OUT');
-                        $sheet->setCellValue('I2', 'CLOSING STOCK');
+                        $sheet->setCellValue('H2', 'STOCK OUT');
+                        $sheet->setCellValue('J2', 'CLOSING STOCK');
 
                         $date_from = date_format_db($request['date_from']) ?: date('Y-m-01 00:00:00');
                         $date_to = date_format_db($request['date_to'], 'end') ?: date('Y-m-d 23:59:59');
 
-                        $sheet->setCellValue('B3', '(' . date_format_view($date_from) . ')');
-                        $sheet->setCellValue('E3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
-                        $sheet->setCellValue('G3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
-                        $sheet->setCellValue('I3', '(' . date_format_view($date_to) . ')');
+                        $sheet->setCellValue('C3', '(' . date_format_view($date_from) . ')');
+                        $sheet->setCellValue('F3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
+                        $sheet->setCellValue('H3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
+                        $sheet->setCellValue('J3', '(' . date_format_view($date_to) . ')');
 
                         $sheet->cell('B3:K3', function ($cell) {
                             $cell->setFont(array(
@@ -462,7 +465,8 @@ class InventoryValueReportController extends Controller
 
                             // Store each report in array
                             array_push($content, [
-                                $report->item->codeName,
+                                $report->item->code,
+                                $report->item->name,
                                 number_format($opening_stock, 0),
                                 number_format($opening_cogs, 0),
                                 number_format($opening_value, 0),
