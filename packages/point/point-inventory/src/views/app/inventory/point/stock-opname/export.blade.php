@@ -7,6 +7,7 @@
     <td>STATUS</td>
     <td>DATE</td>
     <td>WAREHOUSE</td>
+    <td>ITEM CODE</td>
     <td>ITEM</td>
     <td>FROM (QTY)</td>
     <td>TO (QTY)</td>
@@ -97,7 +98,8 @@
         </td>
         <td>{{ $opname->formulir->form_date }}</td>
         <td>{{ $opname->warehouse->name }}</td>
-        <td>[{{ $detail->item->code }}] {{ $detail->item->name }}</td>
+        <td>{{ $detail->item->code }}</td>
+        <td>{{ $detail->item->name }}</td>
         <td>{{ $detail->stock_in_database }}</td>
         <td>{{ $detail->quantity_opname }}</td>
         <td>{{ $price }}</td>
