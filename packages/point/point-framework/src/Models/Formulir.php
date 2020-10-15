@@ -17,7 +17,7 @@ class Formulir extends Model
 
     public function save(array $options = [])
     {
-        $lockedDate = strtotime('2020-03-01');
+        $lockedDate = strtotime('2020-10-01');
         if ($this->formulirable_type && request()->get('database_name') == 'p_kbretail') {
             if (auth()->user() && auth()->user()->name != 'ratna') {
                 $check = Formulir::where('form_date', '>', $this->form_date)
@@ -44,7 +44,7 @@ class Formulir extends Model
         if (request()->get('database_name') == 'p_kbretail'
             && strtotime($this->form_date) < $lockedDate
             && $this->formulirable_type != CashAdvance::class) {
-            throw new PointException('You cannot change data before 01 Dec 2019, or you can contact your administrator. Affected Form : ' . $this->form_number);
+            throw new PointException('You cannot change data before 01 Okt 2020, or you can contact your administrator. Affected Form : ' . $this->form_number);
         }
 
         return parent::save($options);
