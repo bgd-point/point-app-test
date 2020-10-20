@@ -231,7 +231,7 @@ class DepositController extends Controller
      */
     public function withdraw($id)
     {
-        access_is_allowed('create.bumi.deposit');
+        access_is_allowed('update.bumi.deposit');
 
         return view('bumi-deposit::app.facility.bumi-deposit.deposit.withdraw', array(
             'deposit' => Deposit::find($id)
@@ -246,7 +246,7 @@ class DepositController extends Controller
             'withdraw_notes' => 'required'
         ]);
 
-        FormulirHelper::isAllowedToCreate('create.bumi.deposit', date_format_db($request->input('withdraw_date')), []);
+        FormulirHelper::isAllowedToCreate('update.bumi.deposit', date_format_db($request->input('withdraw_date')), []);
 
         DB::beginTransaction();
 
