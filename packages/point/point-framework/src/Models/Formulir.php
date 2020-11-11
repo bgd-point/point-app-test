@@ -17,29 +17,29 @@ class Formulir extends Model
 
     public function save(array $options = [])
     {
-        $lockedDate = strtotime('2020-10-01');
-        if ($this->formulirable_type && request()->get('database_name') == 'p_kbretail') {
-            if (auth()->user() && auth()->user()->name != 'ratna') {
-                $check = Formulir::where('form_date', '>', $this->form_date)
-                    ->where('form_status', '>=', 0)
-                    ->where('approval_status', '>=', 0)
-                    ->whereNotNull('form_number')
-                    ->where('formulirable_type', '=', $this->formulirable_type)
-                    ->where(function ($q) {
-                        $q->whereNull('request_approval_at')->where('approval_status','=',0);
-                    });
-                if (auth()->user()) {
-                    $check->where(function ($q) {
-                        $q->where('updated_by', '=', auth()->user()->id)
-                            ->orWhere('updated_by', '=', auth()->user()->id);
-                    });
-                }
-                $check = $check->first();
-                if ($check) {
-                    throw new PointException('You cannot input back date from ' . $check->id. '. '.$check->form_number . ' (' . $check->form_date.')');
-                }
-            }
-        }
+        $lockedDate = strtotime('2020-11-01');
+        // if ($this->formulirable_type && request()->get('database_name') == 'p_kbretail') {
+        //     if (auth()->user() && auth()->user()->name != 'ratna') {
+        //         $check = Formulir::where('form_date', '>', $this->form_date)
+        //             ->where('form_status', '>=', 0)
+        //             ->where('approval_status', '>=', 0)
+        //             ->whereNotNull('form_number')
+        //             ->where('formulirable_type', '=', $this->formulirable_type)
+        //             ->where(function ($q) {
+        //                 $q->whereNull('request_approval_at')->where('approval_status','=',0);
+        //             });
+        //         if (auth()->user()) {
+        //             $check->where(function ($q) {
+        //                 $q->where('updated_by', '=', auth()->user()->id)
+        //                     ->orWhere('updated_by', '=', auth()->user()->id);
+        //             });
+        //         }
+        //         $check = $check->first();
+        //         if ($check) {
+        //             throw new PointException('You cannot input back date from ' . $check->id. '. '.$check->form_number . ' (' . $check->form_date.')');
+        //         }
+        //     }
+        // }
 
         if (request()->get('database_name') == 'p_kbretail'
             && strtotime($this->form_date) < $lockedDate
