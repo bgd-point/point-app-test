@@ -30,7 +30,7 @@ class DepositController extends Controller
         $deposits = Deposit::joinFormulir()->joinDependencies()->selectOriginal()->notArchived()->active();
 
 
-        if (auth()->user()->id > 3) {
+        if (auth()->user()->id > 3 && auth()->user()->name != 'martien') {
             $deposits = $deposits->where(function ($q) {
                 $q->where('bumi_deposit_group.name', 'BI')
                     ->orWhere('bumi_deposit_group.name', 'AM')
