@@ -1,11 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Point\Core\Models\Master\Permission;
-use Point\Core\Models\Master\PermissionRole;
 use Symfony\Component\Console\Output\ConsoleOutput as Output;
-use Point\PointExpedition\Models\PaymentOrder;
-use Point\PointExpedition\Http\Controllers\PaymentOrderApprovalController;
+use Point\Framework\Models\FormulirNumber;
 
 class TemporaryInsertSeeder extends Seeder
 {
@@ -30,38 +27,13 @@ class TemporaryInsertSeeder extends Seeder
 
 	public function run()
     {
-        $this->output->writeln('<info>--- Insert master item read cogs and price permission ---</info>');
+        $this->output->writeln('<info>--- Insert formulir number for retur pos ---</info>');
 
-        $permission = new Permission;
-        $permission->name = 'Read COGS ITEM';
-        $permission->slug = 'read.cogs.item';
-        $permission->group = 'MASTER';
-        $permission->type = 'ITEM';
-        $permission->action = 'Read COGS';
-        $permission->save();
+        $formulirNumber = new FormulirNumber;
+        $formulirNumber->code = 'POS/RETUR/';
+        $formulirNumber->name = 'point-sales-pos-retur';
+        $formulirNumber->save();
 
-        $permission_export = Permission::where('slug', 'read.cogs.item')->first();
-        
-        $permission_role = new PermissionRole;
-        $permission_role->permission_id = $permission_export->id;
-        $permission_role->role_id = 1;
-        $permission_role->save();
-
-        $permission = new Permission;
-        $permission->name = 'Read PRICE ITEM';
-        $permission->slug = 'read.price.item';
-        $permission->group = 'MASTER';
-        $permission->type = 'ITEM';
-        $permission->action = 'Read Price';
-        $permission->save();
-        
-        $permission_export = Permission::where('slug', 'read.price.item')->first();
-        
-        $permission_role = new PermissionRole;
-        $permission_role->permission_id = $permission_export->id;
-        $permission_role->role_id = 1;
-        $permission_role->save();
-
-        $this->output->writeln('<info>--- Insert master item read cogs and price permission finished ---</info>');
+        $this->output->writeln('<info>--- Insert formulir number for retur pos finished ---</info>');
     }
 }
