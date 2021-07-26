@@ -214,7 +214,7 @@
                         <div class="col-md-12">
                             @if(formulir_view_edit($deposit->formulir, 'update.bumi.deposit'))
                             <a href="{{url('facility/bumi-deposit/deposit/'.$deposit->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
-                            @if($deposit->formulir->form_status == 0)
+                            @if($deposit->formulir->form_status == 0 && auth()->user()->name !== 'admin1')
                             <a href="{{url('facility/bumi-deposit/deposit/'.$deposit->id.'/withdraw')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-money"></i> Withdraw</a>
                             @endif
                             @endif
