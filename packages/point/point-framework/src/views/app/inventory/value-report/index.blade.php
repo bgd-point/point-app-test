@@ -71,7 +71,8 @@
                         <tr>
                             <th>Nomer Akun</th>
                             <th>Keterangan</th>
-                            <th>Item</th>
+                            <th>Item Code</th>
+                            <th>Item Name</th>
                             <th>Unit</th>
                             <th colspan="2">Opening Stock <br/> <span style="font-size:12px">({{date_format_view($date_from)}})</span></th>
                             <th colspan="2">Stock In <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
@@ -197,10 +198,22 @@
                                         @if($recalculate_stock == true)
                                             <span data-toggle="tooltip" data-placement="top" title="" style="overflow: hidden; position: relative;color:red !important" data-original-title="Stock value need to recalculate">
                                         <i class="fa fa-warning"></i>
-                                                {{$item->item->codeName}}
+                                                {{$item->item->code}}
                                     </span>
                                         @else
-                                            {{$item->item->codeName}}
+                                            {{$item->item->code}}
+                                        @endif
+                                    </a>
+                                </td>
+                                <td style="{{$recalculate_stock == true ? 'color:red;font-weight: bold' : ''}}">
+                                    <a href="{{url('inventory/value-report/detail/'.$item->item_id.'?date_from='.$date_from.'&date_to='.$date_to.'&warehouse_id='.$warehouse_id)}}">
+                                        @if($recalculate_stock == true)
+                                            <span data-toggle="tooltip" data-placement="top" title="" style="overflow: hidden; position: relative;color:red !important" data-original-title="Stock value need to recalculate">
+                                        <i class="fa fa-warning"></i>
+                                                {{$item->item->name}}
+                                    </span>
+                                        @else
+                                            {{$item->item->name}}
                                         @endif
                                     </a>
                                 </td>
