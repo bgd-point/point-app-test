@@ -84,6 +84,7 @@
                             <th></th>
                             <th></th>
                             <th></th>
+                            <th></th>
                             <th style="text-align: center">QTY</th>
                             <th style="text-align: center">VALUE</th>
                             <th style="text-align: center">QTY</th>
