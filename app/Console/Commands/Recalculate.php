@@ -51,7 +51,7 @@ class Recalculate extends Command
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
-                ->where('form_date', '>=', '2020-12-01')
+                ->where('form_date', '>=', '2022-09-01')
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->orderBy('id', 'asc')
@@ -82,9 +82,6 @@ class Recalculate extends Command
                     $this->line($l_inventory->formulir_id .' = '.$l_inventory->formulir->form_number);
                 }
                 if ($l_inventory->formulir->formulirable_type === StockOpname::class && $index > 0) {
-                    if ($l_inventory->item_id == 7) {
-                        $this->line('1');
-                    }
                     $stockopname = StockOpname::join('point_inventory_stock_opname_item', 'point_inventory_stock_opname.id', '=', 'point_inventory_stock_opname_item.stock_opname_id')
                     ->where('point_inventory_stock_opname.formulir_id', $l_inventory->formulir_id)
                     ->where('point_inventory_stock_opname_item.item_id', $l_inventory->item_id)
