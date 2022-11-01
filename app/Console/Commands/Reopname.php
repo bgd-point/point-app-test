@@ -42,7 +42,7 @@ class Reopname extends Command
         \DB::beginTransaction();
 
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-            ->where('formulir.form_date', '>=', '2022-09-01')
+            ->where('formulir.form_date', '>=', '2022-07-01')
             ->where('formulir.form_status', '<=', 0)
             ->whereNotNull('formulir.form_number')
             ->orderBy('formulir.form_date', 'asc')
@@ -55,7 +55,7 @@ class Reopname extends Command
         }
 
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-            ->where('formulir.form_date', '>=', '2022-09-01')
+            ->where('formulir.form_date', '>=', '2022-07-01')
             ->where('formulir.approval_status', '!=', 1)
             ->whereNotNull('formulir.form_number')
             ->orderBy('formulir.form_date', 'asc')
@@ -68,7 +68,7 @@ class Reopname extends Command
         }
 
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-            ->where('formulir.form_date', '>=', '2022-09-01')
+            ->where('formulir.form_date', '>=', '2022-07-01')
             ->where('formulir.form_status', '=', 0)
             ->whereNotNull('formulir.form_number')
             ->orderBy('formulir.form_date', 'asc')
@@ -78,7 +78,7 @@ class Reopname extends Command
         foreach($opnames as $opname) {
             foreach ($opname->items as $opnameItem) {
                 $inv = Inventory::where('inventory.item_id', $opnameItem->item_id)
-                    ->where('form_date', '<', $opname->formulir->form_date)
+                    ->where('form_date', '<=', $opname->formulir->form_date)
                     ->where('warehouse_id', $opname->warehouse_id)
                     ->orderBy('form_date', 'desc')
                     ->orderBy('id', 'desc')
@@ -87,7 +87,7 @@ class Reopname extends Command
                 $stock = 0;
 
                 if ($inv) {
-                    $this->line('TOTAL QUANTITY ' . $inv);
+                    $this->line('TOTAL QUANTITY' .$opnameItem->item->name . ' ' . $inv);
                     $stock = $inv;
                 }
 
@@ -97,9 +97,9 @@ class Reopname extends Command
         }
 
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-            ->where('formulir.form_date', '>=', '2022-09-01')
-            ->where('formulir.form_status', '>=', 1)
-            ->where('formulir.approval_status', '>=', 1)
+            ->where('formulir.form_date', '>=', '2022-07-01')
+            ->where('formulir.form_status', '>=', 0)
+            ->where('formulir.approval_status', '>=', 0)
             ->whereNotNull('formulir.form_number')
             ->orderBy('formulir.form_date', 'asc')
             ->select('point_inventory_stock_opname.*')
@@ -109,6 +109,7 @@ class Reopname extends Command
             foreach ($opname->items as $opnameItem) {
                 $inv = Inventory::where('inventory.item_id', $opnameItem->item_id)
                     ->where('form_date', '<', $opname->formulir->form_date)
+                    ->where('form_date', '>', $opname->formulir->form_date)
                     ->where('warehouse_id', $opname->warehouse_id)
                     ->orderBy('form_date', 'desc')
                     ->orderBy('id', 'desc')
@@ -117,7 +118,8 @@ class Reopname extends Command
                 $stock = 0;
 
                 if ($inv) {
-                    $this->line('TOTAL QUANTITY ' . $inv);
+$this->line('ITEM_ID ' . $opnameItem->item_id .' FORM_DATE ' . $opname->formulir->form_date . ' WAREHOUSE '. $opname->warehouse_id);
+                    $this->line('TOTAL QUANTITY ' .$opnameItem->item->name .' ' . $inv);
                     $stock = $inv;
                 }
 
