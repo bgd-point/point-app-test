@@ -43,10 +43,29 @@ class InventoryHelper
 
     public static function getOpeningStock($date_from, $item_id, $warehouse_id)
     {
-        return Inventory::where('item_id', '=', $item_id)
-            ->where('form_date', '<', $date_from)
-            ->where('warehouse_id', '=', $warehouse_id)
-            ->sum('quantity');
+$opname = Inventory::where('item_id', '=', $item_id)
+          ->join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+          ->where('inventory.form_date', '<', $date_from)
+          ->where('inventory.warehouse_id', '=', $warehouse_id)
+          ->where('formulir.formulirable_type', 'like', '%StockOpname%')
+          ->orderBy('form_date', 'desc')
+          ->select('inventory.*')
+          ->first();
+
+         if ($opname) {
+         $opname->total_quantity += Inventory::where('item_id', '=', $item_id)
+          ->where('form_date', '>', $opname->form_date)
+          ->where('form_date', '<', $date_from)
+          ->where('warehouse_id', '=', $warehouse_id)
+          ->sum('quantity');
+         }
+
+         $opname2 = Inventory::where('item_id', '=', $item_id)
+          ->where('form_date', '<', $date_from)
+          ->where('warehouse_id', '=', $warehouse_id)
+          ->sum('quantity');
+
+       return $opname->total_quantity ?? $opname2;
     }
 
     public static function getStockIn($date_from, $date_to, $item_id, $warehouse_id)
@@ -113,9 +132,27 @@ class InventoryHelper
 
     public static function getOpeningStockAll($date_from, $item_id)
     {
-        return Inventory::where('item_id', '=', $item_id)
-            ->where('form_date', '<', $date_from)
-            ->sum('quantity');
+$opname = Inventory::where('item_id', '=', $item_id)
+          ->join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+          ->where('inventory.form_date', '<', $date_from)
+          ->where('formulir.formulirable_type', 'like', '%StockOpname%')
+          ->orderBy('form_date', 'desc')
+          ->select('inventory.*')
+          ->first();
+
+ if ($opname) {
+         $opname->total_quantity += Inventory::where('item_id', '=', $item_id)
+          ->where('form_date', '>', $opname->form_date)
+          ->where('form_date', '<', $date_from)
+          ->sum('quantity');
+         }
+
+
+       $opname2 = Inventory::where('item_id', '=', $item_id)
+          ->where('form_date', '<', $date_from)
+          ->sum('quantity');
+
+       return $opname->total_quantity ?? $opname2;
     }
 
     public static function getStockInAll($date_from, $date_to, $item_id)
