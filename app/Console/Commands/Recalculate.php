@@ -9,6 +9,7 @@ use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Master\Allocation;
 use Point\PointInventory\Models\StockOpname\StockOpname;
+use Point\PointInventory\Models\StockOpname\StockOpnameItem;
 use Point\PointInventory\Models\TransferItem\TransferItem;
 
 class Recalculate extends Command
@@ -39,25 +40,23 @@ class Recalculate extends Command
         \DB::beginTransaction();
 
         $inventories = Inventory::orderBy('form_date', 'asc')
-            ->orderBy('formulir_id', 'asc')
-            ->orderBy('id', 'asc')
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'].$inventory['warehouse_id'];
             });
 
         foreach ($inventories as $inventory) {
+$this->comment($inventory->id);
             $count = 0;
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
-                ->where('form_date', '>=', '2022-09-01')
+                ->where('form_date', '>=', '2022-01-01')
                 ->orderBy('form_date', 'asc')
-                ->orderBy('formulir_id', 'asc')
-                ->orderBy('id', 'asc')
                 ->get();
-
+$this->comment('1');
             foreach ($list_inventory as $l_inventory) {
+$this->comment('1a');
                 $l_inventory->recalculate = false;
                 if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
                     $st = StockOpname::where('formulir_id', '=', $l_inventory->formulir->id)->first();
@@ -71,23 +70,19 @@ class Recalculate extends Command
                     $l_inventory->save();
                 }
             }
-
+$this->comment('2');
             $total_quantity = 0;
             $total_value = 0;
             $cogs = 0;
             $cogs_tmp = 0;
             foreach ($list_inventory as $index => $l_inventory) {
                 // UPDATE QUANTITY IF FORMULIR TYPE IS STOCKOPNAME
-                if ($l_inventory->item_id == 7) {
-                    $this->line($l_inventory->formulir_id .' = '.$l_inventory->formulir->form_number);
-                }
-                if ($l_inventory->formulir->formulirable_type === StockOpname::class && $index > 0) {
+              if ($l_inventory->formulir->formulirable_type === StockOpname::class && $index > 0) {
                     $stockopname = StockOpname::join('point_inventory_stock_opname_item', 'point_inventory_stock_opname.id', '=', 'point_inventory_stock_opname_item.stock_opname_id')
                     ->where('point_inventory_stock_opname.formulir_id', $l_inventory->formulir_id)
                     ->where('point_inventory_stock_opname_item.item_id', $l_inventory->item_id)
-                    ->select('point_inventory_stock_opname_item.quantity_opname')
+                    ->select('point_inventory_stock_opname_item.*')
                     ->first();
-
                     $st = Inventory::where('item_id', $l_inventory->item_id)
                         ->where('warehouse_id', $l_inventory->warehouse_id)
                         ->where('form_date', '<', $l_inventory->form_date)
@@ -95,22 +90,24 @@ class Recalculate extends Command
                         ->orderBy('formulir_id', 'desc')
                         ->orderBy('id', 'desc')
                         ->first();
-
-                    foreach($stockopname->items as $sItem) {
-                        if ($sItem == $l_inventory->item_id) {
-                            $sItem->stock_in_database = $st->total_quantity;
-                            $sItem->save();
-                            break;
-                        }
+                    if ($st && $stockopname->item_id == $l_inventory->item_id) {
+                        $sti = StockOpnameItem::where("id", $stockopname->id)->first();
+      $sti->stock_in_database = $st->total_quantity;
+                        $sti->save();
                     }
-
+$this->comment('4a1');
                     $total_quantity = $stockopname->quantity_opname;
-                    $l_inventory->total_quantity = $total_quantity;
+                   $this->comment('4a2');
+ $l_inventory->total_quantity = $total_quantity;
+$this->comment('4a3');
                     $l_inventory->quantity = $total_quantity - $list_inventory[$index-1]->total_quantity;
+$this->comment('4a4');
                     $l_inventory->save();
                 } else {
                     // UPDATE TOTAL QUANTITY IF FORMULIR TYPE IS NOT STOCKOPNAME
-                    if ($index == 0) {
+
+$this->comment('5');
+   if ($index == 0) {
                         $inv = Inventory::where('inventory.item_id', $l_inventory->item_id)
                             ->where('form_date', '<', $l_inventory->form_date)
                             ->where('warehouse_id', $l_inventory->warehouse_id)
@@ -137,6 +134,7 @@ class Recalculate extends Command
                         }
                         $l_inventory->cogs = $cogs;
                     } else {
+$this->comment('1000');
                         // STOCK OUT
                         if ($total_quantity < 0) {
                             // STOCK MINUS = NEED FIX FROM USER
