@@ -72,7 +72,7 @@ class PaymentCollectionController extends Controller
             joinFormulir()->joinPaymentCollection()->where(
                 'point_sales_payment_collection_detail.point_sales_payment_collection_id', '=', $id
             );
-        
+
         $list_payment_others  = PaymentCollectionOther::select('coa.name as form_number',
             'point_sales_payment_collection_other.other_notes',
             'point_sales_payment_collection_other.amount',
@@ -90,7 +90,7 @@ class PaymentCollectionController extends Controller
         $list_payment_collection = PaymentCollection::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         $list_payment_collection = PaymentCollectionHelper::searchList($list_payment_collection, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
         $pdf = \PDF::loadView('point-sales::app.sales.point.sales.payment-collection.index-pdf', ['list_payment_collection' => $list_payment_collection]);
-        
+
         return $pdf->stream();
     }
 
@@ -109,7 +109,7 @@ class PaymentCollectionController extends Controller
             ->paginate(100);
 
         $view->list_cut_off_receivable = AccountPayableAndReceivable::where('done', 0)->where('reference_type', get_class(new CutOffReceivableDetail))->groupBy('person_id')->get();
-        
+
         return $view;
     }
 
@@ -117,10 +117,9 @@ class PaymentCollectionController extends Controller
     {
         $view = view('point-sales::app.sales.point.sales.payment-collection.create-step-2');
         $view->person = Person::find($person_id);
-        $view->list_invoice = Invoice::joinFormulir()->joinPerson()->notArchived()->availableToCreatePaymentCollection($person_id)->selectOriginal()->get();
+        $view->list_invoice = Invoice::joinFormulir()->joinPerson()->notArchived()->availableToCreatePaymentCollection($person_id)->selectOriginal()->orderBy('formulir.id', 'asc')->get();
         $view->list_memo_journal = MemoJournal::joinFormulir()->notArchived()->open()
             ->approvalApproved()
-            ->orderByStandard()
             ->selectOriginal()
             ->get();
         $view->list_downpayment = Downpayment::availableToCreatePaymentCollection($person_id)->get();
@@ -150,7 +149,7 @@ class PaymentCollectionController extends Controller
 
         $view = view('point-sales::app.sales.point.sales.payment-collection.create-step-3');
         $view->payment_type = app('request')->input('payment_type');
-        $view->list_invoice = Invoice::whereIn('formulir_id', \Input::get('invoice_id'))->get();
+        $view->list_invoice = Invoice::whereIn('formulir_id', \Input::get('invoice_id'))->orderBy('id', 'asc')->get();
         $view->invoice_rid = \Input::get('invoice_rid');
         $view->invoice_id = \Input::get('invoice_id');
         $view->invoice_notes = \Input::get('invoice_notes');
@@ -310,7 +309,6 @@ class PaymentCollectionController extends Controller
         $payment_collection = PaymentCollectionHelper::create($request, $formulir, $references, $references_account, $references_type,
         $references_id, $references_amount, $references_amount_original, $references_notes, $references_detail_id, $references_detail_type);
         timeline_publish('create.payment.collection', 'added new payment collection '  . $payment_collection->formulir->form_number);
-
         DB::commit();
 
         gritter_success('create form success', false);
@@ -583,7 +581,7 @@ class PaymentCollectionController extends Controller
         $formulir_id = app('request')->input('formulir_id');
 
         \DB::beginTransaction();
-        
+
         $formulir = Formulir::find($formulir_id);
         FormulirHelper::isAllowedToCancel($permission_slug, $formulir);
         $formulir->form_status = -1;
@@ -674,7 +672,7 @@ class PaymentCollectionController extends Controller
         $email_history->formulir_id = $payment_collection->formulir_id;
         $email_history->sent_at = \Carbon\Carbon::now()->toDateTimeString();
         $email_history->save();
-        
+
         return redirect()->back();
     }
 }
