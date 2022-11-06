@@ -61,7 +61,7 @@ class Recalculate extends Command
 
             foreach ($list_inventory as $index => $l_inventory) {
                 if ($l_inventory->formulir->formulirable_type === StockOpname::class && $index > 0) {
-                    $this->updateQuantityOpname($l_inventory, $total_quantity, $total_value, $cogs, $cogs_tmp);
+                    $this->updateQuantityOpname($l_inventory, $index, $total_quantity, $total_value, $cogs, $cogs_tmp);
                 } else {
                     $this->updateQuantityNonOpname($l_inventory, $index, $total_quantity, $total_value, $cogs, $cogs_tmp);
                 }
@@ -71,7 +71,7 @@ class Recalculate extends Command
         \DB::commit();
     }
 
-    private function updateQuantityOpname($l_inventory, $total_quantity, $total_value, $cogs, $cogs_tmp) {
+    private function updateQuantityOpname($l_inventory, $index, $total_quantity, $total_value, $cogs, $cogs_tmp) {
         // UPDATE QUANTITY IF FORMULIR TYPE IS STOCKOPNAME
         $stockOpnameItem = StockOpname::join('point_inventory_stock_opname_item', 'point_inventory_stock_opname.id', '=', 'point_inventory_stock_opname_item.stock_opname_id')
             ->where('point_inventory_stock_opname.formulir_id', $l_inventory->formulir_id)
