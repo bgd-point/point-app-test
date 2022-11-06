@@ -64,7 +64,7 @@ class Reopname extends Command
         }
     }
 
-    private function updatePendingOpname() {
+    private function updatePendingOpname($date) {
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
             ->where('formulir.form_date', '>=', $date)
             ->where('formulir.form_status', '=', 0)
