@@ -41,9 +41,18 @@ class Reopname extends Command
 
         \DB::beginTransaction();
 
+        $date = '2022-07-01';
+
+        $this->clearOpanme($date);
+        $this->updatePendingOpname($date);
+        $this->repostingOpname($date);
+
+        \DB::commit();
+    }
+
+    private function clearOpanme($date) {
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-            ->where('formulir.form_date', '>=', '2022-07-01')
-            ->where('formulir.form_status', '<=', 0)
+            ->where('formulir.form_date', '>=', $date)
             ->whereNotNull('formulir.form_number')
             ->orderBy('formulir.form_date', 'asc')
             ->select('point_inventory_stock_opname.*')
@@ -53,22 +62,11 @@ class Reopname extends Command
             Inventory::where('formulir_id', $opname->formulir_id)->delete();
             Journal::where('form_journal_id', $opname->formulir_id)->delete();
         }
+    }
 
+    private function updatePendingOpname() {
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-            ->where('formulir.form_date', '>=', '2022-07-01')
-            ->where('formulir.approval_status', '!=', 1)
-            ->whereNotNull('formulir.form_number')
-            ->orderBy('formulir.form_date', 'asc')
-            ->select('point_inventory_stock_opname.*')
-            ->get();
-
-        foreach($opnames as $opname) {
-            Inventory::where('formulir_id', $opname->formulir_id)->delete();
-            Journal::where('form_journal_id', $opname->formulir_id)->delete();
-        }
-
-        $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-            ->where('formulir.form_date', '>=', '2022-07-01')
+            ->where('formulir.form_date', '>=', $date)
             ->where('formulir.form_status', '=', 0)
             ->whereNotNull('formulir.form_number')
             ->orderBy('formulir.form_date', 'asc')
@@ -84,22 +82,17 @@ class Reopname extends Command
                     ->orderBy('id', 'desc')
                     ->sum('quantity');
 
-                $stock = 0;
-
-                if ($inv) {
-                    $this->line('TOTAL QUANTITY' .$opnameItem->item->name . ' ' . $inv);
-                    $stock = $inv;
-                }
-
-                $opnameItem->stock_in_database = $stock;
+                $opnameItem->stock_in_database = $inv ? $inv : 0;
                 $opnameItem->save();
             }
         }
+    }
 
+    private function repostingOpname($date) {
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-            ->where('formulir.form_date', '>=', '2022-07-01')
+            ->where('formulir.form_date', '>=', $date)
             ->where('formulir.form_status', '>=', 0)
-            ->where('formulir.approval_status', '>=', 0)
+            ->where('formulir.approval_status', '>', 0)
             ->whereNotNull('formulir.form_number')
             ->orderBy('formulir.form_date', 'asc')
             ->select('point_inventory_stock_opname.*')
@@ -108,35 +101,25 @@ class Reopname extends Command
         foreach($opnames as $opname) {
             foreach ($opname->items as $opnameItem) {
                 $inv = Inventory::where('inventory.item_id', $opnameItem->item_id)
-                    ->where('form_date', '<', $opname->formulir->form_date)
-                    ->where('form_date', '>', $opname->formulir->form_date)
+                    ->where('form_date', '<=', $opname->formulir->form_date)
                     ->where('warehouse_id', $opname->warehouse_id)
                     ->orderBy('form_date', 'desc')
                     ->orderBy('id', 'desc')
                     ->sum('quantity');
 
-                $stock = 0;
-
-                if ($inv) {
-$this->line('ITEM_ID ' . $opnameItem->item_id .' FORM_DATE ' . $opname->formulir->form_date . ' WAREHOUSE '. $opname->warehouse_id);
-                    $this->line('TOTAL QUANTITY ' .$opnameItem->item->name .' ' . $inv);
-                    $stock = $inv;
-                }
-
-                $opnameItem->stock_in_database = $stock;
+                $opnameItem->stock_in_database = $inv ? $inv : 0;
                 $opnameItem->save();
             }
 
             Inventory::where('formulir_id', $opname->formulir_id)->delete();
 
             foreach ($opname->items as $opnameItem) {
-                $date = date('Y-m-d 23:59:59', strtotime($opname->formulir->form_date));
                 $inventory = new Inventory;
-                $inventory->form_date = $date;
+                $inventory->form_date = $opname->formulir->form_date;
                 $inventory->formulir_id = $opname->formulir_id;
                 $inventory->warehouse_id = $opname->warehouse_id;
                 $inventory->item_id = $opnameItem->item_id;
-                $inventory->price =  InventoryHelper::getCostOfSales($date, $opnameItem->item_id, $opname->warehouse_id);
+                $inventory->price =  InventoryHelper::getCostOfSales($opname->formulir->form_date, $opnameItem->item_id, $opname->warehouse_id);
                 $quantity = $opnameItem->quantity_opname - $opnameItem->stock_in_database;
                 if ($quantity < 0) {
                     $inventory->quantity = $quantity * -1;
@@ -151,7 +134,5 @@ $this->line('ITEM_ID ' . $opnameItem->item_id .' FORM_DATE ' . $opname->formulir
                 }
             }
         }
-
-        \DB::commit();
     }
 }
