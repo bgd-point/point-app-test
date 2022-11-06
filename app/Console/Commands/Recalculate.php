@@ -61,7 +61,7 @@ class Recalculate extends Command
 
             foreach ($list_inventory as $index => $l_inventory) {
                 if ($l_inventory->formulir->formulirable_type === StockOpname::class && $index > 0) {
-                    $this-updateQuantityOpname($l_inventory, $total_quantity, $total_value, $cogs, $cogs_tmp);
+                    $this->updateQuantityOpname($l_inventory, $total_quantity, $total_value, $cogs, $cogs_tmp);
                 } else {
                     $this->updateQuantityNonOpname($l_inventory, $index, $total_quantity, $total_value, $cogs, $cogs_tmp);
                 }
