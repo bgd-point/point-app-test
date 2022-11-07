@@ -89,6 +89,7 @@ class Reopname extends Command
     }
 
     private function repostingOpname($date) {
+        $this->line('reposting opname');
         $opnames = StockOpname::join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
             ->where('formulir.form_date', '>=', $date)
             ->where('formulir.form_status', '>=', 0)
@@ -99,6 +100,7 @@ class Reopname extends Command
             ->get();
 
         foreach($opnames as $opname) {
+            $this->line($opname->id);
             foreach ($opname->items as $opnameItem) {
                 $inv = Inventory::where('inventory.item_id', $opnameItem->item_id)
                     ->where('form_date', '<=', $opname->formulir->form_date)
