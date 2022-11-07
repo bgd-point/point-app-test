@@ -60,6 +60,7 @@ class Recalculate extends Command
             $cogs_tmp = 0;
 
             foreach ($list_inventory as $index => $l_inventory) {
+                $this->line($index);
                 if ($l_inventory->formulir->formulirable_type === StockOpname::class && $index > 0) {
                     $this->updateQuantityOpname($list_inventory, $l_inventory, $index, $total_quantity, $total_value, $cogs, $cogs_tmp);
                 } else {
@@ -111,8 +112,16 @@ class Recalculate extends Command
                 ->orderBy('form_date', 'desc')
                 ->orderBy('id', 'desc')
                 ->first();
-            $total_quantity = $inv ? $inv->total_quantity : 0;
+
+            $this->line($inv->total_quantity);
+
+            if ($inv) {
+                $total_quantity = $inv->total_quantity;
+            } else {
+                $total_quantity = 0;
+            }
         }
+
         $total_quantity += $l_inventory->quantity;
 
         if ($l_inventory->quantity > 0) {
