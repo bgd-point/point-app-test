@@ -103,7 +103,7 @@ class PaymentOrderController extends Controller
 	$page = request()->get("page") ?? 1;
         $view = view('point-purchasing::app.purchasing.point.inventory.payment-order.create-step-2');
         $view->supplier = Person::find($supplier_id);
-        $view->list_invoice = Invoice::availableToCreatePaymentOrder($supplier_id)->orderBy('id','desc')->skip(30 * $page)->take(30)->get();
+	$view->list_invoice = Invoice::availableToCreatePaymentOrder($supplier_id)->orderBy('id','desc')->skip(30 * ($page - 1))->take(30)->get();
         $view->list_downpayment = Downpayment::availableToCreatePaymentOrder($supplier_id)->get();
         $view->list_retur = Retur::availableToCreatePaymentOrder($supplier_id)->get();
         $view->list_coa = Coa::getNonSubledger();
