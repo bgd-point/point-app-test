@@ -100,9 +100,10 @@ class PaymentOrderController extends Controller
 
     public function createStep2($supplier_id)
     {
+	$page = request()->get("page") ?? 1;
         $view = view('point-purchasing::app.purchasing.point.inventory.payment-order.create-step-2');
         $view->supplier = Person::find($supplier_id);
-        $view->list_invoice = Invoice::availableToCreatePaymentOrder($supplier_id)->take(30)->get();
+	$view->list_invoice = Invoice::availableToCreatePaymentOrder($supplier_id)->orderBy('id','desc')->skip(30 * ($page - 1))->take(30)->get();
         $view->list_downpayment = Downpayment::availableToCreatePaymentOrder($supplier_id)->get();
         $view->list_retur = Retur::availableToCreatePaymentOrder($supplier_id)->get();
         $view->list_coa = Coa::getNonSubledger();
@@ -592,7 +593,7 @@ class PaymentOrderController extends Controller
         $formulir_id = app('request')->input('formulir_id');
 
         \DB::beginTransaction();
-        
+
         $formulir = Formulir::find($formulir_id);
         FormulirHelper::isAllowedToCancel($permission_slug, $formulir);
         $formulir->form_status = -1;
@@ -625,7 +626,7 @@ class PaymentOrderController extends Controller
                 $locked_form->form_status = 0;
                 $locked_form->save();
             }
-            
+
             $formulir_lock->locked = false;
             $formulir_lock->save();
         }
@@ -661,7 +662,7 @@ class PaymentOrderController extends Controller
             'token' => $token,
             'warehouse' => $warehouse
         );
-        
+
         $name = 'PURCHASE PAYMENT ORDER '. $payment_order->formulir->form_number;
 
         \Queue::push(function ($job) use ($data, $request, $payment_order, $warehouse, $name) {
@@ -683,7 +684,7 @@ class PaymentOrderController extends Controller
         $email_history->formulir_id = $payment_order->formulir_id;
         $email_history->sent_at = \Carbon\Carbon::now()->toDateTimeString();
         $email_history->save();
-        
+
         return redirect()->back();
     }
 
@@ -691,7 +692,7 @@ class PaymentOrderController extends Controller
     {
         $view = view('point-purchasing::app.purchasing.point.inventory.payment-order.report');
         $invoices = Invoice::all();
-        
+
         $reports = array();
 
         foreach ($invoices as $key => $invoice) {
@@ -711,7 +712,7 @@ class PaymentOrderController extends Controller
         $date_from = \Input::get('date_from');
         $date_to = \Input::get('date_to');
         $search = \Input::get('search');
-        
+
         $reports = array_filter($reports, function($value) use ($status, $date_from, $date_to, $search)
         {
             $filter_status = ($status == 'all' ? true : ($value->form_status == $status));
@@ -722,14 +723,14 @@ class PaymentOrderController extends Controller
         });
         $order_by = \Input::get('order_by') ? \Input::get('order_by') : "form_date";
         $order_type = \Input::get('order_type') ? \Input::get('order_type') : "asc";
-        
+
         usort($reports, function($a, $b) use($order_by, $order_type)
         {
             if($order_by == "status")
             {
                 if($order_type == "asc")
                     return $a->approval_status >= $b->approval_status && $a->form_status >= $b->form_status;
-                
+
                 return $a->approval_status <= $b->approval_status && $a->form_status <= $b->form_status;
             }
 
