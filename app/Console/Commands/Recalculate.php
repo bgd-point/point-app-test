@@ -60,7 +60,7 @@ class Recalculate extends Command
                 ->join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
                 ->where('point_inventory_stock_opname_item.item_id', '=', $inventory->item_id)
                 ->where('point_inventory_stock_opname.warehouse_id', '=', $inventory->warehouse_id)
-                //->where('formulir.form_date', '<=', $inventory->form_date)
+                ->where('formulir.form_date', '<=', '2022-10-01')
                 ->where('formulir.form_status', '>=', 0)
                 ->where('formulir.approval_status', '>', 0)
                 ->whereNotNull('formulir.form_number')
