@@ -91,10 +91,7 @@ class Recalculate extends Command
                         ->orderBy('id', 'desc')
                         ->first();
                     
-                    $this->line('inv ' . $inv);
-
                     if ($inv) {
-                        $this->line($inv->total_quantity . ' = ' . $l_inventory->quantity);
                         $total_quantity = $inv->total_quantity;
                     } else {
                         $total_quantity = 0;
