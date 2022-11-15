@@ -41,8 +41,6 @@ class Recalculate extends Command
 
         // Get all items
         $inventories = Inventory::orderBy('form_date', 'asc')
-            ->where('item_id', 347)
-            ->where('warehouse_id', 1)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'].$inventory['warehouse_id'];
