@@ -78,7 +78,7 @@ class Recalculate extends Command
                     ->where('form_date', '>', $opnameItem->opname->formulir->form_date)
                     ->orderBy('form_date', 'asc')
                     ->get();
-                $this->line('length '.count($list_inventory));
+                $this->line('length '.count($list_inventory) . ' , ' . $opnameItem->opname->formulir->form_date));
             }
             
 
