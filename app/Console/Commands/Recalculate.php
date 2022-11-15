@@ -53,6 +53,27 @@ class Recalculate extends Command
                 ->where('form_date', '>=', '2022-01-01')
                 ->orderBy('form_date', 'asc')
                 ->get();
+            
+            $opname = StockOpnameItem::join('point_inventory_stock_opname', 'point_inventory_stock_opname_item.stock_opname_id', '=', 'point_inventory_stock_opname.id')
+                ->join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
+                ->where('point_inventory_stock_opname_item.item_id', '=', $l_inventory->item_id)
+                ->where('point_inventory_stock_opname_item.warehouse_id', '=', $l_inventory->warehouse_id)
+                ->where('formulir.form_date', '<=', $l_inventory->form_date)
+                ->where('formulir.form_status', '>=', 0)
+                ->where('formulir.approval_status', '>', 0)
+                ->whereNotNull('formulir.form_number')
+                ->orderBy('formulir.form_date', 'desc')
+                ->select('point_inventory_stock_opname.*')
+                ->first();
+            
+            if ($opname) {
+                $list_inventory = Inventory::with('formulir')
+                    ->where('item_id', '=', $inventory->item_id)
+                    ->where('warehouse_id', '=', $inventory->warehouse_id)
+                    ->where('form_date', '>', $opname->formulir->form_date)
+                    ->orderBy('form_date', 'asc')
+                    ->get();
+            }
 
             $total_quantity = 0;
             $total_value = 0;
@@ -61,8 +82,7 @@ class Recalculate extends Command
 
             foreach ($list_inventory as $index => $l_inventory) {
                 $this->line($index);
-
-             
+                             
                 if ($index == 0) {
                     $inv = Inventory::where('inventory.item_id', $l_inventory->item_id)
                         ->where('form_date', '<', $l_inventory->form_date)
