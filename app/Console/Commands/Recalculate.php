@@ -76,7 +76,6 @@ class Recalculate extends Command
                     ->get();
             }
             
-            $this->line($list_inventory[0]);
 
             $total_quantity = 0;
             $total_value = 0;
