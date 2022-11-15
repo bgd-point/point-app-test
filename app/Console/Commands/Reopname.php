@@ -74,6 +74,8 @@ class Reopname extends Command
             ->get();
 
         foreach($opnames as $opname) {
+            $opname->formulir->form_date = date('Y-m-d H:i:59', $opname->formulir->form_date);
+            $opname->formulir->save();
             foreach ($opname->items as $opnameItem) {
                 $inv = Inventory::where('inventory.item_id', $opnameItem->item_id)
                     ->where('form_date', '<=', date('Y-m-d H:i:59'))
@@ -101,9 +103,11 @@ class Reopname extends Command
 
         foreach($opnames as $opname) {
             $this->line($opname->id);
+            $opname->formulir->form_date = date('Y-m-d H:i:59', $opname->formulir->form_date);
+            $opname->formulir->save();
             foreach ($opname->items as $opnameItem) {
                 $inv = Inventory::where('inventory.item_id', $opnameItem->item_id)
-                    ->where('form_date', '<=', $opname->formulir->form_date)
+                    ->where('form_date', '<=', date('Y-m-d H:i:59', $opname->formulir->form_date))
                     ->where('warehouse_id', $opname->warehouse_id)
                     ->orderBy('form_date', 'desc')
                     ->orderBy('id', 'desc')
