@@ -61,6 +61,7 @@ class Recalculate extends Command
 
             foreach ($list_inventory as $index => $l_inventory) {
                 $this->line($index);
+
              
                 if ($index == 0) {
                     $inv = Inventory::where('inventory.item_id', $l_inventory->item_id)
@@ -69,6 +70,10 @@ class Recalculate extends Command
                         ->orderBy('form_date', 'desc')
                         ->orderBy('id', 'desc')
                         ->first();
+                    
+                    if ($l_inventory->item_id == 347) {
+                        $this->line('inv ' . $inv);
+                    }
 
 
                     if ($inv) {
