@@ -76,7 +76,7 @@ class Reopname extends Command
         foreach($opnames as $opname) {
             foreach ($opname->items as $opnameItem) {
                 $inv = Inventory::where('inventory.item_id', $opnameItem->item_id)
-                    ->where('form_date', '<=', $opname->formulir->form_date)
+                    ->where('form_date', '<=', date('Y-m-d H:i:59'))
                     ->where('warehouse_id', $opname->warehouse_id)
                     ->orderBy('form_date', 'desc')
                     ->orderBy('id', 'desc')
