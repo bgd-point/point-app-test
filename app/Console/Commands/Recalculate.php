@@ -85,7 +85,7 @@ class Recalculate extends Command
             foreach ($list_inventory as $index => $l_inventory) {
                 $this->line($index);
                              
-                if ($index == 0) {
+                if ($index == 0 && !$opnameItem) {
                     $inv = Inventory::where('inventory.item_id', $l_inventory->item_id)
                         ->where('form_date', '<', $l_inventory->form_date)
                         ->where('warehouse_id', $l_inventory->warehouse_id)
@@ -93,10 +93,7 @@ class Recalculate extends Command
                         ->orderBy('id', 'desc')
                         ->first();
                     
-                    if ($l_inventory->item_id == 347) {
-                        $this->line('inv ' . $inv);
-                    }
-
+                    $this->line('inv ' . $inv);
 
                     if ($inv) {
                         $this->line($inv->total_quantity . ' = ' . $l_inventory->quantity);
@@ -106,7 +103,7 @@ class Recalculate extends Command
                     }
                 }
                 
-                $this->line('total qty = ' . $total_quantity);
+                $this->line($l_inventory->item_id . ' = ' . $total_quantity);
 
                 $total_quantity += $l_inventory->quantity;
 
