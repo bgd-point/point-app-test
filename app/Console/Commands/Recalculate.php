@@ -66,7 +66,7 @@ class Recalculate extends Command
                 ->select('point_inventory_stock_opname_item.*')
                 ->first();
             
-            if ($opname) {
+            if ($opnameItem) {
                 $list_inventory = Inventory::with('formulir')
                     ->where('item_id', '=', $inventory->item_id)
                     ->where('warehouse_id', '=', $inventory->warehouse_id)
