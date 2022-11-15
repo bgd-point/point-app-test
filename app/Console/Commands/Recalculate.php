@@ -54,7 +54,7 @@ class Recalculate extends Command
                 ->orderBy('form_date', 'asc')
                 ->get();
             
-            $opname = StockOpnameItem::join('point_inventory_stock_opname', 'point_inventory_stock_opname_item.stock_opname_id', '=', 'point_inventory_stock_opname.id')
+            $opnameItem = StockOpnameItem::join('point_inventory_stock_opname', 'point_inventory_stock_opname_item.stock_opname_id', '=', 'point_inventory_stock_opname.id')
                 ->join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
                 ->where('point_inventory_stock_opname_item.item_id', '=', $inventory->item_id)
                 ->where('point_inventory_stock_opname_item.warehouse_id', '=', $inventory->warehouse_id)
@@ -63,14 +63,14 @@ class Recalculate extends Command
                 ->where('formulir.approval_status', '>', 0)
                 ->whereNotNull('formulir.form_number')
                 ->orderBy('formulir.form_date', 'desc')
-                ->select('point_inventory_stock_opname.*')
+                ->select('point_inventory_stock_opname_item.*')
                 ->first();
             
             if ($opname) {
                 $list_inventory = Inventory::with('formulir')
                     ->where('item_id', '=', $inventory->item_id)
                     ->where('warehouse_id', '=', $inventory->warehouse_id)
-                    ->where('form_date', '>', $opname->formulir->form_date)
+                    ->where('form_date', '>', $opnameItem->opname->formulir->form_date)
                     ->orderBy('form_date', 'asc')
                     ->get();
             }
