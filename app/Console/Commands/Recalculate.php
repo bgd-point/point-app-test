@@ -61,85 +61,54 @@ class Recalculate extends Command
 
             foreach ($list_inventory as $index => $l_inventory) {
                 $this->line($index);
-                if ($l_inventory->formulir->formulirable_type === StockOpname::class && $index > 0) {
-                    // UPDATE QUANTITY IF FORMULIR TYPE IS STOCKOPNAME
-                    $stockOpnameItem = StockOpname::join('point_inventory_stock_opname_item', 'point_inventory_stock_opname.id', '=', 'point_inventory_stock_opname_item.stock_opname_id')
-                        ->where('point_inventory_stock_opname.formulir_id', $l_inventory->formulir_id)
-                        ->where('point_inventory_stock_opname_item.item_id', $l_inventory->item_id)
-                        ->select('point_inventory_stock_opname_item.*')
-                        ->first();
-
-                    // INVENTORY BEFORE STOCK OPNAME
-                    $lastStock = Inventory::where('item_id', $l_inventory->item_id)
-                        ->where('warehouse_id', $l_inventory->warehouse_id)
+             
+                if ($index == 0) {
+                    $inv = Inventory::where('inventory.item_id', $l_inventory->item_id)
                         ->where('form_date', '<', $l_inventory->form_date)
+                        ->where('warehouse_id', $l_inventory->warehouse_id)
                         ->orderBy('form_date', 'desc')
-                        ->orderBy('formulir_id', 'desc')
                         ->orderBy('id', 'desc')
                         ->first();
 
-                    // REPLACE STOCK IN DATABASE WITH CORRECT VALUES
-                    if ($lastStock && $stockOpnameItem->item_id == $l_inventory->item_id) {
-                        $sti = StockOpnameItem::where("id", $stockOpnameItem->id)->first();
-                        $sti->stock_in_database = $lastStock->total_quantity;
-                        $sti->save();
-                    }
 
-                    // UPDATE INVENTORIES TABLE
-                    $total_quantity = $stockOpnameItem->quantity_opname;
-                    $l_inventory->total_quantity = $total_quantity;
-                    $l_inventory->quantity = $total_quantity - $list_inventory[$index-1]->total_quantity;
-                    $l_inventory->save();
-                } else {
-                    // UPDATE TOTAL QUANTITY IF FORMULIR TYPE IS NOT STOCKOPNAME
-                    if ($index == 0) {
-                        $inv = Inventory::where('inventory.item_id', $l_inventory->item_id)
-                            ->where('form_date', '<', $l_inventory->form_date)
-                            ->where('warehouse_id', $l_inventory->warehouse_id)
-                            ->orderBy('form_date', 'desc')
-                            ->orderBy('id', 'desc')
-                            ->first();
-
-                            
-                        if ($inv) {
-                            $this->line($inv->total_quantity . ' = ' . $l_inventory->quantity);
-                            $total_quantity = $inv->total_quantity;
-                        } else {
-                            $total_quantity = 0;
-                        }
-                    }
-
-                    $total_quantity += $l_inventory->quantity;
-
-                    if ($l_inventory->quantity > 0) {
-                        // STOCK IN
-                        if ($total_quantity <= 0) {
-                            // IGNORE VALUE BECAUSE USER ERROR (STOCK MINUS)
-                            $l_inventory->recalculate = true;
-                            $total_value = 0;
-                            $cogs = 0;
-                        } else {
-                            $total_value += ($l_inventory->quantity * $l_inventory->price);
-                            $cogs = $total_value / $total_quantity;
-                        }
-                        $l_inventory->cogs = $cogs;
+                    if ($inv) {
+                        $this->line($inv->total_quantity . ' = ' . $l_inventory->quantity);
+                        $total_quantity = $inv->total_quantity;
                     } else {
-                        // STOCK OUT
-                        if ($total_quantity < 0) {
-                            // STOCK MINUS = NEED FIX FROM USER
-                            $l_inventory->recalculate = true;
-                            $l_inventory->cogs = $cogs;
-                            $total_value = 0;
-                        } else {
-                            $total_value += ($l_inventory->quantity * $cogs);
-                            $l_inventory->cogs = $cogs;
-                        }
+                        $total_quantity = 0;
                     }
-
-                    $l_inventory->total_quantity = $total_quantity;
-                    $l_inventory->total_value = $total_value;
-                    $l_inventory->save();
                 }
+
+                $total_quantity += $l_inventory->quantity;
+
+                if ($l_inventory->quantity > 0) {
+                    // STOCK IN
+                    if ($total_quantity <= 0) {
+                        // IGNORE VALUE BECAUSE USER ERROR (STOCK MINUS)
+                        $l_inventory->recalculate = true;
+                        $total_value = 0;
+                        $cogs = 0;
+                    } else {
+                        $total_value += ($l_inventory->quantity * $l_inventory->price);
+                        $cogs = $total_value / $total_quantity;
+                    }
+                    $l_inventory->cogs = $cogs;
+                } else {
+                    // STOCK OUT
+                    if ($total_quantity < 0) {
+                        // STOCK MINUS = NEED FIX FROM USER
+                        $l_inventory->recalculate = true;
+                        $l_inventory->cogs = $cogs;
+                        $total_value = 0;
+                    } else {
+                        $total_value += ($l_inventory->quantity * $cogs);
+                        $l_inventory->cogs = $cogs;
+                    }
+                }
+
+                $l_inventory->total_quantity = $total_quantity;
+                $l_inventory->total_value = $total_value;
+                $l_inventory->save();
             }
         }
 
