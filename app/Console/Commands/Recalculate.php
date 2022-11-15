@@ -56,9 +56,9 @@ class Recalculate extends Command
             
             $opname = StockOpnameItem::join('point_inventory_stock_opname', 'point_inventory_stock_opname_item.stock_opname_id', '=', 'point_inventory_stock_opname.id')
                 ->join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-                ->where('point_inventory_stock_opname_item.item_id', '=', $l_inventory->item_id)
-                ->where('point_inventory_stock_opname_item.warehouse_id', '=', $l_inventory->warehouse_id)
-                ->where('formulir.form_date', '<=', $l_inventory->form_date)
+                ->where('point_inventory_stock_opname_item.item_id', '=', $inventory->item_id)
+                ->where('point_inventory_stock_opname_item.warehouse_id', '=', $inventory->warehouse_id)
+                ->where('formulir.form_date', '<=', $inventory->form_date)
                 ->where('formulir.form_status', '>=', 0)
                 ->where('formulir.approval_status', '>', 0)
                 ->whereNotNull('formulir.form_number')
