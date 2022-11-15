@@ -103,7 +103,7 @@ class Recalculate extends Command
                     }
                 }
                 
-                $this->line($l_inventory->item_id . ' = ' . $total_quantity);
+                $this->line($l_inventory->formulir->form_number . ' = ' . $total_quantity);
 
                 $total_quantity += $l_inventory->quantity;
 
