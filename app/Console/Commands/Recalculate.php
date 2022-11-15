@@ -41,6 +41,7 @@ class Recalculate extends Command
 
         // Get all items
         $inventories = Inventory::orderBy('form_date', 'asc')
+            ->where('item_id', 347)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'].$inventory['warehouse_id'];
@@ -74,6 +75,8 @@ class Recalculate extends Command
                     ->orderBy('form_date', 'asc')
                     ->get();
             }
+            
+            $this->line($list_inventory);
 
             $total_quantity = 0;
             $total_value = 0;
@@ -103,6 +106,8 @@ class Recalculate extends Command
                         $total_quantity = 0;
                     }
                 }
+                
+                $this->line('total qty = ' . $total_quantity);
 
                 $total_quantity += $l_inventory->quantity;
 
