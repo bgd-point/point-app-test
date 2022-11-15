@@ -67,6 +67,8 @@ class Recalculate extends Command
                 ->select('point_inventory_stock_opname_item.*')
                 ->first();
             
+            $this->line($opnameItem->opname->formulir->form_number);
+            
             if ($opnameItem) {
                 $list_inventory = Inventory::with('formulir')
                     ->where('item_id', '=', $inventory->item_id)
@@ -99,7 +101,7 @@ class Recalculate extends Command
                 }
                 
 if($index < 20) {
-                $this->line($l_inventory->formulir->form_number . ' = ' . $total_quantity);
+                //$this->line($l_inventory->formulir->form_number . ' = ' . $total_quantity);
 }
 
                 $total_quantity += $l_inventory->quantity;
