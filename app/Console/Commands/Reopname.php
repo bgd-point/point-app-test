@@ -132,15 +132,16 @@ class Reopname extends Command
                 $inventory->price = 0;
                 $inventory->total_quantity = $opnameItem->quantity_opname;
                 $quantity = $opnameItem->quantity_opname - $opnameItem->stock_in_database;
+                $inventory->quantity = $quantity;
                  if (347 == $opnameItem->item_id && $opname->warehouse_id == 1) {
                     $this->line($opnameItem->id.' = ' .$opnameItem->quantity_opname.' = ' .$opnameItem->stock_in_database);
                 }
                 if ($quantity < 0) {
-                    $inventory->quantity = $quantity * -1;
+//                     $inventory->quantity = $quantity * -1;
 //                     $inventory_helper = new InventoryHelper($inventory);
 //                     $inventory_helper->out();
                 } elseif ($quantity > 0) {
-                    $inventory->quantity = $quantity;
+//                     $inventory->quantity = $quantity;
 //                     $inventory_helper = new InventoryHelper($inventory);
 //                     $inventory_helper->in();
                 } else {
