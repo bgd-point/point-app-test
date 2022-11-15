@@ -88,6 +88,9 @@ class Recalculate extends Command
             $cogs_tmp = 0;
 
             foreach ($list_inventory as $index => $l_inventory) {
+                if ($index == 0 && $opnameItem) {
+                    $total_quantity = $opnameItem->quantity_opname;
+                }
                 if ($index == 0 && !$opnameItem) {
                     $inv = Inventory::where('inventory.item_id', $l_inventory->item_id)
                         ->where('form_date', '<', $l_inventory->form_date)
