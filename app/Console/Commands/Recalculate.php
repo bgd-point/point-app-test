@@ -98,7 +98,9 @@ class Recalculate extends Command
                     }
                 }
                 
+if($index < 20) {
                 $this->line($l_inventory->formulir->form_number . ' = ' . $total_quantity);
+}
 
                 $total_quantity += $l_inventory->quantity;
 
