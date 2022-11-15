@@ -78,6 +78,7 @@ class Recalculate extends Command
                     ->where('form_date', '>', $opnameItem->opname->formulir->form_date)
                     ->orderBy('form_date', 'asc')
                     ->get();
+                $this->line('length '.$list_inventory->length);
             }
             
 
@@ -102,9 +103,9 @@ class Recalculate extends Command
                     }
                 }
                 
-if($index < 20) {
-                //$this->line($l_inventory->formulir->form_number . ' = ' . $total_quantity);
-}
+                if($index < 20) {
+                    $this->line($l_inventory->formulir->form_number . ' = ' . $total_quantity);
+                }
 
                 $total_quantity += $l_inventory->quantity;
 
