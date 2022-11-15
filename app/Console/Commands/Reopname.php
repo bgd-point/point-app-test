@@ -112,6 +112,10 @@ class Reopname extends Command
                     ->orderBy('form_date', 'desc')
                     ->orderBy('id', 'desc')
                     ->sum('quantity');
+                
+                if (347 == $opnameItem->item_id && $opname->warehouse_id == 1) {
+                    $this->line($inv);
+                }
 
                 $opnameItem->stock_in_database = $inv ? $inv : 0;
                 $opnameItem->save();
