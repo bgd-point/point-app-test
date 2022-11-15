@@ -130,6 +130,7 @@ class Reopname extends Command
                 $inventory->warehouse_id = $opname->warehouse_id;
                 $inventory->item_id = $opnameItem->item_id;
                 $inventory->price =  InventoryHelper::getCostOfSales($opname->formulir->form_date, $opnameItem->item_id, $opname->warehouse_id);
+                $inventory->total_quantity = $opnameItem->quantity_opname;
                 $quantity = $opnameItem->quantity_opname - $opnameItem->stock_in_database;
                 if ($quantity < 0) {
                     $inventory->quantity = $quantity * -1;
