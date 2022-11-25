@@ -41,103 +41,31 @@ class Recalculate extends Command
 
         // Get all items
         $inventories = Inventory::orderBy('form_date', 'asc')
+            ->where('warehouse_id', 1)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'].$inventory['warehouse_id'];
             });
 
         foreach ($inventories as $inventory) {
+            
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
-                ->where('form_date', '>=', '2022-09-01')
+                ->where('form_date', '>=', '2020-01-01')
                 ->orderBy('form_date', 'asc')
                 ->get();
             
-            $opnameItem = StockOpnameItem::join('point_inventory_stock_opname', 'point_inventory_stock_opname_item.stock_opname_id', '=', 'point_inventory_stock_opname.id')
-                ->join('formulir', 'formulir.id', '=', 'point_inventory_stock_opname.formulir_id')
-                ->where('point_inventory_stock_opname_item.item_id', '=', $inventory->item_id)
-                ->where('point_inventory_stock_opname.warehouse_id', '=', $inventory->warehouse_id)
-                ->where('formulir.form_date', '<=', '2022-10-01')
-                ->where('formulir.form_status', '>=', 0)
-                ->where('formulir.approval_status', '>', 0)
-                ->whereNotNull('formulir.form_number')
-                ->orderBy('formulir.form_date', 'desc')
-                ->select('point_inventory_stock_opname_item.*')
-                ->first();
-            
-            $this->line('item = '.$inventory->item_id .' warehouse = '.$inventory->warehouse_id);
-            if ($opnameItem) $this->line($opnameItem->opname->formulir->form_number);
-            
-            if ($opnameItem) {
-                $list_inventory = Inventory::with('formulir')
-                    ->where('item_id', '=', $inventory->item_id)
-                    ->where('warehouse_id', '=', $inventory->warehouse_id)
-                    ->where('form_date', '>', $opnameItem->opname->formulir->form_date)
-                    ->orderBy('form_date', 'asc')
-                    ->get();
-                $this->line('length '.count($list_inventory) . ' , ' . $opnameItem->opname->formulir->form_date);
-            }
-            
-
-            $total_quantity = 0;
-            $total_value = 0;
-            $cogs = 0;
-            $cogs_tmp = 0;
-
-            foreach ($list_inventory as $index => $l_inventory) {
-                if ($index == 0 && $opnameItem) {
-                    $total_quantity = $opnameItem->quantity_opname;
-                }
-                if ($index == 0 && !$opnameItem) {
-                    $inv = Inventory::where('inventory.item_id', $l_inventory->item_id)
-                        ->where('form_date', '<', $l_inventory->form_date)
-                        ->where('warehouse_id', $l_inventory->warehouse_id)
-                        ->orderBy('form_date', 'desc')
-                        ->orderBy('id', 'desc')
-                        ->first();
-                    
-                    if ($inv) {
-                        $total_quantity = $inv->total_quantity;
-                    } else {
-                        $total_quantity = 0;
-                    }
-                }
-                
-                if($index < 20) {
-                    $this->line($l_inventory->formulir->form_number . ' = ' . $total_quantity);
-                }
-
-                $total_quantity += $l_inventory->quantity;
-
-                if ($l_inventory->quantity > 0) {
-                    // STOCK IN
-                    if ($total_quantity <= 0) {
-                        // IGNORE VALUE BECAUSE USER ERROR (STOCK MINUS)
-                        $l_inventory->recalculate = true;
-                        $total_value = 0;
-                        $cogs = 0;
-                    } else {
-                        $total_value += ($l_inventory->quantity * $l_inventory->price);
-                        $cogs = $total_value / $total_quantity;
-                    }
-                    $l_inventory->cogs = $cogs;
+            $totalQty = 0;
+            foreach($list_inventory as $index => $l_inventory) {
+                if ($index === 0) {
+                    $totalQty = $l_inventory->total_quantity;
+                } else if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
+                    $totalQty = $l_inventory->total_quantity;
                 } else {
-                    // STOCK OUT
-                    if ($total_quantity < 0) {
-                        // STOCK MINUS = NEED FIX FROM USER
-                        $l_inventory->recalculate = true;
-                        $l_inventory->cogs = $cogs;
-                        $total_value = 0;
-                    } else {
-                        $total_value += ($l_inventory->quantity * $cogs);
-                        $l_inventory->cogs = $cogs;
-                    }
+                    $l_inventory->total_quantity = $totalQty + $l_inventory->quantity;
+                    $l_inventory->save();
                 }
-
-                $l_inventory->total_quantity = $total_quantity;
-                $l_inventory->total_value = $total_value;
-                $l_inventory->save();
             }
         }
 
