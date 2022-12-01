@@ -64,6 +64,7 @@ class Recalculate extends Command
                 } else {
                     $l_inventory->total_quantity = $totalQty + $l_inventory->quantity;
                     $l_inventory->save();
+                    $totalQty = $l_inventory->total_quantity;
                 }
             }
         }
