@@ -229,6 +229,7 @@ $opname = Inventory::where('item_id', '=', $item_id)
             ->where('warehouse_id', '=', $warehouse_id)
             ->orderBy('form_date', 'desc')
             ->orderBy('formulir_id', 'desc')
+            ->orderBy('id', 'desc')
             ->first();
 
         if (!$inventory) {
