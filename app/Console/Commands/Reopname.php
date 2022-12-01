@@ -145,7 +145,7 @@ class Reopname extends Command
 //                     $inventory_helper = new InventoryHelper($inventory);
 //                     $inventory_helper->in();
                 } else {
-                    continue;
+//                    continue;
                 }
                 
                 $inventory->save();
