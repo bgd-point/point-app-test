@@ -48,6 +48,24 @@ class Recalculate extends Command
 
         foreach ($inventories as $inventory) {
             
+            // FIX DATE
+            
+            $list_inventory = Inventory::with('formulir')
+                ->where('item_id', '=', $inventory->item_id)
+                ->where('warehouse_id', '=', $inventory->warehouse_id)
+                ->where('form_date', '>=', '2020-10-01')
+                ->orderBy('form_date', 'asc')
+                ->get();
+            
+            foreach($list_inventory as $index => $l_inventory) {
+                $date = explode("", $l_inventory->form_date);
+                if (date[1] == '23:59:59' && $l_inventory->formulir->formulirable_type != StockOpname::class) {
+                    $l_inventory->form_date = $date[1] . " 23:59:00";
+                } 
+            }
+            
+            // RECALCULATE
+            
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
