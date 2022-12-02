@@ -58,7 +58,7 @@ class Recalculate extends Command
                 ->get();
             
             foreach($list_inventory as $index => $l_inventory) {
-                $date = explode("", $l_inventory->form_date);
+                $date = explode(" ", $l_inventory->form_date);
                 if ($date[1] == '23:59:59' && $l_inventory->formulir->formulirable_type != StockOpname::class) {
                     $l_inventory->form_date = $date[0] . " 23:59:00";
                 } 
