@@ -55,6 +55,7 @@ class Recalculate extends Command
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
                 ->where('form_date', '>=', '2020-10-01')
                 ->orderBy('form_date', 'asc')
+                ->orderBy('quantity', 'asc')
                 ->get();
             
             foreach($list_inventory as $index => $l_inventory) {
@@ -71,6 +72,7 @@ class Recalculate extends Command
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
                 ->where('form_date', '>=', '2020-01-01')
                 ->orderBy('form_date', 'asc')
+                ->orderBy('quantity', 'asc')
                 ->get();
             
             $totalQty = 0;
