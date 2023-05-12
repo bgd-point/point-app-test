@@ -172,16 +172,16 @@ class InventoryValueReportController extends Controller
                                 ));
                             });
 
-                            $sheet->setCellValue('B4', 'QTY');
-                            $sheet->setCellValue('C4', 'COST OF SALES');
-                            $sheet->setCellValue('D4', 'TOTAL VALUE');
-                            $sheet->setCellValue('E4', 'QTY');
-                            $sheet->setCellValue('F4', 'TOTAL VALUE');
-                            $sheet->setCellValue('G4', 'QTY');
-                            $sheet->setCellValue('H4', 'TOTAL VALUE');
-                            $sheet->setCellValue('I4', 'QTY');
-                            $sheet->setCellValue('J4', 'LAST BUY PRICE');
-                            $sheet->setCellValue('K4', 'TOTAL VALUE');
+                            $sheet->setCellValue('C4', 'QTY');
+                            $sheet->setCellValue('D4', 'COST OF SALES');
+                            $sheet->setCellValue('E4', 'TOTAL VALUE');
+                            $sheet->setCellValue('F4', 'QTY');
+                            $sheet->setCellValue('G4', 'TOTAL VALUE');
+                            $sheet->setCellValue('H4', 'QTY');
+                            $sheet->setCellValue('I4', 'TOTAL VALUE');
+                            $sheet->setCellValue('J4', 'QTY');
+                            $sheet->setCellValue('K4', 'LAST BUY PRICE');
+                            $sheet->setCellValue('L4', 'TOTAL VALUE');
 
                             // Get inventory list
                             $warehouse = $wh->id;
@@ -355,19 +355,21 @@ class InventoryValueReportController extends Controller
                             'I' => 15,
                             'J' => 20,
                             'K' => 20,
+                            'L' => 20,
                         ));
 
                         // Set Header Style
                         $sheet->mergeCells('A1:K1', 'center');
                         $sheet->mergeCells('A2:A3');
-                        $sheet->mergeCells('B2:D2', 'center');
-                        $sheet->mergeCells('E2:F2', 'center');
-                        $sheet->mergeCells('G2:H2', 'center');
-                        $sheet->mergeCells('I2:K2', 'center');
-                        $sheet->mergeCells('B3:D3', 'center');
-                        $sheet->mergeCells('E3:F3', 'center');
-                        $sheet->mergeCells('G3:H3', 'center');
-                        $sheet->mergeCells('I3:K3', 'center');
+                        $sheet->mergeCells('B2:B3');
+                        $sheet->mergeCells('C2:E2', 'center');
+                        $sheet->mergeCells('F2:G2', 'center');
+                        $sheet->mergeCells('H2:I2', 'center');
+                        $sheet->mergeCells('J2:L2', 'center');
+                        $sheet->mergeCells('C3:E3', 'center');
+                        $sheet->mergeCells('F3:G3', 'center');
+                        $sheet->mergeCells('H3:I3', 'center');
+                        $sheet->mergeCells('J3:L3', 'center');
 
                         $sheet->cell('A1:K4', function ($cell) {
                             $cell->setFont(array(
@@ -382,7 +384,7 @@ class InventoryValueReportController extends Controller
                         $sheet->setCellValue('A2', 'CODE');
                         $sheet->setCellValue('B2', 'ITEM');
                         $sheet->setCellValue('C2', 'OPENING STOCK');
-                        $sheet->setCellValue('E2', 'STOCK IN');
+                        $sheet->setCellValue('F2', 'STOCK IN');
                         $sheet->setCellValue('H2', 'STOCK OUT');
                         $sheet->setCellValue('J2', 'CLOSING STOCK');
 
@@ -401,16 +403,16 @@ class InventoryValueReportController extends Controller
                             ));
                         });
 
-                        $sheet->setCellValue('B4', 'QTY');
-                        $sheet->setCellValue('C4', 'COST OF SALES');
-                        $sheet->setCellValue('D4', 'TOTAL VALUE');
-                        $sheet->setCellValue('E4', 'QTY');
-                        $sheet->setCellValue('F4', 'TOTAL VALUE');
-                        $sheet->setCellValue('G4', 'QTY');
-                        $sheet->setCellValue('H4', 'TOTAL VALUE');
-                        $sheet->setCellValue('I4', 'QTY');
-                        $sheet->setCellValue('J4', 'COST OF SALES');
-                        $sheet->setCellValue('K4', 'TOTAL VALUE');
+                        $sheet->setCellValue('C4', 'QTY');
+                        $sheet->setCellValue('D4', 'COST OF SALES');
+                        $sheet->setCellValue('E4', 'TOTAL VALUE');
+                        $sheet->setCellValue('F4', 'QTY');
+                        $sheet->setCellValue('G4', 'TOTAL VALUE');
+                        $sheet->setCellValue('H4', 'QTY');
+                        $sheet->setCellValue('I4', 'TOTAL VALUE');
+                        $sheet->setCellValue('J4', 'QTY');
+                        $sheet->setCellValue('K4', 'COST OF SALES');
+                        $sheet->setCellValue('L4', 'TOTAL VALUE');
 
                         // Get inventory list
                         $warehouse = $request['warehouse'] ? : 0;
@@ -499,15 +501,15 @@ class InventoryValueReportController extends Controller
                         $end_row = $list_report->count()+5;
 
                         // Set table border
-                        $sheet->setBorder('A2:K'.$end_row, 'thin');
-                        $sheet->cell('K'.$end_row, function ($cell) use ($total_closing_value) {
+                        $sheet->setBorder('A2:L'.$end_row, 'thin');
+                        $sheet->cell('L'.$end_row, function ($cell) use ($total_closing_value) {
                             $cell->setFontWeight(true);
                             $cell->setValue(number_format($total_closing_value, 0));
                         });
                         $sheet->setBorder('I'.$end_row, 'thin');
 
                         // Right alignment for cells with number
-                        $sheet->cell('B4:K'.$end_row, function($cell) {
+                        $sheet->cell('C4:L'.$end_row, function($cell) {
                             $cell->setAlignment('right');
                         });
                     });
