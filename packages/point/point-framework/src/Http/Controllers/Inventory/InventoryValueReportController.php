@@ -124,21 +124,23 @@ class InventoryValueReportController extends Controller
                                 'I' => 15,
                                 'J' => 20,
                                 'K' => 20,
+                                'L' => 20,
                             ));
 
                             // Set Header Style
-                            $sheet->mergeCells('A1:K1', 'center');
+                            $sheet->mergeCells('A1:L1', 'center');
                             $sheet->mergeCells('A2:A3');
-                            $sheet->mergeCells('B2:D2', 'center');
-                            $sheet->mergeCells('E2:F2', 'center');
-                            $sheet->mergeCells('G2:H2', 'center');
-                            $sheet->mergeCells('I2:K2', 'center');
-                            $sheet->mergeCells('B3:D3', 'center');
-                            $sheet->mergeCells('E3:F3', 'center');
-                            $sheet->mergeCells('G3:H3', 'center');
-                            $sheet->mergeCells('I3:K3', 'center');
+                            $sheet->mergeCells('B2:B3');
+                            $sheet->mergeCells('C2:E2', 'center');
+                            $sheet->mergeCells('F2:G2', 'center');
+                            $sheet->mergeCells('H2:I2', 'center');
+                            $sheet->mergeCells('J2:L2', 'center');
+                            $sheet->mergeCells('C3:E3', 'center');
+                            $sheet->mergeCells('F3:G3', 'center');
+                            $sheet->mergeCells('H3:I3', 'center');
+                            $sheet->mergeCells('J3:L3', 'center');
 
-                            $sheet->cell('A1:K4', function ($cell) {
+                            $sheet->cell('A1:L4', function ($cell) {
                                 $cell->setFont(array(
                                     'size'       => '14',
                                     'bold'       =>  true
@@ -153,7 +155,7 @@ class InventoryValueReportController extends Controller
                             $sheet->setCellValue('C2', 'OPENING STOCK');
                             $sheet->setCellValue('F2', 'STOCK IN');
                             $sheet->setCellValue('H2', 'STOCK OUT');
-                            $sheet->setCellValue('H2', 'CLOSING STOCK');
+                            $sheet->setCellValue('J2', 'CLOSING STOCK');
 
                             $date_from = date_format_db($request['date_from']) ?: date('Y-m-01 00:00:00');
                             $date_to = date_format_db($request['date_to'], 'end') ?: date('Y-m-d 23:59:59');
@@ -163,7 +165,7 @@ class InventoryValueReportController extends Controller
                             $sheet->setCellValue('H3', '(' . date_format_view($date_from) . ')-(' . date_format_view($date_to) . ')');
                             $sheet->setCellValue('J3', '(' . date_format_view($date_to) . ')');
 
-                            $sheet->cell('B3:K3', function ($cell) {
+                            $sheet->cell('C3:L3', function ($cell) {
                                 $cell->setFont(array(
                                     'size'       => '10',
                                     'bold'       =>  true
