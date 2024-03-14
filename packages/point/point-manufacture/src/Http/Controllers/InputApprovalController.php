@@ -100,7 +100,7 @@ class InputApprovalController extends Controller
 
         \DB::beginTransaction();
 
-        FormulirHelper::reject($input_approval, $approval_message, 'approval.point.manufacture.input', $token);
+        FormulirHelper::reject($input_approval->formulir, $approval_message, 'approval.point.manufacture.input', $token);
         timeline_publish('reject', 'proses input ' . $input_approval->formulir->form_number . ' rejected', $this->getUserForTimeline($request, $input_approval->formulir->approval_to));
 
         \DB::commit();
