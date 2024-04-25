@@ -358,7 +358,7 @@
         var tax = 0;
 
         if($('#tax-choice-exclude-tax').prop('checked')) {
-            tax = tax_base * 10 / 100;
+            tax = tax_base * 11 / 100;
         }
 
         if($('#tax-choice-include-tax').prop('checked')) {

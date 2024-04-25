@@ -129,7 +129,7 @@ class InvoiceHelper
                 $total_per_row = $total_per_row - $discounty;
             }
             if ($request->input('type_of_tax') == 'include') {
-                $total_per_row = $total_per_row * 100 / 110;
+                $total_per_row = $total_per_row * 100 / 111;
             }
 
             $position = JournalHelper::position($invoice_detail->item->account_asset_id);

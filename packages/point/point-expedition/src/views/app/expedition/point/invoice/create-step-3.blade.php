@@ -229,12 +229,12 @@
             var tax = 0;
 
             if ($('#tax-choice-exclude-tax').prop('checked')) {
-                tax = tax_base * 10 / 100;
+                tax = tax_base * 11 / 100;
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
-                tax_base = tax_base * 100 / 110;
-                tax = tax_base * 10 / 100;
+                tax_base = tax_base * 100 / 111;
+                tax = tax_base * 11 / 100;
                 $('#discount').val(0);
                 $('#discount').prop('readonly', true);
                 var discount = 0;

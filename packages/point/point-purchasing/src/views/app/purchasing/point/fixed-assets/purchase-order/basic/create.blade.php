@@ -409,13 +409,13 @@
             var tax = 0;
 
             if ($('#tax-choice-exclude-tax').prop('checked')) {
-                tax = tax_base * 10 / 100;
+                tax = tax_base * 11 / 100;
                 $("#tax-choice-non-tax").val("exclude");
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
-                tax_base = tax_base * 100 / 110;
-                tax = tax_base * 10 / 100;
+                tax_base = tax_base * 100 / 111;
+                tax = tax_base * 11 / 100;
                 $("#tax-choice-non-tax").val("include");
             }
 
