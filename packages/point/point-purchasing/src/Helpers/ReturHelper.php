@@ -85,8 +85,8 @@ class ReturHelper
             $tax = $tax_base * 10 / 100;
         }
         if ($request->input('type_of_tax') == 'include') {
-            $tax_base =  $tax_base * 100 / 110;
-            $tax =  $tax_base * 10 / 100;
+            $tax_base =  $tax_base * 100 / 111;
+            $tax =  $tax_base * 11 / 100;
         }
 
         $retur->subtotal = $subtotal;
