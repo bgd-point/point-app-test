@@ -114,7 +114,7 @@ class PurchaseOrderController extends Controller
             $reference = $reference_type::find($reference_id)->formulir_id;
         }
         FormulirHelper::isAllowedToCreate('create.point.purchasing.order', date_format_db($request->input('form_date'), $request->input('time')), $reference ? [$reference] : []);
-        $formulir = FormulirHelper::create($request, 'point-purchasing-order');
+        $formulir = FormulirHelper::create($request->input(), 'point-purchasing-order');
         $purchase_order = PurchaseOrderHelper::create($request, $formulir);
         timeline_publish('create.purchase.order', 'added new purchase order '  . $purchase_order->formulir->form_number);
         DB::commit();
