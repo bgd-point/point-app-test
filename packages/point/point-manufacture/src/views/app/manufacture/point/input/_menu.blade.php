@@ -6,10 +6,10 @@
    class="btn {{\Request::segment(6)=='choose-formula'?'btn-primary':'btn-info'}}">
     Choose Formula
 </a>
-<a href="{{ url('manufacture/point/process-io/'. $process->id .'/input/create') }}"
+<!-- <a href="{{ url('manufacture/point/process-io/'. $process->id .'/input/create') }}"
    class="btn {{\Request::segment(6)=='create'?'btn-primary':'btn-info'}}">
     Create
-</a>
+</a> -->
 <a href="{{ url('temporary-access/manufacture | input/point manufacture input') }}" class="btn btn-info">
     Temporary Access
 </a>
