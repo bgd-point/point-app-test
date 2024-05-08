@@ -32,7 +32,7 @@ class ManufactureHelper
             $finished_goods->formula_id = $formula->id;
             $finished_goods->product_id = $request->input('product_id')[$i];
             $finished_goods->warehouse_id = $request->input('product_warehouse_id')[$i];
-            $finished_goods->quantity += $request->input('product_quantity')[$i];
+            $finished_goods->quantity += number_format_db($request->input('product_quantity')[$i]);
             $unit = ItemUnit::where('item_id',$request->input('product_id')[$i])->first();
             $finished_goods->unit = $unit->name;
             $converter = number_format_db($unit->converter);
