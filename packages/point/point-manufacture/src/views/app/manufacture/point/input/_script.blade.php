@@ -64,7 +64,7 @@ $('#addItemRow').on( 'click', function () {
         '<div class="input-group">'
             +'<input type="text" name="material_unit[]" class="form-control input-unit-'+counter_material+'" readonly>'
         +'</div>',
-        '<select id="warehouse-id-' + counter_material + '" name="material_warehouse_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
+        '<select id="warehouse-material-id-' + counter_material + '" name="material_warehouse_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
                 + '<option ></option>'
                 @foreach($list_warehouse as $warehouse)
                  + '<option value="{{$warehouse->id}}">{{$warehouse->codeName}}</option>'
@@ -74,8 +74,8 @@ $('#addItemRow').on( 'click', function () {
 
     initFormatNumber();
     initSelectize('#material-id-'+counter_material);
-    reloadItemManufacture("#material-id-"+counter_material);
-    initSelectize('#warehouse-id-' + counter_material);
+    initSelectize('#warehouse-material-id-' + counter_material);
+    reloadItemHavingQuantity("#material-id-"+counter_material);
     counter_material++;
 } );
 
