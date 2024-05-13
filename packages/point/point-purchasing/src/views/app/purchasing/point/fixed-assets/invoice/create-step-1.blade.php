@@ -13,9 +13,9 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 @if(client_has_addon('basic'))
-                <a href="{{ url('purchasing/point/fixed-assets/invoice/basic/create') }}" class="btn btn-info">
+                <!-- <a href="{{ url('purchasing/point/fixed-assets/invoice/basic/create') }}" class="btn btn-info">
                     Create New Invoice
-                </a>
+                </a> -->
                 @endif
                 @if($list_goods_received->count())
                 <br><br>
