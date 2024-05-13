@@ -57,21 +57,25 @@ class RecalculateBBL extends Command
                 ->get();
 
             $totalQty = 0;
+            $totalValue = 0;
             foreach($list_inventory as $index => $l_inventory) {
                 if ($index === 0) {
                     $totalQty = $l_inventory->total_quantity;
+                    $totalValue = $l_inventory->quantity * $l_inventory->price;
                     $l_inventory->recalculate = 0;
+                    $l_inventory->total_value = $totalValue;
                     $l_inventory->save();
                 } else if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
                     $l_inventory->recalculate = 0;
                     $l_inventory->save();
                     $totalQty = $l_inventory->total_quantity;
                 } else {
-                    \Log::info($l_inventory);
                     $l_inventory->recalculate = 0;
                     $l_inventory->total_quantity = $totalQty + $l_inventory->quantity;
+                    $l_inventory->total_value = $totalValue + ($l_inventory->quantity * $l_inventory->price);
                     $l_inventory->save();
                     $totalQty = $l_inventory->total_quantity;
+                    $totalValue = $l_inventory->total_value;
                 }
             }
         }
