@@ -9,7 +9,7 @@ use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
 use Point\PointAccounting\Models\CutOffInventoryDetail;
 
-class RecalculateBBL extends Command
+class InsertCutoff extends Command
 {
     /**
      * The name and signature of the console command.
