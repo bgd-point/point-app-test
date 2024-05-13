@@ -39,7 +39,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Code *</label>
                         <div class="col-md-6">
-                            <input type="text" name="code" class="form-control" value="{{$code}}" readonly>
+                            <input type="text" name="code" class="form-control" value="{{$code}}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -171,7 +171,7 @@
     initFunctionRemoveInDatatable('#contact-datatable', contact_table);
     var bank_table = initDatatable('#bank-datatable');
     initFunctionRemoveInDatatable('#bank-datatable', bank_table);
-    
+
     $('#addContactRow').on( 'click', function () {
         contact_table.row.add( [
             '<a href="javascript:void(0)" class="remove-row btn btn-danger"><i class="fa fa-trash"></i></a>',
