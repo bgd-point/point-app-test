@@ -23,7 +23,10 @@ class PersonHelper
 
         if ($person) {
             $code = explode('-', $person->code);
-            return $person_type->code . '-' . ($code[1] + 1);
+            if (is_numeric($code[1])) {
+                return $person_type->code . '-' . ($code[1] + 1);
+            }
+            return $person_type->code . '-' . 1;
         }
 
         return $person_type->code . '-1';
