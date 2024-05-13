@@ -67,6 +67,7 @@ class RecalculateBBL extends Command
                     $l_inventory->save();
                     $totalQty = $l_inventory->total_quantity;
                 } else {
+                    \Log::info($l_inventory);
                     $l_inventory->recalculate = 0;
                     $l_inventory->total_quantity = $totalQty + $l_inventory->quantity;
                     $l_inventory->save();
