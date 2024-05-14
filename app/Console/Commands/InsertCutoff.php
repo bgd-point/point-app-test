@@ -10,6 +10,7 @@ use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Inventory;
 use Point\PointAccounting\Models\CutOffAccountDetail;
 use Point\PointAccounting\Models\CutOffInventoryDetail;
+use Point\PointAccounting\Models\CutOffPayableDetail;
 
 class InsertCutoff extends Command
 {
@@ -83,13 +84,28 @@ class InsertCutoff extends Command
                 $journal->coa_id = $caccount->coa_id;
                 $journal->description = "Cut Off";
                 $journal->debit = $caccount->debit;
-                $journal->debit = $caccount->credit;
+                $journal->credit = $caccount->credit;
                 $journal->form_journal_id = 249;
                 $journal->form_reference_id;
                 $journal->subledger_id;
                 $journal->subledger_type;
                 $journal->save();
             }    
+        }
+        
+        $cpayables = CutOffAccountDetail::all();
+
+        foreach ($cpayables as $cpayable) {
+            $journal = new Journal();
+            $journal->form_date = "2024-04-30 00:00:00";
+            $journal->coa_id = $cpayable->coa_id;
+            $journal->description = "Cut Off";
+            $journal->credit = $cpayable->amount;
+            $journal->form_journal_id = 249;
+            $journal->form_reference_id;
+            $journal->subledger_id = $cpayable->subledger_id;
+            $journal->subledger_type = get_class(new Person());
+            $journal->save();
         }
         
         \DB::commit();
