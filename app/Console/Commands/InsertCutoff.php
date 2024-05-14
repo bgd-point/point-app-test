@@ -62,7 +62,7 @@ class InsertCutoff extends Command
             $inventory->total_value = $cinventory->amount;
             $inventory->save();
 
-            Item::find($cinventory->subledger_id)
+            $item = Item::find($cinventory->subledger_id);
 
             $journal = new Journal();
             $journal->form_date = "2024-04-30 00:00:00";
