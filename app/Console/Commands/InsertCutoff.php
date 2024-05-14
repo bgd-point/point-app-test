@@ -11,6 +11,7 @@ use Point\Framework\Models\Inventory;
 use Point\PointAccounting\Models\CutOffAccountDetail;
 use Point\PointAccounting\Models\CutOffInventoryDetail;
 use Point\PointAccounting\Models\CutOffPayableDetail;
+use Point\Framework\Models\Journal;
 
 class InsertCutoff extends Command
 {
