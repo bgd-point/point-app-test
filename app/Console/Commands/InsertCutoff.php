@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Models\Formulir;
+use Point\Framework\Models\Master\Person;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Inventory;
 use Point\PointAccounting\Models\CutOffAccountDetail;
