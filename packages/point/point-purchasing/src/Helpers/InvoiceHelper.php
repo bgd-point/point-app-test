@@ -51,6 +51,10 @@ class InvoiceHelper
 
     public static function create(Request $request, $formulir, $references = null)
     {
+        $dc = new stdClass();
+        $dc->debit = 0;
+        $dc->credit = 0;
+
         $invoice = new Invoice;
         $invoice->formulir_id = $formulir->id;
         $invoice->supplier_id = $request->input('supplier_id');
@@ -145,7 +149,7 @@ class InvoiceHelper
             $journal->subledger_type = get_class($invoice_detail->item);
             $journal->save();
 
-            // self::debit = self::debit + $total_per_row;
+            $dc->debit += $total_per_row;
 
             // insert new inventory
             $item = Item::find($invoice_detail->item_id);
@@ -170,7 +174,9 @@ class InvoiceHelper
                 'formulir' => $formulir,
                 'invoice' => $invoice
             );
-            self::journal($data);
+            $dc2 = self::journal($data);
+            $dc->debit += $dc2->debit;
+            $dc->credit += $dc2->credit;
         } elseif ($request->input('type_of_tax') == 'include') {
             $data = array(
                 'value_of_account_payable' => $total,
@@ -179,21 +185,25 @@ class InvoiceHelper
                 'formulir' => $formulir,
                 'invoice' => $invoice
             );
-            self::journal($data);
+            $dc2 = self::journal($data);
+            $dc->debit += $dc2->debit;
+            $dc->credit += $dc2->credit;
         }
 
-        // if(self::debit !== self::credit) {
-        //     $journal = new Journal();
-        //     $journal->form_date = $invoice->formulir->form_date;
-        //     $journal->coa_id = 380;
-        //     $journal->description = 'Selisih pembulatan';
-        //     $journal->debit = self::debit - self::credit;
-        //     $journal->form_journal_id = $invoice->formulir_id;
-        //     $journal->form_reference_id;
-        //     $journal->subledger_id;
-        //     $journal->subledger_type;
-        //     $journal->save();
-        // }
+        
+
+        if($dc->debit !== $dc->credit) {
+            $journal = new Journal();
+            $journal->form_date = $invoice->formulir->form_date;
+            $journal->coa_id = 380;
+            $journal->description = 'Selisih pembulatan';
+            $journal->debit = $dc->debit - $dc->credit;
+            $journal->form_journal_id = $invoice->formulir_id;
+            $journal->form_reference_id;
+            $journal->subledger_id;
+            $journal->subledger_type;
+            $journal->save();
+        }
 
         JournalHelper::checkJournalBalance($invoice->formulir_id);
         return $invoice;
@@ -201,6 +211,10 @@ class InvoiceHelper
 
     public static function journal($data)
     {
+        $dc = new stdClass();
+        $dc->debit = 0;
+        $dc->credit = 0;
+
         // 1. Journal account receiveable
         $account_receiveable = JournalHelper::getAccount('point purchasing', 'account payable');
         $position = JournalHelper::position($account_receiveable);
@@ -214,7 +228,8 @@ class InvoiceHelper
         $journal->subledger_id = $data['invoice']->supplier_id;
         $journal->subledger_type = get_class($data['invoice']->supplier);
         $journal->save();
-        // self::credit = self::credit + $data['value_of_account_payable'];
+        
+        $dc->credit += $data['value_of_account_payable'];
 
         // 2. Journal income tax receiveable
         $income_tax_receiveable = JournalHelper::getAccount('point purchasing', 'income tax receivable');
@@ -229,7 +244,7 @@ class InvoiceHelper
         $journal->subledger_id;
         $journal->subledger_type;
         $journal->save();
-        // self::debit = self::debit + $data['value_of_income_tax_receiveable'];
+        $dc->debit += $data['value_of_income_tax_receiveable'];
 
         // 3. Journal Expedition Cost
         if ($data['invoice']->expedition_fee > 0) {
@@ -245,7 +260,9 @@ class InvoiceHelper
             $journal->subledger_id;
             $journal->subledger_type;
             $journal->save();
+
+            $dc->debit += $data['value_of_expedition_cost'];
         }
-        // self::debit = self::debit + $data['value_of_expedition_cost'];
+        return $dc;
     }
 }
