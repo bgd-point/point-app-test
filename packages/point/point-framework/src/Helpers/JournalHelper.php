@@ -269,7 +269,7 @@ class JournalHelper
             ->first();
 
         if ($journal->debit != $journal->credit) {
-            throw new PointException('Journal unbalance, Please contact administrator to fix this error');
+            throw new PointException('Journal unbalance, '. $journal->debit.' != '.$journal->credit.' Please contact administrator to fix this error');
         }
         
         return true;
