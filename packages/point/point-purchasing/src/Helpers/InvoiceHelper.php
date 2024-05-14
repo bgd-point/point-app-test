@@ -147,7 +147,7 @@ class InvoiceHelper
             $journal->subledger_type = get_class($invoice_detail->item);
             $journal->save();
 
-            self::debit += $total_per_row;
+            self::debit = self::debit + $total_per_row;
 
             // insert new inventory
             $item = Item::find($invoice_detail->item_id);
@@ -216,7 +216,7 @@ class InvoiceHelper
         $journal->subledger_id = $data['invoice']->supplier_id;
         $journal->subledger_type = get_class($data['invoice']->supplier);
         $journal->save();
-        self::credit += $data['value_of_account_payable'];
+        self::credit = self::credit + $data['value_of_account_payable'];
 
         // 2. Journal income tax receiveable
         $income_tax_receiveable = JournalHelper::getAccount('point purchasing', 'income tax receivable');
@@ -231,7 +231,7 @@ class InvoiceHelper
         $journal->subledger_id;
         $journal->subledger_type;
         $journal->save();
-        self::debit += $data['value_of_income_tax_receiveable'];
+        self::debit = self::debit + $data['value_of_income_tax_receiveable'];
 
         // 3. Journal Expedition Cost
         if ($data['invoice']->expedition_fee > 0) {
@@ -248,6 +248,6 @@ class InvoiceHelper
             $journal->subledger_type;
             $journal->save();
         }
-        self::debit += $data['value_of_expedition_cost'];
+        self::debit = self::debit + $data['value_of_expedition_cost'];
     }
 }
