@@ -6,7 +6,9 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Models\Formulir;
+use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Inventory;
+use Point\PointAccounting\Models\CutOffAccountDetail;
 use Point\PointAccounting\Models\CutOffInventoryDetail;
 
 class InsertCutoff extends Command
@@ -41,8 +43,8 @@ class InsertCutoff extends Command
 
         foreach ($cinventories as $cinventory) {
             $inventory = new Inventory;
-            $inventory->form_date = "2024-05-08 00:00:00";
-            $inventory->formulir_id = 17;
+            $inventory->form_date = "2024-04-30 00:00:00";
+            $inventory->formulir_id = 249;
             $inventory->warehouse_id = $cinventory->warehouse_id;
             $inventory->item_id = $cinventory->subledger_id;
             
@@ -57,6 +59,37 @@ class InsertCutoff extends Command
             $inventory->total_quantity = $cinventory->stock;
             $inventory->total_value = $cinventory->amount;
             $inventory->save();
+
+            Item::find($cinventory->subledger_id)
+
+            $journal = new Journal();
+            $journal->form_date = "2024-04-30 00:00:00";
+            $journal->coa_id = $item->account_asset_id;
+            $journal->description = "Cut Off Inventory";
+            $journal->debit = $cinventory->amount;
+            $journal->form_journal_id = 249;
+            $journal->form_reference_id;
+            $journal->subledger_id = $item->id;
+            $journal->subledger_type = get_class(new Item());
+            $journal->save();
+        }
+
+        $caccounts = CutOffAccountDetail::all();
+
+        foreach ($caccounts as $caccount) {
+            if ($caccount->coa->has_subledger == 0) {
+                $journal = new Journal();
+                $journal->form_date = "2024-04-30 00:00:00";
+                $journal->coa_id = $caccount->coa_id;
+                $journal->description = "Cut Off";
+                $journal->debit = $caccount->debit;
+                $journal->debit = $caccount->credit;
+                $journal->form_journal_id = 249;
+                $journal->form_reference_id;
+                $journal->subledger_id;
+                $journal->subledger_type;
+                $journal->save();
+            }    
         }
         
         \DB::commit();
