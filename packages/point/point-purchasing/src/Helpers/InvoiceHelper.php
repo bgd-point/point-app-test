@@ -51,7 +51,7 @@ class InvoiceHelper
 
     public static function create(Request $request, $formulir, $references = null)
     {
-        $dc = new stdClass();
+        $dc = new \stdClass();
         $dc->debit = 0;
         $dc->credit = 0;
 
@@ -211,7 +211,7 @@ class InvoiceHelper
 
     public static function journal($data)
     {
-        $dc = new stdClass();
+        $dc = new \stdClass();
         $dc->debit = 0;
         $dc->credit = 0;
 
