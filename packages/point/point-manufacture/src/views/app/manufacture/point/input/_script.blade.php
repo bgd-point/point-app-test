@@ -75,7 +75,7 @@ $('#addItemRow').on( 'click', function () {
     initFormatNumber();
     initSelectize('#material-id-'+counter_material);
     initSelectize('#warehouse-material-id-' + counter_material);
-    reloadItemHavingQuantity("#material-id-"+counter_material);
+    reloadItem("#material-id-"+counter_material);
     counter_material++;
 } );
 
