@@ -25,7 +25,7 @@ $('#addProductRow').on( 'click', function () {
     initFormatNumber();
     initSelectize('#product-id-'+counter_product);
     initSelectize('#warehouse-product-id-' + counter_product);
-    reloadItemHavingQuantity("#product-id-"+counter_product);
+    reloadItem("#product-id-"+counter_product);
     counter_product++;
 } );
 
@@ -66,7 +66,7 @@ $('#addItemRow').on( 'click', function () {
     initFormatNumber();
     initSelectize('#material-id-'+counter_material);
     initSelectize('#warehouse-material-id-' + counter_material);
-    reloadItemHavingQuantity("#material-id-"+counter_material);
+    reloadItem("#material-id-"+counter_material);
     counter_material++;
 } );
 
@@ -93,7 +93,7 @@ $(function(){
     if (counter_material > 0) {
         for(var i=0; i< counter_material; i++) {
             if($('#material-id-'+i).length != 0){
-                reloadItemHavingQuantity('#material-id-' + i, false);
+                reloadItem('#material-id-' + i, false);
             }
         }    
     }
@@ -101,7 +101,7 @@ $(function(){
     if (counter_product > 0) {
         for(var i=0; i< counter_product; i++) {
             if($('#product-id-'+i).length != 0){
-                reloadItemHavingQuantity('#product-id-' + i, false);
+                reloadItem('#product-id-' + i, false);
             }
         }    
     }
