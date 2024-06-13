@@ -131,7 +131,8 @@
                     <thead>
                     <tr >
                         <th>ITEM</th>
-                        <th class="text-right">QUANTITY RETUR</th>
+                        <th class="text-right">ADD STOCK</th>
+                        <th class="text-right">NOT ADD STOCK</th>
                         <th class="text-right">TOTAL</th>
                     </tr>
                     </thead>
@@ -139,19 +140,20 @@
                     @foreach($pos_retur->items as $pos_retur_item)
                         <tr>
                             <td>{{ $pos_retur_item->item->codeName }}</td>
-                            <td class="text-right"> {{number_format_quantity($pos_retur_item->quantity_retur)}} </td>
+                            <td class="text-right"> {{number_format_quantity($pos_retur_item->add_stock)}} </td>
+                            <td class="text-right"> {{number_format_quantity($pos_retur_item->not_add_stock)}} </td>
                             <td class="text-right"> {{number_format_quantity($pos_retur_item->total)}}</td>
                         </tr>
                     @endforeach
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td colspan="2" class="text-right"><b>TOTAL RETUR</b></td>
+                        <td colspan="3" class="text-right"><b>TOTAL RETUR</b></td>
                         <td class="text-right"> {{number_format_quantity($pos_retur->total)}} </td>
                     </tr>
                     @if(formulir_view_cancel($pos->formulir, 'delete.point.sales.pos'))
                     <tr>
-                        <td colspan="2"></td>
+                        <td colspan="3"></td>
                         <td class="text-right"><a href="{{url('/sales/point/pos/' . $pos_retur->pos_id .'/retur/'.$pos_retur->id.'/delete')}}" class="btn btn-danger btn-xs">Delete Retur</a></td>
                     </tr>
                     @endif
