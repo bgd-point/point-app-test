@@ -95,23 +95,23 @@ class MemoJournalController extends Controller
     {
         $coa_id = $request->input('coa_id');
         for ($i=0; $i<count($coa_id); $i++) {
-            \Log::info('mm1');
             if ($coa_id[$i] == '') {
+                \Log::info('mm1');
                 return false;
             }
 
             $coa = Coa::find($coa_id[$i]);
-            \Log::info('mm2');
             if ($coa->has_subledger && $request->input('master')[$i] == '') {
+                \Log::info('mm2');
                 return false;
             }
         }
-        \Log::info('mm3');
         if ($request->input('foot_debit') == 0 || $request->input('foot_credit') == 0) {
+            \Log::info('mm3');
             return false;
         }
-        \Log::info('mm4');
         if (number_format_db($request->input('foot_debit')) != number_format_db($request->input('foot_credit'))) {
+            \Log::info('mm4');
             return false;
         }
 
