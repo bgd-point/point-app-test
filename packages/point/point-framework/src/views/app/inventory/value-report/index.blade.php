@@ -248,6 +248,7 @@
                             <td></td>
                             <td></td>
                             <td></td>
+                            <td></td>
                             <td style="text-align: right;font-weight: bold">{{ number_format_quantity($total_closing_value) }}</td>
                         </tr>
                         </tbody>
