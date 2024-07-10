@@ -133,7 +133,7 @@
                             $price = 0;
 
                             if(request()->get('database_name') == 'p_bbl') {
-                                $price = $lastBuy->price;
+                                $price = $lastBuy ? $lastBuy->price : 0;
                                 $total_closing_value += ($closing_stock * $price);
                             } else {
                                 if ($lastBuy) {
