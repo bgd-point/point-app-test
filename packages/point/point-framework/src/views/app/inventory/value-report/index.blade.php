@@ -132,63 +132,68 @@
 
                             $price = 0;
 
-                            if ($lastBuy) {
+                            if(request()->get('database_name') == 'p_bbl') {
                                 $price = $lastBuy->price;
-                                if ($item->item_id == 89) { info('here A');}
+                                $total_closing_value += ($closing_stock * $price);
                             } else {
-                                if ($item->item_id == 89) { info('here B');}
-                                $ci = \Point\PointAccounting\Models\CutOffInventoryDetail::where('subledger_id', $item->item_id)->first();
-
-                                if ($ci) {
-                                    if ($item->item_id == 89) { info('here C');}
-                                    $price = $ci->amount / $ci->stock;
+                                if ($lastBuy) {
+                                    $price = $lastBuy->price;
+                                    if ($item->item_id == 89) { info('here A');}
                                 } else {
-                                    if ($item->item_id == 89) { info('here D');}
-                                    $product = \Point\PointManufacture\Models\InputProduct::join('point_manufacture_input', 'point_manufacture_input.id', '=', 'point_manufacture_input_product.input_id')
-                                        ->join('formulir', 'point_manufacture_input.formulir_id', '=', 'formulir.id')
-                                        ->where('formulir.form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
-                                        ->whereNotNull('formulir.form_number')
-                                        ->where('formulir.form_status', '!=', -1)
-                                        ->where('product_id', $item->item_id)
-                                        ->first();
-
-                                    if ($product) {
-                                        $outputProduct = \Point\PointManufacture\Models\OutputProduct::join('point_manufacture_output', 'point_manufacture_output.id', '=', 'point_manufacture_output_product.output_id')
-                                            ->where('point_manufacture_output.input_id', $product->input_id)
-                                            ->first();
-                                        $materials = \Point\PointManufacture\Models\InputMaterial::where('input_id', $product->input_id)->get();
-                                        $price = 0;
-                                        info('======'.$product->item->name.'====='. $product->input_id);
-                                        if ($item->item_id == 89) { info('here E' . $product->input_id);}
-                                        foreach ($materials as $material) {
-                                            $lastBuyMaterial = \Point\PointPurchasing\Models\Inventory\InvoiceItem::join('point_purchasing_invoice', 'point_purchasing_invoice.id', '=', 'point_purchasing_invoice_item.point_purchasing_invoice_id')
-                                                ->join('formulir', 'point_purchasing_invoice.formulir_id', '=', 'formulir.id')
-                                                ->where('point_purchasing_invoice_item.item_id', '=', $material->material_id)
-                                                ->where('formulir.form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
-                                                ->whereNotNull('formulir.form_number')
-                                                ->orderBy('formulir.form_date', 'desc')
-                                                ->first();
-
-                                            info($material->item->name .' ' . $outputProduct);
-
-                                            if ($lastBuyMaterial && $outputProduct) {
-                                                $price += ($material->quantity * $lastBuyMaterial->price) / $outputProduct->quantity;
-                                            }
-
-                                            info ('price = ' . $price);
-                                        }
-                                        info('========');
+                                    if ($item->item_id == 89) { info('here B');}
+                                    $ci = \Point\PointAccounting\Models\CutOffInventoryDetail::where('subledger_id', $item->item_id)->first();
+    
+                                    if ($ci) {
+                                        if ($item->item_id == 89) { info('here C');}
+                                        $price = $ci->amount / $ci->stock;
                                     } else {
-                                        if ($item->item_id == 89) { info('here F');}
-                                        $oi = \Point\Framework\Models\OpeningInventory::where('item_id', '=', $item->item_id)->first();
-                                        if ($oi) {
-                                            if ($item->item_id == 89) { info('here G');}
-                                            $price = $oi->price;
+                                        if ($item->item_id == 89) { info('here D');}
+                                        $product = \Point\PointManufacture\Models\InputProduct::join('point_manufacture_input', 'point_manufacture_input.id', '=', 'point_manufacture_input_product.input_id')
+                                            ->join('formulir', 'point_manufacture_input.formulir_id', '=', 'formulir.id')
+                                            ->where('formulir.form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
+                                            ->whereNotNull('formulir.form_number')
+                                            ->where('formulir.form_status', '!=', -1)
+                                            ->where('product_id', $item->item_id)
+                                            ->first();
+    
+                                        if ($product) {
+                                            $outputProduct = \Point\PointManufacture\Models\OutputProduct::join('point_manufacture_output', 'point_manufacture_output.id', '=', 'point_manufacture_output_product.output_id')
+                                                ->where('point_manufacture_output.input_id', $product->input_id)
+                                                ->first();
+                                            $materials = \Point\PointManufacture\Models\InputMaterial::where('input_id', $product->input_id)->get();
+                                            $price = 0;
+                                            info('======'.$product->item->name.'====='. $product->input_id);
+                                            if ($item->item_id == 89) { info('here E' . $product->input_id);}
+                                            foreach ($materials as $material) {
+                                                $lastBuyMaterial = \Point\PointPurchasing\Models\Inventory\InvoiceItem::join('point_purchasing_invoice', 'point_purchasing_invoice.id', '=', 'point_purchasing_invoice_item.point_purchasing_invoice_id')
+                                                    ->join('formulir', 'point_purchasing_invoice.formulir_id', '=', 'formulir.id')
+                                                    ->where('point_purchasing_invoice_item.item_id', '=', $material->material_id)
+                                                    ->where('formulir.form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
+                                                    ->whereNotNull('formulir.form_number')
+                                                    ->orderBy('formulir.form_date', 'desc')
+                                                    ->first();
+    
+                                                info($material->item->name .' ' . $outputProduct);
+    
+                                                if ($lastBuyMaterial && $outputProduct) {
+                                                    $price += ($material->quantity * $lastBuyMaterial->price) / $outputProduct->quantity;
+                                                }
+    
+                                                info ('price = ' . $price);
+                                            }
+                                            info('========');
+                                        } else {
+                                            if ($item->item_id == 89) { info('here F');}
+                                            $oi = \Point\Framework\Models\OpeningInventory::where('item_id', '=', $item->item_id)->first();
+                                            if ($oi) {
+                                                if ($item->item_id == 89) { info('here G');}
+                                                $price = $oi->price;
+                                            }
                                         }
                                     }
+    
+                                    $total_closing_value += ($closing_stock * $price);
                                 }
-
-                                $total_closing_value += ($closing_stock * $price);
                             }
                             ?>
                             <tr>

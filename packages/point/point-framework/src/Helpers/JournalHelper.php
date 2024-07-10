@@ -265,7 +265,7 @@ class JournalHelper
     public static function checkJournalBalance($formulir_id)
     {
         $journal = Journal::where('form_journal_id', $formulir_id)
-            ->selectRaw('sum(debit) as debit, sum(credit) as credit')
+            ->selectRaw('sum(debit) as debit, sum(credit) as credit, count(coa_id) as counter')
             ->first();
 
         $journals = Journal::where('form_journal_id', $formulir_id)->get();
