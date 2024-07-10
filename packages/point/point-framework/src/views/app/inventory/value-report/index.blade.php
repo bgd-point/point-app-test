@@ -93,7 +93,7 @@
                             <th style="text-align: center">VALUE</th>
                             <th style="text-align: center">QTY</th>
                             <th style="text-align: center">LAST BUY PRICE</th>
-                            <th style="text-align: center">VALUE</th>
+                            <!-- <th style="text-align: center">VALUE</th> -->
                         </tr>
                         </thead>
                         <tbody>
@@ -133,7 +133,16 @@
                             $price = 0;
 
                             if(request()->get('database_name') == 'p_bbl') {
-                                $price = $lastBuy ? $lastBuy->price : 0;
+                                if ($lastBuy && $lastBuy->price > 0) {
+                                    $price = $lastBuy ? $lastBuy->price : 0;
+                                }
+                                else {
+                                    $lastCoi = \Point\Framework\Models\Inventory::where('item_id', '=', $item->item_id)
+                                        ->where('form_date', '<=', request()->get('date_to') ?? \Carbon\Carbon::now())
+                                        ->orderBy('form_date', 'desc')
+                                        ->first();
+                                    $price = $lastCoi ? $lastCoi->price : 0;
+                                }
                                 $total_closing_value += ($closing_stock * $price);
                             } else {
                                 if ($lastBuy) {
