@@ -155,7 +155,7 @@ class InvoiceController extends Controller
     {
         $view = view('point-expedition::app.expedition.point.invoice.show');
         $view->invoice = Invoice::find($id);
-        $view->reference = FormulirHelper::getLockedModel($view->invoice->formulir_id);
+        // $view->reference = FormulirHelper::getLockedModel($view->invoice->formulir_id);
         $view->list_invoice_archived = Invoice::joinFormulir()->archived($view->invoice->formulir->form_number)->selectOriginal()->get();
         $view->revision = $view->list_invoice_archived->count();
 
