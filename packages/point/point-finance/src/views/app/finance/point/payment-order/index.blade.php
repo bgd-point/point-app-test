@@ -40,7 +40,7 @@
                 <br/>
 
                 <div class="table-responsive">
-                    {!! $list_payment_order->appends(['search'=>app('request')->get('search')])->render() !!}
+                    {!! $list_payment_order->appends(['search'=>app('request')->get('search'),'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to'),'order_by'=>app('request')->get('order_by'), 'order_type'=>app('request')->get('order_type'), 'status'=>app('request')->get('status')])->render() !!}
                     <table class="table table-striped table-bordered">
                         <thead>
                             <tr>
@@ -90,7 +90,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {!! $list_payment_order->appends(['search'=>app('request')->get('search')])->render() !!}
+                    {!! $list_payment_order->appends(['search'=>app('request')->get('search'),'date_from'=>app('request')->get('date_from'), 'date_to'=>app('request')->get('date_to'),'order_by'=>app('request')->get('order_by'), 'order_type'=>app('request')->get('order_type'), 'status'=>app('request')->get('status')])->render() !!}
                 </div>
             </div>
         </div>
