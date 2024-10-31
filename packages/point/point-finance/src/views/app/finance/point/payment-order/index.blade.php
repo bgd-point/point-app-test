@@ -119,7 +119,7 @@
       var date_from = $("#date-from").val();
       var date_to = $("#date-to").val();
       var search = $("#search").val();
-      var url = '{{url()}}/finance/point/payment-order/?order_by='+order_by+'&order_type='+order_type+'&='+status+'&date_from='+date_from+'&date_to='+date_to+'&search='+search;
+      var url = '{{url()}}/finance/point/payment-order/?order_by='+order_by+'&order_type='+order_type+'&status='+status+'&date_from='+date_from+'&date_to='+date_to+'&search='+search;
       location.href = url;
     }
 </script>
