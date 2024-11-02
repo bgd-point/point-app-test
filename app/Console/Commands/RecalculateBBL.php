@@ -107,7 +107,10 @@ class RecalculateBBL extends Command
 
                     $l_inventory->save();
                 }
-                
+
+                if ($l_inventory->item_id === 661) {
+                    $this->comment($l_inventory);
+                }
             }
         }
 
