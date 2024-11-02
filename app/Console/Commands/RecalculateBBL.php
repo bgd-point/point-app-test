@@ -113,6 +113,7 @@ class RecalculateBBL extends Command
                     $this->comment('=');
                     $this->comment($l_inventory->cogs);
                     $this->comment($l_inventory->cogs === 0);
+                    $this->comment($l_inventory->cogs == 0);
                 }
             }
         }
