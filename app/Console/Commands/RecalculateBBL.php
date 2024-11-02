@@ -65,7 +65,7 @@ class RecalculateBBL extends Command
                     $totalQty = $l_inventory->total_quantity;
                     $totalValue = $l_inventory->quantity * $l_inventory->price;
                     $l_inventory->recalculate = 0;
-                    if ($l_inventory->cogs === 0) {
+                    if ((float) $l_inventory->cogs === 0) {
                         $l_inventory->cogs = $cogs;
                     } else {
                         $cogs = $l_inventory->cogs;
@@ -74,7 +74,7 @@ class RecalculateBBL extends Command
                     $l_inventory->save();
                 } else if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
                     $l_inventory->recalculate = 0;
-                    if ($l_inventory->cogs === 0) {
+                    if ((float) $l_inventory->cogs === 0) {
                         $l_inventory->cogs = $cogs;
                     } else {
                         $cogs = $l_inventory->cogs;
@@ -86,7 +86,7 @@ class RecalculateBBL extends Command
                     $l_inventory->recalculate = 0;
                     $l_inventory->total_quantity = $totalQty + $l_inventory->quantity;
                     $l_inventory->total_value = $totalValue + ($l_inventory->quantity * $l_inventory->price);
-                    if ($l_inventory->cogs === 0) {
+                    if ((float) $l_inventory->cogs === 0) {
                         $l_inventory->cogs = $cogs;
                     } else {
                         $cogs = $l_inventory->cogs;
@@ -98,10 +98,10 @@ class RecalculateBBL extends Command
                 }
 
                 // value = 0, if total qty = 0
-                if ($l_inventory->total_quantity <= 0) {
+                if ((float) $l_inventory->total_quantity <= 0) {
                     $l_inventory->total_value = 0;
 
-                    if ($l_inventory->total_quantity < 0) {
+                    if ((float) $l_inventory->total_quantity < 0) {
                         $l_inventory->recalculate = 1;
                     }
 
@@ -110,10 +110,6 @@ class RecalculateBBL extends Command
 
                 if ($l_inventory->item_id === 661) {
                     $this->comment($l_inventory->id);
-                    $this->comment('=');
-                    $this->comment((float) $l_inventory->cogs);
-                    $this->comment((float) $l_inventory->cogs === 0);
-                    $this->comment(floatVal($l_inventory->cogs) == 0);
                 }
             }
         }
