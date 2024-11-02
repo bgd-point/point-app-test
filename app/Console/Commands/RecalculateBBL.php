@@ -87,6 +87,9 @@ class RecalculateBBL extends Command
                     $l_inventory->total_quantity = $totalQty + $l_inventory->quantity;
                     $l_inventory->total_value = $totalValue + ($l_inventory->quantity * $l_inventory->price);
                     if ((float) $l_inventory->cogs === 0) {
+                        if ($l_inventory->item_id === 661) {
+                            $this->comment($l_inventory->id . ' = ' . $l_inventory->cogs . ' = '. $cogs);
+                        }
                         $l_inventory->cogs = $cogs;
                     } else {
                         $cogs = $l_inventory->cogs;
@@ -106,10 +109,6 @@ class RecalculateBBL extends Command
                     }
 
                     $l_inventory->save();
-                }
-
-                if ($l_inventory->item_id === 661) {
-                    $this->comment($l_inventory->id);
                 }
             }
         }
