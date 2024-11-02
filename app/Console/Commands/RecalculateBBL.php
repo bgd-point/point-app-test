@@ -109,7 +109,7 @@ class RecalculateBBL extends Command
                 }
 
                 if ($l_inventory->item_id === 661) {
-                    $this->comment($l_inventory);
+                    $this->comment($l_inventory->id . ' = ' . $l_inventory->cogs === 0);
                 }
             }
         }
