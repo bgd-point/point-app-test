@@ -51,32 +51,63 @@ class RecalculateBBL extends Command
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
-		        ->where('form_date', '>=', '2024-03-01')
+		        ->where('form_date', '>=', '2024-01-01')
                 ->orderBy('form_date', 'asc')
                 ->orderBy('quantity', 'desc')
                 ->get();
 
             $totalQty = 0;
             $totalValue = 0;
+            $cogs = 0;
             foreach($list_inventory as $index => $l_inventory) {
                 if ($index === 0) {
+                    $l_inventory->total_quantity = $l_inventory->quantity;
                     $totalQty = $l_inventory->total_quantity;
                     $totalValue = $l_inventory->quantity * $l_inventory->price;
                     $l_inventory->recalculate = 0;
+                    if ($l_inventory->cogs === 0) {
+                        $l_inventory->cogs = $cogs;
+                    } else {
+                        $cogs = $l_inventory->cogs;
+                    }
                     $l_inventory->total_value = $totalValue;
                     $l_inventory->save();
                 } else if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
                     $l_inventory->recalculate = 0;
+                    if ($l_inventory->cogs === 0) {
+                        $l_inventory->cogs = $cogs;
+                    } else {
+                        $cogs = $l_inventory->cogs;
+                    }
+                    $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
                     $l_inventory->save();
                     $totalQty = $l_inventory->total_quantity;
                 } else {
                     $l_inventory->recalculate = 0;
                     $l_inventory->total_quantity = $totalQty + $l_inventory->quantity;
                     $l_inventory->total_value = $totalValue + ($l_inventory->quantity * $l_inventory->price);
+                    if ($l_inventory->cogs === 0) {
+                        $l_inventory->cogs = $cogs;
+                    } else {
+                        $cogs = $l_inventory->cogs;
+                    }
+                    $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
                     $l_inventory->save();
                     $totalQty = $l_inventory->total_quantity;
                     $totalValue = $l_inventory->total_value;
                 }
+
+                // value = 0, if total qty = 0
+                if ($l_inventory->total_quantity <= 0) {
+                    $l_inventory->total_value = 0;
+
+                    if ($l_inventory->total_quantity < 0) {
+                        $l_inventory->recalculate = 1;
+                    }
+
+                    $l_inventory->save();
+                }
+                
             }
         }
 
