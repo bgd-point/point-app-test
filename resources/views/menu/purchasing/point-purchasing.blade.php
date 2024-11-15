@@ -13,7 +13,8 @@
 @endif
 @if(client_has_addon('basic'))
     @if(auth()->user()->may('menu.point.purchasing.service'))
-    <div class="col-md-4 col-lg-3">
+    @if(request()->get('database_name') == 'p_kbretail')
+        <div class="col-md-4 col-lg-3">
             <a href="{{url('purchasing/point/service')}}" class="widget widget-button">
                 <div class="widget-content text-right clearfix">
                     <i class="fa fa-4x fa-briefcase push-bit pull-left"></i>
@@ -22,6 +23,7 @@
                 </div>
             </a>
         </div>
+    @endif
     @endif
 @endif
 @if(client_has_addon('basic'))
