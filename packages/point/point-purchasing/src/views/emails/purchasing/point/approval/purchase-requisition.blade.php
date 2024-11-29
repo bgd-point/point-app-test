@@ -167,7 +167,7 @@
             <tr>
                 <td style="width: 20%">Notes</td>
                 <td>:</td>
-                <td>{{ $purchase_requisition->form->notes }}</td>
+                <td>{{ $purchase_requisition->formulir->notes }}</td>
             </tr>
         </table>
 
