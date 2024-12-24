@@ -100,7 +100,7 @@ class TransferItemHelper
             $journal->form_date = $transfer_item->formulir->form_date;
             $journal->coa_id = $transfer_item_detail->item->account_asset_id;
             $journal->description = $transfer_item->formulir->form_number;
-            $journal->$position = $transfer_item_detail->cogs * -1;
+            $journal->$position = $transfer_item_detail->cogs * $transfer_item_detail->qty_send * -1;
             $journal->form_journal_id = $transfer_item->formulir_id;
             $journal->form_reference_id;
             $journal->subledger_id = $transfer_item_detail->item_id;
@@ -120,7 +120,7 @@ class TransferItemHelper
             $journal->form_date = $transfer_item->formulir->form_date;
             $journal->coa_id = $inventory_in_transit;
             $journal->description = $transfer_item->formulir->form_number;
-            $journal->$position = $transfer_item_detail->cogs;
+            $journal->$position = $transfer_item_detail->cogs * $transfer_item_detail->qty_send;
             $journal->form_journal_id = $transfer_item->formulir_id;
             $journal->form_reference_id;
             $journal->subledger_id = $transfer_item_detail->item_id;

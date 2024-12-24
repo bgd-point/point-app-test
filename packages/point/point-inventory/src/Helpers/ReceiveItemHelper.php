@@ -53,7 +53,7 @@ class ReceiveItemHelper
             $journal->form_date = $transfer_item->formulir->form_date;
             $journal->coa_id = $transfer_item_detail->item->account_asset_id;
             $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
-            $journal->debit = $transfer_item_detail->cogs;
+            $journal->debit = $transfer_item_detail->cogs * $transfer_item_detail->qty_received;
             $journal->credit = 0;
             $journal->form_journal_id = $transfer_item->formulir_id;
             $journal->form_reference_id;
@@ -68,7 +68,7 @@ class ReceiveItemHelper
             $journal->coa_id = $in_transit_account;
             $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
             $journal->debit = 0;
-            $journal->credit = $transfer_item_detail->cogs;
+            $journal->credit = $transfer_item_detail->cogs * $transfer_item_detail->qty_receiveds;
             $journal->form_journal_id = $transfer_item->formulir_id;
             $journal->form_reference_id;
             $journal->subledger_id;
