@@ -21,7 +21,7 @@ class RejournalTransferItemSeeder extends Seeder
         \DB::beginTransaction();
 
         \Log::info('---- Seeder Transfer Item starting ----');
-        transferItem();
+        $this->transferItem();
         \Log::info('---- Seeder Transfer Item finished ----');
 
         \DB::commit();
