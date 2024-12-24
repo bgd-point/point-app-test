@@ -29,9 +29,10 @@ class RejournalTransferItemSeeder extends Seeder
 
     public function transferItem()
     {
-        $list_transfer_item = TransferItem::joinFormulir()->notArchived()->approvalApproved()->selectOriginal()->get()->toArray();
+        $list_transfer_item = TransferItem::joinFormulir()->notArchived()->approvalApproved()->selectOriginal()->get();
         \Log::info('---- Transfer Item starting ----');
         foreach($list_transfer_item as $transfer_item) {
+            \Log::info($transfer_item->formulir_id);
             Journal::where('form_journal_id', $transfer_item->formulir_id)->delete();
             \Log::info('---- Sent Update ----');
             self::updateJournal($transfer_item);
@@ -50,7 +51,7 @@ class RejournalTransferItemSeeder extends Seeder
                     $journal->subledger_id = $transfer_item_detail->item_id;
                     $journal->subledger_type = get_class($transfer_item_detail->item);
                     $journal->save();
-        
+
                     // JOURNAL #2 of #2 - Inventory In Transit
                     $in_transit_account = JournalHelper::getAccount('point inventory transfer item', 'inventory in transit');
                     $journal = new Journal();
