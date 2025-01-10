@@ -85,7 +85,7 @@ class RecalculateBBL extends Command
                 } else {
                     $l_inventory->recalculate = 0;
                     // if value 0 from output
-                    if ($l_inventory->price === 0) {
+                    if ($l_inventory->price == 0) {
                         $l_inventory->price = $cogs;
                     }
                     $l_inventory->total_quantity = $totalQty + $l_inventory->quantity;
