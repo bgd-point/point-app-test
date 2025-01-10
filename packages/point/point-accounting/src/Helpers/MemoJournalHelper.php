@@ -101,15 +101,17 @@ class MemoJournalHelper
                 $memo_journal_detail->subledger_id = $subledger_id;
                 $memo_journal_detail->subledger_type = $subledger_type;
 
-                ReferHelper::create(
-                    $ref->formulirable_type,
-                    $ref->formulirable_id,
-                    get_class($memo_journal_detail),
-                    $memo_journal_detail->id,
-                    get_class($memo_journal),
-                    $memo_journal->id,
-                    $memo_journal_detail->debit ?: $memo_journal_detail->credit
-                );
+                if ($ref) {
+                    ReferHelper::create(
+                        $ref->formulirable_type,
+                        $ref->formulirable_id,
+                        get_class($memo_journal_detail),
+                        $memo_journal_detail->id,
+                        get_class($memo_journal),
+                        $memo_journal->id,
+                        $memo_journal_detail->debit ?: $memo_journal_detail->credit
+                    );
+                }
             }
 
             $memo_journal_detail->save();
