@@ -41,7 +41,7 @@ class Reopname extends Command
 
         \DB::beginTransaction();
 
-        $date = '2022-07-01';
+        $date = '2025-01-01';
 
         $this->clearOpanme($date);
         $this->updatePendingOpname($date);

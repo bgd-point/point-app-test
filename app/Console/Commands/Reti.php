@@ -43,7 +43,7 @@ class Reti extends Command
                 $q->where('approval_status', -1)
                     ->orWhereNull('form_number')
                     ->orWhere('form_status', -1);
-            })->where('form_date', '>=', '2022-09-01 00:00:00')->get();
+            })->where('form_date', '>=', '2025-01-01 00:00:00')->get();
 
         foreach ($formulirs as $formulir) {
             $qty = 0;
@@ -56,19 +56,13 @@ class Reti extends Command
             foreach ($inventories as $inventory) {
                 $qty += $inventory->quantity;
             }
-
-//            $this->line('DEL : '.$formulir->form_number);
-            if ($qty != 0) {
-//                $this->line('DEL : '.$formulir->form_number . ' = ' . $qty . ' = ' . $formulir->id);
-//                $this->line('DEL : '.$formulir->form_number . ' = ' . $qty . ' = ' . $formulir->id);
-            }
         }
 
         $formulirs = Formulir::where('formulirable_type', '=', TransferItem::class)
             ->whereNotNull('form_number')
             ->whereNull('canceled_at')
             ->where('approval_status', '=', 1)
-            ->where('form_date', '>=', '2022-09-01 00:00:00')
+            ->where('form_date', '>=', '2025-01-01 00:00:00')
             ->get();
 
         foreach ($formulirs as $formulir) {
