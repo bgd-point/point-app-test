@@ -54,7 +54,7 @@ class PurchaseOrderController extends Controller
         access_is_allowed('read.point.purchasing.order');
         $list_purchase_order = PurchaseOrder::joinFormulir()->joinSupplier()->notArchived()->selectOriginal();
         $list_purchase_order = PurchaseOrderHelper::searchList($list_purchase_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
-        $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.inventory.purchase-order.index-pdf', ['list_purchase_order' => $list_purchase_order]);
+        $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.inventory.purchase-order.index-pdf', ['list_purchase_order' => $list_purchase_order])->setPaper('a4', 'landscape');
         return $pdf->stream();
     }
     /**
@@ -227,7 +227,7 @@ class PurchaseOrderController extends Controller
             QueueHelper::reconnectAppDatabase($request['database_name']);
             \Mail::send('point-purchasing::emails.purchasing.point.external.purchase-order', $data, function ($message) use ($purchase_order, $warehouse, $data, $name) {
                 $message->to($purchase_order->supplier->email)->subject($name);
-                $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.purchase-order-standard-pdf', $data);
+                $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.purchase-order-standard-pdf', $data)->setPaper('a4', 'landscape');
                 $message->attachData($pdf->output(), $name. ".pdf");
             });
             $job->delete();
@@ -253,7 +253,7 @@ class PurchaseOrderController extends Controller
             'purchase_order' => $purchase_order
         );
 
-        $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.purchase-order-standard-pdf', $data);
+        $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.purchase-order-standard-pdf', $data)->setPaper('a4', 'landscape');
         return $pdf->stream($purchase_order->formulir->form_number.'.pdf');
     }
 
