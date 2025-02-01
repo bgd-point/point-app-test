@@ -560,7 +560,7 @@ class PaymentOrderController extends Controller
             QueueHelper::reconnectAppDatabase($request['database_name']);
             \Mail::send('point-expedition::emails.expedition.point.external.payment-order', $data, function ($message) use ($payment_order, $warehouse, $data, $name) {
                 $message->to($payment_order->expedition->email)->subject($name);
-                $pdf = \PDF::loadView('point-expedition::emails.expedition.point.external.payment-order-pdf', $data);
+                $pdf = \PDF::loadView('point-expedition::emails.expedition.point.external.payment-order-pdf', $data)->setPaper('a4', 'landscape');
                 $message->attachData($pdf->output(), $name. ".pdf");
             });
             $job->delete();

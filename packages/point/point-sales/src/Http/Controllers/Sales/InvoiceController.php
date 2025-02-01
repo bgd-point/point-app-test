@@ -277,7 +277,7 @@ class InvoiceController extends Controller
             QueueHelper::reconnectAppDatabase($request['database_name']);
             \Mail::send('point-sales::app.emails.sales.point.external.invoice', $data, function ($message) use ($invoice, $warehouse, $data, $name) {
                 $message->to($invoice->person->email)->subject($name);
-                $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.invoice-pdf', $data);
+                $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.invoice-pdf', $data)->setPaper('a4', 'landscape');
                 $message->attachData($pdf->output(), $name. ".pdf");
             });
             $job->delete();
@@ -314,7 +314,7 @@ class InvoiceController extends Controller
             'warehouse' => $warehouse
         );
 
-        $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.invoice-pdf', $data);
+        $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.invoice-pdf', $data)->setPaper('a4', 'landscape');
         return $pdf->stream($invoice->formulir->form_number.'.pdf');
     }
 

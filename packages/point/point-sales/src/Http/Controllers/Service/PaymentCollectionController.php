@@ -449,7 +449,7 @@ class PaymentCollectionController extends Controller
             QueueHelper::reconnectAppDatabase($request['database_name']);
             \Mail::send('point-sales::app.emails.sales.point.external.service-payment-collection', $data, function ($message) use ($payment_collection, $warehouse, $data, $name) {
                 $message->to($payment_collection->person->email)->subject($name);
-                $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.service-payment-collection-pdf', $data);
+                $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.service-payment-collection-pdf', $data)->setPaper('a4', 'landscape');
                 $message->attachData($pdf->output(), $name. ".pdf");
             });
             $job->delete();

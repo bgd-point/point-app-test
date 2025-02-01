@@ -318,7 +318,7 @@ class PosReportController extends Controller
             'list_sales' => $list_sales->get()
         );
 
-        $pdf = \PDF::loadView('point-sales::app.sales.point.pos.report.pdf', $data);
+        $pdf = \PDF::loadView('point-sales::app.sales.point.pos.report.pdf', $data)->setPaper('a4', 'landscape');
         
         return $pdf->stream();
     }
