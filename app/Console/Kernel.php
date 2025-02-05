@@ -39,6 +39,7 @@ class Kernel extends ConsoleKernel
         Commands\Recalculate2::class,
         Commands\Reinvoice::class,
         Commands\InventoryCheck::class,
+        Commands\JournalCheck::class,
         Commands\Masking::class,
         Commands\CheckInventoryCommand::class,
     ];
