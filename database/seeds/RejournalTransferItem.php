@@ -20,9 +20,9 @@ class RejournalTransferItemSeeder extends Seeder
     {
         \DB::beginTransaction();
 
-        $this->line('---- Seeder Transfer Item starting ----');
+        \Log:;info('---- Seeder Transfer Item starting ----');
         $this->transferItem();
-        $this->line('---- Seeder Transfer Item finished ----');
+        \Log:;info('---- Seeder Transfer Item finished ----');
 
         \DB::commit();
     }
@@ -30,15 +30,15 @@ class RejournalTransferItemSeeder extends Seeder
     public function transferItem()
     {
         $list_transfer_item = TransferItem::joinFormulir()->where('formulir.form_date', '>=', '2025-01-01')->notArchived()->approvalApproved()->selectOriginal()->get();
-        $this->line('---- Transfer Item starting ----');
-        $this->line($list_transfer_item);
+        \Log:;info('---- Transfer Item starting ----');
+        \Log:;info($list_transfer_item);
         foreach($list_transfer_item as $transfer_item) {
-            $this->line($transfer_item->id);
-            $this->line($transfer_item->formulir_id);
+            \Log:;info($transfer_item->id);
+            \Log:;info($transfer_item->formulir_id);
             Journal::where('form_journal_id', $transfer_item->formulir_id)->delete();
-            $this->line('---- Sent Update ----');
+            \Log:;info('---- Sent Update ----');
             self::updateJournal($transfer_item);
-            $this->line('---- Receive Update ----');
+            \Log:;info('---- Receive Update ----');
             if ($transfer_item->received_date) {
                 foreach ($transfer_item->items as $transfer_item_detail) {
                     // JOURNAL #1 of #2 - Invetory Received
@@ -61,11 +61,11 @@ class RejournalTransferItemSeeder extends Seeder
                     $journal->coa_id = $in_transit_account;
                     $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
                     $journal->debit = 0;
-                    $journal->credit = $transfer_item_detail->cogs * $transfer_item_detail->qty_receiveds;
+                    $journal->credit = $transfer_item_detail->cogs * $transfer_item_detail->qty_received;
                     $journal->form_journal_id = $transfer_item->formulir_id;
                     $journal->form_reference_id;
-                    $journal->subledger_id;
-                    $journal->subledger_type;
+                    $journal->subledger_id = $transfer_item_detail->item_id;
+                    $journal->subledger_type = get_class($transfer_item_detail->item);
                     $journal->save();
                 }
             }
