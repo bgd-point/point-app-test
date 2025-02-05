@@ -43,7 +43,12 @@ class JournalCheck extends Command
     {
         $journals = Journal::where('form_date', '>=', '2025-01-01')->groupBy('form_journal_id')->get();
         foreach ($journals as $journal) {
-            $this->line('JOURNAL: ' . $journal->formulir->form_number . ', ID: ' . $journal->id . ', TOTAL: ' . ($journal->debit + $journal->credit));
+            $debit = Journal::where('form_journal_id', $journal->form_journal_id)->sum('debit');
+            $credit = Journal::where('form_journal_id', $journal->form_journal_id)->sum('credit');
+            if ($debit != $credit) {
+
+                $this->line('JOURNAL: ' . $journal->formulir->form_number . ' = ' . $debit . ' != ' . $credit); );
+            }
         }
     }
 }
