@@ -29,9 +29,11 @@ class RejournalTransferItemSeeder extends Seeder
 
     public function transferItem()
     {
-        $list_transfer_item = TransferItem::joinFormulir()->notArchived()->approvalApproved()->selectOriginal()->get();
+        $list_transfer_item = TransferItem::joinFormulir()->where('formulir.form_date', '>=', '2025-01-01')->notArchived()->approvalApproved()->selectOriginal()->get();
         \Log::info('---- Transfer Item starting ----');
+        \Log::info($list_transfer_item);
         foreach($list_transfer_item as $transfer_item) {
+            \Log::info($transfer_item->id);
             \Log::info($transfer_item->formulir_id);
             Journal::where('form_journal_id', $transfer_item->formulir_id)->delete();
             \Log::info('---- Sent Update ----');
