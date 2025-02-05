@@ -46,8 +46,7 @@ class JournalCheck extends Command
             $debit = Journal::where('form_journal_id', $journal->form_journal_id)->sum('debit');
             $credit = Journal::where('form_journal_id', $journal->form_journal_id)->sum('credit');
             if ($debit != $credit) {
-
-                $this->line('JOURNAL: ' . $journal->formulir->form_number . ' = ' . $debit . ' != ' . $credit); );
+                $this->line('JOURNAL: ' . $journal->formulir->form_number . ' = ' . $debit . ' != ' . $credit);
             }
         }
     }
