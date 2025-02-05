@@ -8,7 +8,7 @@ use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Item;
 use Point\PointAccounting\Models\MemoJournal;
 
-class InventoryCheck extends Command
+class JournalCheck extends Command
 {
     /**
      * The name and signature of the console command.
