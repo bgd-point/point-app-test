@@ -43,9 +43,7 @@ class JournalCheck extends Command
     {
         $journals = Journal::where('form_date', '>=', '2025-01-01')->groupBy('form_journal_id')->get();
         foreach ($journals as $journal) {
-            if ($inventory->count() == 0) {
-                $this->line('JOURNAL: ' . $journal->formulir->form_number . ', ID: ' . $journal->id . ', TOTAL: ' . ($journal->debit + $journal->credit));
-            }
+            $this->line('JOURNAL: ' . $journal->formulir->form_number . ', ID: ' . $journal->id . ', TOTAL: ' . ($journal->debit + $journal->credit));
         }
     }
 }
