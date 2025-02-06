@@ -25,7 +25,7 @@ class LogoController extends Controller
                 mkdir(public_path('app/'.$request->project->url.'/logo'), 0777);
             }
 
-            $path = public_path('app/'.$request->project->url.'/logo/');
+            $path = public_path('app/'.$request->project->url.'/logo');
             $img = \Image::make($image->getRealPath());
             $img->resize(200, null, function ($constraint) {
                 $constraint->aspectRatio();
