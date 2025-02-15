@@ -9,7 +9,7 @@
         </a>
     </div>
 @endif
-@if(auth()->user()->may('read.warehouse'))
+@if(auth()->user()->may('read.warehouse') && request()->get('database_name') != 'p_personalfinance')
     <div class="col-md-4 col-lg-3">
         <a href="{{url('master/warehouse')}}" class="widget widget-button">
             <div class="widget-content text-right clearfix">
@@ -31,7 +31,7 @@
         </a>
     </div>
 @endif
-@if(auth()->user()->may('read.item'))
+@if(auth()->user()->may('read.item') && request()->get('database_name') != 'p_personalfinance')
     <div class="col-md-4 col-lg-3">
         <a href="{{url('master/item')}}" class="widget widget-button">
             <div class="widget-content text-right clearfix">
@@ -42,7 +42,7 @@
         </a>
     </div>
 @endif
-@if(auth()->user()->may('read.allocation'))
+@if(auth()->user()->may('read.allocation') && request()->get('database_name') != 'p_personalfinance')
     <div class="col-md-4 col-lg-3">
         <a href="{{url('master/allocation')}}" class="widget widget-button">
             <div class="widget-content text-right clearfix">
@@ -53,7 +53,7 @@
         </a>
     </div>
 @endif
-@if(auth()->user()->may('read.fixed.assets.item'))
+@if(auth()->user()->may('read.fixed.assets.item') && request()->get('database_name') != 'p_personalfinance')
     <div class="col-md-4 col-lg-3">
         <a href="{{url('master/fixed-assets-item')}}" class="widget widget-button">
             <div class="widget-content text-right clearfix">
@@ -64,7 +64,7 @@
         </a>
     </div>
 @endif   
-@if(auth()->user()->may('read.service'))
+@if(auth()->user()->may('read.service') && request()->get('database_name') != 'p_personalfinance')
     <div class="col-md-4 col-lg-3">
         <a href="{{url('master/service')}}" class="widget widget-button">
             <div class="widget-content text-right clearfix">
