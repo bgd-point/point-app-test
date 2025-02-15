@@ -1,4 +1,4 @@
-@if(auth()->user()->may('menu.inventory'))
+@if(auth()->user()->may('menu.inventory') && request()->get('database_name') != 'p_personalfinance')
 <li id="sidebar-menu-inventory">
     <a href="{{url('/inventory')}}" class="{{\Request::segment(1)=='inventory'?'active':''}}"><i class="fa fa-cubes sidebar-nav-icon"></i> <span class="sidebar-nav-mini-hide">Inventory</span></a>
 </li>
