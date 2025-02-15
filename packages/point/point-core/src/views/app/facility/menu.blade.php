@@ -3,6 +3,7 @@
 @section('content')
 <div id="page-content">
     <div class="row">
+        @if(request()->get('database_name') != 'p_personalfinance')
         <div class="col-md-4 col-lg-3">
             <a href="{{url('finance/point/debt-cash')}}" class="widget widget-button">
                 <div class="widget-content text-right clearfix">
@@ -12,6 +13,8 @@
                 </div>
             </a>
         </div>
+        @endif
+        @if(request()->get('database_name') != 'p_personalfinance')
         <div class="col-md-4 col-lg-3">
             <a href="{{url('finance/point/debt-report/cash')}}" class="widget widget-button">
                 <div class="widget-content text-right clearfix">
@@ -21,6 +24,7 @@
                 </div>
             </a>
         </div>
+        @endif
         @if(auth()->user()->may('manage.monitoring'))
             <div class="col-md-4 col-lg-3">
                 <a href="{{url('facility/monitoring')}}" class="widget widget-button">
