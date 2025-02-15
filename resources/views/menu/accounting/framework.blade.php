@@ -53,7 +53,7 @@
         </a>
     </div>
 @endif
-@if(\Auth::user()->may('read.cashflow'))
+@if(\Auth::user()->may('read.cashflow') && request()->get('database_name') != 'p_personalfinance')
     {{--<div class="col-md-4 col-lg-3">--}}
         {{--<a href="{{url('accounting/cashflow')}}" class="widget widget-button">--}}
             {{--<div class="widget-content text-right clearfix">--}}

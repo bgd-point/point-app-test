@@ -42,7 +42,7 @@
         </a>
     </div>
 @endif
-@if(auth()->user()->may('read.allocation'))
+@if(auth()->user()->may('read.allocation') && request()->get('database_name') != 'p_personalfinance')
     <div class="col-md-4 col-lg-3">
         <a href="{{url('master/allocation')}}" class="widget widget-button">
             <div class="widget-content text-right clearfix">
