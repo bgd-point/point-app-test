@@ -240,6 +240,13 @@
                                         <td colspan="5" class="text-right">TAX PERCENTAGE</td>
                                         <td>
                                             <input type="text" id="tax-percentage" class="form-control format-quantity calculate text-right" value="11"/>
+                                            <div class="input-group">
+                                                <input type="text" id="tax-percentage" name="tax-percentage"
+                                                    style="min-width: 100px"
+                                                    class="form-control format-quantity calculate text-right"
+                                                    value="{{old('tax-percentage') ? : 11}}"/>
+                                                <span class="input-group-addon">%</span>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -380,6 +387,10 @@
 
             if (dbNum($('#discount').val()) > 100) {
                 dbNum($('#discount').val(100))
+            }
+
+            if (dbNum($('#tax-percentage').val()) > 100) {
+                dbNum($('#tax-percentage').val(100))
             }
 
             var discount = dbNum($('#discount').val());
