@@ -239,7 +239,6 @@
                                     <tr>
                                         <td colspan="5" class="text-right">TAX PERCENTAGE</td>
                                         <td>
-                                            <input type="text" id="tax-percentage" class="form-control format-quantity calculate text-right" value="11"/>
                                             <div class="input-group">
                                                 <input type="text" id="tax-percentage" name="tax-percentage"
                                                     style="min-width: 100px"
