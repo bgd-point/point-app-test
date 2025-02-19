@@ -400,7 +400,7 @@
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
-                tax_base = tax_base * 100 / (100 + $('#tax-percentage').val());
+                tax_base = tax_base * 100 / (100 + 11);
                 tax = tax_base * $('#tax-percentage').val() / 100;
                 $("#tax-choice-non-tax").val("include");
             }
