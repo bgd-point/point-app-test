@@ -241,6 +241,7 @@
                                         <td>
                                             <div class="input-group">
                                                 <input type="text" id="tax-percentage" name="tax-percentage"
+                                                    readonly
                                                     style="min-width: 100px"
                                                     class="form-control format-quantity calculate text-right"
                                                     value="{{old('tax-percentage') ? : 11}}"/>
@@ -396,6 +397,7 @@
             if($('#tax-choice-include-tax').prop('checked')) {
                 $('#discount').val(0);
                 $('#discount').prop('readonly', true);
+                $('#tax-percentage').prop('readonly', false);
                 var discount = 0;
             } else {
                 $('#discount').prop('readonly', false);
@@ -407,6 +409,7 @@
             if ($('#tax-choice-exclude-tax').prop('checked')) {
                 tax = tax_base * $('#tax-percentage').val() / 100;
                 $("#tax-choice-non-tax").val("exclude");
+                $('#tax-percentage').prop('readonly', false);
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
