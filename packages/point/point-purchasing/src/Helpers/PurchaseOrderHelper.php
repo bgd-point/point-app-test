@@ -136,8 +136,8 @@ class PurchaseOrderHelper
         }
 
         $discount = number_format_db($request->input('discount'));
-        $tax_base = $request->input('tax_percentage');
-        $tax = $request->input('tax');
+        $tax_base = number_format_db($request->input('tax_percentage'));
+        $tax = number_format_db($request->input('tax'));
 
         $purchase_order->subtotal = $subtotal;
         $purchase_order->discount = $discount;
