@@ -281,7 +281,6 @@
                                     </tr>
                                     </tfoot>
                                 </table>
-                                {{$purchase_order}}
                             </div>
                         </div>
                     </div>
