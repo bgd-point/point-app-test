@@ -342,11 +342,11 @@
             $('#tax-choice-non-tax').hide();
             var tax_status = {!! json_encode('$purchase_order->type_of_tax') !!};
 
-            if (tax_status == 'include') {
-                $("#tax-choice-include-tax").trigger("click");
+            if ($purchase_order->type_of_tax == 'include') {
+                // $("#tax-choice-include-tax").trigger("click");
                 $("#tax-choice-non-tax").val("include");
-            } else if (tax_status == 'exclude') {
-                $("#tax-choice-exclude-tax").trigger("click");
+            } else if ($purchase_order->type_of_tax == 'exclude') {
+                // $("#tax-choice-exclude-tax").trigger("click");
                 $("#tax-choice-non-tax").val("exclude");
             } else {
                 $("#tax-choice-non-tax").val("non");
