@@ -240,7 +240,8 @@
                                         <td colspan="5" class="text-right">TAX PERCENTAGE</td>
                                         <td>
                                             <div class="input-group">
-                                                <input type="text" id="tax-percentage" name="tax-percentage"
+                                                <input type="text" id="tax-percentage"
+                                                    name="tax_percentage"
                                                     readonly
                                                     style="min-width: 100px"
                                                     class="form-control format-quantity calculate text-right"
@@ -252,8 +253,12 @@
                                     <tr>
                                         <td colspan="5" class="text-right">TAX</td>
                                         <td>
-                                            <input type="text" readonly="" id="tax"
-                                                   class="form-control format-quantity calculate text-right" value="0"/>
+                                            <input type="text"
+                                                readonly=""
+                                                id="tax"
+                                                name="tax"
+                                                class="form-control format-quantity calculate text-right" 
+                                                value="0"/>
                                         </td>
                                     </tr>
                                     
