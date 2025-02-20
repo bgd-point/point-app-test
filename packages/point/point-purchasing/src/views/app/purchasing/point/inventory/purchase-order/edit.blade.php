@@ -227,13 +227,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="5" class="text-right">TAX BASE</td>
-                                        <td><input type="text" readonly id="tax_base"
-                                                   class="form-control format-quantity calculate text-right" value="0"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="5" class="text-right">TAX</td>
-                                        <td><input type="text" readonly id="tax"
+                                        <td><input type="text" readonly id="tax_base" name="tax_base"
                                                    class="form-control format-quantity calculate text-right" value="0"/>
                                         </td>
                                     </tr>
@@ -241,17 +235,36 @@
                                         <td colspan="5"></td>
                                         <td>
                                             <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
-                                                   value="include"
-                                                   {{ $purchase_order->type_of_tax == 'include' ? 'checked'  : '' }} onchange="calculate()">
-                                            Include Tax <br/>
+                                                   {{ old('type_of_tax') == 'on' ? 'checked'  : '' }} onchange="calculate()"
+                                                   value="include"> Tax Included<br/>
                                             <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
-                                                   value="exclude"
-                                                   {{ $purchase_order->type_of_tax == 'exclude' ? 'checked'  : '' }} onchange="calculate()">
-                                            Exclude Tax <br/>
+                                                   {{ old('type_of_tax') == 'on' ? 'checked'  : '' }} onchange="calculate()"
+                                                   value="exclude"> Tax Excluded <br/>
                                             <input type="text" id="tax-choice-non-tax" name="type_of_tax" value="non">
-
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-right">TAX PERCENTAGE</td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input type="text" id="tax-percentage"
+                                                    name="tax_percentage"
+                                                    readonly
+                                                    style="min-width: 100px"
+                                                    class="form-control format-quantity calculate text-right"
+                                                    value="{{old('tax-percentage') ? : 11}}"/>
+                                                <span class="input-group-addon">%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-right">TAX</td>
+                                        <td>
+                                            <input type="text" readonly id="tax" name="tax"
+                                                class="form-control format-quantity calculate text-right" value="0"/>
+                                        </td>
+                                    </tr>
+                                    
                                     <tr>
                                         <td colspan="5" class="text-right">EXPEDITION FEE</td>
                                         <td><input type="text" id="fee-expedition" name="expedition_fee"
