@@ -220,7 +220,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="5" class="text-right">TAX BASE</td>
-                                        <td><input type="text" readonly id="tax_base"
+                                        <td><input type="text" readonly id="tax_base" name="tax_base"
                                                    class="form-control format-quantity calculate text-right" value="0"/>
                                         </td>
                                     </tr>
