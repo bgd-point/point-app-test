@@ -240,7 +240,7 @@
                                             <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
                                                    {{ $purchase_order->type_of_tax == 'EXCLUDE' ? 'checked'  : '' }} onchange="calculate()"
                                                    value="exclude"> Tax Excluded <br/>
-                                            <input type="text" id="tax-choice-non-tax" name="type_of_tax" value="non">
+                                            <input type="text" id="tax-choice-non-tax" name="type_of_tax" value="non" style="visibility:hidden">
                                         </td>
                                     </tr>
                                     <tr>
@@ -371,7 +371,7 @@
         function setToNontax() {
             $("#tax-choice-include-tax").attr("checked", false);
             $("#tax-choice-exclude-tax").attr("checked", false);
-            $("#tax-choice-non-tax").val("non");
+            $("#tax-choice-non-tax").val("non") style="visibility:hidden";
             calculate();
         }
 
@@ -410,14 +410,14 @@
             var tax = 0;
             if ($('#tax-choice-exclude-tax').prop('checked')) {
                 tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
-                $("#tax-choice-non-tax").val("exclude");
+                $("#tax-choice-non-tax").val("exclude") style="visibility:hidden";
                 $('#tax-percentage').prop('readonly', false);
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
                 tax_base = tax_base * 100 / (100 + dbNum($('#tax-percentage').val()));
                 tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
-                $("#tax-choice-non-tax").val("include");
+                $("#tax-choice-non-tax").val("include") style="visibility:hidden";
                 $('#tax-percentage').prop('readonly', false);
             }
 
