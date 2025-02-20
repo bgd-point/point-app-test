@@ -352,7 +352,7 @@
                 $("#tax-choice-non-tax").val("non");
             }
 
-            calculate();
+            // calculate();
             if (!document.getElementById("include-expedition").checked) {
                 $('#fee-expedition').hide();
             }
