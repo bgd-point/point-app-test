@@ -228,17 +228,17 @@
                                     <tr>
                                         <td colspan="5" class="text-right">TAX BASE</td>
                                         <td><input type="text" readonly id="tax_base" name="tax_base"
-                                                   class="form-control format-quantity calculate text-right" value="0"/>
+                                                   class="form-control format-quantity calculate text-right" value="{{$purchase_order->tax_base}}"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td colspan="5"></td>
                                         <td>
                                             <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
-                                                   {{ old('type_of_tax') == 'on' ? 'checked'  : '' }} onchange="calculate()"
+                                                   {{ $purchase_order->type_of_tax == 'INCLUDE' ? 'checked'  : '' }} onchange="calculate()"
                                                    value="include"> Tax Included<br/>
                                             <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
-                                                   {{ old('type_of_tax') == 'on' ? 'checked'  : '' }} onchange="calculate()"
+                                                   {{ $purchase_order->type_of_tax == 'EXCLUDE' ? 'checked'  : '' }} onchange="calculate()"
                                                    value="exclude"> Tax Excluded <br/>
                                             <input type="text" id="tax-choice-non-tax" name="type_of_tax" value="non">
                                         </td>
@@ -252,7 +252,7 @@
                                                     readonly
                                                     style="min-width: 100px"
                                                     class="form-control format-quantity calculate text-right"
-                                                    value="{{old('tax-percentage') ? : 11}}"/>
+                                                    value="{{$purchase_order->tax_percentage}}"/>
                                                 <span class="input-group-addon">%</span>
                                             </div>
                                         </td>
@@ -261,7 +261,7 @@
                                         <td colspan="5" class="text-right">TAX</td>
                                         <td>
                                             <input type="text" readonly id="tax" name="tax"
-                                                class="form-control format-quantity calculate text-right" value="0"/>
+                                                class="form-control format-quantity calculate text-right" value="{{$purchase_order->tax}}"/>
                                         </td>
                                     </tr>
                                     
@@ -274,7 +274,7 @@
                                     <tr>
                                         <td colspan="5" class="text-right">TOTAL</td>
                                         <td><input type="text" readonly id="total"
-                                                   class="form-control format-quantity calculate text-right" value="0"/>
+                                                   class="form-control format-quantity calculate text-right" value="{{$purchase_order->total}}"/>
                                         </td>
                                     </tr>
                                     </tfoot>
