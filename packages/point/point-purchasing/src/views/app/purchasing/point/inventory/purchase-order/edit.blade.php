@@ -235,12 +235,14 @@
                                         <td colspan="5"></td>
                                         <td>
                                             <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
-                                                   {{ $purchase_order->type_of_tax == 'INCLUDE' ? 'checked'  : '' }} onchange="calculate()"
+                                                   {{ old('type_of_tax') == 'on' ? 'checked'  : '' }} onchange="calculate()"
                                                    value="include"> Tax Included<br/>
                                             <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
-                                                   {{ $purchase_order->type_of_tax == 'EXCLUDE' ? 'checked'  : '' }} onchange="calculate()"
+                                                   {{ old('type_of_tax') == 'on' ? 'checked'  : '' }} onchange="calculate()"
                                                    value="exclude"> Tax Excluded <br/>
-                                            <input type="text" id="tax-choice-non-tax" name="type_of_tax" value="non" style="visibility:hidden">
+                                            <input type="text" id="tax-choice-non-tax" name="type_of_tax" value="non">
+
+                                            
                                         </td>
                                     </tr>
                                     <tr>
