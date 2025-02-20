@@ -344,10 +344,10 @@
             $('#tax-choice-non-tax').hide();
             var tax_status = {!! json_encode('$purchase_order->type_of_tax') !!};
 
-            if ($purchase_order->type_of_tax == 'include') {
+            if (tax_status == 'include') {
                 $("#tax-choice-include-tax").trigger("click");
                 $("#tax-choice-non-tax").val("include");
-            } else if ($purchase_order->type_of_tax == 'exclude') {
+            } else if (tax_status == 'exclude') {
                 $("#tax-choice-exclude-tax").trigger("click");
                 $("#tax-choice-non-tax").val("exclude");
             } else {
