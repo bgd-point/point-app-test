@@ -145,7 +145,17 @@
                                 <input type="text" readonly id="tax_base" name="tax_base" class="form-control format-quantity text-right" value="0"/>
                             </div>
                         </div>
-                        
+                        <div class="form-group">
+                            <label class="col-md-9 control-label text-right"></label>
+                            <div class="col-md-3 content-show">
+                                <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
+                                       {{ old('type_of_tax') == 'on' ? 'checked'  : '' }} onchange="calculate()"
+                                       value="include"> Include Tax <br/>
+                                <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
+                                       {{ old('type_of_tax') == 'on' ? 'checked'  : '' }} onchange="calculate()"
+                                       value="exclude"> Exlude Tax <br/>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="col-md-9 control-label text-right">TAX PERCENTAGE</label>
                             <div class="col-md-3 content-show">
@@ -167,17 +177,7 @@
                                 <input type="text" readonly id="tax" name="tax" class="form-control format-quantity text-right" value="0"/>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-md-9 control-label text-right"></label>
-                            <div class="col-md-3 content-show">
-                                <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
-                                       {{ old('type_of_tax') == 'on' ? 'checked'  : '' }} onchange="calculate()"
-                                       value="include"> Include Tax <br/>
-                                <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
-                                       {{ old('type_of_tax') == 'on' ? 'checked'  : '' }} onchange="calculate()"
-                                       value="exclude"> Exlude Tax <br/>
-                            </div>
-                        </div>
+                        
                         <div class="form-group">
                             <label class="col-md-9 control-label text-right">TOTAL</label>
                             <div class="col-md-3 content-show">
@@ -221,6 +221,7 @@
         var item_table = initDatatable('#item-datatable');
 
         $(function () {
+            $('#tax-percentage-div').hide();
             calculate();
         });
 
@@ -246,6 +247,8 @@
 
             if ($('#tax-choice-exclude-tax').prop('checked')) {
                 tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
+                $('#tax-percentage-div').show();
+                $('#tax-percentage').prop('readonly', false);
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
@@ -253,6 +256,8 @@
                 tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
                 $('#discount').val(0);
                 $('#discount').prop('readonly', true);
+                $('#tax-percentage-div').show();
+                $('#tax-percentage').prop('readonly', false);
                 var discount = 0;
             } else {
                 $('#discount').prop('readonly', false);

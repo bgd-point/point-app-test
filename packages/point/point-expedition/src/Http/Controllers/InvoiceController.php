@@ -104,6 +104,7 @@ class InvoiceController extends Controller
             ->whereIn('point_expedition_order.formulir_id', $array_expedition_order_id)
             ->selectOriginal()
             ->get();
+        
         return $view;
     }
 
