@@ -194,7 +194,7 @@
                                             <input type="text" id="tax-choice-non-tax" name="type_of_tax" value="non">
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr id="tax-percentage-div">
                                         <td colspan="6" class="text-right">TAX PERCENTAGE</td>
                                         <td>
                                             <div class="input-group">
@@ -340,14 +340,17 @@
         });
 
         $(function () {
+            $('#tax-percentage-div').hide();
             $('#tax-choice-non-tax').hide();
 
             var tax_status = {!! json_encode(old('type_of_tax')) !!};
 
             if (tax_status == 'include') {
                 $("#tax-choice-include-tax").trigger("click");
+                $('#tax-percentage-div').show();
             } else if (tax_status == 'exclude') {
                 $("#tax-choice-exclude-tax").trigger("click");
+                $('#tax-percentage-div').show();
             } else {
                 $("#tax-choice-non-tax").val("non");
             }
@@ -418,6 +421,7 @@
             if ($('#tax-choice-exclude-tax').prop('checked')) {
                 tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
                 $("#tax-choice-non-tax").val("exclude");
+                $('#tax-percentage-div').show();
                 $('#tax-percentage').prop('readonly', false);
             }
 
@@ -425,6 +429,7 @@
                 tax_base = tax_base * 100 / (100 + dbNum($('#tax-percentage').val()));
                 tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
                 $("#tax-choice-non-tax").val("include");
+                $('#tax-percentage-div').show();
                 $('#tax-percentage').prop('readonly', false);
             }
 
