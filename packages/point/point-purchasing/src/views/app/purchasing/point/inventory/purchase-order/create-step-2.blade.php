@@ -404,6 +404,7 @@
             if($('#tax-choice-include-tax').prop('checked')) {
                 $('#discount').val(0);
                 $('#discount').prop('readonly', true);
+                $('#tax-percentage-div').show();
                 $('#tax-percentage').prop('readonly', false);
                 var discount = 0;
             } else {
@@ -416,6 +417,7 @@
             if ($('#tax-choice-exclude-tax').prop('checked')) {
                 tax = tax_base * $('#tax-percentage').val() / 100;
                 $("#tax-choice-non-tax").val("exclude");
+                $('#tax-percentage-div').show();
                 $('#tax-percentage').prop('readonly', false);
             }
 
@@ -423,6 +425,7 @@
                 tax_base = tax_base * 100 / (100 + dbNum($('#tax-percentage').val()));
                 tax = tax_base * $('#tax-percentage').val() / 100;
                 $("#tax-choice-non-tax").val("include");
+                $('#tax-percentage-div').show();
                 $('#tax-percentage').prop('readonly', false);
             }
 
