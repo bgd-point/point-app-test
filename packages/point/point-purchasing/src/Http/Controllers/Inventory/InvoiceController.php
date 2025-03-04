@@ -181,6 +181,7 @@ class InvoiceController extends Controller
     {
         $view = view('point-purchasing::app.purchasing.point.inventory.invoice.edit');
         $view->invoice = Invoice::find($id);
+        $view->invoice->tax_percentage = $view->invoice->tax / $view->invoice->tax_base * 100;
         $view->supplier = Person::find($view->invoice->supplier_id);
         $array_goods_received_id = FormulirHelper::getLockedModelIds($view->invoice->formulir_id);
         $view->list_goods_received = GoodsReceived::joinFormulir()
