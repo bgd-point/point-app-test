@@ -156,7 +156,7 @@ class PurchaseOrderController extends Controller
         access_is_allowed('update.point.purchasing.order');
         $view = view('point-purchasing::app.purchasing.point.inventory.purchase-order.edit');
         $view->purchase_order = PurchaseOrder::find($id);
-        $view->purchase_order->tax_percentage = 11;
+        $view->purchase_order->tax_percentage = $view->purchase_order->tax / $view->purchase_order->tax_base * 100;
         $view->purchase_requisition = $view->purchase_order->checkHaveReference();
         $view->list_user_approval = UserHelper::getAllUser();
         $view->list_allocation = Allocation::all();
