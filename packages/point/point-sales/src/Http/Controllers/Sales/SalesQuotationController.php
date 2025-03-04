@@ -144,6 +144,7 @@ class SalesQuotationController extends Controller
 
         $view = view('point-sales::app.sales.point.sales.sales-quotation.edit');
         $view->sales_quotation = SalesQuotation::find($id);
+        $view->sales_quotation->tax_percentage = $view->sales_quotation->tax / $view->sales_quotation->tax_base * 100;
         $view->list_item = Item::active()->get();
         $view->list_employee= PersonHelper::getByType(['employee']);
         $view->list_customer = PersonHelper::getByType(['customer']);
