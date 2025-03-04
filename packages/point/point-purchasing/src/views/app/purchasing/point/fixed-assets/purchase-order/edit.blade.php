@@ -320,7 +320,7 @@
 
         $(function () {
             $('#tax-choice-non-tax').hide();
-            var tax_status = {!! json_encode('$purchase_order->type_of_tax') !!};
+            var tax_status = {!! json_encode($purchase_order->type_of_tax) !!};
 
             if (tax_status == 'include') {
                 $("#tax-choice-include-tax").trigger("click");

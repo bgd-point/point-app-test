@@ -87,17 +87,9 @@ class InvoiceHelper
         $subtotal += number_format_db($request->input('subtotal'));
         $discount = $request->input('discount') ? number_format_db($request->input('discount')) : 0;
         $discount_value = $subtotal * $discount / 100;
-        $tax_base = $subtotal - $discount_value;
-        $tax = 0;
-
-        if ($request->input('type_of_tax') == 'exclude') {
-            $tax = $tax_base * 10 / 100;
-        }
-        if ($request->input('type_of_tax') == 'include') {
-            $tax_base = $tax_base * 100 / 110;
-            $tax = $tax_base * 10 / 100;
-        }
-
+        $tax_base = number_format_db($request->input('tax_base'));
+        $tax = number_format_db($request->input('tax'));
+        
         $invoice->subtotal = $subtotal;
         $invoice->discount = $discount;
         $invoice->tax_base = $tax_base;
