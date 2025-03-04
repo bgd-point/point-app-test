@@ -164,14 +164,6 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td colspan="3" class="text-right"><strong>Tax</strong></td>
-                                                <td>
-                                                    <input type="text" readonly id="tax" name="tax"
-                                                           class="form-control format-quantity calculateAverageFee text-right"
-                                                           value="0"/>
-                                                </td>
-                                            </tr>
-                                            <tr>
                                                 <td colspan="3"></td>
                                                 <td>
                                                     <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
@@ -182,6 +174,29 @@
                                                            value="exclude"> Exlude Tax <br/>
                                                 </td>
                                             </tr>
+                                            <tr id="tax-percentage-div">
+                                                <td colspan="3" class="text-right">TAX PERCENTAGE</td>
+                                                <td>
+                                                    <div class="input-group">
+                                                        <input type="text" id="tax-percentage"
+                                                            name="tax_percentage"
+                                                            readonly
+                                                            style="min-width: 100px"
+                                                            class="form-control format-quantity calculate text-right"
+                                                            value="{{old('tax-percentage') ? : 11}}"/>
+                                                        <span class="input-group-addon">%</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3" class="text-right"><strong>Tax</strong></td>
+                                                <td>
+                                                    <input type="text" readonly id="tax" name="tax"
+                                                           class="form-control format-quantity calculateAverageFee text-right"
+                                                           value="0"/>
+                                                </td>
+                                            </tr>
+                                            
                                             <tr>
                                                 <td colspan="3" class="text-right"><h4><strong>Total</strong></h4></td>
                                                 <td>
@@ -242,6 +257,28 @@
     <script>
         var item_table = initDatatable('#item-datatable');
 
+        $(function () {
+            reloadPerson('#contact_id', 'supplier', false);
+            $('#tax-percentage-div').hide();
+            $('#tax-choice-non-tax').hide();
+
+            var tax_status = {!! json_encode(old('type_of_tax')) !!};
+
+            if (tax_status == 'include') {
+                $("#tax-choice-include-tax").trigger("click");
+                $("#tax-choice-non-tax").val("include");
+                $('#tax-percentage-div').show();
+            } else if (tax_status == 'exclude') {
+                $("#tax-choice-exclude-tax").trigger("click");
+                $("#tax-choice-non-tax").val("exclude");
+                $('#tax-percentage-div').show();
+            } else {
+                $("#tax-choice-non-tax").val("non");
+            }
+
+            calculate();
+        });
+
         function calculate() {
             if (dbNum($('#discount').val()) > 100) {
                 dbNum($('#discount').val(100))
@@ -260,12 +297,16 @@
             var tax = 0;
 
             if ($('#tax-choice-exclude-tax').prop('checked')) {
-                tax = tax_base * 11 / 100;
+                tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
+                $('#tax-percentage-div').show();
+                $('#tax-percentage').prop('readonly', false);
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
-                tax_base = tax_base * 100 / 111;
-                tax = tax_base * 11 / 100;
+                tax_base = tax_base * 100 / (100 + dbNum($('#tax-percentage').val()));
+                tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
+                $('#tax-percentage-div').show();
+                $('#tax-percentage').prop('readonly', false);
             }
 
             $('#tax_base').val(appNum(tax_base));
