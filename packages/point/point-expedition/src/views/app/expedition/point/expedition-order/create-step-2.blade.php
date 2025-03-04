@@ -178,7 +178,8 @@
                                                 <td colspan="3" class="text-right"><strong>TAX PERCENTAGE</strong></td>
                                                 <td>
                                                     <div class="input-group">
-                                                        <input type="text" id="tax-percentage"
+                                                        <input type="text"
+                                                            id="tax-percentage"
                                                             name="tax_percentage"
                                                             readonly
                                                             style="min-width: 100px"
@@ -258,23 +259,7 @@
         var item_table = initDatatable('#item-datatable');
 
         $(function () {
-            reloadPerson('#contact_id', 'supplier', false);
             $('#tax-percentage-div').hide();
-            $('#tax-choice-non-tax').hide();
-
-            var tax_status = {!! json_encode(old('type_of_tax')) !!};
-
-            if (tax_status == 'include') {
-                $("#tax-choice-include-tax").trigger("click");
-                $("#tax-choice-non-tax").val("include");
-            } else if (tax_status == 'exclude') {
-                $("#tax-choice-exclude-tax").trigger("click");
-                $("#tax-choice-non-tax").val("exclude");
-            } else {
-                $("#tax-choice-non-tax").val("non");
-            }
-
-            calculate();
         });
 
         function calculate() {
