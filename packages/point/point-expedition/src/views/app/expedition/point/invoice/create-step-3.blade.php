@@ -156,7 +156,7 @@
                                        value="exclude"> Exlude Tax <br/>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="tax-percentage-div">
                             <label class="col-md-9 control-label text-right">TAX PERCENTAGE</label>
                             <div class="col-md-3 content-show">
                                 <div class="input-group">

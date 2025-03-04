@@ -150,12 +150,6 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-9 control-label text-right">TAX</label>
-                            <div class="col-md-3 content-show">
-                                <input type="text" readonly id="tax" name="tax" class="form-control format-quantity text-right" value="{{ $invoice->tax}}"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label class="col-md-9 control-label text-right"></label>
                             <div class="col-md-3 content-show">
                                 <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
@@ -166,6 +160,28 @@
                                        value="exclude"> Exlude Tax <br/>
                             </div>
                         </div>
+                        <div class="form-group" id="tax-percentage-div">
+                            <label class="col-md-9 control-label text-right">TAX PERCENTAGE</label>
+                            <div class="col-md-3 content-show">
+                                <div class="input-group">
+                                    <input type="text"
+                                        id="tax-percentage"
+                                        name="tax_percentage"
+                                        readonly
+                                        style="min-width: 100px"
+                                        class="form-control format-quantity calculate text-right"
+                                        value="{{$invoice->tax_percentage}}"/>
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-9 control-label text-right">TAX</label>
+                            <div class="col-md-3 content-show">
+                                <input type="text" readonly id="tax" name="tax" class="form-control format-quantity text-right" value="{{ $invoice->tax}}"/>
+                            </div>
+                        </div>
+                        
 
                         <div class="col-sm-12">
                             <input type="radio" id="tax-choice-non-tax" name="type_of_tax" {{ $invoice->type_of_tax == 'non' ? 'checked'  : '' }} onchange="calculate()" value="non" style="visibility: hidden;">
@@ -239,15 +255,17 @@
             var tax_base = total_fee - total_fee * discount / 100;
             var tax = 0;
             if ($('#tax-choice-exclude-tax').prop('checked')) {
-                tax = tax_base * 11 / 100;
+                tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
+                $('#tax-percentage').prop('readonly', false);
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
-                tax_base = tax_base * 100 / 111;
-                tax = tax_base * 11 / 100;
+                tax_base = tax_base * 100 / (100 + dbNum($('#tax-percentage').val()));
+                tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
                 $('#discount').val(0);
                 $('#discount').prop('readonly', true);
                 var discount = 0;
+                $('#tax-percentage').prop('readonly', false);
             } else {
                 $('#discount').prop('readonly', false);
             }
