@@ -192,6 +192,7 @@ class InvoiceController extends Controller
         $view->list_invoice_item = InvoiceItem::joinItem()->where('point_expedition_invoice_id', $invoice->id)->get();
         $view->expedition = Person::find($invoice->expedition_id);
         $view->invoice = $invoice;
+        $view->invoice->tax_percentage = $view->invoice->tax / $view->invoice->tax_base * 100;
         $view->list_user_approval = UserHelper::getAllUser();
         return $view;
     }
