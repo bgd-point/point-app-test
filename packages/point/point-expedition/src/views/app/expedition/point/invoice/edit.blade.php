@@ -223,6 +223,26 @@
 @section('scripts')
     <script>
         initDatatable('#item-datatable');
+        $(function () {
+            $('#tax-percentage-div').hide();
+            $('#tax-choice-non-tax').hide();
+
+            var tax_status = {!! json_encode(old('type_of_tax')) !!};
+
+            if (tax_status == 'include') {
+                $("#tax-choice-include-tax").trigger("click");
+                $("#tax-choice-non-tax").val("include");
+                $('#tax-percentage-div').show();
+            } else if (tax_status == 'exclude') {
+                $("#tax-choice-exclude-tax").trigger("click");
+                $("#tax-choice-non-tax").val("exclude");
+                $('#tax-percentage-div').show();
+            } else {
+                $("#tax-choice-non-tax").val("non");
+            }
+
+            calculate();
+        });
         function individualFee() {
             $(".fee").attr("readonly", false);
             $(".fee:last-child").focus();
