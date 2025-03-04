@@ -214,13 +214,6 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="6" class="text-right">TAX</td>
-                                        <td>
-                                            <input type="text" readonly="" id="tax"
-                                                   class="form-control format-quantity calculate text-right" value="0"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
                                         <td colspan="6"></td>
                                         <td>
                                             <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
@@ -232,6 +225,28 @@
                                             <input type="text" id="tax-choice-non-tax" name="type_of_tax" value="non">
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td colspan="6" class="text-right">TAX PERCENTAGE</td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input type="text" id="tax-percentage"
+                                                    name="tax_percentage"
+                                                    readonly
+                                                    style="min-width: 100px"
+                                                    class="form-control format-quantity calculate text-right"
+                                                    value="{{old('tax-percentage') ? : 11}}"/>
+                                                <span class="input-group-addon">%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="text-right">TAX</td>
+                                        <td>
+                                            <input type="text" readonly="" id="tax"
+                                                   class="form-control format-quantity calculate text-right" value="0"/>
+                                        </td>
+                                    </tr>
+                                    
                                     <tr>
                                         <td colspan="6" class="text-right">EXPEDITION FEE</td>
                                         <td><input type="text" id="fee-expedition" name="expedition_fee"
@@ -355,15 +370,17 @@
             var tax = 0;
 
             if ($('#tax-choice-exclude-tax').prop('checked')) {
-                tax = tax_base * 11 / 100;
+                tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
                 $("#tax-choice-non-tax").val("exclude");
+                $('#tax-percentage').prop('readonly', false);
 
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
-                tax_base = tax_base * 100 / 111;
-                tax = tax_base * 11 / 100;
+                tax_base = tax_base * 100 / (100 + dbNum($('#tax-percentage').val()));
+                tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
                 $("#tax-choice-non-tax").val("include");
+                $('#tax-percentage').prop('readonly', false);
 
             }
 

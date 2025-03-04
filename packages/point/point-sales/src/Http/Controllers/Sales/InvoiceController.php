@@ -189,6 +189,7 @@ class InvoiceController extends Controller
     {
         $view = view('point-sales::app.sales.point.sales.invoice.edit');
         $view->invoice = Invoice::find($id);
+        $view->invoice->tax_percentage = $view->invoice->tax / $view->invoice->tax_base * 100;
         $view->person = Person::find($view->invoice->person_id);
         $array_delivery_order_id = FormulirHelper::getLockedModelIds($view->invoice->formulir_id);
         $view->list_delivery_order = DeliveryOrder::joinFormulir()

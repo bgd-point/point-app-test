@@ -197,6 +197,7 @@ class SalesOrderController extends Controller
 
         $view = view('point-sales::app.sales.point.sales.sales-order.edit');
         $view->sales_order = $sales_order;
+        $view->sales_order->tax_percentage = $view->sales_order->tax / $view->sales_order->tax_base * 100;
         $view->sales_quotation = $sales_order->checkHaveReference();
         $view->list_person = PersonHelper::getByType(['customer']);
         $view->list_item = Item::get();
