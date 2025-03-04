@@ -166,6 +166,7 @@
                                         readonly
                                         style="min-width: 100px"
                                         class="form-control format-quantity calculate text-right"
+                                        onkeyup="calculate()"
                                         value="{{old('tax-percentage') ? : 11}}"/>
                                     <span class="input-group-addon">%</span>
                                 </div>

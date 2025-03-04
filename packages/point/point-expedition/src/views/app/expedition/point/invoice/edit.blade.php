@@ -170,6 +170,7 @@
                                         readonly
                                         style="min-width: 100px"
                                         class="form-control format-quantity calculate text-right"
+                                        onkeyup="calculate()"
                                         value="{{$invoice->tax_percentage}}"/>
                                     <span class="input-group-addon">%</span>
                                 </div>
