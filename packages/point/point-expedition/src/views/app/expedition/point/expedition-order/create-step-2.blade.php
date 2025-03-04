@@ -175,7 +175,7 @@
                                                 </td>
                                             </tr>
                                             <tr id="tax-percentage-div">
-                                                <td colspan="3" class="text-right">TAX PERCENTAGE</td>
+                                                <td colspan="3" class="text-right"><strong>TAX PERCENTAGE</strong></td>
                                                 <td>
                                                     <div class="input-group">
                                                         <input type="text" id="tax-percentage"
@@ -267,11 +267,9 @@
             if (tax_status == 'include') {
                 $("#tax-choice-include-tax").trigger("click");
                 $("#tax-choice-non-tax").val("include");
-                $('#tax-percentage-div').show();
             } else if (tax_status == 'exclude') {
                 $("#tax-choice-exclude-tax").trigger("click");
                 $("#tax-choice-non-tax").val("exclude");
-                $('#tax-percentage-div').show();
             } else {
                 $("#tax-choice-non-tax").val("non");
             }
