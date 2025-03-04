@@ -148,13 +148,6 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="2" class="text-right">Tax</td>
-                                            <td><input type="text" readonly id="tax" name="tax"
-                                                       class="form-control text-right"
-                                                       value="{{ number_format_quantity($expedition_order->tax) }}"/>
-                                            </td>
-                                        </tr>
-                                        <tr>
                                             <td colspan="2"></td>
                                             <td>
                                                 <input type="radio" id="tax-choice-include-tax" name="type_of_tax"
@@ -163,6 +156,27 @@
                                                 <input type="radio" id="tax-choice-exclude-tax" name="type_of_tax"
                                                        {{ $expedition_order->type_of_tax == 'exclude' ? 'checked'  : '' }}  value="exclude"
                                                        onclick="calculate()"> Exlude Tax <br/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="text-right">TAX PERCENTAGE</td>
+                                            <td>
+                                                <div class="input-group">
+                                                    <input type="text" id="tax-percentage"
+                                                        name="tax_percentage"
+                                                        readonly
+                                                        style="min-width: 100px"
+                                                        class="form-control format-quantity calculate text-right"
+                                                        value="{{$expedition_order->tax_percentage}}"/>
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="text-right">Tax</td>
+                                            <td><input type="text" readonly id="tax" name="tax"
+                                                       class="form-control text-right"
+                                                       value="{{ number_format_quantity($expedition_order->tax) }}"/>
                                             </td>
                                         </tr>
                                         <tr>
@@ -243,12 +257,12 @@
             var tax = 0;
 
             if ($('#tax-choice-exclude-tax').prop('checked')) {
-                tax = tax_base * 11 / 100;
+                tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
-                tax_base = tax_base * 100 / 111;
-                tax = tax_base * 11 / 100;
+                tax_base = tax_base * 100 / (100 + dbNum($('#tax-percentage').val()));
+                tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
             }
 
             $('#tax_base').val(appNum(tax_base));

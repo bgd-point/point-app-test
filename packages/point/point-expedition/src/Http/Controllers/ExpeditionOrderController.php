@@ -167,6 +167,7 @@ class ExpeditionOrderController extends Controller
         $view = view('point-expedition::app.expedition.point.expedition-order.archived');
         $view->expedition_order_archived = ExpeditionOrder::find($id);
         $view->expedition_order = ExpeditionOrder::joinFormulir()->notArchived($view->expedition_order_archived->archived)->selectOriginal()->first();
+        $view->expedition_order->tax_percentage = $view->expedition_order->tax / $view->expedition_order->tax_base * 100;
         $view->reference = FormulirHelper::getLockedModel($view->expedition_order_archived->formulir_id);
         $view->expedition_reference = ExpeditionOrderReference::where('expedition_reference_id', $view->reference->formulir_id)->first();
         return $view;
