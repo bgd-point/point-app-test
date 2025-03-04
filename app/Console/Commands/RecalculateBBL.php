@@ -51,12 +51,11 @@ class RecalculateBBL extends Command
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
-// ->where('form_date', '>=', '2021-02-01')
-// ->where('form_date', '<', '2021-03-01')
-                ->where('warehouse_id', '=', 36)
+                ->where('form_date', '>=', '2025-03-01')
+                ->where('form_date', '<', '2025-04-01')
                 ->orderBy('form_date', 'asc')
-// ->orderBy('quantity', 'desc')
                 ->orderBy('formulir_id', 'asc')
+                ->orderBy('id', 'asc')
                 ->get();
 
             $totalQty = 0;
