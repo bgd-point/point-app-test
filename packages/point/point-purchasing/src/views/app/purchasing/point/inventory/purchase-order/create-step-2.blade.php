@@ -236,7 +236,7 @@
                                             <input type="text" id="tax-choice-non-tax" name="type_of_tax" value="non">
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr id="tax-percentage-div">
                                         <td colspan="5" class="text-right">TAX PERCENTAGE</td>
                                         <td>
                                             <div class="input-group">
@@ -340,7 +340,7 @@
 
         $(function () {
             reloadPerson('#contact_id', 'supplier', false);
-            $('#tax-percentage').hide();
+            $('#tax-percentage-div').hide();
             $('#tax-choice-non-tax').hide();
 
             var tax_status = {!! json_encode(old('type_of_tax')) !!};
@@ -348,11 +348,11 @@
             if (tax_status == 'include') {
                 $("#tax-choice-include-tax").trigger("click");
                 $("#tax-choice-non-tax").val("include");
-                $('#tax-percentage').show();
+                $('#tax-percentage-div').show();
             } else if (tax_status == 'exclude') {
                 $("#tax-choice-exclude-tax").trigger("click");
                 $("#tax-choice-non-tax").val("exclude");
-                $('#tax-percentage').show();
+                $('#tax-percentage-div').show();
             } else {
                 $("#tax-choice-non-tax").val("non");
             }
