@@ -340,7 +340,7 @@
 
         $(function () {
             reloadPerson('#contact_id', 'supplier', false);
-
+            $('#tax-percentage').hide();
             $('#tax-choice-non-tax').hide();
 
             var tax_status = {!! json_encode(old('type_of_tax')) !!};
@@ -348,9 +348,11 @@
             if (tax_status == 'include') {
                 $("#tax-choice-include-tax").trigger("click");
                 $("#tax-choice-non-tax").val("include");
+                $('#tax-percentage').show();
             } else if (tax_status == 'exclude') {
                 $("#tax-choice-exclude-tax").trigger("click");
                 $("#tax-choice-non-tax").val("exclude");
+                $('#tax-percentage').show();
             } else {
                 $("#tax-choice-non-tax").val("non");
             }

@@ -74,16 +74,8 @@ class SalesQuotationHelper
         }
 
         $discount = number_format_db($request->input('discount'));
-        $tax_base = $subtotal -($subtotal/100 * $discount);
-        $tax = 0;
-
-        if ($request->input('type_of_tax') == 'exclude') {
-            $tax = $tax_base * 10 / 100;
-        }
-        if ($request->input('type_of_tax') == 'include') {
-            $tax_base =  $tax_base * 100 / 111;
-            $tax =  $tax_base * 11 / 100;
-        }
+        $tax_base = number_format_db($request->input('tax_base'));
+        $tax = number_format_db($request->input('tax'));
 
         $sales_quotation->subtotal = $subtotal;
         $sales_quotation->discount = $discount;
