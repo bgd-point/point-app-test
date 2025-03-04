@@ -114,6 +114,7 @@ class PurchaseOrderController extends Controller {
         $view->person             = $view->purchase_order->person;
         $view->list_user_approval = UserHelper::getAllUser();
         $view->list_allocation    = Allocation::active()->get();
+        $view->purchase_order->tax_percentage = 11;
 
         return $view;
     }
