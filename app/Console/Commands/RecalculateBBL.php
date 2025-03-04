@@ -51,8 +51,8 @@ class RecalculateBBL extends Command
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
-                ->where('form_date', '>=', '2025-03-01')
-                ->where('form_date', '<', '2025-04-01')
+                // ->where('form_date', '>=', '2025-03-01')
+                // ->where('form_date', '<', '2025-04-01')
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->orderBy('id', 'asc')
@@ -62,9 +62,8 @@ class RecalculateBBL extends Command
             $totalValue = 0;
             $cogs = 0;
             foreach($list_inventory as $index => $l_inventory) {
-                // $this->comment($l_inventory->form_date.' '.$l_inventory->formulir_id.' <'.$l_inventory->item_id . ' '. $l_inventory->warehouse_id  .'> tq = '.$totalQty .' + '.  (float) $l_inventory->quantity);
                 if ($index == 0) {
-                    // $l_inventory->total_quantity = $l_inventory->quantity;
+                    $l_inventory->total_quantity = $l_inventory->quantity;
                     $totalQty = (float) $l_inventory->total_quantity;
                     $totalValue = $l_inventory->quantity * $l_inventory->price;
                     $l_inventory->recalculate = 0;
