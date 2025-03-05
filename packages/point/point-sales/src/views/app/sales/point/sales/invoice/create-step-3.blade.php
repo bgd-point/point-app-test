@@ -183,7 +183,7 @@
                                             <input type="hidden" id="tax-choice-non-tax" name="type_of_tax" value="non">
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr id="tax-percentage-div">
                                         <td colspan="6" class="text-right">TAX PERCENTAGE</td>
                                         <td>
                                             <div class="input-group">
@@ -252,6 +252,7 @@
         var item_table = initDatatable('#item-datatable');
 
         $('.calculate').keyup(function () {
+            $('#tax-percentage-div').hide();
             calculate();
         });
 
@@ -309,6 +310,7 @@
                 tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
                 $("#tax-choice-non-tax").val("exclude");
                 $('#tax-percentage').prop('readonly', false);
+                $('#tax-percentage-div').show();
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
@@ -316,6 +318,7 @@
                 tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
                 $("#tax-choice-non-tax").val("include");
                 $('#tax-percentage').prop('readonly', false);
+                $('#tax-percentage-div').show();
             }
 
             $('#tax_base').val(appNum(tax_base));
