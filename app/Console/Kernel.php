@@ -41,6 +41,7 @@ class Kernel extends ConsoleKernel
         Commands\InventoryCheck::class,
         Commands\JournalCheck::class,
         Commands\Masking::class,
+        Commands\Trial::class,
         Commands\CheckInventoryCommand::class,
     ];
 
