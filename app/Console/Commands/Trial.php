@@ -34,7 +34,6 @@ class Trial extends Command
         foreach ($journals as $journal) {
             $debit = Journal::where('form_journal_id', '=', $journal->form_journal_id)->sum('debit');
             $credit = Journal::where('form_journal_id', '=', $journal->form_journal_id)->sum('credit');
-            $this->comment('ID ' . $journal->form_journal_id . ' | ' . $debit . ' / ' . $credit);
             if ($debit !== $credit) {
                 $this->comment('ID ' . $journal->form_journal_id . ' | ' . $debit . ' / ' . $credit);
             }
