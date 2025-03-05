@@ -252,11 +252,11 @@
         var item_table = initDatatable('#item-datatable');
 
         $('.calculate').keyup(function () {
-            $('#tax-percentage-div').hide();
             calculate();
         });
 
         $(function () {
+            $('#tax-percentage-div').hide();
             var tax_status = {!! json_encode($sales_order_tax) !!};
             if (tax_status == 'include') {
                 $("#tax-choice-include-tax").trigger("click");
