@@ -321,6 +321,8 @@
                 $('#tax-percentage-div').show();
             }
 
+            $('#tax_base').val(appNum(tax_base));
+            $('#tax').val(appNum(tax));
             var expedition_fee = dbNum($('#expedition-fee').val());
             $('#total').val(appNum(tax_base + tax + expedition_fee));
         }
