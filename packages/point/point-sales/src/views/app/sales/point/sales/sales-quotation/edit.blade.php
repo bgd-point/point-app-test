@@ -193,7 +193,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="text-right">TAX BASE</td>
-                                        <td><input type="text" readonly id="tax_base"
+                                        <td><input type="text" readonly id="tax_base" name="tax_base"
                                                    class="form-control format-quantity calculate text-right" value="0"/>
                                         </td>
                                     </tr>
@@ -226,7 +226,7 @@
                                     <tr>
                                         <td colspan="6" class="text-right">TAX</td>
                                         <td>
-                                            <input type="text" readonly="" id="tax"
+                                            <input type="text" readonly="" id="tax" name="tax"
                                                    class="form-control format-quantity calculate text-right" value="0"/>
                                         </td>
                                     </tr>
