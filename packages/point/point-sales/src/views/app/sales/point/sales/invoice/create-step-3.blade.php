@@ -314,10 +314,8 @@
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
-                tax_base = 10000;
-                tax = 100;
-                // tax_base = tax_base * 100 / (100 + dbNum($('#tax-percentage').val()));
-                // tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
+                tax_base = tax_base * 100 / (100 + dbNum($('#tax-percentage').val()));
+                tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
                 $("#tax-choice-non-tax").val("include");
                 $('#tax-percentage').prop('readonly', false);
                 $('#tax-percentage-div').show();

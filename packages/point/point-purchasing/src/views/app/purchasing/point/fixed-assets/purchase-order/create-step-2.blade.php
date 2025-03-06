@@ -389,13 +389,13 @@
             var tax = 0;
 
             if ($('#tax-choice-exclude-tax').prop('checked')) {
-                tax = tax_base * $('#tax-percentage').val() / 100;
+                tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
                 $("#tax-choice-non-tax").val("exclude");
             }
 
             if ($('#tax-choice-include-tax').prop('checked')) {
-                tax_base = tax_base * 100 / (100 + $('#tax-percentage').val());
-                tax = tax_base * $('#tax-percentage').val() / 100;
+                tax_base = tax_base * 100 / (100 + dbNum($('#tax-percentage').val()));
+                tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
                 $("#tax-choice-non-tax").val("include");
             }
 
