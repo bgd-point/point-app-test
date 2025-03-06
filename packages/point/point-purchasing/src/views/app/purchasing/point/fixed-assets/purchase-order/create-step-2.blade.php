@@ -234,7 +234,7 @@
                                     <tr>
                                         <td colspan="7" class="text-right">TAX PERCENTAGE</td>
                                         <td>
-                                            <input type="text" id="tax-percentage" class="form-control format-quantity calculate text-right" value="11"/>
+                                            <input type="text" id="tax-percentage" required  class="form-control format-quantity calculate text-right" value="11"/>
                                         </td>
                                     </tr>
                                     <tr>

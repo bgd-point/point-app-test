@@ -198,7 +198,7 @@
                                         <td colspan="6" class="text-right">TAX PERCENTAGE</td>
                                         <td>
                                             <div class="input-group">
-                                                <input type="text" id="tax-percentage"
+                                                <input type="text" id="tax-percentage" required 
                                                     name="tax_percentage"
                                                     readonly
                                                     style="min-width: 100px"
