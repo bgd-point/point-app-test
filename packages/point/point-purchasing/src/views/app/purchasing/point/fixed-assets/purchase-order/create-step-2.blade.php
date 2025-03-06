@@ -376,6 +376,10 @@
                 dbNum($('#discount').val(100))
             }
 
+            if (dbNum($('#tax-percentage').val()) > 100) {
+                dbNum($('#tax-percentage').val(100))
+            }
+
             var discount = dbNum($('#discount').val());
             if($('#tax-choice-include-tax').prop('checked')) {
                 $('#discount').val(0);

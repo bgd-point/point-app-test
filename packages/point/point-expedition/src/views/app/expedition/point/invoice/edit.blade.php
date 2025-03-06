@@ -260,6 +260,9 @@
             var discount = dbNum($('#discount').val());
             var tax_base = total_fee - total_fee * discount / 100;
             var tax = 0;
+            if (dbNum($('#tax-percentage').val()) > 100) {
+                dbNum($('#tax-percentage').val(100))
+            }
             if ($('#tax-choice-exclude-tax').prop('checked')) {
                 tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
                 $('#tax-percentage').prop('readonly', false);

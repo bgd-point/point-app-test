@@ -318,6 +318,10 @@
 
             var tax = 0;
 
+            if (dbNum($('#tax-percentage').val()) > 100) {
+                dbNum($('#tax-percentage').val(100))
+            }
+
             if ($('#tax-choice-exclude-tax').prop('checked')) {
                 tax = tax_base * dbNum($('#tax-percentage').val()) / 100;
                 $("#tax-choice-non-tax").val("exclude");

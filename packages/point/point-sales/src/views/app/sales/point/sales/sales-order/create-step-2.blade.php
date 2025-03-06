@@ -360,6 +360,9 @@
             if (dbNum($('#discount').val()) > 100) {
                 dbNum($('#discount').val(100))
             }
+            if (dbNum($('#tax-percentage').val()) > 100) {
+                dbNum($('#tax-percentage').val(100))
+            }
 
             var discount = dbNum($('#discount').val());
             
