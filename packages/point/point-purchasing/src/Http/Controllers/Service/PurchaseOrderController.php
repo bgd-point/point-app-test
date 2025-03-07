@@ -149,7 +149,7 @@ class PurchaseOrderController extends Controller {
             'purchase_order' => $purchase_order
         );
 
-        $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.purchase-order-service-pdf', $data)->setPaper('a4', 'landscape');
+        $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.purchase-order-service-pdf', $data)->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         return $pdf->stream($purchase_order->formulir->form_number.'.pdf');
     }
 }

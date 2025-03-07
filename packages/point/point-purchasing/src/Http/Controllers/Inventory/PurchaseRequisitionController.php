@@ -225,7 +225,7 @@ class PurchaseRequisitionController extends Controller
             QueueHelper::reconnectAppDatabase($request['database_name']);
             \Mail::send('point-purchasing::emails.purchasing.point.external.purchase-requisition', $data, function ($message) use ($purchase_requisition, $warehouse, $data, $name) {
                 $message->to($purchase_requisition->supplier->email)->subject($name);
-                $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.purchase-requisition-pdf', $data)->setPaper('a4', 'landscape');
+                $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.purchase-requisition-pdf', $data)->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
                 $message->attachData($pdf->output(), $name. ".pdf");
             });
             $job->delete();

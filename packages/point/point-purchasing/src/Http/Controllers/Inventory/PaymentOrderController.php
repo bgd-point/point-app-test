@@ -669,7 +669,7 @@ class PaymentOrderController extends Controller
             QueueHelper::reconnectAppDatabase($request['database_name']);
             \Mail::send('point-purchasing::emails.purchasing.point.external.payment-order', $data, function ($message) use ($payment_order, $warehouse, $data, $name) {
                 $message->to($payment_order->supplier->email)->subject($name);
-                $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.payment-order-pdf', $data)->setPaper('a4', 'landscape');
+                $pdf = \PDF::loadView('point-purchasing::emails.purchasing.point.external.payment-order-pdf', $data)->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
                 $message->attachData($pdf->output(), $name. ".pdf");
             });
             $job->delete();

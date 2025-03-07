@@ -238,7 +238,7 @@ class SalesQuotationController extends Controller
             QueueHelper::reconnectAppDatabase($request['database_name']);
             \Mail::send('point-sales::app.emails.sales.point.external.sales-quotation', $data, function ($message) use ($sales_quotation, $warehouse, $data, $name) {
                 $message->to($sales_quotation->person->email)->subject($name);
-                $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.sales-quotation-pdf', $data)->setPaper('a4', 'landscape');
+                $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.sales-quotation-pdf', $data)->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
                 $message->attachData($pdf->output(), $name. ".pdf");
             });
             $job->delete();

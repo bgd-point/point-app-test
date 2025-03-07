@@ -286,7 +286,7 @@ class DeliveryOrderController extends Controller
             'warehouse' => $warehouse
         );
 
-        $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.delivery-order-pdf', $data)->setPaper('a4', 'landscape');
+        $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.delivery-order-pdf', $data)->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         return $pdf->stream($delivery_order->formulir->form_number.'.pdf');
     }
 }

@@ -162,7 +162,7 @@ class BasicInvoiceController extends Controller
             QueueHelper::reconnectAppDatabase($request['database_name']);
             \Mail::send('point-expedition::emails.expedition.point.external.basic-invoice', $data, function ($message) use ($invoice, $warehouse, $data, $name) {
                 $message->to($invoice->expedition->email)->subject($name);
-                $pdf = \PDF::loadView('point-expedition::emails.expedition.point.external.basic-invoice-pdf', $data)->setPaper('a4', 'landscape');
+                $pdf = \PDF::loadView('point-expedition::emails.expedition.point.external.basic-invoice-pdf', $data)->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
                 $message->attachData($pdf->output(), $name. ".pdf");
             });
             $job->delete();

@@ -292,7 +292,7 @@ class SalesOrderController extends Controller
             QueueHelper::reconnectAppDatabase($request['database_name']);
             \Mail::send('point-sales::app.emails.sales.point.external.sales-order', $data, function ($message) use ($sales_order, $warehouse, $data, $name) {
                 $message->to($sales_order->person->email)->subject($name);
-                $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.sales-order-pdf', $data)->setPaper('a4', 'landscape');
+                $pdf = \PDF::loadView('point-sales::app.emails.sales.point.external.sales-order-pdf', $data)->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
                 $message->attachData($pdf->output(), $name. ".pdf");
             });
             $job->delete();
