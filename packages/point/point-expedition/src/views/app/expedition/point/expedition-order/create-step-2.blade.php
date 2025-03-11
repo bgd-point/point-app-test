@@ -279,6 +279,10 @@
             calculate();
         });
 
+        $('.calculate').keyup(function () {
+            calculate();
+        });
+
         function calculate() {
             if (dbNum($('#discount').val()) > 100) {
                 dbNum($('#discount').val(100))
