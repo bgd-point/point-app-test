@@ -156,7 +156,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="8" class="text-right">SUB TOTAL</td>
-                                        <td><input type="text" readonly id="subtotal" onclick="setToNontax()" name="subtotal" 
+                                        <td><input type="text" readonly id="subtotal"  name="subtotal" 
                                                    class="form-control format-quantity calculate text-right" value="{{old('subtotal') ? : 0}}"/>
                                         </td>
                                     </tr>

@@ -189,7 +189,7 @@
                                         <td colspan="6" class="text-right">SUB TOTAL</td>
                                         <td><input type="text" readonly id="subtotal"
                                                    class="form-control format-quantity calculate text-right"
-                                                   onclick="setToNontax()" value="{{old('subtotal') ? : 0}}" name="subtotal" /></td>
+                                                    value="{{old('subtotal') ? : 0}}" name="subtotal" /></td>
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="text-right">DISCOUNT</td>

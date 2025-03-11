@@ -244,7 +244,7 @@
                                     <tr>
                                         <td colspan="7" class="text-right">SUB TOTAL</td>
                                         <td>
-                                            <input type="text" readonly id="subtotal" onclick="setToNontax()"
+                                            <input type="text" readonly id="subtotal" 
                                                    class="form-control format-quantity calculate text-right" value="0"/>
                                         </td>
                                     </tr>

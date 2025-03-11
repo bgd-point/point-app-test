@@ -206,7 +206,7 @@
                                         <td colspan="5" class="text-right">SUB TOTAL</td>
                                         <td><input type="text" readonly id="subtotal"
                                                    class="form-control format-quantity calculate text-right"
-                                                   onclick="setToNontax()" value="0"/></td>
+                                                    value="0"/></td>
                                     </tr>
                                     <tr>
                                         <td colspan="5" class="text-right">DISCOUNT</td>

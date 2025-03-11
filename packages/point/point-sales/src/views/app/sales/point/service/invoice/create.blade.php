@@ -288,7 +288,7 @@
                                         <td>
                                             <input type="text" readonly
                                                    id="subtotal"
-                                                   onclick="setToNontax()"
+                                                   
                                                    name="subtotal"
                                                    class="form-control format-quantity calculate text-right"
                                                    value="{{old('subtotal')}}"/>
