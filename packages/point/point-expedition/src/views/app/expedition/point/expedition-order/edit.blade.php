@@ -126,7 +126,8 @@
                                         <tr>
                                             <td colspan="2" class="text-right">Subtotal</td>
                                             <td>
-                                                <input type="text" onclick="setToNontax()" id="subtotal" name="subtotal" onkeyup="calculate()" 
+                                                <input type="text" 
+                                                    id="subtotal" name="subtotal" onkeyup="calculate()" 
                                                        class="form-control format-quantity text-right"
                                                        value="{{$expedition_order->expedition_fee }}"/>
                                             </td>

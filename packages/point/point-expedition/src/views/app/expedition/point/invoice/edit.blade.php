@@ -124,9 +124,10 @@
                         <div class="form-group">
                             <label class="col-md-9 control-label text-right">SUB TOTAL</label>
                             <div class="col-md-3 content-show">
-                                <input type="text" id="subtotal" name="subtotal" onclick="setToNontax()" onkeyup="calculate()" 
-                                       class="form-control format-quantity text-right"
-                                       value="{{ $invoice->subtotal}}"/>
+                                <input type="text" id="subtotal" name="subtotal" 
+                                    onkeyup="calculate()" 
+                                    class="form-control format-quantity text-right"
+                                    value="{{ $invoice->subtotal}}"/>
                             </div>
                         </div>
                         <div class="form-group">

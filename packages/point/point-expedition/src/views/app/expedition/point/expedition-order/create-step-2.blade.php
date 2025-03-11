@@ -138,10 +138,13 @@
                                             <tr>
                                                 <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
                                                 <td>
-                                                    <input type="text" onclick="setToNontax()" onkeyup="calculate()" id="subtotal"
-                                                           name="subtotal"
-                                                           class="form-control format-quantity text-right"
-                                                           value="0"/></td>
+                                                    <input type="text"
+                                                        onkeyup="calculate()"
+                                                        id="subtotal"
+                                                        name="subtotal"
+                                                        class="form-control format-quantity text-right"
+                                                        value="0"/>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td colspan="3" class="text-right"><strong>Discount</strong></td>

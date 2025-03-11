@@ -125,7 +125,7 @@
                         <div class="form-group">
                             <label class="col-md-9 control-label text-right">EXPEDITION FEE</label>
                             <div class="col-md-3 content-show">
-                                <input type="text" id="subtotal" onclick="setToNontax()" onkeyup="calculate()" name="subtotal" class="form-control format-quantity text-right" value="{{ $subtotal }}"/>
+                                <input type="text" id="subtotal" onkeyup="calculate()" name="subtotal" class="form-control format-quantity text-right" value="{{ $subtotal }}"/>
                             </div>
                         </div>
                         <div class="form-group">
