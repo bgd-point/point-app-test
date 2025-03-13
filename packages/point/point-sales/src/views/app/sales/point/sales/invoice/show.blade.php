@@ -294,7 +294,7 @@
                                         <input type="hidden" readonly="" name="invoice_id" value="{{$invoice->id}}">
                                         <input type="submit" class="btn btn-primary" value="Send Email To Customer">
                                     </form>
-                                    @if($invoice->formulir->approval_status == 1) {
+                                    @if($invoice->formulir->approval_status == 1)
                                     @if($invoice->approval_print_status == 1)
                                     <a class="btn btn-effect-ripple btn-info" href="{{url('sales/point/indirect/invoice/'.$invoice->id.'/export')}}">Print</a>
                                     @else
