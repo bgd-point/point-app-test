@@ -35,7 +35,7 @@ class InvoiceApprovalPrintController extends Controller
     public static function sendingRequestApproval($invoice_id, $requester="VESA")
     {
         $invoice = Invoice::find($invoice_id);
-        $approver = User::find($invoice->formulir->approval_to);
+        $approver = User::find(request()->input('approval_to'));
         $token = md5(date('ymdhis'));
         $data = [
             'invoice' => $invoice,
