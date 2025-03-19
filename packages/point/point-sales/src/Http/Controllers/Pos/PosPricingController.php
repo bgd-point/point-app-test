@@ -44,7 +44,7 @@ class PosPricingController extends Controller
 
         $list_pricing = PosPricing::joinDependencies()->notCancelled();
         $list_pricing = PosPricingHelper::searchList($list_pricing, app('request')->input('order_by'), app('request')->input('order_type'), app('request')->input('status'), app('request')->input('date_from'), app('request')->input('date_to'), app('request')->input('search'))->get();
-        $pdf = \PDF::loadView('point-sales::app.sales.point.pos.pricing.index-pdf', ['list_pricing' => $list_pricing]);
+        $pdf = \PDF::loadView('point-sales::app.sales.point.pos.pricing.index-pdf', ['list_pricing' => $list_pricing])->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         return $pdf->stream();
     }
 

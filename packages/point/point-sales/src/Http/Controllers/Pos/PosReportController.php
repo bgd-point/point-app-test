@@ -178,7 +178,7 @@ class PosReportController extends Controller
     {
         access_is_allowed('export.point.sales.pos.daily.report');
         $list_sales = Pos::joinFormulir()->notArchived()->selectOriginal()->showToday()->userChasier()->get();
-        $pdf = \PDF::loadView('point-sales::app.sales.point.pos.report.daily-pdf', ['list_sales' => $list_sales]);
+        $pdf = \PDF::loadView('point-sales::app.sales.point.pos.report.daily-pdf', ['list_sales' => $list_sales])->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         
         return $pdf->stream();
     }

@@ -59,7 +59,7 @@ class PurchaseRequisitionController extends Controller
         access_is_allowed('read.point.purchasing.requisition');
         $list_purchase_requisition = PurchaseRequisition::joinFormulir()->joinEmployee()->notArchived()->selectOriginal();
         $list_purchase_requisition = PurchaseRequisitionHelper::searchList($list_purchase_requisition, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
-        $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.inventory.purchase-requisition.index-pdf', ['list_purchase_requisition' => $list_purchase_requisition]);
+        $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.inventory.purchase-requisition.index-pdf', ['list_purchase_requisition' => $list_purchase_requisition])->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         
         return $pdf->stream();
     }

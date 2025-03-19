@@ -233,7 +233,7 @@ class InventoryValueReportController extends Controller
                                     $stock_out = inventory_get_stock_out_all($date_from, $date_to, $report->item_id);
                                     $value_out = inventory_get_value_out_all($date_from, $date_to, $report->item_id);
                                     $closing_stock = inventory_get_closing_stock_all($date_from, $date_to, $report->item_id);
-                                    $closing_cogs = inventory_get_cost_of_sales_value_all($date_to, $report->item_id);;
+                                    $closing_cogs = inventory_get_cost_of_sales_value_all($date_to, $report->item_id);
                                     $closing_value = inventory_get_closing_value_all($date_from, $date_to, $report->item_id);
                                 }
 
@@ -464,7 +464,7 @@ class InventoryValueReportController extends Controller
                                 $stock_out = inventory_get_stock_out_all($date_from, $date_to, $report->item_id);
                                 $value_out = inventory_get_value_out_all($date_from, $date_to, $report->item_id);
                                 $closing_stock = inventory_get_closing_stock_all($date_from, $date_to, $report->item_id);
-                                $closing_cogs = inventory_get_cost_of_sales_value_all($date_to, $report->item_id);;
+                                $closing_cogs = inventory_get_cost_of_sales_value_all($date_to, $report->item_id);
                                 $closing_value = inventory_get_closing_value_all($date_from, $date_to, $report->item_id);
                             }
 

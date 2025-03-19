@@ -44,7 +44,7 @@ class InvoiceController extends Controller
 
         $list_invoice = Invoice::joinFormulir()->notArchived()->selectOriginal();
         $list_invoice = InvoiceHelper::searchList($list_invoice, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
-        $pdf = \PDF::loadView('point-expedition::app.expedition.point.invoice.index-pdf', ['list_invoice' => $list_invoice]);
+        $pdf = \PDF::loadView('point-expedition::app.expedition.point.invoice.index-pdf', ['list_invoice' => $list_invoice])->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         return $pdf->stream();
     }
 

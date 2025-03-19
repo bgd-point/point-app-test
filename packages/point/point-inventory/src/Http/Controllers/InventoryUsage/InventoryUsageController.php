@@ -181,7 +181,7 @@ class InventoryUsageController extends Controller
             'warehouse' => $warehouse
         );
 
-        $pdf = \PDF::loadView('point-inventory::emails.inventory.point.external.inventory-usage', $data);
+        $pdf = \PDF::loadView('point-inventory::emails.inventory.point.external.inventory-usage', $data)->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         return $pdf->stream($inventory_usage->formulir->form_number.'.pdf');
     }
 }

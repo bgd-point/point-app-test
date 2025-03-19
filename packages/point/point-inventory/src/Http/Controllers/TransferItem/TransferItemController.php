@@ -132,7 +132,7 @@ class TransferItemController extends Controller
             'warehouse' => $transferItem->warehouseFrom
         );
 
-        $pdf = \PDF::loadView('point-inventory::app.inventory.point.transfer-item.send.print', $data);
+        $pdf = \PDF::loadView('point-inventory::app.inventory.point.transfer-item.send.print', $data)->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         return $pdf->stream($transferItem->formulir->form_number.'.pdf');
     }
 }

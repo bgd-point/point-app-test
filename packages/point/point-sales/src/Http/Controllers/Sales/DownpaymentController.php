@@ -41,7 +41,7 @@ class DownpaymentController extends Controller
         access_is_allowed('read.point.sales.downpayment');
         $list_downpayment = Downpayment::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         $list_downpayment = DownpaymentHelper::searchList($list_downpayment, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
-        $pdf = \PDF::loadView('point-sales::app.sales.point.sales.downpayment.index-pdf', ['list_downpayment' => $list_downpayment]);
+        $pdf = \PDF::loadView('point-sales::app.sales.point.sales.downpayment.index-pdf', ['list_downpayment' => $list_downpayment])->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         
         return $pdf->stream();
     }

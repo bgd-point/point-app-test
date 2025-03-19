@@ -74,7 +74,7 @@ class InvoiceController extends Controller
         access_is_allowed('read.point.sales.service.invoice');
         $list_invoice = Invoice::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         $list_invoice = ServiceInvoiceHelper::searchList($list_invoice, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
-        $pdf = \PDF::loadView('point-sales::app.sales.point.service.invoice.index-pdf', ['list_invoice' => $list_invoice]);
+        $pdf = \PDF::loadView('point-sales::app.sales.point.service.invoice.index-pdf', ['list_invoice' => $list_invoice])->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         
         return $pdf->stream();
     }

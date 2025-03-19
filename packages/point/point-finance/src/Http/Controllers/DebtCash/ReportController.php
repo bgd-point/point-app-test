@@ -108,7 +108,7 @@ class ReportController extends Controller
         $opening_balance = $report['journal_debit'] - $report['journal_credit'];
         $type = $type;
         $list_report = $report['report'];
-        $pdf = \PDF::loadView('point-finance::app.finance.point.debt-cash-report.report-pdf', ['list_report' => $list_report, 'opening_balance' => $opening_balance, 'type' => $type]);
+        $pdf = \PDF::loadView('point-finance::app.finance.point.debt-cash-report.report-pdf', ['list_report' => $list_report, 'opening_balance' => $opening_balance, 'type' => $type])->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
 
         return $pdf->stream();
     }

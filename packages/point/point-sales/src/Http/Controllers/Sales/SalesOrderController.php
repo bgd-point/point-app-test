@@ -61,7 +61,7 @@ class SalesOrderController extends Controller
         access_is_allowed('read.point.sales.order');
         $list_sales_order = SalesOrder::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         $list_sales_order = SalesOrderHelper::searchList($list_sales_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
-        $pdf = \PDF::loadView('point-sales::app.sales.point.sales.sales-order.index-pdf', ['list_sales_order' => $list_sales_order])->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
+        $pdf = \PDF::loadView('point-sales::app.sales.point.sales.sales-order.index-pdf', ['list_sales_order' => $list_sales_order])->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape')->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         
         return $pdf->stream();
     }

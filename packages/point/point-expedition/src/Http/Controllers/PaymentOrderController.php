@@ -57,7 +57,7 @@ class PaymentOrderController extends Controller
 
         $list_payment_order = PaymentOrder::joinFormulir()->joinExpedition()->notArchived()->selectOriginal();
         $list_payment_order = PaymentOrderHelper::searchList($list_payment_order, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
-        $pdf = \PDF::loadView('point-expedition::app.expedition.point.payment-order.index-pdf', ['list_payment_order' => $list_payment_order]);
+        $pdf = \PDF::loadView('point-expedition::app.expedition.point.payment-order.index-pdf', ['list_payment_order' => $list_payment_order])->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         return $pdf->stream();
     }
 

@@ -23,7 +23,7 @@ class SalesReportController extends Controller
     {
         access_is_allowed('read.point.sales.order');
         $list_report = SalesReportHelper::searchList(\Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
-        $pdf = \PDF::loadView('point-sales::app.sales.point.sales.report.index-pdf', ['list_report' => $list_report]);
+        $pdf = \PDF::loadView('point-sales::app.sales.point.sales.report.index-pdf', ['list_report' => $list_report])->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         
         return $pdf->stream();
     }

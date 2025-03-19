@@ -48,7 +48,7 @@ class SalesQuotationController extends Controller
         access_is_allowed('read.point.sales.quotation');
         $sales_quotation = SalesQuotation::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         $list_sales_quotation = SalesQuotationHelper::searchList($sales_quotation, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
-        $pdf = \PDF::loadView('point-sales::app.sales.point.sales.sales-quotation.index-pdf', ['list_sales_quotation' => $list_sales_quotation]);
+        $pdf = \PDF::loadView('point-sales::app.sales.point.sales.sales-quotation.index-pdf', ['list_sales_quotation' => $list_sales_quotation])->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         
         return $pdf->stream();
     }

@@ -70,7 +70,7 @@ class ExpeditionOrderController extends Controller
             app('request')->input('search')
         )->get();
 
-        $pdf = \PDF::loadView('point-expedition::app.expedition.point.expedition-order.index-pdf', ['list_expedition_order' => $list_expedition_order]);
+        $pdf = \PDF::loadView('point-expedition::app.expedition.point.expedition-order.index-pdf', ['list_expedition_order' => $list_expedition_order])->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         return $pdf->stream();
     }
 

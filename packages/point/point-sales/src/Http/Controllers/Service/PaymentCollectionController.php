@@ -83,7 +83,7 @@ class PaymentCollectionController extends Controller
         access_is_allowed('read.point.sales.service.payment.collection');
         $list_payment_collection = PaymentCollection::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         $list_payment_collection = ServicePaymentCollectionHelper::searchList($list_payment_collection, \Input::get('order_by'), \Input::get('order_type'), \Input::get('status'), \Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
-        $pdf = \PDF::loadView('point-sales::app.sales.point.service.payment-collection.index-pdf', ['list_payment_collection' => $list_payment_collection]);
+        $pdf = \PDF::loadView('point-sales::app.sales.point.service.payment-collection.index-pdf', ['list_payment_collection' => $list_payment_collection])->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         
         return $pdf->stream();
     }

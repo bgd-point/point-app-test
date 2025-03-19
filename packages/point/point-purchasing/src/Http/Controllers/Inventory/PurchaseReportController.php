@@ -23,7 +23,7 @@ class PurchaseReportController extends Controller
     {
         access_is_allowed('read.point.purchasing.report');
         $list_report = PurchaseReportHelper::searchList(\Input::get('date_from'), \Input::get('date_to'), \Input::get('search'))->get();
-        $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.inventory.report.index-pdf', ['list_report' => $list_report]);
+        $pdf = \PDF::loadView('point-purchasing::app.purchasing.point.inventory.report.index-pdf', ['list_report' => $list_report])->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         
         return $pdf->stream();
     }
