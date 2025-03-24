@@ -66,6 +66,7 @@ class RecalculateBBL extends Command
             foreach($list_inventory as $index => $l_inventory) {
                 $this->comment('total = ' . $l_inventory->total_quantity . ' ' . (float) $l_inventory->quantity);
                 if ($index == 0) {
+                    $this->comment('if1');
                     $l_inventory->total_quantity = $l_inventory->quantity;
                     $totalQty = (float) $l_inventory->total_quantity;
                     $totalValue = $l_inventory->quantity * $l_inventory->price;
@@ -78,6 +79,7 @@ class RecalculateBBL extends Command
                     $l_inventory->total_value = $totalValue;
                     $l_inventory->save();
                 } else if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
+                    $this->comment('if2');
                     $l_inventory->recalculate = 0;
                     if ((float) $l_inventory->cogs == 0) {
                         $l_inventory->cogs = $cogs;
@@ -88,6 +90,7 @@ class RecalculateBBL extends Command
                     $l_inventory->save();
                     $totalQty = (float) $l_inventory->total_quantity;
                 } else {
+                    $this->comment('if3');
                     $l_inventory->recalculate = 0;
                     // if value 0 from output
                     if ($l_inventory->price == 0) {
@@ -112,6 +115,7 @@ class RecalculateBBL extends Command
 
                 // value = 0, if total qty = 0
                 if ((float) $l_inventory->total_quantity <= 0) {
+                    $this->comment('if4');
                     $l_inventory->total_value = 0;
 
                     if ((float) $l_inventory->total_quantity < 0) {
