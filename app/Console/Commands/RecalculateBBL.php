@@ -41,6 +41,8 @@ class RecalculateBBL extends Command
 
         // Get all items
         $inventories = Inventory::orderBy('form_date', 'asc')
+            ->where('item_id', '=', 862)
+            ->where('warehouse_id', '=', 2)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'].$inventory['warehouse_id'];
@@ -62,6 +64,7 @@ class RecalculateBBL extends Command
             $totalValue = 0;
             $cogs = 0;
             foreach($list_inventory as $index => $l_inventory) {
+                $this->comment('total = ' . $l_inventory->total_quantity . ' ' . (float) $l_inventory->quantity);
                 if ($index == 0) {
                     $l_inventory->total_quantity = $l_inventory->quantity;
                     $totalQty = (float) $l_inventory->total_quantity;
