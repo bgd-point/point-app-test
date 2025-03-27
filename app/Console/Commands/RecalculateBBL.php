@@ -41,8 +41,6 @@ class RecalculateBBL extends Command
 
         // Get all items
         $inventories = Inventory::orderBy('form_date', 'asc')
-            ->where('item_id', '=', 863)
-            ->where('warehouse_id', '=', 2)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'].$inventory['warehouse_id'];
@@ -53,11 +51,9 @@ class RecalculateBBL extends Command
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
-                // ->where('form_date', '>=', '2025-03-01')
-                // ->where('form_date', '<', '2025-04-01')
                 ->orderBy('form_date', 'asc')
-                ->orderBy('formulir_id', 'asc')
-                ->orderBy('id', 'asc')
+                ->orderBy('formulir_id', 'desc')
+                ->orderBy('id', 'desc')
                 ->get();
 
             $totalQty = 0;
