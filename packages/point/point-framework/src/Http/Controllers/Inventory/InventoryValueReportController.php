@@ -52,7 +52,11 @@ class InventoryValueReportController extends Controller
             ->where(function ($query) use ($view) {
                 $query->whereBetween('inventory.form_date', [$view->date_from, $view->date_to])
                     ->orWhere('inventory.form_date', '<', $view->date_from);
-            })->paginate(100);
+            })
+            ->orderBy('form_date', 'asc')
+            ->orderBy('formulir_id', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(100);
         return $view;
     }
 
