@@ -55,7 +55,6 @@ class InventoryValueReportController extends Controller
             })
             ->orderBy('form_date', 'asc')
             ->orderBy('formulir_id', 'desc')
-            ->orderBy('id', 'desc')
             ->paginate(100);
         return $view;
     }
