@@ -52,8 +52,7 @@ class RecalculateBBL extends Command
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
                 ->orderBy('form_date', 'asc')
-                ->orderBy('formulir_id', 'desc')
-                ->orderBy('id', 'desc')
+                ->orderBy('formulir_id', 'asc')
                 ->get();
 
             $totalQty = 0;

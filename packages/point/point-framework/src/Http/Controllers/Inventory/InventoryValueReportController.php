@@ -54,7 +54,7 @@ class InventoryValueReportController extends Controller
                     ->orWhere('inventory.form_date', '<', $view->date_from);
             })
             ->orderBy('form_date', 'asc')
-            ->orderBy('formulir_id', 'desc')
+            ->orderBy('formulir_id', 'asc')
             ->paginate(100);
         return $view;
     }
