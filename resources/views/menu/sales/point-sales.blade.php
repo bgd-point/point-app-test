@@ -29,7 +29,7 @@
 
 @if(client_has_addon('basic'))
     @if(auth()->user()->may('menu.point.sales.service'))
-        @if(request()->get('database_name') == 'p_kbretail' || request()->get('database_name') == 'p_bumiananta')
+        @if(request()->get('database_name') == 'p_kbretail' || request()->get('database_name') == 'p_bumiananta' || request()->get('database_name') == 'p_bmpratama')
             <div class="col-md-4 col-lg-3">
                 <a href="{{url('sales/point/service')}}" class="widget widget-button">
                     <div class="widget-content text-right clearfix">
