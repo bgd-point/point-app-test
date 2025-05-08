@@ -135,20 +135,38 @@ class JournalHelper
 
     public static function categoryValue($coa_category_id, $date_from, $date_to)
     {
-        $coa_from_category = Coa::where('coa_category_id', '=', $coa_category_id)->lists('coa.id');
+        // RETAINED EARNING
+        if ($coa_category_id == 13) {
+            $coa_from_category = Coa::where('coa_category_id', '=', [14,15,16,17,18])->lists('coa.id');
 
-        $journal_open = Journal::whereIn('coa_id', $coa_from_category)
-            ->where('form_date', '<', $date_from)
-            ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
-            ->first();
+            $journal_open = Journal::whereIn('coa_id', $coa_from_category)
+                ->where('form_date', '<', $date_from)
+                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+                ->first();
 
-        $journal = Journal::whereIn('coa_id', $coa_from_category)
-            ->where('form_date', '>=', $date_from)
-            ->where('form_date', '<=', $date_to)
-            ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
-            ->first();
+            $journal = Journal::whereIn('coa_id', $coa_from_category)
+                ->where('form_date', '>=', $date_from)
+                ->where('form_date', '<=', $date_to)
+                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+                ->first();
 
-        return static::journalValue($journal_open) + static::journalValue($journal);
+            return static::journalValue($journal_open) + static::journalValue($journal);
+        } else {
+            $coa_from_category = Coa::where('coa_category_id', '=', $coa_category_id)->lists('coa.id');
+
+            $journal_open = Journal::whereIn('coa_id', $coa_from_category)
+                ->where('form_date', '<', $date_from)
+                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+                ->first();
+
+            $journal = Journal::whereIn('coa_id', $coa_from_category)
+                ->where('form_date', '>=', $date_from)
+                ->where('form_date', '<=', $date_to)
+                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+                ->first();
+
+            return static::journalValue($journal_open) + static::journalValue($journal);
+        }
     }
 
     public static function positionValue($coa_position_id, $date_from, $date_to)
