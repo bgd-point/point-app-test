@@ -138,7 +138,12 @@ class JournalHelper
         \Log::info($coa_category_id);
         // RETAINED EARNING
         if ($coa_category_id == 13) {
-            $coa_from_category = Coa::where('coa_category_id', '=', 14)->lists('coa.id');
+            $coa_from_category = Coa::where('coa_category_id', '=', 14)
+                ->orWhere('coa_category_id', '=', 15)
+                ->orWhere('coa_category_id', '=', 16)
+                ->orWhere('coa_category_id', '=', 17)
+                ->orWhere('coa_category_id', '=', 18)
+                ->lists('coa.id');
 
             $journal_open = Journal::whereIn('coa_id', $coa_from_category)
                 ->where('form_date', '<', $date_from)
