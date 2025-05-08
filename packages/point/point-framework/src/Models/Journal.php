@@ -161,7 +161,7 @@ class Journal extends Model
 
     private function insertSubledgerMutation($options)
     {
-        if ($this->coa->has_subledger && $this->reference && $this->reference->formulirable_type != Retur::class) {
+        if ($this->coa && $this->coa->has_subledger && $this->reference && $this->reference->formulirable_type != Retur::class) {
             if ($this->coa->category->name == 'Current Liability') {
                 return $this->insertSubledgerAccountPayable($options);
             }
