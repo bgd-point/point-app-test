@@ -191,7 +191,7 @@ class InvoiceHelper
         }
 
         
-        \Log::info('dc ' . $dc->debit . '!= ' . $dc->credit);
+        \Log::info('dc ' . $dc->debit . ' != ' . $dc->credit .' '. $invoice->formulir->form_date.' '.$invoice->formulir_id);
         if($dc->debit !== $dc->credit) {
             $journal = new Journal();
             $journal->form_date = $invoice->formulir->form_date;
