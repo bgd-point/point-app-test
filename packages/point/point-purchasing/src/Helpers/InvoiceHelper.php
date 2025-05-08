@@ -195,7 +195,7 @@ class InvoiceHelper
         if($dc->debit !== $dc->credit) {
             $journal = new Journal();
             $journal->form_date = $invoice->formulir->form_date;
-            $journal->coa_id = 380;
+            $journal->coa_id = 151;
             $journal->description = 'Selisih pembulatan';
             $journal->debit = $dc->credit - $dc->debit;
             $journal->form_journal_id = $invoice->formulir_id;
