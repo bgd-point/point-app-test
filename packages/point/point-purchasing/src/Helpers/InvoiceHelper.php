@@ -199,9 +199,6 @@ class InvoiceHelper
             $journal->description = 'Selisih pembulatan';
             $journal->debit = $dc->credit - $dc->debit;
             $journal->form_journal_id = $invoice->formulir_id;
-            $journal->form_reference_id;
-            $journal->subledger_id;
-            $journal->subledger_type;
             $journal->save();
         }
 
