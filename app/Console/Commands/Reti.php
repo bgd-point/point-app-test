@@ -43,7 +43,7 @@ class Reti extends Command
                 $q->where('approval_status', -1)
                     ->orWhereNull('form_number')
                     ->orWhere('form_status', -1);
-            })->where('form_date', '>=', '2025-02-01 00:00:00')->get();
+            })->where('form_date', '>=', '2025-05-01 00:00:00')->get();
 
         foreach ($formulirs as $formulir) {
             $qty = 0;
