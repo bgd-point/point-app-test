@@ -68,7 +68,7 @@ class ReceiveItemHelper
             $journal->coa_id = $in_transit_account;
             $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
             $journal->debit = 0;
-            $journal->credit = $transfer_item_detail->cogs * $transfer_item_detail->qty_receiveds;
+            $journal->credit = $transfer_item_detail->cogs * $transfer_item_detail->qty_received;
             $journal->form_journal_id = $transfer_item->formulir_id;
             $journal->form_reference_id;
             $journal->subledger_id;
