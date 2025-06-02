@@ -40,6 +40,8 @@ class RecalculateBBL extends Command
         \DB::beginTransaction();
 
         // Get all items
+        Inventory::where('quantity', 0)->delete();
+        
         $inventories = Inventory::orderBy('form_date', 'asc')
             ->get()
             ->unique(function ($inventory) {
