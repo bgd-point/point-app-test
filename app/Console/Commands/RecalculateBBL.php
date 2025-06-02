@@ -40,7 +40,10 @@ class RecalculateBBL extends Command
         \DB::beginTransaction();
 
         // Get all items
-        Inventory::where('quantity', 0)->delete();
+        Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+            ->where('inventory.quantity', 0)
+            ->where('formulir.formulirable_type', 'Point\PointInventory\Models\StockOpname\StockOpname')
+            ->delete();
         
         $inventories = Inventory::orderBy('form_date', 'asc')
             ->get()
