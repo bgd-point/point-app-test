@@ -195,7 +195,7 @@ class InvoiceHelper
         if($dc->debit !== $dc->credit) {
             $journal = new Journal();
             $journal->form_date = $invoice->formulir->form_date;
-            $coa_selisih = DB::table('coa')->where('name', 'PENDAPATAN (BEBAN) SELISIH PEMBAYARAN')->first();
+            $coa_selisih = \DB::table('coa')->where('name', 'PENDAPATAN (BEBAN) SELISIH PEMBAYARAN')->first();
             if ($coa_selisih) {
                 $journal->coa_id = $coa_selisih->id;
             } else {
