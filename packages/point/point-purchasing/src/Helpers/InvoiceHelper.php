@@ -197,7 +197,7 @@ class InvoiceHelper
             $journal->form_date = $invoice->formulir->form_date;
             $journal->coa_id = 1193;
             $journal->description = 'Selisih pembulatan';
-            $journal->debit = $dc->credit - $dc->debit;
+            $journal->debit = round($dc->credit - $dc->debit, 4);
             $journal->credit = 0;
             $journal->form_journal_id = $invoice->formulir_id;
             $journal->form_reference_id;
