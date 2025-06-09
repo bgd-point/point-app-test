@@ -140,14 +140,14 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             @if(formulir_view_edit($transfer_item->formulir, 'update.point.inventory.transfer.item'))
-                            <a href="{{url('inventory/point/transfer-item/send/'.$transfer_item->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
+                            <!-- <a href="{{url('inventory/point/transfer-item/send/'.$transfer_item->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a> -->
                             @endif
 
                             @if(formulir_view_cancel($transfer_item->formulir, 'delete.point.inventory.transfer.item'))
-                            <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
+                            <!-- <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                onclick="secureCancelForm('{{url('formulir/cancel')}}',
                                     '{{ $transfer_item->formulir_id }}',
-                                    'delete.point.inventory.transfer.item')"><i class="fa fa-times"></i> Cancel Form</a>
+                                    'delete.point.inventory.transfer.item')"><i class="fa fa-times"></i> Cancel Form</a> -->
                             @endif
                             @if($transfer_item->formulir->approval_status == 1)
                             <a class="btn btn-effect-ripple btn-info" href="{{url('inventory/point/transfer-item/send/'.$transfer_item->id.'/print')}}">Print</a>

@@ -264,11 +264,11 @@
                                 @if(formulir_view_edit($invoice->formulir, 'update.point.sales.invoice'))
                                     <?php $parent_refer = Point\Framework\Helpers\ReferHelper::getRefers(get_class($invoice), $invoice->id); ?>
                                     @if(count($parent_refer) > 0)
-                                        <a href="{{url('sales/point/indirect/invoice/'.$invoice->id.'/edit')}}"
-                                           class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
+                                        <!-- <a href="{{url('sales/point/indirect/invoice/'.$invoice->id.'/edit')}}"
+                                           class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a> -->
                                     @else
-                                        <a href="{{url('sales/point/indirect/invoice/basic/'.$invoice->id.'/edit')}}"
-                                           class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
+                                        <!-- <a href="{{url('sales/point/indirect/invoice/basic/'.$invoice->id.'/edit')}}"
+                                           class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a> -->
                                     @endif
                                 @endif
 
@@ -278,15 +278,15 @@
                                 @endif
 
                                 @if(formulir_view_cancel_or_request_cancel($invoice->formulir, 'delete.point.sales.invoice', 'approval.point.sales.invoice') == 1)
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $invoice->formulir_id }}','approval.point.sales.invoice')">
+                                    <!-- <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $invoice->formulir_id }}','approval.point.sales.invoice')">
                                         <i class="fa fa-times"></i>
                                         Cancel Form
-                                    </a>
+                                    </a> -->
                                 @elseif(formulir_view_cancel_or_request_cancel($invoice->formulir, 'delete.point.sales.invoice', 'approval.point.sales.invoice') == 2)
-                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm(this, '{{url('formulir/requestCancel')}}', '{{ $invoice->formulir_id }}', 'delete.point.sales.invoice')">
+                                    <!-- <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureRequestCancelForm(this, '{{url('formulir/requestCancel')}}', '{{ $invoice->formulir_id }}', 'delete.point.sales.invoice')">
                                         <i class="fa fa-times"></i>
                                         Request Cancel Form
-                                    </a>
+                                    </a> -->
                                 @endif
                                 @if(formulir_view_email_vendor($invoice->formulir, 'create.point.sales.invoice'))
                                     <form action="{{url('sales/point/indirect/invoice/send-email')}}" method="post">

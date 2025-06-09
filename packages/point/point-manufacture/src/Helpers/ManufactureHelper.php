@@ -83,7 +83,7 @@ class ManufactureHelper
             $unit = ItemUnit::where('item_id', $material_id[$i])->first();
             $raw_material->unit = $unit->name;
             $raw_material->converter = number_format_db($unit->converter);
-            $raw_material->cogs = InventoryHelper::getCostOfSales($input->formulir->form_date, $raw_material->material_id, $raw_material->warehouse_id) * $raw_material->quantity;
+            $raw_material->cogs = InventoryHelper::getCostOfSales($input->formulir->created_at, $raw_material->material_id, $raw_material->warehouse_id) * $raw_material->quantity;
             $raw_material->save();
         }
 
@@ -111,9 +111,9 @@ class ManufactureHelper
             $inventory->formulir_id = $input_approval->formulir->id;
             $inventory->item_id = $material->material_id;
             $inventory->quantity = $material->quantity * InputMaterial::unit($material->material_id);
-            $inventory->cogs = InventoryHelper::getCostOfSales($input_approval->formulir->form_date, $material->material_id, $material->warehouse_id);
+            $inventory->cogs = InventoryHelper::getCostOfSales($input_approval->formulir->created_at, $material->material_id, $material->warehouse_id);
             $inventory->price = $inventory->cogs;
-            $inventory->form_date = $input_approval->formulir->form_date;
+            $inventory->form_date = $input_approval->formulir->created_at;
             $inventory->warehouse_id = $material->warehouse_id;
 
             $inventory_helper = new InventoryHelper($inventory);
@@ -168,7 +168,7 @@ class ManufactureHelper
             $quantity = number_format_db($request->input('quantity_output')[$i]);
             $inventory = new Inventory();
             $inventory->formulir_id = $formulir->id;
-            $inventory->form_date = $formulir->form_date;
+            $inventory->form_date = $formulir->created_at;
             $inventory->warehouse_id = $input_product->warehouse_id;
             $inventory->item_id = $input_product->product_id;
             $inventory->quantity = $quantity;
@@ -193,7 +193,7 @@ class ManufactureHelper
     {
         // JOURNAL #1 of #2
         $journal = new Journal();
-        $journal->form_date = $inventory->formulir->form_date;
+        $journal->form_date = $inventory->formulir->created_at;
         $journal->coa_id = $inventory->item->account_asset_id;
         $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
         $journal->debit = 0;
@@ -208,7 +208,7 @@ class ManufactureHelper
         $work_in_process_account_id = JournalHelper::getAccount('manufacture process', 'work in process');
 
         $journal = new Journal();
-        $journal->form_date = $inventory->formulir->form_date;
+        $journal->form_date = $inventory->formulir->created_at;
         $journal->coa_id = $work_in_process_account_id;
         $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
         $journal->debit = abs($inventory->quantity * $inventory->price);
@@ -224,7 +224,7 @@ class ManufactureHelper
     {
         // JOURNAL #1 of #2
         $journal = new Journal();
-        $journal->form_date = $inventory->formulir->form_date;
+        $journal->form_date = $inventory->formulir->created_at;
         $journal->coa_id = $inventory->item->account_asset_id;
         $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
         $journal->debit = abs($inventory->quantity * $inventory->price);
@@ -239,7 +239,7 @@ class ManufactureHelper
         $work_in_process_account_id = JournalHelper::getAccount('manufacture process', 'work in process');
 
         $journal = new Journal();
-        $journal->form_date = $inventory->formulir->form_date;
+        $journal->form_date = $inventory->formulir->created_at;
         $journal->coa_id = $work_in_process_account_id;
         $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
         $journal->debit = 0;

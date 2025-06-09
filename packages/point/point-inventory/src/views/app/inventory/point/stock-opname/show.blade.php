@@ -147,13 +147,13 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             @if(formulir_view_edit($stock_opname->formulir, 'update.point.inventory.stock.opname'))
-                            <a href="{{url('inventory/point/stock-opname/'.$stock_opname->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
+                            <!-- <a href="{{url('inventory/point/stock-opname/'.$stock_opname->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a> -->
                             @endif
                             @if(formulir_view_cancel($stock_opname->formulir, 'delete.point.inventory.stock.opname'))
-                            <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
+                            <!-- <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                onclick="secureCancelForm('{{url('formulir/cancel')}}',
                                     '{{ $stock_opname->formulir_id }}',
-                                    'delete.point.inventory.stock.opname')"><i class="fa fa-times"></i> Cancel Form</a>
+                                    'delete.point.inventory.stock.opname')"><i class="fa fa-times"></i> Cancel Form</a> -->
                             @endif
                         </div>
                     </div>
