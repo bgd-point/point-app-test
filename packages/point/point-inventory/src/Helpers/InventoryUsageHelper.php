@@ -103,18 +103,18 @@ class InventoryUsageHelper
             $journal->form_date = $inventory_usage->formulir->created_at;
             $journal->coa_id = $inventory_usage_item->item->account_asset_id;
             $journal->description = $inventory_usage_item->usage_notes;
-            $journal->$position = $cost_of_sales * -1;
+            $journal->credit = abs($cost_of_sales);
             $journal->form_journal_id = $inventory_usage->formulir_id;
             $journal->form_reference_id;
             $journal->subledger_id = $inventory_usage_item->item_id;
             $journal->subledger_type = get_class($inventory_usage_item->item);
             $journal->save();
 
-            if ($position == 'debit') {
-                $debit += $inventory_usage_item->amount;
-            } else {
-                $credit += $inventory_usage_item->amount;
-            }
+            // if ($position == 'debit') {
+            //     $debit += $inventory_usage_item->amount;
+            // } else {
+            //     $credit += $inventory_usage_item->amount;
+            // }
 
             // JOURNAL #1 of #2 - Inventory Usage Expense
             $inventory_usage_expense_account = JournalHelper::getAccount('point inventory usage', 'inventory differences');
@@ -123,22 +123,22 @@ class InventoryUsageHelper
             $journal->form_date = $inventory_usage->formulir->created_at;
             $journal->coa_id = $inventory_usage_expense_account;
             $journal->description = $inventory_usage_item->usage_notes;
-            $journal->$position = $cost_of_sales;
+            $journal->debit = abs($cost_of_sales);
             $journal->form_journal_id = $inventory_usage->formulir_id;
             $journal->form_reference_id;
             $journal->subledger_id;
             $journal->subledger_type;
             $journal->save();
 
-            if ($position == 'debit') {
-                $debit += $inventory_usage->total;
-            } else {
-                $credit += $inventory_usage->total;
-            }
+            // if ($position == 'debit') {
+            //     $debit += $inventory_usage->total;
+            // } else {
+            //     $credit += $inventory_usage->total;
+            // }
 
-            if ($debit != $credit) {
-                throw new PointException('Unbalance Journal');
-            }
+            // if ($debit != $credit) {
+            //     throw new PointException('Unbalance Journal');
+            // }
         }
     }
 }
