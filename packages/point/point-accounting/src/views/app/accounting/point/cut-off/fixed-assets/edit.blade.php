@@ -74,7 +74,7 @@
                                             $amount = 0;
                                             $temp = Point\Core\Helpers\TempDataHelper::getAllRowHaveKeyValue('cut.off.fixed.assets', auth()->user()->id, 'coa_id', $coa->id);
                                             foreach ($temp as $temp_fixed_assets) {
-                                                // $amount += $temp_fixed_assets['depreciation'];
+                                                $amount += $temp_fixed_assets['total_price'];
                                             }
                                         ?>
 
