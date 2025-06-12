@@ -139,7 +139,7 @@ class InvoiceHelper
             $position = JournalHelper::position($invoice_detail->item->account_asset_id);
 
             $journal = new Journal();
-            $journal->form_date = $formulir->created_at;
+            $journal->form_date = $formulir->approval_at;
             $journal->coa_id = $invoice_detail->item->account_asset_id;
             $journal->description = 'Goods Received [' . $invoice->formulir->form_number.']';
             $journal->$position = $total_per_row;
@@ -158,7 +158,7 @@ class InvoiceHelper
             $inventory->item_id = $item->id;
             $inventory->quantity = $invoice_detail->quantity * $invoice_detail->converter;
             $inventory->price = $invoice_detail->price / $invoice_detail->converter;
-            $inventory->form_date = $formulir->created_at;
+            $inventory->form_date = $formulir->approval_at;
             $inventory->warehouse_id = $warehouse_id;
 
             $inventory_helper = new InventoryHelper($inventory);

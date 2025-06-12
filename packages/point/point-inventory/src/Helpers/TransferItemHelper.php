@@ -58,7 +58,7 @@ class TransferItemHelper
             $transfer_item_detail->qty_received = 0;
             $transfer_item_detail->unit = Item::defaultUnit($transfer_item_detail->item_id)->name;
             $transfer_item_detail->converter = 1;
-            $transfer_item_detail->cogs = InventoryHelper::getCostOfSales($formulir->created_at, $transfer_item_detail->item_id, $transfer_item->warehouse_sender_id);
+            $transfer_item_detail->cogs = InventoryHelper::getCostOfSales($formulir->approval_at, $transfer_item_detail->item_id, $transfer_item->warehouse_sender_id);
             $transfer_item_detail->save();
         }
 
@@ -75,7 +75,7 @@ class TransferItemHelper
     {
         foreach ($transfer_item->items as $transfer_item_detail) {
             $inventory = new Inventory;
-            $inventory->form_date = $transfer_item->formulir->created_at;
+            $inventory->form_date = $transfer_item->formulir->approval_at;
             $inventory->formulir_id = $transfer_item->formulir_id;
             $inventory->warehouse_id = $transfer_item->warehouse_sender_id;
             $inventory->item_id = $transfer_item_detail->item_id;
@@ -97,7 +97,7 @@ class TransferItemHelper
             // JOURNAL #1 of #2 - SEND ITEM
             $position = JournalHelper::position($transfer_item_detail->item->account_asset_id);
             $journal = new Journal();
-            $journal->form_date = $transfer_item->formulir->created_at;
+            $journal->form_date = $transfer_item->formulir->approval_at;
             $journal->coa_id = $transfer_item_detail->item->account_asset_id;
             $journal->description = $transfer_item->formulir->form_number;
             $journal->$position = $transfer_item_detail->cogs * $transfer_item_detail->qty_send * -1;
@@ -117,7 +117,7 @@ class TransferItemHelper
             $inventory_in_transit = JournalHelper::getAccount('point inventory transfer item', 'inventory in transit');
             $position = JournalHelper::position($inventory_in_transit);
             $journal = new Journal();
-            $journal->form_date = $transfer_item->formulir->created_at;
+            $journal->form_date = $transfer_item->formulir->approval_at;
             $journal->coa_id = $inventory_in_transit;
             $journal->description = $transfer_item->formulir->form_number;
             $journal->$position = $transfer_item_detail->cogs * $transfer_item_detail->qty_send;

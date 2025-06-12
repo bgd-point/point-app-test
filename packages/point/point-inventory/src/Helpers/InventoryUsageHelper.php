@@ -73,12 +73,12 @@ class InventoryUsageHelper
     {
         foreach ($inventory_usage->listInventoryUsage as $inventory_usage_item) {
             $inventory = new Inventory;
-            $inventory->form_date = $inventory_usage->formulir->created_at;
+            $inventory->form_date = $inventory_usage->formulir->approval_at;
             $inventory->formulir_id = $inventory_usage->formulir_id;
             $inventory->warehouse_id = $inventory_usage->warehouse_id;
             $inventory->item_id = $inventory_usage_item->item_id;
             $inventory->quantity = $inventory_usage_item->quantity_usage;
-            $inventory->price =  InventoryHelper::getCostOfSales($inventory_usage->formulir->created_at, $inventory_usage_item->item_id, $inventory_usage->warehouse_id);
+            $inventory->price =  InventoryHelper::getCostOfSales($inventory_usage->formulir->approval_at, $inventory_usage_item->item_id, $inventory_usage->warehouse_id);
 
             $inventory_helper = new InventoryHelper($inventory);
             $inventory_helper->out();
@@ -96,11 +96,11 @@ class InventoryUsageHelper
         foreach ($inventory_usage->listInventoryUsage as $inventory_usage_item) {
             $position = JournalHelper::position($inventory_usage_item->item->account_asset_id);
 
-            $cost_of_sales = InventoryHelper::getCostOfSales($inventory_usage->formulir->created_at, $inventory_usage_item->item_id, $inventory_usage->warehouse_id);
+            $cost_of_sales = InventoryHelper::getCostOfSales($inventory_usage->formulir->approval_at, $inventory_usage_item->item_id, $inventory_usage->warehouse_id);
             $cost_of_sales = $cost_of_sales * $inventory_usage_item->quantity_usage;
 
             $journal = new Journal();
-            $journal->form_date = $inventory_usage->formulir->created_at;
+            $journal->form_date = $inventory_usage->formulir->approval_at;
             $journal->coa_id = $inventory_usage_item->item->account_asset_id;
             $journal->description = $inventory_usage_item->usage_notes;
             $journal->credit = abs($cost_of_sales);
@@ -120,7 +120,7 @@ class InventoryUsageHelper
             $inventory_usage_expense_account = JournalHelper::getAccount('point inventory usage', 'inventory differences');
             $position = JournalHelper::position($inventory_usage_expense_account);
             $journal = new Journal();
-            $journal->form_date = $inventory_usage->formulir->created_at;
+            $journal->form_date = $inventory_usage->formulir->approval_at;
             $journal->coa_id = $inventory_usage_expense_account;
             $journal->description = $inventory_usage_item->usage_notes;
             $journal->debit = abs($cost_of_sales);

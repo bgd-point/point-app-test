@@ -73,11 +73,11 @@ class StockOpnameHelper
     {
         foreach ($stock_opname->items as $stock_opname_item) {
             $inventory = new Inventory;
-            $inventory->form_date = $stock_opname->formulir->created_at;
+            $inventory->form_date = $stock_opname->formulir->approval_at;
             $inventory->formulir_id = $stock_opname->formulir_id;
             $inventory->warehouse_id = $stock_opname->warehouse_id;
             $inventory->item_id = $stock_opname_item->item_id;
-            $inventory->price =  InventoryHelper::getCostOfSales($stock_opname->formulir->created_at, $stock_opname_item->item_id, $stock_opname->warehouse_id);
+            $inventory->price =  InventoryHelper::getCostOfSales($stock_opname->formulir->approval_at, $stock_opname_item->item_id, $stock_opname->warehouse_id);
             $quantity = $stock_opname_item->quantity_opname - $stock_opname_item->stock_in_database;
             if ($quantity < 0) {
                 $inventory->quantity = $quantity * -1;
@@ -102,7 +102,7 @@ class StockOpnameHelper
         foreach ($stock_opname->items as $stock_opname_item) {
             $position = JournalHelper::position($stock_opname_item->item->account_asset_id);
 
-            $cost_of_sales = InventoryHelper::getCostOfSales($stock_opname->formulir->created_at, $stock_opname_item->item_id, $stock_opname->warehouse_id);
+            $cost_of_sales = InventoryHelper::getCostOfSales($stock_opname->formulir->approval_at, $stock_opname_item->item_id, $stock_opname->warehouse_id);
             $quantity = $stock_opname_item->quantity_opname - $stock_opname_item->stock_in_database;
 
             if ($quantity == 0) {
@@ -112,7 +112,7 @@ class StockOpnameHelper
             }
 
             $journal = new Journal();
-            $journal->form_date = $stock_opname->formulir->created_at;
+            $journal->form_date = $stock_opname->formulir->approval_at;
             $journal->coa_id = $stock_opname_item->item->account_asset_id;
             $journal->description = $stock_opname_item->opname_notes;
             $journal->$position = $cost_of_sales;
@@ -132,7 +132,7 @@ class StockOpnameHelper
             $inventory_differences_account = JournalHelper::getAccount('point inventory stock opname', 'inventory differences');
             $position = JournalHelper::position($inventory_differences_account);
             $journal = new Journal();
-            $journal->form_date = $stock_opname->formulir->created_at;
+            $journal->form_date = $stock_opname->formulir->approval_at;
             $journal->coa_id = $inventory_differences_account;
             $journal->description = $stock_opname_item->opname_notes;
             $journal->$position = $cost_of_sales * -1;
