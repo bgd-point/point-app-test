@@ -198,6 +198,8 @@
                                                        value="{{$reference_item->quantity}}"/>
                                                 <input type="hidden" name="item_id[]"
                                                        value="{{$reference_item->item_id}}"/>
+                                                <input type="hidden" name="allocation_id[]"
+                                                       value="{{$reference_item->allocation_id}}"/>
                                             </td>
                                             <td><input id="item-quantity-reference-{{$counter}}" type="text"
                                                        name="item_quantity_reference[]"
