@@ -43,7 +43,7 @@ class CutOffHelper
             ->first();
 
         if (! $cut_off_account) {
-            // return false;
+            // return false;            
             dd('cutoff failed - cut off account form date error');
         }
 
@@ -58,7 +58,7 @@ class CutOffHelper
         }
 
         if (! self::checkFixedAssets($cut_off_account)) {
-        //    return false;
+            // return false;
            dd('cutoff failed - cut off fixed asset value error');
         }
 
@@ -87,6 +87,7 @@ class CutOffHelper
     {
         foreach ($cut_off_account->cutOffAccountDetail as $cut_off_account_detail) {
             if ($cut_off_account_detail->coa->subledger_type == get_class(new Item())) {
+                dd($cut_off_account_detail);
                 $amount = CutOffInventory::getSubledgerAmount($cut_off_account->formulir->form_date, $cut_off_account_detail->coa_id);
                 $position = JournalHelper::position($cut_off_account_detail->coa_id);
                 $cut_off_amount = $cut_off_account_detail->$position;
