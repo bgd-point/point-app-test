@@ -81,6 +81,7 @@ class CutOffHelper
 
     private static function checkInventory($cut_off_account)
     {
+        dd($cut_off_account->cutOffAccountDetail);
         foreach ($cut_off_account->cutOffAccountDetail as $cut_off_account_detail) {
             if ($cut_off_account_detail->coa->subledger_type == get_class(new Item())) {
                 $amount = CutOffInventory::getSubledgerAmount($cut_off_account->formulir->form_date, $cut_off_account_detail->coa_id);
