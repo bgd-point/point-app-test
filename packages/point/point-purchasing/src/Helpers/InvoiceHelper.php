@@ -106,6 +106,10 @@ class InvoiceHelper
         $formulir->approval_status = 1;
         $formulir->save();
 
+        if(request()->get('database_name') == 'p_test05') {
+            dd($formulir);
+        }
+
         $discount = $subtotal * $request->input('discount')/100;
         $tax_base = number_format_db($request->input('tax_base'));
         $tax = number_format_db($request->input('tax'));
