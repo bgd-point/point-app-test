@@ -71,12 +71,12 @@ class StockCorrectionHelper
     {
         foreach ($stock_correction->items as $stock_correction_item) {
             $inventory = new Inventory;
-            $inventory->form_date = $stock_correction->formulir->approval_at;
+            $inventory->form_date = $stock_correction->formulir->created_at;
             $inventory->formulir_id = $stock_correction->formulir_id;
             $inventory->warehouse_id = $stock_correction->warehouse_id;
             $inventory->item_id = $stock_correction_item->item_id;
             $inventory->quantity = $stock_correction_item->quantity_correction;
-            $inventory->price =  InventoryHelper::getCostOfSales($stock_correction->formulir->approval_at, $stock_correction_item->item_id, $stock_correction->warehouse_id);
+            $inventory->price =  InventoryHelper::getCostOfSales($stock_correction->formulir->created_at, $stock_correction_item->item_id, $stock_correction->warehouse_id);
 
             if ($inventory->quantity < 0) {
                 $inventory->quantity *= -1;
@@ -98,11 +98,11 @@ class StockCorrectionHelper
         foreach ($stock_correction->items as $stock_correction_item) {
             $position = JournalHelper::position($stock_correction_item->item->account_asset_id);
 
-            $cost_of_sales = InventoryHelper::getCostOfSales($stock_correction->formulir->approval_at, $stock_correction_item->item_id, $stock_correction->warehouse_id);
+            $cost_of_sales = InventoryHelper::getCostOfSales($stock_correction->formulir->created_at, $stock_correction_item->item_id, $stock_correction->warehouse_id);
             $cost_of_sales = $cost_of_sales * $stock_correction_item->quantity_correction;
 
             $journal = new Journal();
-            $journal->form_date = $stock_correction->formulir->approval_at;
+            $journal->form_date = $stock_correction->formulir->created_at;
             $journal->coa_id = $stock_correction_item->item->account_asset_id;
             $journal->description = $stock_correction_item->correction_notes;
             $journal->$position = $cost_of_sales;
@@ -123,7 +123,7 @@ class StockCorrectionHelper
 
             $position = JournalHelper::position($inventory_differences_account);
             $journal = new Journal();
-            $journal->form_date = $stock_correction->formulir->approval_at;
+            $journal->form_date = $stock_correction->formulir->created_at;
             $journal->coa_id = $inventory_differences_account;
             $journal->description = $stock_correction_item->correction_notes;
             $journal->$position = $cost_of_sales * -1;
