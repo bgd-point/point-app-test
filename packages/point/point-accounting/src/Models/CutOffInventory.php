@@ -40,14 +40,14 @@ class CutOffInventory extends Model
     {
         $cutoff_inventory = self::joinFormulir()
             ->approvalApproved()
-            ->open()
+            // ->open()
             ->where('form_date', 'like', date('Y-m-d', strtotime($form_date)) . '%')
             ->notArchived()
             ->selectOriginal()
             ->orderBy('id', 'desc')
             ->first();
 
-        dd($cutoff_inventory);
+        // dd($cutoff_inventory);
 
         if ($cutoff_inventory) {
             $cutoff_inventory = $cutoff_inventory->cutOffInventoryDetail

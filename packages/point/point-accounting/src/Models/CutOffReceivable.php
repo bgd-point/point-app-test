@@ -41,7 +41,7 @@ class CutOffReceivable extends Model
         $cut_off_receivable = self::joinFormulir()
             ->approvalApproved()
             ->notArchived()
-            ->open()
+            // ->open()
             ->where('form_date', 'like', date('Y-m-d', strtotime($form_date)) . '%')
             ->selectOriginal()
             ->orderBy('formulir.id', 'desc')

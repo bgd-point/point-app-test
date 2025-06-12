@@ -41,7 +41,7 @@ class CutOffPayable extends Model
         $cut_off_payable = self::joinFormulir()
             ->approvalApproved()
             ->notArchived()
-            ->open()
+            // ->open()
             ->where('form_date', 'like', date('Y-m-d', strtotime($form_date)) . '%')
             ->selectOriginal()
             ->orderBy('formulir.id', 'desc')
