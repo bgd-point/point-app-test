@@ -43,19 +43,23 @@ class CutOffHelper
             ->first();
 
         if (! $cut_off_account) {
-            return false;
+            // return false;
+            dd('cutoff failed - cut off account form date error');
         }
 
         if (! self::checkInventory($cut_off_account)) {
-            return false;
+            // return false;
+            dd('cutoff failed - cut off inventory value error');
         }
 
         if (! self::checkAccountPerson($cut_off_account)) {
-            return false;
+            // return false;
+            dd('cutoff failed - cut off account payable / receivable value error');
         }
 
         if (! self::checkFixedAssets($cut_off_account)) {
-//            return false;
+        //    return false;
+           dd('cutoff failed - cut off fixed asset value error');
         }
 
         self::insertJournal($cut_off_account);
