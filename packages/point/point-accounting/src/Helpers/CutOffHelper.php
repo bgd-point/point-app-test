@@ -131,7 +131,7 @@ class CutOffHelper
         if ($inventories) {
             foreach($inventories as $inventory) {
                 $emptying_inventory = new Inventory();
-                $emptying_inventory->form_date = $cut_off_account->formulir->approval_at;
+                $emptying_inventory->form_date = date('Y-m-d H:i:s');
                 $emptying_inventory->formulir_id = $cut_off_account->formulir_id;
                 $emptying_inventory->warehouse_id = $inventory->warehouse_id;
                 $emptying_inventory->item_id = $inventory->item_id;
@@ -143,7 +143,7 @@ class CutOffHelper
 
                 $position = JournalHelper::position($inventory->item->account_asset_id);
                 $journal = new Journal();
-                $journal->form_date = date('Y-m-d H:i:s', strtotime($cut_off_account->formulir->approval_at));
+                $journal->form_date = date('Y-m-d H:i:s');
                 $journal->coa_id = $inventory->item->account_asset_id;
                 $journal->description = "Cut Off from formulir number " . $cut_off_account->formulir->form_number;
                 $journal->$position = $inventory->total_value * -1;
@@ -163,7 +163,7 @@ class CutOffHelper
             if ($total_debt > 0 && $account_payable_receivable < $cut_off_account->formulir->approval_at ) {
                 $position = JournalHelper::position($account_payable_receivable->account_id);
                 $journal = new Journal();
-                $journal->form_date = date('Y-m-d H:i:s', strtotime($cut_off_account->formulir->approval_at));
+                $journal->form_date = date('Y-m-d H:i:s');
                 $journal->coa_id = $account_payable_receivable->account_id;
                 $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
                 $journal->$position = $total_debt * -1;
@@ -185,7 +185,7 @@ class CutOffHelper
             $total = abs($journal_value->debit - $journal_value->credit);
             if ($total > 0) {
                 $journal = new Journal();
-                $journal->form_date = date('Y-m-d H:i:s', strtotime($cut_off_account->formulir->approval_at));
+                $journal->form_date = date('Y-m-d H:i:s');
                 $journal->coa_id = $co_journal->coa_id;
                 $journal->description = "Cut Off from formulir number " . $cut_off_account->formulir->form_number;
                 $journal->$position = $total * -1;
@@ -217,7 +217,7 @@ class CutOffHelper
                         $total = abs($journal_value->debit - $journal_value->credit);
                         if ($total > 0) {
                             $journal = new Journal();
-                            $journal->form_date = date('Y-m-d H:i:s', strtotime($cut_off_account->formulir->approval_at));
+                            $journal->form_date = date('Y-m-d H:i:s');
                             $journal->coa_id = $co_journal->coa_id;
                             $journal->description = "Cut Off from formulir number " . $cut_off_account->formulir->form_number;
                             $journal->$position = $total * -1;
@@ -238,7 +238,7 @@ class CutOffHelper
         $cut_off_inventory = CutOffInventory::joinFormulir()
             ->approvalApproved()
             ->open()
-            ->where('form_date', 'like', date('Y-m-d', strtotime($cut_off_account->formulir->approval_at)) . '%')
+            ->where('form_date', 'like', date('Y-m-d')) . '%')
             ->selectOriginal()
             ->orderby('id', 'desc')
             ->first();
@@ -266,7 +266,7 @@ class CutOffHelper
 
                 // CUTOFF JOURNAL
                 $journal = new Journal();
-                $journal->form_date = date('Y-m-d H:i:s', strtotime($cut_off_account->formulir->approval_at));
+                $journal->form_date = date('Y-m-d H:i:s');
                 $journal->coa_id = $cut_off_account_detail->coa_id;
                 $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
                 $journal->$position = $cut_off_inventory_detail->amount;
@@ -297,7 +297,7 @@ class CutOffHelper
         if ($cut_off_payable) {
             foreach ($cut_off_payable->cutOffPayableDetail as $cut_off_payable_detail) {
                 $journal = new Journal();
-                $journal->form_date = date('Y-m-d H:i:s', strtotime($cut_off_account->formulir->approval_at));
+                $journal->form_date = date('Y-m-d H:i:s');
                 $journal->coa_id = $cut_off_account_detail->coa_id;
                 $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
                 $journal->debit = 0;
@@ -329,7 +329,7 @@ class CutOffHelper
         if ($cut_off_receivable) {
             foreach ($cut_off_receivable->cutOffReceivableDetail as $cut_off_receivable_detail) {
                 $journal = new Journal();
-                $journal->form_date = date('Y-m-d H:i:s', strtotime($cut_off_account->formulir->approval_at));
+                $journal->form_date = date('Y-m-d H:i:s');
                 $journal->coa_id = $cut_off_account_detail->coa_id;
                 $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
                 $journal->debit = $cut_off_receivable_detail->amount;
@@ -363,7 +363,7 @@ class CutOffHelper
 //            foreach ($cut_off_fixed_assets->cutOffFixedAssetsDetail->where('coa_id', $cut_off_account_detail->coa_id) as $cut_off_fixed_assets_detail) {
 //                $position = JournalHelper::position($cut_off_account_detail->coa_id);
 //                $journal = new Journal();
-//                $journal->form_date = date('Y-m-d H:i:s', strtotime($cut_off_account->formulir->approval_at));
+//                $journal->form_date = date('Y-m-d H:i:s');
 //                $journal->coa_id = $cut_off_account_detail->coa_id;
 //                $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
 //                $journal->$position = $cut_off_fixed_assets_detail->total_price;
@@ -384,7 +384,7 @@ class CutOffHelper
     {
         if ($cut_off_account_detail->debit > 0 || $cut_off_account_detail->credit > 0) {
             $journal = new Journal();
-            $journal->form_date = date('Y-m-d H:i:s', strtotime($cut_off_account->formulir->approval_at));
+            $journal->form_date = date('Y-m-d H:i:s');
             $journal->coa_id = $cut_off_account_detail->coa_id;
             $journal->description = "Cut Off from formulir number " . $cut_off_account->formulir->form_number;
             $journal->debit = $cut_off_account_detail->debit;
