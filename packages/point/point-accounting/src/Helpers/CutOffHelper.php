@@ -37,7 +37,7 @@ class CutOffHelper
             ->notArchived()
             ->approvalApproved()
             ->open()
-            ->where('form_date', '=', $cut_off->formulir->approval_at)
+            ->where('form_date', 'like', date('Y-m-d') . '%')
             ->orderby('formulir.id', 'desc')
             ->selectOriginal()
             ->first();
@@ -202,7 +202,7 @@ class CutOffHelper
             ->approvalApproved()
             ->open()
             ->notArchived()
-            ->where('form_date', 'like', date('Y-m-d', strtotime($cut_off_account->formulir->approval_at)) . '%')
+            ->where('form_date', 'like', date('Y-m-d') . '%')
             ->selectOriginal()
             ->orderby('id', 'desc')
             ->first();
