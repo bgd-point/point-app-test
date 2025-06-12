@@ -238,7 +238,7 @@ class CutOffHelper
         $cut_off_inventory = CutOffInventory::joinFormulir()
             ->approvalApproved()
             ->open()
-            ->where('form_date', 'like', date('Y-m-d')) . '%')
+            ->where('form_date', 'like', date('Y-m-d') . '%')
             ->selectOriginal()
             ->orderby('id', 'desc')
             ->first();
