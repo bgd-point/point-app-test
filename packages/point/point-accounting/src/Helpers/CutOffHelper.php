@@ -200,7 +200,7 @@ class CutOffHelper
         // ACCOUNT FIXED ASSETS
         $cut_off_fixed_assets = CutOffFixedAssets::joinFormulir()
             ->approvalApproved()
-            ->open()
+            // ->open()
             ->notArchived()
             ->where('form_date', 'like', date('Y-m-d', strtotime($cut_off_account->formulir->form_date)) . '%')
             ->selectOriginal()
@@ -237,7 +237,7 @@ class CutOffHelper
     {
         $cut_off_inventory = CutOffInventory::joinFormulir()
             ->approvalApproved()
-            ->open()
+            // ->open()
             ->where('form_date', 'like', date('Y-m-d', strtotime($cut_off_account->formulir->form_date)) . '%')
             ->selectOriginal()
             ->orderby('id', 'desc')
@@ -287,7 +287,7 @@ class CutOffHelper
     {
         $cut_off_payable = CutOffPayable::joinFormulir()
             ->approvalApproved()
-            ->open()
+            // ->open()
             ->notArchived()
             ->where('form_date', 'like', date('Y-m-d', strtotime($cut_off_account->formulir->form_date)) . '%')
             ->selectOriginal()
@@ -319,7 +319,7 @@ class CutOffHelper
     {
         $cut_off_receivable = CutOffReceivable::joinFormulir()
             ->approvalApproved()
-            ->open()
+            // ->open()
             ->notArchived()
             ->where('form_date', 'like', date('Y-m-d', strtotime($cut_off_account->formulir->form_date)) . '%')
             ->selectOriginal()
@@ -351,7 +351,7 @@ class CutOffHelper
     {
 //        $cut_off_fixed_assets = CutOffFixedAssets::joinFormulir()
 //            ->approvalApproved()
-//            ->open()
+        //    ->open()
 //            ->notArchived()
 //            ->where('form_date', 'like', date('Y-m-d', strtotime($cut_off_account->formulir->form_date)) . '%')
 //            ->selectOriginal()
