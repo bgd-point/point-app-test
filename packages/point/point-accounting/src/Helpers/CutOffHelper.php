@@ -254,7 +254,7 @@ class CutOffHelper
 
                 // CUTOFF INVENTORY
                 $inventory = new Inventory;
-                $inventory->form_date = date('Y-m-d H:i:s', strtotime($cut_off_inventory->formulir->form_date));
+                $inventory->form_date = date('Y-m-d H:i:s');
                 $inventory->formulir_id = $cut_off_inventory->formulir_id;
                 $inventory->warehouse_id = $cut_off_inventory_detail->warehouse_id;
                 $inventory->item_id = $cut_off_inventory_detail->subledger_id;
