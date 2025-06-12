@@ -47,6 +47,8 @@ class CutOffInventory extends Model
             ->orderBy('id', 'desc')
             ->first();
 
+            dd(cutoff_inventory);
+
         if ($cutoff_inventory) {
             $cutoff_inventory = $cutoff_inventory->cutOffInventoryDetail
                 ->where('coa_id', $coa_id)
