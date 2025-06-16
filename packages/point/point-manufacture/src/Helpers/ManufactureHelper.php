@@ -83,7 +83,7 @@ class ManufactureHelper
             $unit = ItemUnit::where('item_id', $material_id[$i])->first();
             $raw_material->unit = $unit->name;
             $raw_material->converter = number_format_db($unit->converter);
-            $raw_material->cogs = InventoryHelper::getCostOfSales($input->formulir->created_at, $raw_material->material_id, $raw_material->warehouse_id) * $raw_material->quantity;
+            $raw_material->cogs = InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $raw_material->material_id, $raw_material->warehouse_id) * $raw_material->quantity;
             $raw_material->save();
         }
 
@@ -111,9 +111,9 @@ class ManufactureHelper
             $inventory->formulir_id = $input_approval->formulir->id;
             $inventory->item_id = $material->material_id;
             $inventory->quantity = $material->quantity * InputMaterial::unit($material->material_id);
-            $inventory->cogs = InventoryHelper::getCostOfSales($input_approval->formulir->created_at, $material->material_id, $material->warehouse_id);
+            $inventory->cogs = InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $material->material_id, $material->warehouse_id);
             $inventory->price = $inventory->cogs;
-            $inventory->form_date = $input_approval->formulir->created_at;
+            $inventory->form_date = date('Y-m-d H:i:s');
             $inventory->warehouse_id = $material->warehouse_id;
 
             $inventory_helper = new InventoryHelper($inventory);
