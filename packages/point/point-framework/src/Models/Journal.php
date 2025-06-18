@@ -183,9 +183,9 @@ class Journal extends Model
 
     public function save(array $options = [])
     {
-        if ($this->isDebitCreditHasNoValue()) {
-            return null;
-        }
+        // if ($this->isDebitCreditHasNoValue()) {
+        //     return null;
+        // }
 
         $this->correctPositionJournal();
         $this->insertSubledgerMutation($options);
