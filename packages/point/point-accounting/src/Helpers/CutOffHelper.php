@@ -296,17 +296,19 @@ class CutOffHelper
 
         if ($cut_off_payable) {
             foreach ($cut_off_payable->cutOffPayableDetail as $cut_off_payable_detail) {
-                $journal = new Journal();
-                $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
-                $journal->coa_id = $cut_off_account_detail->coa_id;
-                $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
-                $journal->debit = 0;
-                $journal->credit = $cut_off_payable_detail->amount;
-                $journal->form_journal_id = $cut_off_account->formulir_id;
-                $journal->form_reference_id;
-                $journal->subledger_id = $cut_off_payable_detail->subledger_id;
-                $journal->subledger_type = $cut_off_payable_detail->subledger_type;
-                $journal->save(['reference_type' => get_class($cut_off_payable_detail), 'reference_id' => $cut_off_payable_detail->id]);
+                if ($cut_off_account_detail->coa_id == $cut_off_payable_detail->coa_id) {
+                    $journal = new Journal();
+                    $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
+                    $journal->coa_id = $cut_off_account_detail->coa_id;
+                    $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
+                    $journal->debit = 0;
+                    $journal->credit = $cut_off_payable_detail->amount;
+                    $journal->form_journal_id = $cut_off_account->formulir_id;
+                    $journal->form_reference_id;
+                    $journal->subledger_id = $cut_off_payable_detail->subledger_id;
+                    $journal->subledger_type = $cut_off_payable_detail->subledger_type;
+                    $journal->save(['reference_type' => get_class($cut_off_payable_detail), 'reference_id' => $cut_off_payable_detail->id]);
+                }
             }
 
             if ($cut_off_payable->cutOffPayableDetail->count()) {
@@ -328,17 +330,19 @@ class CutOffHelper
 
         if ($cut_off_receivable) {
             foreach ($cut_off_receivable->cutOffReceivableDetail as $cut_off_receivable_detail) {
-                $journal = new Journal();
-                $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
-                $journal->coa_id = $cut_off_account_detail->coa_id;
-                $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
-                $journal->debit = $cut_off_receivable_detail->amount;
-                $journal->credit = 0;
-                $journal->form_journal_id = $cut_off_account->formulir_id;
-                $journal->form_reference_id;
-                $journal->subledger_id = $cut_off_receivable_detail->subledger_id;
-                $journal->subledger_type = $cut_off_receivable_detail->subledger_type;
-                $journal->save(['reference_type' => get_class($cut_off_receivable_detail), 'reference_id' => $cut_off_receivable_detail->id]);
+                if ($cut_off_account_detail->coa_id == $cut_off_payable_detail->coa_id) {
+                    $journal = new Journal();
+                    $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
+                    $journal->coa_id = $cut_off_account_detail->coa_id;
+                    $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
+                    $journal->debit = $cut_off_receivable_detail->amount;
+                    $journal->credit = 0;
+                    $journal->form_journal_id = $cut_off_account->formulir_id;
+                    $journal->form_reference_id;
+                    $journal->subledger_id = $cut_off_receivable_detail->subledger_id;
+                    $journal->subledger_type = $cut_off_receivable_detail->subledger_type;
+                    $journal->save(['reference_type' => get_class($cut_off_receivable_detail), 'reference_id' => $cut_off_receivable_detail->id]);
+                }
             }
 
             if ($cut_off_receivable->cutOffReceivableDetail->count()) {
