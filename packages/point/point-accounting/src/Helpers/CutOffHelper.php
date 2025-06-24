@@ -250,31 +250,33 @@ class CutOffHelper
         // CUTOFF INVENTORY SUBLEDGER
         foreach ($cut_off_inventory->cutOffInventoryDetail as $cut_off_inventory_detail) {
             if ($cut_off_inventory_detail->stock > 0) {
-                $position = JournalHelper::position($cut_off_inventory_detail->coa_id);
+                if ($cut_off_account_detail->coa_id == $cut_off_inventory_detail->coa_id) {
+                    $position = JournalHelper::position($cut_off_inventory_detail->coa_id);
 
-                // CUTOFF INVENTORY
-                $inventory = new Inventory;
-                $inventory->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
-                $inventory->formulir_id = $cut_off_inventory->formulir_id;
-                $inventory->warehouse_id = $cut_off_inventory_detail->warehouse_id;
-                $inventory->item_id = $cut_off_inventory_detail->subledger_id;
-                $inventory->quantity = $cut_off_inventory_detail->stock;
-                $inventory->price = $cut_off_inventory_detail->amount / $cut_off_inventory_detail->stock;
+                    // CUTOFF INVENTORY
+                    $inventory = new Inventory;
+                    $inventory->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
+                    $inventory->formulir_id = $cut_off_inventory->formulir_id;
+                    $inventory->warehouse_id = $cut_off_inventory_detail->warehouse_id;
+                    $inventory->item_id = $cut_off_inventory_detail->subledger_id;
+                    $inventory->quantity = $cut_off_inventory_detail->stock;
+                    $inventory->price = $cut_off_inventory_detail->amount / $cut_off_inventory_detail->stock;
 
-                $inventory_helper = new InventoryHelper($inventory);
-                $inventory_helper->in();
+                    $inventory_helper = new InventoryHelper($inventory);
+                    $inventory_helper->in();
 
-                // CUTOFF JOURNAL
-                $journal = new Journal();
-                $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
-                $journal->coa_id = $cut_off_account_detail->coa_id;
-                $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
-                $journal->$position = $cut_off_inventory_detail->amount;
-                $journal->form_journal_id = $cut_off_account->formulir_id;
-                $journal->form_reference_id;
-                $journal->subledger_id = $cut_off_inventory_detail->subledger_id;
-                $journal->subledger_type = $cut_off_inventory_detail->subledger_type;
-                $journal->save();
+                    // CUTOFF JOURNAL
+                    $journal = new Journal();
+                    $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
+                    $journal->coa_id = $cut_off_account_detail->coa_id;
+                    $journal->description = "Cut Off from formulir number ".$cut_off_account->formulir->form_number;
+                    $journal->$position = $cut_off_inventory_detail->amount;
+                    $journal->form_journal_id = $cut_off_account->formulir_id;
+                    $journal->form_reference_id;
+                    $journal->subledger_id = $cut_off_inventory_detail->subledger_id;
+                    $journal->subledger_type = $cut_off_inventory_detail->subledger_type;
+                    $journal->save();
+                }
             }
         }
 
@@ -330,7 +332,7 @@ class CutOffHelper
 
         if ($cut_off_receivable) {
             foreach ($cut_off_receivable->cutOffReceivableDetail as $cut_off_receivable_detail) {
-                if ($cut_off_account_detail->coa_id == $cut_off_payable_detail->coa_id) {
+                if ($cut_off_account_detail->coa_id == $cut_off_receivable_detail->coa_id) {
                     $journal = new Journal();
                     $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
                     $journal->coa_id = $cut_off_account_detail->coa_id;
