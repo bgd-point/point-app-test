@@ -153,7 +153,7 @@ class InvoiceHelper
             $journal->subledger_type = get_class($invoice_detail->item);
             $journal->save();
 
-            $dc->debit += $total_per_row;
+            $dc->debit += round($total_per_row, 4);
 
             // insert new inventory
             $item = Item::find($invoice_detail->item_id);
