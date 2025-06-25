@@ -288,16 +288,15 @@ class JournalHelper
 
     public static function checkJournalBalance($formulir_id)
     {
-        $journal = Journal::join('coa', 'coa.id', '=','journal.coa_id')
-            ->where('form_journal_id', $formulir_id)
-            ->select('coa.coa_number')
-            ->select('coa.name')
-            ->select('debit')
-            ->select('credit')
+        $journal = Journal::where('form_journal_id', $formulir_id)
             ->selectRaw('sum(debit) as debit, sum(credit) as credit, count(coa_id) as counter')
             ->first();
 
-        $journals = Journal::where('form_journal_id', $formulir_id)->get();
+        $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
+            ->where('form_journal_id', $formulir_id)
+            ->groupBy('coa.coa_number', 'coa.name')
+            ->selectRaw('coa.coa_number, coa.name, sum(debit) as debit, sum(credit) as credit, count(coa_id) as counter')
+            ->get();
 
         if ($journal->debit != $journal->credit) {
             dd($journals->toArray());
