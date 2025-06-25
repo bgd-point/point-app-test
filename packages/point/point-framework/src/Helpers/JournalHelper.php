@@ -288,14 +288,19 @@ class JournalHelper
 
     public static function checkJournalBalance($formulir_id)
     {
-        $journal = Journal::where('form_journal_id', $formulir_id)
+        $journal = Journal::join('coa', 'coa.id', '=','journal.coa_id')
+            ->where('form_journal_id', $formulir_id)
+            ->select('coa.coa_number')
+            ->select('coa.name')
+            ->select('debit')
+            ->select('credit')
             ->selectRaw('sum(debit) as debit, sum(credit) as credit, count(coa_id) as counter')
             ->first();
 
         $journals = Journal::where('form_journal_id', $formulir_id)->get();
 
         if ($journal->debit != $journal->credit) {
-            // dd($journals->toArray());
+            dd($journals->toArray());
             throw new PointException('Journal unbalance, '. $journal->debit .' = '. $journal->credit .' Please contact administrator to fix this error');
         }
         
