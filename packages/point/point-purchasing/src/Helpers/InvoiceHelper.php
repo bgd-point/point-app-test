@@ -202,8 +202,6 @@ class InvoiceHelper
             $fdebit = floor($dc->debit * $factor) / $factor;
             $fcredit = floor($dc->credit * $factor) / $factor;
             
-            dd($fdebit .'=='. $fcredit . ' / '. ((float) $fcredit - (float) $fdebit));
-
             $journal = new Journal();
             $journal->form_date = date('Y-m-d H:i:s');
             $coa_selisih = \DB::table('coa')->where('name', 'PENDAPATAN (BEBAN) SELISIH PEMBAYARAN')->first();
@@ -213,7 +211,7 @@ class InvoiceHelper
                 $journal->coa_id = 1193;
             }
             $journal->description = 'Selisih pembulatan';
-            $journal->debit = $fcredit - $fdebit;
+            $journal->debit = ((float) $fcredit - (float) $fdebit);
             $journal->credit = 0;
             $journal->form_journal_id = $invoice->formulir_id;
             $journal->form_reference_id;
