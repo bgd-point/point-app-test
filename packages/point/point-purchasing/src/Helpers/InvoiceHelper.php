@@ -198,11 +198,11 @@ class InvoiceHelper
         if($dc->debit !== $dc->credit) {
             
             $factor = pow(10, 4);
-            floor($dc->debit * $factor) / $factor;
+            
             $fdebit = floor($dc->debit * $factor) / $factor;
             $fcredit = floor($dc->credit * $factor) / $factor;
 
-            // dd($fdebit . ' = '. $fcredit. ' - ' . ((float) $fcredit - (float) $fdebit) . ((float) $fcredit - (float) $fdebit));
+            dd($fdebit . ' = '. $dc->debit. ' - ' . ((float) $fcredit - (float) $fdebit));
             
             $journal = new Journal();
             $journal->form_date = date('Y-m-d H:i:s');
@@ -220,7 +220,7 @@ class InvoiceHelper
             $journal->subledger_id;
             $journal->subledger_type;
             $journal->save();
-            dd($journal->debit . ' : ' . $journal->credit . ' != ' . ((float) $fcredit - (float) $fdebit));
+            // dd($journal->debit . ' : ' . $journal->credit . ' != ' . ((float) $fcredit - (float) $fdebit));
         }
 
         JournalHelper::checkJournalBalance($invoice->formulir_id);
