@@ -29,6 +29,6 @@ class Rejournal extends Command
      */
     public function handle()
     {
-        Artisan::call('db:seed', ['--force' => true, '--class' => 'RejournalInventoryUsageSeeder']);
+        Artisan::call('db:seed', ['--force' => true, '--class' => 'RejournalSC']);
     }
 }
