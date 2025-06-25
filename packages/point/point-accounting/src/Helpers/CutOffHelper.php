@@ -331,7 +331,9 @@ class CutOffHelper
             ->first();
 
         if ($cut_off_receivable) {
+            \Log::info('Account '.$cut_off_account_detail->coa->name);
             foreach ($cut_off_receivable->cutOffReceivableDetail as $cut_off_receivable_detail) {
+                \Log::info('Receivable' . $cut_off_receivable_detail->coa->name);
                 if ($cut_off_account_detail->coa_id == $cut_off_receivable_detail->coa_id) {
                     $journal = new Journal();
                     $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
