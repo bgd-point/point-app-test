@@ -197,7 +197,7 @@ class InvoiceHelper
         
         if($dc->debit !== $dc->credit) {
             
-            $factor = pow(10, $precision);
+            $factor = pow(10, 4);
             floor($dc->debit * $factor) / $factor;
             $fdebit = floor($dc->debit * $factor) / $factor;
             $fcredit = floor($dc->credit * $factor) / $factor;
