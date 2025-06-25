@@ -213,7 +213,7 @@ class InvoiceHelper
                 $journal->coa_id = 1193;
             }
             $journal->description = 'Selisih pembulatan';
-            $journal->debit = ((float) $fcredit - (float) $fdebit);
+            $journal->debit = JournalHelper::getDiff($invoice->formulir_id);
             $journal->credit = 0;
             $journal->form_journal_id = $invoice->formulir_id;
             $journal->form_reference_id;

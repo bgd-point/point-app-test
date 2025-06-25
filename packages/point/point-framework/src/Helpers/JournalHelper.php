@@ -313,15 +313,8 @@ class JournalHelper
             ->selectRaw('sum(debit) as debit, sum(credit) as credit, count(coa_id) as counter')
             ->first();
 
-        $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
-            ->where('form_journal_id', $formulir_id)
-            ->groupBy('coa.coa_number', 'coa.name')
-            ->selectRaw('coa.coa_number, coa.name, sum(debit) as debit, sum(credit) as credit, count(coa_id) as counter')
-            ->get();
-
         if ($journal->debit != $journal->credit) {
             return $journal->credit - $journal->debit;
         }
-        
     }
 }
