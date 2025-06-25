@@ -202,7 +202,7 @@ class InvoiceHelper
             $fdebit = floor($dc->debit * $factor) / $factor;
             $fcredit = floor($dc->credit * $factor) / $factor;
             
-            dd($fdebit .'=='. $fcredit);
+            dd($fdebit .'=='. $fcredit .' / '.$fcredit - $fdebit);
 
             $journal = new Journal();
             $journal->form_date = date('Y-m-d H:i:s');
@@ -213,7 +213,7 @@ class InvoiceHelper
                 $journal->coa_id = 1193;
             }
             $journal->description = 'Selisih pembulatan';
-            $journal->debit = $dc->credit - $dc->debit;
+            $journal->debit = $fcredit - $fdebit;
             $journal->credit = 0;
             $journal->form_journal_id = $invoice->formulir_id;
             $journal->form_reference_id;
