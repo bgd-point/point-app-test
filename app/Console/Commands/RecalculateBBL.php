@@ -64,7 +64,7 @@ class RecalculateBBL extends Command
             $totalValue = 0;
             $cogs = 0;
             foreach($list_inventory as $index => $l_inventory) {
-                $this->comment($l_inventory->formulir->id . ' = ' . $l_inventory->formulir->formulirable_type);
+                $this->comment($l_inventory->formulir->id . ' = ' . $l_inventory->formulir->formulirable_type . ' = ' . StockCorrection::class);
                 if ($l_inventory->formulir->formulirable_type == StockCorrection::class) {
                     $this->comment('update date');
                     $l_inventory->form_date = $l_inventory->formulir->form_date;
