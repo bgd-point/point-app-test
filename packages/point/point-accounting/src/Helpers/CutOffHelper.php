@@ -331,7 +331,6 @@ class CutOffHelper
             ->first();
 
         if ($cut_off_receivable) {
-            \Log::info('Account ' . $cut_off_account_detail->coa->name . ' = ' . $cut_off_account_detail->debit . ' / ' . $cut_off_account_detail->credit);
             foreach ($cut_off_receivable->cutOffReceivableDetail as $cut_off_receivable_detail) {
                 \Log::info('Receivable ' . $cut_off_receivable_detail->coa->name . ' = ' . $cut_off_receivable_detail->amount);
                 if ($cut_off_account_detail->coa_id == $cut_off_receivable_detail->coa_id) {
@@ -416,6 +415,7 @@ class CutOffHelper
 
         self::emptying($cut_off_account);
         foreach ($cut_off_account->cutOffAccountDetail as $cut_off_account_detail) {
+            \Log::info('Account ' . $cut_off_account_detail->coa->name . ' = ' . $cut_off_account_detail->debit . ' / ' . $cut_off_account_detail->credit);
             if ($cut_off_account_detail->coa->has_subledger) {
                 // insert inventory
                 if ($cut_off_account_detail->coa->subledger_type == get_class(new Item())) {
