@@ -64,6 +64,20 @@ class RecalculateBBL extends Command
             $totalValue = 0;
             $cogs = 0;
             foreach($list_inventory as $index => $l_inventory) {
+                if ($l_inventory->formulir->formulirable_type === StockCorrection::class) {
+                    $l_inventory->form_date = $l_inventory->formulir->form_date;
+                    $l_inventory->save();
+                }
+            }
+
+            $list_inventory = Inventory::with('formulir')
+                ->where('item_id', '=', $inventory->item_id)
+                ->where('warehouse_id', '=', $inventory->warehouse_id)
+                ->orderBy('form_date', 'asc')
+                ->orderBy('formulir_id', 'asc')
+                ->get();
+
+            foreach($list_inventory as $index => $l_inventory) {
                 $this->comment('total = ' . $l_inventory->total_quantity . ' ' . (float) $l_inventory->quantity);
                 if ($index == 0) {
                     $this->comment('if1');
