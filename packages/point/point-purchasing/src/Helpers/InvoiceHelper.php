@@ -196,6 +196,7 @@ class InvoiceHelper
 
         
         if($dc->debit !== $dc->credit) {
+            dd($dc->debit .'=='. $dc->credit);
             $journal = new Journal();
             $journal->form_date = date('Y-m-d H:i:s');
             $coa_selisih = \DB::table('coa')->where('name', 'PENDAPATAN (BEBAN) SELISIH PEMBAYARAN')->first();
