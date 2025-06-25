@@ -65,7 +65,7 @@ class RecalculateBBL extends Command
             $cogs = 0;
             foreach($list_inventory as $index => $l_inventory) {
                 if ($l_inventory->formulir->formulirable_type === StockCorrection::class) {
-                    \Log::info($l_inventory->formulir->id)
+                    \Log::info($l_inventory->formulir->id);
                     $l_inventory->form_date = $l_inventory->formulir->form_date;
                     $l_inventory->save();
                 }
