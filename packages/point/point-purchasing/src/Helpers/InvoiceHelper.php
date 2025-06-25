@@ -179,8 +179,8 @@ class InvoiceHelper
                 'invoice' => $invoice
             );
             $dc2 = self::journal($data);
-            $dc->debit += $dc2->debit;
-            $dc->credit += $dc2->credit;
+            $dc->debit += round($dc2->debit , 4);
+            $dc->credit += round($dc2->credit , 4);
         } elseif ($request->input('type_of_tax') == 'include') {
             $data = array(
                 'value_of_account_payable' => $total,
@@ -190,8 +190,8 @@ class InvoiceHelper
                 'invoice' => $invoice
             );
             $dc2 = self::journal($data);
-            $dc->debit += $dc2->debit;
-            $dc->credit += $dc2->credit;
+            $dc->debit += round($dc2->debit, 4);
+            $dc->credit += round($dc2->credit, 4);
         }
 
         
@@ -247,7 +247,7 @@ class InvoiceHelper
         $journal->subledger_type = get_class($data['invoice']->supplier);
         $journal->save();
         
-        $dc->credit += $data['value_of_account_payable'];
+        $dc->credit += round($data['value_of_account_payable'], 4);
 
         // 2. Journal income tax receiveable
         $income_tax_receiveable = JournalHelper::getAccount('point purchasing', 'income tax receivable');
@@ -262,7 +262,8 @@ class InvoiceHelper
         $journal->subledger_id;
         $journal->subledger_type;
         $journal->save();
-        $dc->debit += $data['value_of_income_tax_receiveable'];
+        
+        $dc->debit += round($data['value_of_income_tax_receiveable'], 4);
 
         // 3. Journal Expedition Cost
         if ($data['invoice']->expedition_fee > 0) {
@@ -279,7 +280,7 @@ class InvoiceHelper
             $journal->subledger_type;
             $journal->save();
 
-            $dc->debit += $data['value_of_expedition_cost'];
+            $dc->debit += round($data['value_of_expedition_cost'], 4);
         }
         return $dc;
     }
