@@ -295,7 +295,7 @@ class JournalHelper
         $journals = Journal::where('form_journal_id', $formulir_id)->get();
 
         if ($journal->debit != $journal->credit) {
-            dd($journals->toArray());
+            // dd($journals->toArray());
             throw new PointException('Journal unbalance, '. $journal->debit .' = '. $journal->credit .' Please contact administrator to fix this error');
         }
         
