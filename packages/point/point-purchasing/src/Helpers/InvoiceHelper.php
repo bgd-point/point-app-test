@@ -201,6 +201,8 @@ class InvoiceHelper
             floor($dc->debit * $factor) / $factor;
             $fdebit = floor($dc->debit * $factor) / $factor;
             $fcredit = floor($dc->credit * $factor) / $factor;
+
+            dd($fdebit . ' = '. $fcredit);
             
             $journal = new Journal();
             $journal->form_date = date('Y-m-d H:i:s');
