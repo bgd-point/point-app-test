@@ -220,7 +220,7 @@ class InvoiceHelper
             $journal->subledger_id;
             $journal->subledger_type;
             $journal->save();
-            dd($journal->debit . ' != ' . ((float) $fcredit - (float) $fdebit));
+            dd($journal->debit . ' : ' . $journal->credit . ' != ' . ((float) $fcredit - (float) $fdebit));
         }
 
         JournalHelper::checkJournalBalance($invoice->formulir_id);
