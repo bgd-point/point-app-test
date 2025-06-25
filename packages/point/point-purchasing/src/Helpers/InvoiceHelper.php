@@ -223,8 +223,6 @@ class InvoiceHelper
             // dd($journal->debit . ' : ' . $journal->credit . ' != ' . ((float) $fcredit - (float) $fdebit));
         }
 
-        dd('klop');
-
         JournalHelper::checkJournalBalance($invoice->formulir_id);
         return $invoice;
     }
