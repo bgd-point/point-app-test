@@ -415,7 +415,7 @@ class CutOffHelper
 
         self::emptying($cut_off_account);
         foreach ($cut_off_account->cutOffAccountDetail as $cut_off_account_detail) {
-            \Log::info('Account ' . $cut_off_account_detail->coa->name . ' = ' . $cut_off_account_detail->debit . ' / ' . $cut_off_account_detail->credit);
+            \Log::info('Account ' . $cut_off_account_detail->coa->name . ' = ' . $cut_off_account_detail->debit . ' / ' . $cut_off_account_detail->credit . ' : ' . $cut_off_account_detail->coa->subledger_type . ' : ' .  get_class(new Person()) );
             if ($cut_off_account_detail->coa->has_subledger) {
                 // insert inventory
                 if ($cut_off_account_detail->coa->subledger_type == get_class(new Item())) {
@@ -424,6 +424,7 @@ class CutOffHelper
 
                 // insert account payable and receivable
                 if ($cut_off_account_detail->coa->subledger_type == get_class(new Person())) {
+                    \Log::info('masuk');
                     self::accountPayable($cut_off_account, $cut_off_account_detail);
                     self::accountReceivable($cut_off_account, $cut_off_account_detail);
                 }
