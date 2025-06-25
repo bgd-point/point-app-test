@@ -331,7 +331,7 @@ class CutOffHelper
             ->first();
 
         if ($cut_off_receivable) {
-            \Log::info('Account '.$cut_off_account_detail->coa->name . ' = ' . cut_off_account_detail->debit . ' / ' . cut_off_account_detail->credit);
+            \Log::info('Account ' . $cut_off_account_detail->coa->name . ' = ' . $cut_off_account_detail->debit . ' / ' . $cut_off_account_detail->credit);
             foreach ($cut_off_receivable->cutOffReceivableDetail as $cut_off_receivable_detail) {
                 \Log::info('Receivable ' . $cut_off_receivable_detail->coa->name . ' = ' . $cut_off_receivable_detail->amount);
                 if ($cut_off_account_detail->coa_id == $cut_off_receivable_detail->coa_id) {
