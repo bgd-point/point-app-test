@@ -53,23 +53,23 @@ class RecalculateBBL extends Command
 
         foreach ($inventories as $inventory) {
 
-            $list_inventory = Inventory::with('formulir')
-                ->where('item_id', '=', $inventory->item_id)
-                ->where('warehouse_id', '=', $inventory->warehouse_id)
-                ->orderBy('form_date', 'asc')
-                ->orderBy('formulir_id', 'asc')
-                ->get();
+            // $list_inventory = Inventory::with('formulir')
+            //     ->where('item_id', '=', $inventory->item_id)
+            //     ->where('warehouse_id', '=', $inventory->warehouse_id)
+            //     ->orderBy('form_date', 'asc')
+            //     ->orderBy('formulir_id', 'asc')
+            //     ->get();
 
-            $totalQty = 0;
-            $totalValue = 0;
-            $cogs = 0;
-            foreach($list_inventory as $index => $l_inventory) {
-                if ($l_inventory->formulir->formulirable_type == 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
-                    $this->comment('update date');
-                    $l_inventory->form_date = $l_inventory->formulir->form_date;
-                    $l_inventory->save();
-                }
-            }
+            // $totalQty = 0;
+            // $totalValue = 0;
+            // $cogs = 0;
+            // foreach($list_inventory as $index => $l_inventory) {
+            //     if ($l_inventory->formulir->formulirable_type == 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
+            //         $this->comment('update date');
+            //         $l_inventory->form_date = $l_inventory->formulir->form_date;
+            //         $l_inventory->save();
+            //     }
+            // }
 
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
