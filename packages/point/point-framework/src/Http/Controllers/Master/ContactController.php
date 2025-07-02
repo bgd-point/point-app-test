@@ -34,7 +34,7 @@ class ContactController extends Controller
         $person_type = PersonHelper::getType($person_type_slug);
         $view = view('framework::app.master.contact.index');
         $view->person_type = $person_type;
-        $view->list_contact = Person::searchByType($person_type->id, $request->input('status'), $request->input('search'))->paginate(100);
+        $view->list_contact = Person::searchByType($person_type->id, $request->input('status'))->search($request->input('search'))->paginate(100);
 
         return $view;
     }
