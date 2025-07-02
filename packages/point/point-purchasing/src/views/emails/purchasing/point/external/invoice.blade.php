@@ -163,7 +163,6 @@
                 <td>:</td>
                 <td>{{ $invoice->supplier->name }}</td>
             </tr>
-            @endif
         </table>
 
         <table cellpadding="0" cellspacing="0">
