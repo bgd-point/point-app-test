@@ -100,7 +100,7 @@ class ReHppBBL extends Command
 
                 $l_inventory->recalculate = 0;
                 $l_inventory->cogs = $hpp;
-                $l_inventory->total_value = floor($totalValue);
+                $l_inventory->total_value = round($totalValue);
                 $l_inventory->save();
             }
         }
