@@ -90,6 +90,8 @@ class ReHppBBL extends Command
                 $hpp = $totalV / $totalQ;
             }
 
+            $this->comment('CC = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV . ', Hpp = ' . $hpp);
+
             $totalQty = 0;
             $totalValue = 0;
             foreach($list_inventory as $index => $l_inventory) {
