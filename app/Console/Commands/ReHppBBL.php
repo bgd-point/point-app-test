@@ -82,7 +82,7 @@ class ReHppBBL extends Command
             
             if ($totalQ == 0) {
                 $this->comment('warning item quantity = 0' . $inventory->item_id . ' value = ' . $totalV);
-                $hpp = $totalV / $totalQ;
+                $hpp = 0;
             } else {
                 $hpp = $totalV / $totalQ;
             }
