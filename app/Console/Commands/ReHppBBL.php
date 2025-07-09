@@ -71,17 +71,17 @@ class ReHppBBL extends Command
                 ->get();
 
             if ($totalV < 0 ||  $totalQ < 0) {
-                $this->comment('problem item hpp < 0' . $inventory->item_id);
+                $this->comment('problem hpp < 0, item = ' . $inventory->item->code);
                 continue;
             }
 
             if ($totalV == 0) {
-                $this->comment('warning item hpp = 0' . $inventory->item_id);
+                $this->comment('warning total value = 0, item = ' . $inventory->item->code . ', qty = ' . $totalQ);
                 continue;
             }
             
             if ($totalQ == 0) {
-                $this->comment('warning item quantity = 0' . $inventory->item_id . ' value = ' . $totalV);
+                $this->comment('warning quantity = 0, item = ' . $inventory->item->code . ', value = ' . $totalV);
                 $hpp = 0;
             } else {
                 $hpp = $totalV / $totalQ;
