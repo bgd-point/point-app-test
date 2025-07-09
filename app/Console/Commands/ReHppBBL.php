@@ -75,7 +75,7 @@ class ReHppBBL extends Command
                 continue;
             }
 
-            $hpp = $totalV / $totalQ
+            $hpp = $totalV / $totalQ;
 
             $totalQty = 0;
             $totalValue = 0;
