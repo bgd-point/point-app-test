@@ -96,11 +96,11 @@ class ReHppBBL extends Command
             $totalValue = 0;
             foreach($list_inventory as $index => $l_inventory) {
 
-                $value = abs($l_inventory->quantity) * $hpp;
+                $value = abs($l_inventory->quantity) * abs($hpp);
                 $totalValue = $totalValue + $value;
 
                 $l_inventory->recalculate = 0;
-                $l_inventory->cogs = $hpp;
+                $l_inventory->cogs = abs($hpp);
                 $l_inventory->total_value = $totalValue;
                 $l_inventory->save();
             }
