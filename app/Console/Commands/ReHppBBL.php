@@ -70,26 +70,24 @@ class ReHppBBL extends Command
                 ->orderBy('form_date', 'asc')
                 ->get();
 
-            if ($totalQ == 0) {
-                $this->comment('C3 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
-                $hpp = 0;
-            } else {
-                $hpp = $totalV / $totalQ;
-            }
-
             if ($totalV < 0 ||  $totalQ < 0) {
                 $this->comment('C1 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
 
                 if (round($totalV) < 0) {
                     continue;
                 }
-
-                $hpp = round($totalV) / $totalQ;
             }
 
             if ($totalV == 0) {
                 $this->comment('C2 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
                 continue;
+            }
+            
+            if ($totalQ == 0) {
+                $this->comment('C3 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
+                $hpp = 0;
+            } else {
+                $hpp = round($totalV) / $totalQ;
             }
 
             $this->comment('CC = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV . ', Hpp = ' . $hpp);
