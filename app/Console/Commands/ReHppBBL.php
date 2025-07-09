@@ -78,12 +78,12 @@ class ReHppBBL extends Command
             }
 
             if ($totalV == 0) {
-                $this->comment('C2 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
+                $this->comment('C2 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . floor($totalV));
                 continue;
             }
             
             if ($totalQ == 0) {
-                $this->comment('C3 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
+                $this->comment('C3 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . floor($totalV));
                 $hpp = 0;
             } else {
                 $hpp = round($totalV) / $totalQ;
@@ -100,7 +100,7 @@ class ReHppBBL extends Command
 
                 $l_inventory->recalculate = 0;
                 $l_inventory->cogs = $hpp;
-                $l_inventory->total_value = round($totalValue);
+                $l_inventory->total_value = round;
                 $l_inventory->save();
             }
         }
