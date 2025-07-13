@@ -72,7 +72,7 @@ class ReHppBBL extends Command
 
             if ($totalV < 0 ||  $totalQ < 0) {
                 if (round($totalV) < 0) {
-                    $this->comment('C1 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
+                    $this->comment('C1 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV .' F: '. $journal->form_journal_id);
                     continue;
                 }
             }
