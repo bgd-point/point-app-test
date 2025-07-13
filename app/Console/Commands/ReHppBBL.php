@@ -71,7 +71,7 @@ class ReHppBBL extends Command
                 ->get();
 
             if($inventory->item_id == 639) {
-                $this->comment('CS = ' . round($journal->debit, 2) - round($journal->credit, 2) . ' F: '. round($journal->debit - $journal->credit, 2));
+                $this->comment('CS = ' . round($journal->debit - $journal->credit, 2));
             }
 
             if ($totalV < 0 ||  $totalQ < 0) {
