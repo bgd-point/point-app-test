@@ -216,11 +216,11 @@
                                     @endif
                                 @endif
                                 @if(formulir_view_cancel($invoice->formulir, 'delete.point.purchasing.invoice'))
-                                    <!-- <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
+                                    <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCancelForm('{{url('formulir/cancel')}}',
                                                '{{ $invoice->formulir_id }}',
                                                'delete.point.purchasing.invoice')"><i class="fa fa-times"></i> Cancel
-                                        Form</a> -->
+                                        Form</a>
                                 @endif
                                 @if(formulir_view_email_vendor($invoice->formulir, 'create.point.purchasing.invoice'))
                                     <form action="{{url('purchasing/point/invoice/send-email')}}" method="post">
