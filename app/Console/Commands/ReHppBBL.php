@@ -91,7 +91,7 @@ class ReHppBBL extends Command
                 $this->comment('C3 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
                 $hpp = 0;
             } else {
-                $hpp = round($totalV, 2) / $totalQ;
+                $hpp = round($totalV, 4) / $totalQ;
             }
 
             // $this->comment('CC = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV . ', Hpp = ' . $hpp);
@@ -101,7 +101,7 @@ class ReHppBBL extends Command
             foreach($list_inventory as $index => $l_inventory) {
 
                 $value = $l_inventory->quantity * $hpp;
-                $totalValue = round($totalValue + $value, 2);
+                $totalValue = round($totalValue + $value, 4);
 
                 $l_inventory->recalculate = 0;
                 $l_inventory->cogs = $hpp;
