@@ -62,7 +62,7 @@ class ReHppBBL extends Command
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit, count(coa_id) as counter')
                 ->first();
 
-            $totalV = $journal->debit - $journal->credit;
+            $totalV = round($journal->debit - $journal->credit, 2);
 
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
@@ -78,15 +78,15 @@ class ReHppBBL extends Command
             }
 
             if ($totalV == 0) {
-                $this->comment('C2 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . floor($totalV));
+                $this->comment('C2 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
                 continue;
             }
             
             if ($totalQ == 0) {
-                $this->comment('C3 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . floor($totalV));
+                $this->comment('C3 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
                 $hpp = 0;
             } else {
-                $hpp = round($totalV) / $totalQ;
+                $hpp = round($totalV, 2) / $totalQ;
             }
 
             // $this->comment('CC = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV . ', Hpp = ' . $hpp);
@@ -96,7 +96,7 @@ class ReHppBBL extends Command
             foreach($list_inventory as $index => $l_inventory) {
 
                 $value = $l_inventory->quantity * $hpp;
-                $totalValue = $totalValue + $value;
+                $totalValue = round($totalValue + $value, 2);
 
                 $l_inventory->recalculate = 0;
                 $l_inventory->cogs = $hpp;

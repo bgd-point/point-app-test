@@ -177,11 +177,11 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-md-12">
-                                    <a href="{{url('manufacture/point/process-io/'. $output->input->process_id . '/output/'. $output->id.'/edit')}}"
+                                    <!-- <a href="{{url('manufacture/point/process-io/'. $output->input->process_id . '/output/'. $output->id.'/edit')}}"
                                        class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
                                     <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                        onclick="secureCancelForm('{{url('formulir/cancel')}}' , {{$output->formulir_id}}, 'delete.point.manufacture.output')"><i
-                                                class="fa fa-times"></i> Cancel</a>
+                                                class="fa fa-times"></i> Cancel</a> -->
                                 </div>
                             </div>
                         </fieldset>
