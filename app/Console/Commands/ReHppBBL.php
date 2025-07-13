@@ -70,6 +70,10 @@ class ReHppBBL extends Command
                 ->orderBy('form_date', 'asc')
                 ->get();
 
+            if($inventory->item_id == 639) {
+                $this->comment('CS = ' . $journal->debit - $journal->credit . ' F: '. round($journal->debit - $journal->credit, 2));
+            }
+
             if ($totalV < 0 ||  $totalQ < 0) {
                 if (round($totalV) < 0) {
                     $this->comment('C1 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV .' F: '. $journal->form_journal_id);
