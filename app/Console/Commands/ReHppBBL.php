@@ -70,29 +70,26 @@ class ReHppBBL extends Command
                 ->orderBy('form_date', 'asc')
                 ->get();
 
-            if($inventory->item_id == 639) {
-                $this->comment('CS = ' . $totalV);
-                $this->comment('CS = ' . $totalV);
-            }
 
             if ($totalV < 0 ||  $totalQ < 0) {
                 if (round($totalV) < 0) {
-                    $this->comment('C1 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV .' F: '. $journal->form_journal_id);
-                    continue;
+                    $hpp = 0;
+                    // $this->comment('C1 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV .' F: '. $journal->form_journal_id);
+                    // continue;
+                }
+            } else if ($totalV == 0) {
+                $hpp = 0;
+                // $this->comment('C2 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
+                // continue;
+            } else {
+                if ($totalQ == 0) {
+                    // $this->comment('C3 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
+                    $hpp = 0;
+                } else {
+                    $hpp = round($totalV, 4) / $totalQ;
                 }
             }
-
-            if ($totalV == 0) {
-                $this->comment('C2 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
-                continue;
-            }
             
-            if ($totalQ == 0) {
-                $this->comment('C3 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
-                $hpp = 0;
-            } else {
-                $hpp = round($totalV, 4) / $totalQ;
-            }
 
             // $this->comment('CC = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV . ', Hpp = ' . $hpp);
 
