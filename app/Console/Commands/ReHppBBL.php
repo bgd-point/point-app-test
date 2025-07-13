@@ -62,7 +62,7 @@ class ReHppBBL extends Command
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit, count(coa_id) as counter')
                 ->first();
 
-            $totalV = round($journal->debit - $journal->credit, 2);
+            $totalV = round($journal->debit - $journal->credit, 4);
 
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
@@ -71,7 +71,8 @@ class ReHppBBL extends Command
                 ->get();
 
             if($inventory->item_id == 639) {
-                $this->comment('CS = ' . round($journal->debit - $journal->credit, 2));
+                $this->comment('CS = ' . $totalV);
+                $this->comment('CS = ' . $totalV);
             }
 
             if ($totalV < 0 ||  $totalQ < 0) {
