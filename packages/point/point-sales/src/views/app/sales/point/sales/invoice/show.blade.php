@@ -272,7 +272,7 @@
                                     @endif
                                 @endif
 
-                                @if(request()->get('database_name') == 'p_kbretail')
+                                @if(request()->get('database_name') == 'p_kbretail' || request()->get('database_name') == 'p_test')
                                 <a href="{{url('sales/point/indirect/invoice/'.$invoice->id.'/retur')}}"
                                         class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Retur</a>
                                 @endif
