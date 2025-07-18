@@ -61,7 +61,7 @@ class RejournalIO extends Command
                 ->where('subledger_id', $item->id)
                 ->where(function ($query) {
                     $query->where('formulir.form_number', 'not like', 'INPUT/%')
-                        ->where('formulir.form_number', 'not like', 'OUTPUT/%');
+                        ->orWhere('formulir.form_number', 'not like', 'OUTPUT/%');
                 })
                 ->select('journal.*')
                 ->get();
