@@ -38,7 +38,7 @@ class RejournalIO extends Command
         \DB::beginTransaction();
 
         $this->fixCoa();
-        // $this->fixSubledger();
+        $this->fixSubledger();
 
         \DB::commit();
     }
@@ -61,9 +61,7 @@ class RejournalIO extends Command
                 ->select('journal.*')
                 ->get();
 
-            $this->comment('journals = ' . $journals->count());
             foreach($journals as $journal) {
-                $this->comment('journal_id = ' . $journal->id);
                 $journal->coa_id = 170;
                 $journal->save();
             }
@@ -73,6 +71,7 @@ class RejournalIO extends Command
     public function fixSubledger() {
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.form_number', 'like', 'INPUT/%')
+            ->select('inventory.*')
             ->get();
 
         foreach ($inventories as $inventory) {
@@ -82,6 +81,7 @@ class RejournalIO extends Command
 
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.form_number', 'like', 'OUTPUT/%')
+            ->select('inventory.*')
             ->get();
 
         foreach ($inventories as $inventory) {
