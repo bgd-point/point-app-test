@@ -37,8 +37,8 @@ class RejournalIO extends Command
         $this->comment('recalculating inventory');
         \DB::beginTransaction();
 
+        $this->fixSubledger();
         $this->fixCoa();
-        // $this->fixSubledger();
         // $this->fixOutputValue();
 
         \DB::commit();
@@ -61,7 +61,7 @@ class RejournalIO extends Command
                 ->where('subledger_id', $item->id)
                 ->where(function ($query) {
                     $query->where('formulir.form_number', 'not like', 'INPUT/%')
-                        ->orWhere('formulir.form_number', 'not like', 'OUTPUT/%');
+                        ->where('formulir.form_number', 'not like', 'OUTPUT/%');
                 })
                 ->select('journal.*')
                 ->get();
