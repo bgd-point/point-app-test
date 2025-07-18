@@ -38,9 +38,14 @@ class RejournalIO extends Command
         \DB::beginTransaction();
 
         $this->fixCoa();
-        $this->fixSubledger();
+        // $this->fixSubledger();
+        // $this->fixOutputValue();
 
         \DB::commit();
+    }
+
+    public function fixOutputValue() {
+        $journals = Journal::where('coa_id', 171)->get();
     }
 
     public function fixCoa() {
@@ -62,6 +67,7 @@ class RejournalIO extends Command
                 ->get();
 
             foreach($journals as $journal) {
+                $this->comment('journal-'.$journal->form_date.' = ' . $journal->description);
                 $journal->coa_id = 170;
                 $journal->save();
             }
