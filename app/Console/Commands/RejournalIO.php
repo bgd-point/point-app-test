@@ -60,8 +60,8 @@ class RejournalIO extends Command
                 })
                 ->get();
 
+            $this->comment('journals = ' . $journals->length());
             foreach($journals as $journal) {
-                $this->comment('journal id = ' . $journal->id);
                 $journal->coa_id = 170;
                 $journal->save();
             }
