@@ -18,7 +18,7 @@ class RejournalIO extends Command
      *
      * @var string
      */
-    protected $signature = 'dev:recalculate2';
+    protected $signature = 'dev:rejournal-io';
 
     /**
      * The console command description.
