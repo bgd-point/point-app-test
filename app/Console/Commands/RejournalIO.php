@@ -58,8 +58,10 @@ class RejournalIO extends Command
                         ->where('formulir.form_number', 'not like', 'OUTPUT/%');
                 })
                 ->get();
+            $this->comment('journals = ' . $journals->count());
 
             foreach($journals as $journal) {
+                $this->comment('journal id = ' . $journal->id);
                 $journal->coa_id = 170;
                 $journal->save();
             }
