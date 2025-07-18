@@ -153,15 +153,13 @@ class ManufactureHelper
         }
 
         // SET COGS FOR PRODUCT
-        $total_cogs_material = 0;
-        foreach ($input_process->material as $input_material) {
-            $total_cogs_material += $input_material->cogs;
-        }
         $total_product_quantity = 0;
         for ($i=0; $i < count($request->input('quantity_output')); $i++) {
             $total_product_quantity += number_format_db($request->input('quantity_output')[$i]);
         }
-        $cogs_product = $total_cogs_material / $total_product_quantity;
+
+        $total_value = Journal::where('form_journal_id', $input_process->formulir_id)->sum('debit');
+        $cogs_product = $total_value / $total_product_quantity;
         
         $i = 0;
         foreach ($input_process->product as $input_product) {
