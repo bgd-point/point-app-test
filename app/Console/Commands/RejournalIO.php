@@ -47,6 +47,7 @@ class RejournalIO extends Command
         $items = Item::where('account_asset_id', 171)->get();
 
         foreach ($items as $item) {
+            $this->comment('item-'.$item->id.' = ' . $item->code . ' ' . $item->name);
             $item->account_asset_id = 170;
             $item->save();
 
@@ -58,7 +59,6 @@ class RejournalIO extends Command
                         ->where('formulir.form_number', 'not like', 'OUTPUT/%');
                 })
                 ->get();
-            $this->comment('journals = ' . $journals->count());
 
             foreach($journals as $journal) {
                 $this->comment('journal id = ' . $journal->id);
