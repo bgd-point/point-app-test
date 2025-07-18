@@ -3,7 +3,11 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Point\Framework\Helpers\InventoryHelper;
+use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Models\Inventory;
+use Point\Framework\Models\Journal;
+use Point\PointManufacture\Helpers\ManufactureHelper;
 
 class Recalculate2 extends Command
 {
@@ -31,42 +35,86 @@ class Recalculate2 extends Command
         $this->comment('recalculating inventory');
         \DB::beginTransaction();
 
-        // get list of unique item_id in inventory
-        $inventories = Inventory::select('item_id')->distinct()->get();
+        $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+            ->where('formulir.form_number', 'like', 'INPUT/%')
+            ->get();
 
         foreach ($inventories as $inventory) {
-            $item_activity = Inventory::where('item_id', '=', $inventory->item_id)->orderBy('form_date')->get();
+            Journal::where('form_journal_id', $inventory->formulir_id)->delete();
+            $this->addJournalInput($inventory);
+        }
 
-            $total_quantity = 0;
-            $total_value = 0;
-            $cogs = 0;
+        $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+            ->where('formulir.form_number', 'like', 'OUTPUT/%')
+            ->get();
 
-            foreach ($item_activity as $l_inventory) {
-                // UPDATE TOTAL QUANTITY
-                if ($l_inventory->quantity > 0) {
-                    // STOCK IN
-                    $l_inventory->form_date = date('Y-m-d 00:00:00', strtotime($l_inventory->form_date));
-
-                    if ($total_quantity + $l_inventory->quantity > 0) {
-                        $cogs = ($total_value + $l_inventory->quantity * $l_inventory->price) / ($total_quantity + $l_inventory->quantity) ;
-                    }
-                }
-                else {
-                    // STOCK OUT
-                    $l_inventory->form_date = date('Y-m-d 23:59:59', strtotime($l_inventory->form_date));
-                }
-
-                $total_quantity += $l_inventory->quantity;
-                $total_value = $cogs * $total_quantity;
-
-                $l_inventory->recalculate = $total_quantity < 0;
-                $l_inventory->cogs = $cogs;
-                $l_inventory->total_quantity = $total_quantity;
-                $l_inventory->total_value = $total_value;
-                $l_inventory->save();
-            }
+        foreach ($inventories as $inventory) {
+            Journal::where('form_journal_id', $inventory->formulir_id)->delete();
+            $this->addJournalOutput($inventory);
         }
 
         \DB::commit();
+    }
+
+    public function addJournalInput($inventory)
+    {
+        // JOURNAL #1 of #2
+        $journal = new Journal();
+        $journal->form_date = $inventory->formulir->form_date;
+        $journal->coa_id = $inventory->item->account_asset_id;
+        $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
+        $journal->debit = 0;
+        $journal->credit = abs($inventory->quantity * $inventory->price);
+        $journal->form_journal_id = $inventory->formulir->id;
+        $journal->form_reference_id;
+        $journal->subledger_id = $inventory->item_id;
+        $journal->subledger_type = get_class($inventory->item);
+        $journal->save();
+
+        // JOURNAL #2 of #2
+        $work_in_process_account_id = JournalHelper::getAccount('manufacture process', 'work in process');
+
+        $journal = new Journal();
+        $journal->form_date = $inventory->formulir->form_date;
+        $journal->coa_id = $work_in_process_account_id;
+        $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
+        $journal->debit = abs($inventory->quantity * $inventory->price);
+        $journal->credit = 0;
+        $journal->form_journal_id = $inventory->formulir->id;
+        $journal->form_reference_id;
+        $journal->subledger_id = $inventory->item_id;
+        $journal->subledger_type = get_class($inventory->item);
+        $journal->save();
+    }
+
+    public function addJournalOutput($inventory)
+    {
+        // JOURNAL #1 of #2
+        $journal = new Journal();
+        $journal->form_date = $inventory->formulir->form_date;
+        $journal->coa_id = $inventory->item->account_asset_id;
+        $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
+        $journal->debit = abs($inventory->quantity * $inventory->price);
+        $journal->credit = 0;
+        $journal->form_journal_id = $inventory->formulir->id;
+        $journal->form_reference_id;
+        $journal->subledger_id = $inventory->item_id;
+        $journal->subledger_type = get_class($inventory->item);
+        $journal->save();
+
+        // JOURNAL #2 of #2
+        $work_in_process_account_id = JournalHelper::getAccount('manufacture process', 'work in process');
+
+        $journal = new Journal();
+        $journal->form_date = $inventory->formulir->form_date;
+        $journal->coa_id = $work_in_process_account_id;
+        $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
+        $journal->debit = 0;
+        $journal->credit = abs($inventory->quantity * $inventory->price);
+        $journal->form_journal_id = $inventory->formulir->id;
+        $journal->form_reference_id;
+        $journal->subledger_id = $inventory->item_id;
+        $journal->subledger_type = get_class($inventory->item);
+        $journal->save();
     }
 }
