@@ -189,11 +189,11 @@ class ManufactureHelper
         return $output;
     }
 
-    private static function addJournalInput($inventory)
+    public static function addJournalInput($inventory)
     {
         // JOURNAL #1 of #2
         $journal = new Journal();
-        $journal->form_date = $inventory->formulir->created_at;
+        $journal->form_date = $inventory->formulir->approval_at;
         $journal->coa_id = $inventory->item->account_asset_id;
         $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
         $journal->debit = 0;
@@ -208,19 +208,19 @@ class ManufactureHelper
         $work_in_process_account_id = JournalHelper::getAccount('manufacture process', 'work in process');
 
         $journal = new Journal();
-        $journal->form_date = $inventory->formulir->created_at;
+        $journal->form_date = $inventory->formulir->approval_at;
         $journal->coa_id = $work_in_process_account_id;
         $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
         $journal->debit = abs($inventory->quantity * $inventory->price);
         $journal->credit = 0;
         $journal->form_journal_id = $inventory->formulir->id;
         $journal->form_reference_id;
-        $journal->subledger_id;
-        $journal->subledger_type;
+        $journal->subledger_id = $inventory->item_id;
+        $journal->subledger_type = get_class($inventory->item);
         $journal->save();
     }
 
-    private static function addJournalOutput($inventory)
+    public static function addJournalOutput($inventory)
     {
         // JOURNAL #1 of #2
         $journal = new Journal();
@@ -246,8 +246,8 @@ class ManufactureHelper
         $journal->credit = abs($inventory->quantity * $inventory->price);
         $journal->form_journal_id = $inventory->formulir->id;
         $journal->form_reference_id;
-        $journal->subledger_id;
-        $journal->subledger_type;
+        $journal->subledger_id = $inventory->item_id;
+        $journal->subledger_type = get_class($inventory->item);
         $journal->save();
     }
 }
