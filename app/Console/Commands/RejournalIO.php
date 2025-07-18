@@ -58,6 +58,11 @@ class RejournalIO extends Command
                         ->where('formulir.form_number', 'not like', 'OUTPUT/%');
                 })
                 ->get();
+
+            foreach($journals as $journal) {
+                $journal->coa_id = 170;
+                $journal->save();
+            }
         }
     }
 
