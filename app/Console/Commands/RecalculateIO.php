@@ -3,13 +3,15 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
 use Point\PointManufacture\Helpers\ManufactureHelper;
+use Point\Framework\Models\Master\Item;
 
-class Recalculate2 extends Command
+class RejournalIO extends Command
 {
     /**
      * The name and signature of the console command.
@@ -35,6 +37,42 @@ class Recalculate2 extends Command
         $this->comment('recalculating inventory');
         \DB::beginTransaction();
 
+        $this->fixCoa();
+        // $this->fixSubledger();
+
+        \DB::commit();
+    }
+
+    public function fixCoa() {
+        $items = Item::where('account_asset_id', 171)->get();
+
+        foreach ($items as $item) {
+            $item->account_asset_id = 170;
+            $item->save();
+
+            $journals = Journal::join('formulir', 'formulir.id', '=', 'journal.form_journal_id')
+                ->where('subledger_type', 'Point\Framework\Models\Master\Item')
+                ->where('subledger_id', $item->id);
+                ->where('formulir.form_number', 'like', 'INPUT/%')->get();
+
+            foreach ($journals as $journal) {
+                $journal->coa_id = 170;
+                $journal->save();
+            }
+            
+            $journals = Journal::join('formulir', 'formulir.id', '=', 'journal.form_journal_id')
+                ->where('subledger_type', 'Point\Framework\Models\Master\Item')
+                ->where('subledger_id', $item->id);
+                ->where('formulir.form_number', 'like', 'OUTPUT/%')->get();
+
+            foreach ($journals as $journal) {
+                $journal->coa_id = 170;
+                $journal->save();
+            }
+        }
+    }
+
+    public function fixSubledger() {
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.form_number', 'like', 'INPUT/%')
             ->get();
@@ -52,8 +90,6 @@ class Recalculate2 extends Command
             Journal::where('form_journal_id', $inventory->formulir_id)->delete();
             $this->addJournalOutput($inventory);
         }
-
-        \DB::commit();
     }
 
     public function addJournalInput($inventory)
