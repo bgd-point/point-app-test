@@ -53,22 +53,11 @@ class RejournalIO extends Command
             $journals = Journal::join('formulir', 'formulir.id', '=', 'journal.form_journal_id')
                 ->where('subledger_type', 'Point\Framework\Models\Master\Item')
                 ->where('subledger_id', $item->id)
-                ->where('formulir.form_number', 'like', 'INPUT/%')->get();
-
-            foreach ($journals as $journal) {
-                $journal->coa_id = 170;
-                $journal->save();
-            }
-            
-            $journals = Journal::join('formulir', 'formulir.id', '=', 'journal.form_journal_id')
-                ->where('subledger_type', 'Point\Framework\Models\Master\Item')
-                ->where('subledger_id', $item->id)
-                ->where('formulir.form_number', 'like', 'OUTPUT/%')->get();
-
-            foreach ($journals as $journal) {
-                $journal->coa_id = 170;
-                $journal->save();
-            }
+                ->where(function ($query) {
+                    $query->where('formulir.form_number', 'not like', 'INPUT/%')
+                        ->where('formulir.form_number', 'not like', 'OUTPUT/%');
+                })
+                ->get();
         }
     }
 
