@@ -213,8 +213,8 @@ class ManufactureHelper
         $journal->credit = 0;
         $journal->form_journal_id = $inventory->formulir->id;
         $journal->form_reference_id;
-        $journal->subledger_id = $inventory->item_id;
-        $journal->subledger_type = get_class($inventory->item);
+        $journal->subledger_id;
+        $journal->subledger_type;
         $journal->save();
     }
 
@@ -244,8 +244,8 @@ class ManufactureHelper
         $journal->credit = abs($inventory->quantity * $inventory->price);
         $journal->form_journal_id = $inventory->formulir->id;
         $journal->form_reference_id;
-        $journal->subledger_id = $inventory->item_id;
-        $journal->subledger_type = get_class($inventory->item);
+        $journal->subledger_id;
+        $journal->subledger_type;
         $journal->save();
     }
 }
