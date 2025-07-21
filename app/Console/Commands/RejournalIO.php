@@ -79,7 +79,7 @@ class RejournalIO extends Command
             ->get();
 
         foreach ($inventories as $inventory) {
-            if ($inventory->item->id == 615) {
+            if ($inventory->item->id == 700) {
                 $this->comment($inventory->formulir->form_number . ' ' . abs($inventory->quantity * $inventory->cogs) . ' / ' . Journal::where('form_journal_id', $inventory->formulir_id)->where('subledger_id', $inventory->item->id)->count());
             }
             // Journal::where('form_journal_id', $inventory->formulir_id)->delete();
@@ -92,7 +92,7 @@ class RejournalIO extends Command
         ->get();
         
         foreach ($inventories as $inventory) {
-            if ($inventory->item->id == 615)
+            if ($inventory->item->id == 700)
             {
                 $this->comment($inventory->formulir->form_number . ' ' . abs($inventory->quantity * $inventory->cogs) . ' / ' . Journal::where('form_journal_id', $inventory->formulir_id)->where('subledger_id', $inventory->item->id)->count());
             }
