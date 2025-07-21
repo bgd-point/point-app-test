@@ -76,28 +76,23 @@ class RejournalIO extends Command
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.form_number', 'like', 'INPUT/%')
             ->select('inventory.*')
+            ->groupBy('inventory.formulir_id')
             ->get();
 
         foreach ($inventories as $inventory) {
-            if ($inventory->item->id == 700) {
-                $this->comment($inventory->formulir->form_number . ' ' . abs($inventory->quantity * $inventory->price) . ' / ' . Journal::where('form_journal_id', $inventory->formulir_id)->count());
-            }
-            // Journal::where('form_journal_id', $inventory->formulir_id)->delete();
-            // $this->addJournalInput($inventory);
+            Journal::where('form_journal_id', $inventory->formulir_id)->delete();
+            $this->addJournalInput($inventory);
         }
         
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
         ->where('formulir.form_number', 'like', 'OUTPUT/%')
         ->select('inventory.*')
+        ->groupBy('inventory.formulir_id')
         ->get();
         
         foreach ($inventories as $inventory) {
-            if ($inventory->item->id == 700)
-            {
-                $this->comment($inventory->formulir->form_number . ' ' . abs($inventory->quantity * $inventory->price) . ' / ' . Journal::where('form_journal_id', $inventory->formulir_id)->count());
-            }
-            // Journal::where('form_journal_id', $inventory->formulir_id)->delete();
-            // $this->addJournalOutput($inventory);
+            Journal::where('form_journal_id', $inventory->formulir_id)->delete();
+            $this->addJournalOutput($inventory);
         }
     }
 
