@@ -80,7 +80,7 @@ class RejournalIO extends Command
 
         foreach ($inventories as $inventory) {
             if ($inventory->item->id == 615) {
-                $this->comment($inventory->formulir->form_number . ' ' . abs($inventory->quantity * $inventory->price) . ' / ' . Journal::where('form_journal_id', $inventory->formulir_id)->where('subledger_id', $inventory->item->id)->count());
+                $this->comment($inventory->formulir->form_number . ' ' . abs($inventory->quantity * $inventory->cogs) . ' / ' . Journal::where('form_journal_id', $inventory->formulir_id)->where('subledger_id', $inventory->item->id)->count());
             }
             // Journal::where('form_journal_id', $inventory->formulir_id)->delete();
             // $this->addJournalInput($inventory);
@@ -94,7 +94,7 @@ class RejournalIO extends Command
         foreach ($inventories as $inventory) {
             if ($inventory->item->id == 615)
             {
-                $this->comment($inventory->formulir->form_number . ' ' . abs($inventory->quantity * $inventory->price) . ' / ' . Journal::where('form_journal_id', $inventory->formulir_id)->where('subledger_id', $inventory->item->id)->count());
+                $this->comment($inventory->formulir->form_number . ' ' . abs($inventory->quantity * $inventory->cogs) . ' / ' . Journal::where('form_journal_id', $inventory->formulir_id)->where('subledger_id', $inventory->item->id)->count());
             }
             // Journal::where('form_journal_id', $inventory->formulir_id)->delete();
             // $this->addJournalOutput($inventory);
