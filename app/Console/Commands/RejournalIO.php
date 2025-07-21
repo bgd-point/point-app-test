@@ -72,7 +72,7 @@ class RejournalIO extends Command
     }
 
     public function fixSubledger() {
-        $this->comment('================================================')
+        $this->comment('================================================');
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.form_number', 'like', 'INPUT/%')
             ->select('inventory.*')
