@@ -80,7 +80,7 @@ class RejournalIO extends Command
 
         foreach ($inventories as $inventory) {
             if ($inventory->item->id == 615)
-            $this->comment('item: ' . $inventory->item->account_asset_id . ' = ' . $inventory->formulir->form_number);
+            $this->comment('item: ' . $inventory . ' = ' . $inventory->formulir->form_number);
             // Journal::where('form_journal_id', $inventory->formulir_id)->delete();
             // $this->addJournalInput($inventory);
         }
@@ -92,7 +92,7 @@ class RejournalIO extends Command
 
         foreach ($inventories as $inventory) {
             if ($inventory->item->id == 615)
-            $this->comment('item: ' . $inventory->item->account_asset_id . ' = ' . $inventory->formulir->form_number);
+            $this->comment('item: ' . $inventory . ' = ' . $inventory->formulir->form_number);
             // Journal::where('form_journal_id', $inventory->formulir_id)->delete();
             // $this->addJournalOutput($inventory);
         }
