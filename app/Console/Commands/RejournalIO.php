@@ -38,7 +38,7 @@ class RejournalIO extends Command
         \DB::beginTransaction();
 
         $this->fixCoa();
-        $this->fixSubledger();
+        // $this->fixSubledger();
         // $this->fixOutputValue();
 
         \DB::commit();
@@ -59,10 +59,11 @@ class RejournalIO extends Command
             $journals = Journal::join('formulir', 'formulir.id', '=', 'journal.form_journal_id')
                 ->where('subledger_type', 'Point\Framework\Models\Master\Item')
                 ->where('subledger_id', $item->id)
-                ->where(function ($query) {
-                    $query->where('formulir.form_number', 'not like', 'INPUT/%')
-                        ->where('formulir.form_number', 'not like', 'OUTPUT/%');
-                })
+                ->where('coa_id', 171)
+                // ->where(function ($query) {
+                //     $query->where('formulir.form_number', 'not like', 'INPUT/%')
+                //         ->where('formulir.form_number', 'not like', 'OUTPUT/%');
+                // })
                 ->select('journal.*')
                 ->get();
 
