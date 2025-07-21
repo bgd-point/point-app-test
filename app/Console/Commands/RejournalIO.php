@@ -79,7 +79,7 @@ class RejournalIO extends Command
             ->get();
 
         foreach ($inventories as $inventory) {
-            $this->comment('item: ' . $inventory->item->id . ' = ' . $inventory->formulir->id)
+            $this->comment('item: ' . $inventory->item->id . ' = ' . $inventory->formulir->id);
             // Journal::where('form_journal_id', $inventory->formulir_id)->delete();
             // $this->addJournalInput($inventory);
         }
@@ -90,7 +90,7 @@ class RejournalIO extends Command
             ->get();
 
         foreach ($inventories as $inventory) {
-            $this->comment('item: ' . $inventory->item->id . ' = ' . $inventory->formulir->id)
+            $this->comment('item: ' . $inventory->item->id . ' = ' . $inventory->formulir->id);
             // Journal::where('form_journal_id', $inventory->formulir_id)->delete();
             // $this->addJournalOutput($inventory);
         }
