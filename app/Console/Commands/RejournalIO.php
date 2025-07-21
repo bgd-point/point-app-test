@@ -37,7 +37,7 @@ class RejournalIO extends Command
         $this->comment('recalculating inventory');
         \DB::beginTransaction();
 
-        // $this->fixCoa();
+        $this->fixCoa();
         $this->fixSubledger();
         // $this->fixOutputValue();
 
@@ -60,10 +60,6 @@ class RejournalIO extends Command
                 ->where('subledger_type', 'Point\Framework\Models\Master\Item')
                 ->where('subledger_id', $item->id)
                 ->where('coa_id', 171)
-                // ->where(function ($query) {
-                //     $query->where('formulir.form_number', 'not like', 'INPUT/%')
-                //         ->where('formulir.form_number', 'not like', 'OUTPUT/%');
-                // })
                 ->select('journal.*')
                 ->get();
 
@@ -76,14 +72,16 @@ class RejournalIO extends Command
     }
 
     public function fixSubledger() {
+        $this->comment('================================================')
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.form_number', 'like', 'INPUT/%')
             ->select('inventory.*')
             ->get();
 
         foreach ($inventories as $inventory) {
-            Journal::where('form_journal_id', $inventory->formulir_id)->delete();
-            $this->addJournalInput($inventory);
+            $this->comment('item: ' . $inventory->item->id . ' = ' . $inventory->formulir->id)
+            // Journal::where('form_journal_id', $inventory->formulir_id)->delete();
+            // $this->addJournalInput($inventory);
         }
 
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
@@ -92,8 +90,9 @@ class RejournalIO extends Command
             ->get();
 
         foreach ($inventories as $inventory) {
-            Journal::where('form_journal_id', $inventory->formulir_id)->delete();
-            $this->addJournalOutput($inventory);
+            $this->comment('item: ' . $inventory->item->id . ' = ' . $inventory->formulir->id)
+            // Journal::where('form_journal_id', $inventory->formulir_id)->delete();
+            // $this->addJournalOutput($inventory);
         }
     }
 
