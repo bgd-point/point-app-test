@@ -89,8 +89,11 @@ class RejournalIO extends Command
         ->select('inventory.*')
         ->groupBy('inventory.formulir_id')
         ->get();
+
+        $this->comment('SUBS = ' . $inventories->length());
         
         foreach ($inventories as $inventory) {
+            $this->comment('ABS = ' . $inventory->formulir->form_number);
             Journal::where('form_journal_id', $inventory->formulir_id)->delete();
             $this->addJournalOutput($inventory);
         }
