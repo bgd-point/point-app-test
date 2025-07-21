@@ -90,7 +90,7 @@ class RejournalIO extends Command
         ->groupBy('inventory.formulir_id')
         ->get();
 
-        $this->comment('SUBS = ' . $inventories->length());
+        $this->comment('SUBS = ' . $inventories->count());
         
         foreach ($inventories as $inventory) {
             $this->comment('ABS = ' . $inventory->formulir->form_number);
