@@ -9,6 +9,7 @@ use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
 use Point\PointManufacture\Helpers\ManufactureHelper;
+use Point\PointManufacture\Models\OutputProcess;
 use Point\Framework\Models\Master\Item;
 
 class RejournalIO extends Command
@@ -155,8 +156,10 @@ class RejournalIO extends Command
         $journal->save();
 
         // JOURNAL #2 of #2
-        $cjournals = Journal::where('form_journal_id', $inventory->formulir_id)
+        $output = OutputProcess::where('formulir_id', $inventory->formulir_id);
+        $cjournals = Journal::where('form_journal_id', $output->input->formulir_id)
             ->where('coa_id', 171)
+            ->select('journal.*')
             ->get();
         $work_in_process_account_id = JournalHelper::getAccount('manufacture process', 'work in process');
 
