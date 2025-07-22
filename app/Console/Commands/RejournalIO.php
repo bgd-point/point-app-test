@@ -156,10 +156,10 @@ class RejournalIO extends Command
 
         // JOURNAL #2 of #2
         $cjournals = Journal::where('form_journal_id', $inventory->formulir_id)
-            ->where('coa_id', 171);
+            ->where('coa_id', 171)->get();
         $work_in_process_account_id = JournalHelper::getAccount('manufacture process', 'work in process');
 
-        foreach(cjournals as cjournal) {
+        foreach (cjournals as cjournal) {
             $journal = new Journal();
             $journal->form_date = $inventory->formulir->form_date;
             $journal->coa_id = $work_in_process_account_id;
