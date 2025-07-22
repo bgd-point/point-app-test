@@ -33,12 +33,16 @@ class RejournalIO extends Command
      *
      * @return mixed
      */
+
+    protected $coaDalamProses = 10;
+    protected $coaSetengahJadi = 10;
+
     public function handle()
     {
         $this->comment('recalculating inventory');
         \DB::beginTransaction();
 
-        $this->fixCoa();
+        // $this->fixCoa();
         $this->fixSubledger();
         // $this->fixOutputValue();
 
@@ -46,27 +50,27 @@ class RejournalIO extends Command
     }
 
     public function fixOutputValue() {
-        $journals = Journal::where('coa_id', 171)->get();
+        $journals = Journal::where('coa_id', $coaDalamProses)->get();
     }
 
     public function fixCoa() {
-        $items = Item::where('account_asset_id', 171)->get();
+        $items = Item::where('account_asset_id', $coaDalamProses)->get();
 
         foreach ($items as $item) {
             $this->comment('item-'.$item->id.' = ' . $item->code . ' ' . $item->name);
-            $item->account_asset_id = 170;
+            $item->account_asset_id = coaSetengahJadi;
             $item->save();
 
             $journals = Journal::join('formulir', 'formulir.id', '=', 'journal.form_journal_id')
                 ->where('subledger_type', 'Point\Framework\Models\Master\Item')
                 ->where('subledger_id', $item->id)
-                ->where('coa_id', 171)
+                ->where('coa_id', $coaDalamProses)
                 ->select('journal.*')
                 ->get();
 
             foreach($journals as $journal) {
                 $this->comment('journal-'.$journal->form_date.' = ' . $journal->description);
-                $journal->coa_id = 170;
+                $journal->coa_id = coaSetengahJadi;
                 $journal->save();
             }
         }
@@ -151,7 +155,7 @@ class RejournalIO extends Command
         // JOURNAL #2 of #2
         $output = OutputProcess::where('formulir_id', $inventory->formulir_id)->first();
         $cjournals = Journal::where('form_journal_id', $output->input->formulir_id)
-            ->where('coa_id', 171)
+            ->where('coa_id', $coaDalamProses)
             ->select('journal.*')
             ->get();
         $work_in_process_account_id = JournalHelper::getAccount('manufacture process', 'work in process');
