@@ -156,7 +156,7 @@ class RejournalIO extends Command
         $journal->save();
 
         // JOURNAL #2 of #2
-        $output = OutputProcess::where('formulir_id', $inventory->formulir_id);
+        $output = OutputProcess::where('formulir_id', $inventory->formulir_id)->first();
         $cjournals = Journal::where('form_journal_id', $output->input->formulir_id)
             ->where('coa_id', 171)
             ->select('journal.*')
