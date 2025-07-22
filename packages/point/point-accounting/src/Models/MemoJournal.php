@@ -50,6 +50,8 @@ class MemoJournal extends Model
     public static function showUrl($id)
     {
         $memo_journal = MemoJournal::find($id);
+        \Log::info($id);
+        \Log::info($memo_journal->formulir->form_number);
         if ($memo_journal->formulir->form_number) {
             return '/accounting/point/memo-journal/'.$memo_journal->id;
         } else {
