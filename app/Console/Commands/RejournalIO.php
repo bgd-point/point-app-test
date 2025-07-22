@@ -103,8 +103,12 @@ class RejournalIO extends Command
                 ->where('formulir.id', $inventory->formulir_id)
                 ->select('inventory.*')
                 ->get();
+            $ttotal = 0;
             foreach($invs as $inv) {
-                $this->addJournalOutput($inv);
+                $ttotal += (float) $inv->quantity;
+            }
+            foreach($invs as $inv) {
+                $this->addJournalOutput($inv, $ttotal);
             }
         }
     }
@@ -140,7 +144,7 @@ class RejournalIO extends Command
         $journal->save();
     }
 
-    public function addJournalOutput($inventory)
+    public function addJournalOutput($inventory, $ttotal)
     {
         // JOURNAL #1 of #2
         $journal = new Journal();
@@ -169,7 +173,7 @@ class RejournalIO extends Command
             $journal->coa_id = $work_in_process_account_id;
             $journal->description = 'Manufacture output process ' . $inventory->item->codeName;
             $journal->debit = 0;
-            $journal->credit = abs($cjournal->debit);
+            $journal->credit = abs($cjournal->debit) * $inventory->quantity / $ttotal;
             $journal->form_journal_id = $inventory->formulir->id;
             $journal->form_reference_id;
             $journal->subledger_id = $cjournal->subledger_id;
