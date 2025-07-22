@@ -42,7 +42,7 @@ class RejournalIO extends Command
         $this->comment('recalculating inventory');
         \DB::beginTransaction();
 
-        // $this->fixCoa();
+        $this->fixCoa();
         $this->fixSubledger();
         // $this->fixOutputValue();
 
