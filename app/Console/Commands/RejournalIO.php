@@ -145,7 +145,7 @@ class RejournalIO extends Command
         $journal = new Journal();
         $journal->form_date = $inventory->formulir->form_date;
         $journal->coa_id = $inventory->item->account_asset_id;
-        $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
+        $journal->description = 'Manufacture output process ' . $inventory->item->codeName;
         $journal->debit = abs($inventory->quantity * $inventory->price);
         $journal->credit = 0;
         $journal->form_journal_id = $inventory->formulir->id;
@@ -155,18 +155,22 @@ class RejournalIO extends Command
         $journal->save();
 
         // JOURNAL #2 of #2
+        $cjournals = Journal::where('form_journal_id', $inventory->formulir_id)
+            ->where('coa_id', 171);
         $work_in_process_account_id = JournalHelper::getAccount('manufacture process', 'work in process');
 
-        $journal = new Journal();
-        $journal->form_date = $inventory->formulir->form_date;
-        $journal->coa_id = $work_in_process_account_id;
-        $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
-        $journal->debit = 0;
-        $journal->credit = abs($inventory->quantity * $inventory->price);
-        $journal->form_journal_id = $inventory->formulir->id;
-        $journal->form_reference_id;
-        $journal->subledger_id = $inventory->item_id;
-        $journal->subledger_type = get_class($inventory->item);
-        $journal->save();
+        foreach(cjournals as cjournal) {
+            $journal = new Journal();
+            $journal->form_date = $inventory->formulir->form_date;
+            $journal->coa_id = $work_in_process_account_id;
+            $journal->description = 'Manufacture output process ' . $inventory->item->codeName;
+            $journal->debit = 0;
+            $journal->credit = abs($cjournal->debit);
+            $journal->form_journal_id = $inventory->formulir->id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $cjournal->subledger_id;
+            $journal->subledger_type = get_class($inventory->item);
+            $journal->save();
+        }
     }
 }
