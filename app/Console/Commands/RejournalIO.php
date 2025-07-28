@@ -34,7 +34,7 @@ class RejournalIO extends Command
      * @return mixed
      */
 
-    public $coaDalamProses = JournalHelper::getAccount('manufacture process', 'work in process');
+    public $coaDalamProses = 0;
     public $coaSetengahJadi = 0;
 
     public function handle()
@@ -42,7 +42,7 @@ class RejournalIO extends Command
         $this->comment('recalculating inventory');
         \DB::beginTransaction();
 
-        $this->fixCoa();
+        // $this->fixCoa();
         $this->fixSubledger();
 
         \DB::commit();
@@ -146,12 +146,12 @@ class RejournalIO extends Command
     public function addJournalOutput($inventory, $ttotal)
     {
         // JOURNAL #1 of #2
+        $work_in_process_account_id = JournalHelper::getAccount('manufacture process', 'work in process');
         $output = OutputProcess::where('formulir_id', $inventory->formulir_id)->first();
         $cjournals = Journal::where('form_journal_id', $output->input->formulir_id)
-            ->where('coa_id', $this->coaDalamProses)
+            ->where('coa_id', $work_in_process_account_id)
             ->select('journal.*')
             ->get();
-        $work_in_process_account_id = JournalHelper::getAccount('manufacture process', 'work in process');
         
         $vals = 0;
         foreach ($cjournals as $cjournal) {
