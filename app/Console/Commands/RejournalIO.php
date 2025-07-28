@@ -34,8 +34,8 @@ class RejournalIO extends Command
      * @return mixed
      */
 
-    public $coaDalamProses = 171;
-    public $coaSetengahJadi = 170;
+    public $coaDalamProses = JournalHelper::getAccount('manufacture process', 'work in process');
+    public $coaSetengahJadi = 0;
 
     public function handle()
     {
