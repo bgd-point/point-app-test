@@ -44,13 +44,8 @@ class RejournalIO extends Command
 
         $this->fixCoa();
         $this->fixSubledger();
-        // $this->fixOutputValue();
 
         \DB::commit();
-    }
-
-    public function fixOutputValue() {
-        $journals = Journal::where('coa_id', $this->coaDalamProses)->get();
     }
 
     public function fixCoa() {
@@ -150,15 +145,14 @@ class RejournalIO extends Command
 
     public function addJournalOutput($inventory, $ttotal)
     {
-        
-
-        // JOURNAL #2 of #2
+        // JOURNAL #1 of #2
         $output = OutputProcess::where('formulir_id', $inventory->formulir_id)->first();
         $cjournals = Journal::where('form_journal_id', $output->input->formulir_id)
             ->where('coa_id', $this->coaDalamProses)
             ->select('journal.*')
             ->get();
         $work_in_process_account_id = JournalHelper::getAccount('manufacture process', 'work in process');
+        
         $vals = 0;
         foreach ($cjournals as $cjournal) {
             $journal = new Journal();
@@ -176,7 +170,7 @@ class RejournalIO extends Command
             $vals += $journal->credit;
         }
 
-        // JOURNAL #1 of #2
+        // JOURNAL #2 of #2
         $journal = new Journal();
         $journal->form_date = $inventory->formulir->form_date;
         $journal->coa_id = $inventory->item->account_asset_id;

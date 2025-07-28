@@ -162,6 +162,10 @@ class ManufactureHelper
         $cogs_product = $total_value / $total_product_quantity;
         
         $i = 0;
+        $totalInv = 0;
+        foreach ($input_process->product as $input_product) {
+            $totalInv += (float) $input_product->quantity;
+        }
         foreach ($input_process->product as $input_product) {
             $quantity = number_format_db($request->input('quantity_output')[$i]);
             $inventory = new Inventory();
@@ -175,7 +179,7 @@ class ManufactureHelper
             $inventory_helper = new InventoryHelper($inventory);
             $inventory_helper->in();
 
-            self::addJournalOutput($inventory);
+            self::addJournalOutput($inventory, $totalInv);
             $i++;
         }
 
@@ -213,39 +217,50 @@ class ManufactureHelper
         $journal->credit = 0;
         $journal->form_journal_id = $inventory->formulir->id;
         $journal->form_reference_id;
-        $journal->subledger_id;
-        $journal->subledger_type;
+        $journal->subledger_id = $inventory->item_id;
+        $journal->subledger_type = get_class($inventory->item);
         $journal->save();
     }
 
-    public static function addJournalOutput($inventory)
+    public static function addJournalOutput($inventory, $totalInv)
     {
+        // JOURNAL #2 of #2
+        $output = OutputProcess::where('formulir_id', $inventory->formulir_id)->first();
+        $work_in_process_account_id = JournalHelper::getAccount('manufacture process', 'work in process');
+        $cjournals = Journal::where('form_journal_id', $output->input->formulir_id)
+            ->where('coa_id', $work_in_process_account_id)
+            ->select('journal.*')
+            ->get();
+        
+        $vals = 0;
+
+        foreach ($cjournals as $cjournal) {
+            $journal = new Journal();
+            $journal->form_date = $inventory->formulir->created_at;
+            $journal->coa_id = $work_in_process_account_id;
+            $journal->description = 'Manufacture output process ' . $inventory->item->codeName;
+            $journal->debit = 0;
+            $journal->credit = abs($cjournal->debit) * $inventory->quantity / $totalInv;
+            $journal->form_journal_id = $inventory->formulir->id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $cjournal->subledger_id;
+            $journal->subledger_type = get_class($inventory->item);
+            $journal->save();
+
+            $vals += $journal->credit;
+        }
+
         // JOURNAL #1 of #2
         $journal = new Journal();
         $journal->form_date = $inventory->formulir->created_at;
         $journal->coa_id = $inventory->item->account_asset_id;
-        $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
-        $journal->debit = abs($inventory->quantity * $inventory->price);
+        $journal->description = 'Manufacture output process ' . $inventory->item->codeName;
+        $journal->debit = $vals;
         $journal->credit = 0;
         $journal->form_journal_id = $inventory->formulir->id;
         $journal->form_reference_id;
         $journal->subledger_id = $inventory->item_id;
         $journal->subledger_type = get_class($inventory->item);
-        $journal->save();
-
-        // JOURNAL #2 of #2
-        $work_in_process_account_id = JournalHelper::getAccount('manufacture process', 'work in process');
-
-        $journal = new Journal();
-        $journal->form_date = $inventory->formulir->created_at;
-        $journal->coa_id = $work_in_process_account_id;
-        $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
-        $journal->debit = 0;
-        $journal->credit = abs($inventory->quantity * $inventory->price);
-        $journal->form_journal_id = $inventory->formulir->id;
-        $journal->form_reference_id;
-        $journal->subledger_id;
-        $journal->subledger_type;
         $journal->save();
     }
 }
