@@ -35,6 +35,7 @@ class Kernel extends ConsoleKernel
         Commands\Reopname::class,
         Commands\ReHppBBL::class,
         Commands\RecalculateBBL::class,
+        Commands\RecalculateDate::class,
         // Commands\Recalculate::class,
         Commands\RejournalIO::class,
         // Commands\Reinvoice::class,
