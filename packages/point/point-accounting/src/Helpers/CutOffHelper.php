@@ -411,7 +411,7 @@ class CutOffHelper
         $cut_off_account->formulir->form_status = 1;
         $cut_off_account->formulir->save();
 
-        self::emptying($cut_off_account);
+        // self::emptying($cut_off_account);
         foreach ($cut_off_account->cutOffAccountDetail as $cut_off_account_detail) {
             \Log::info('Account ' . $cut_off_account_detail->coa->name . ' = ' . $cut_off_account_detail->debit . ' / ' . $cut_off_account_detail->credit . ' : ' . $cut_off_account_detail->coa . ' : ' .  get_class(new Person()) );
             if ($cut_off_account_detail->coa->has_subledger) {
