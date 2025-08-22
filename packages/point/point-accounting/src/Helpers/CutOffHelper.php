@@ -35,6 +35,7 @@ class CutOffHelper
     {
         $cut_off_account = CutOffAccount::joinFormulir()
             ->notArchived()
+            ->approvalApproved()
             ->open()
             ->where('form_date', 'like', date('Y-m-d', strtotime($cut_off->formulir->form_date)) . '%')
             ->orderby('formulir.id', 'desc')
@@ -42,23 +43,19 @@ class CutOffHelper
             ->first();
 
         if (! $cut_off_account) {
-            // return false;            
-            dd('cutoff failed - cut off account form date error');
+            return false;            
         }
 
         if (! self::checkInventory($cut_off_account)) {
-            // return false;
-            dd('cutoff failed - cut off inventory value error');
+            return false;
         }
 
         if (! self::checkAccountPerson($cut_off_account)) {
-            // return false;
-            dd('cutoff failed - cut off account payable / receivable value error');
+            return false;
         }
 
         if (! self::checkFixedAssets($cut_off_account)) {
-            // return false;
-           dd('cutoff failed - cut off fixed asset value error');
+            return false;
         }
 
         self::insertJournal($cut_off_account);
@@ -86,13 +83,10 @@ class CutOffHelper
     {
         foreach ($cut_off_account->cutOffAccountDetail as $cut_off_account_detail) {
             if ($cut_off_account_detail->coa->subledger_type == get_class(new Item())) {
-                \Log::info($cut_off_account->formulir->form_date . ' ' . $cut_off_account_detail->coa_id);
                 $amount = CutOffInventory::getSubledgerAmount($cut_off_account->formulir->form_date, $cut_off_account_detail->coa_id);
                 $position = JournalHelper::position($cut_off_account_detail->coa_id);
                 $cut_off_amount = $cut_off_account_detail->$position;
                 if (trim($cut_off_amount) != trim($amount)) {
-                    \Log::info(trim($cut_off_amount));
-                    \Log::info(trim($amount));
                     return false;
                 }
             }
@@ -263,7 +257,7 @@ class CutOffHelper
                     $inventory->item_id = $cut_off_inventory_detail->subledger_id;
                     $inventory->quantity = $cut_off_inventory_detail->stock;
                     $inventory->price = $cut_off_inventory_detail->amount / $cut_off_inventory_detail->stock;
-                    \Log::info($inventory->quantity);
+
                     $inventory_helper = new InventoryHelper($inventory);
                     $inventory_helper->in();
 
