@@ -263,7 +263,7 @@ class CutOffHelper
                     $inventory->item_id = $cut_off_inventory_detail->subledger_id;
                     $inventory->quantity = $cut_off_inventory_detail->stock;
                     $inventory->price = $cut_off_inventory_detail->amount / $cut_off_inventory_detail->stock;
-
+                    \Log::info($inventory->quantity);
                     $inventory_helper = new InventoryHelper($inventory);
                     $inventory_helper->in();
 
