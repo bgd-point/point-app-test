@@ -116,6 +116,7 @@ class CutOffHelper
 
     private static function emptying($cut_off_account)
     {
+        \Log::info('emptying');
         // INVENTORY
         $inventories = Inventory::where('form_date', '<=', $cut_off_account->formulir->form_date)
             ->select('inventory.*')
@@ -259,6 +260,7 @@ class CutOffHelper
                     $inventory->price = $cut_off_inventory_detail->amount / $cut_off_inventory_detail->stock;
 
                     $inventory_helper = new InventoryHelper($inventory);
+                    \Log::info('in: ' . $inventory->quantity);
                     $inventory_helper->in();
 
                     // CUTOFF JOURNAL

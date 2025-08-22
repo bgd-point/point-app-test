@@ -190,7 +190,6 @@
     
                                                 info ('price = ' . $price);
                                             }
-                                            info('========');
                                         } else {
                                             if ($item->item_id == 89) { info('here F');}
                                             $oi = \Point\Framework\Models\OpeningInventory::where('item_id', '=', $item->item_id)->first();
