@@ -35,7 +35,6 @@ class CutOffHelper
     {
         $cut_off_account = CutOffAccount::joinFormulir()
             ->notArchived()
-            ->approvalApproved()
             ->open()
             ->where('form_date', 'like', date('Y-m-d', strtotime($cut_off->formulir->form_date)) . '%')
             ->orderby('formulir.id', 'desc')
