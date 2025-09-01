@@ -19,11 +19,14 @@
                     ->first();
 
                 $item_unit = $itemUnit ? $itemUnit->name : '';
+
+                $item = Point\Framework\Models\Master\Item::find($inventory->subledger_id);
+                $warehouse = Point\Framework\Models\Master\Warehouse::find($inventory->warehouse_id);
             ?>
                 <tr>
-                    <td><strong>{{Point\Framework\Models\Master\Item::find($inventory->subledger_id)->codeName}}</strong></td>
+                    <td><strong>{{$item ? $item->codeName : ''}}</strong></td>
                     <td>
-                        {{Point\Framework\Models\Master\Warehouse::find($inventory->warehouse_id)->name}}
+                        {{ $warehouse ? $warehouse->name : ''}}
                     </td>
                     <td>
                         <div class="input-group">
