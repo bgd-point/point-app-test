@@ -24,9 +24,9 @@
                 $warehouse = Point\Framework\Models\Master\Warehouse::find($inventory->warehouse_id);
             ?>
                 <tr>
-                    <td><strong>{{$item ? $item->codeName : ''}}</strong></td>
+                    <td><strong>{{$item ? $item->codeName : $inventory->subledger_id}}</strong></td>
                     <td>
-                        {{ $warehouse ? $warehouse->name : ''}}
+                        {{ $warehouse ? $warehouse->name : $inventory->warehouse_id}}
                     </td>
                     <td>
                         <div class="input-group">
