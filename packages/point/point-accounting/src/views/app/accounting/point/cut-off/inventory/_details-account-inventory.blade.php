@@ -14,7 +14,7 @@
             <?php $i=0;?>
             @foreach($details as $inventory)
             <?php
-                $item_unit = Point\Framework\Models\Master\ItemUnit::where('item_id', $inventory->subledger_id)->where('as_default', 1)->first()->name;
+                $item_unit = optional(Point\Framework\Models\Master\ItemUnit::where('item_id', $inventory->subledger_id)->where('as_default', 1)->first())->name ?? '';
             ?>
                 <tr>
                     <td><strong>{{Point\Framework\Models\Master\Item::find($inventory->subledger_id)->codeName}}</strong></td>
