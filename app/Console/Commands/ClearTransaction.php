@@ -213,7 +213,7 @@ class ClearTransaction extends Command
     public function process($parent_class = [], $child_class = [])
     {
         $class = array_merge($parent_class, $child_class);
-
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::beginTransaction();
 
         $formulir = Formulir::whereIn('formulirable_type', $parent_class)->select('id')->get()->toArray();
@@ -224,5 +224,6 @@ class ClearTransaction extends Command
         Refer::whereIn('by_type', $class)->orWhereIn('to_type', $class)->orWhereIn('to_parent_type', $class)->delete();
 
         \DB::commit();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
