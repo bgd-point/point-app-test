@@ -87,12 +87,10 @@ class CutOffHelper
                 $position = JournalHelper::position($cut_off_account_detail->coa_id);
                 $cut_off_amount = $cut_off_account_detail->$position;
                 if (trim($cut_off_amount) != trim($amount)) {
-                    \Log::info($cut_off_account_detail->coa_id . ' = ' . trim($cut_off_amount) . ' != ' . trim($amount));
-                    // return false;
+                    return false;
                 }
             }
         }
-        dd('');
 
         return true;
     }
