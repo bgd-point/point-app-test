@@ -26,7 +26,7 @@ class ReceiveItemController extends Controller
     public function index()
     {
         access_is_allowed('create.point.inventory.transfer.item');
-        $transfer_item = TransferItem::joinDependencies();
+        $transfer_item = TransferItem::joinDependencies()->where('formulir.approval_status', 1)->where('formulir.form_status', 0);
         $view = view('point-inventory::app.inventory.point.transfer-item.received.index');
         $view->transfer_detail = TransferItemDetail::all();
         $view->transfer_item = $transfer_item->paginate(100);
