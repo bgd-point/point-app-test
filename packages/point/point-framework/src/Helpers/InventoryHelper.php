@@ -404,6 +404,8 @@ $opname = Inventory::where('item_id', '=', $item_id)
             ->orderBy('id', 'desc')
             ->first();
 
+        if ($last) { \Log::info('last: ' . $last->total_quantity); }
+        \Log::info('tq: ' .  abs($this->inventory->quantity));
         if (!$last || (float) $last->total_quantity < abs($this->inventory->quantity)) {
             throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE');
         }
