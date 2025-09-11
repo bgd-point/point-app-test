@@ -44,7 +44,7 @@ class InventoryCheck extends Command
     {
         $this->line('STARTING');
 
-        $transferItems = TransferItem::join('formulir', 'formulir.id', '=', 'point_inventory_transfer_item')
+        $transferItems = TransferItem::join('formulir', 'formulir.id', '=', 'point_inventory_transfer_item.formulir_id')
             ->where('formulir.approval_status', 1)
             ->where('formulir.form_status', 1)
             ->select('point_inventory_transfer_item.*')
