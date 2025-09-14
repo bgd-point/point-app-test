@@ -15,6 +15,7 @@
     @if(auth()->user()->may('menu.point.purchasing.service'))
     @if(request()->get('database_name') == 'p_kbretail' 
     || request()->get('database_name') == 'p_bumiananta'
+    || request()->get('database_name') == 'p_big'
     || request()->get('database_name') == 'p_bbl')
         <div class="col-md-4 col-lg-3">
             <a href="{{url('purchasing/point/service')}}" class="widget widget-button">
