@@ -223,10 +223,10 @@ class Reallocation extends Command
                 ->select('formulir.*')
                 ->delete();
             if ($allocationReport->formulir->formulirable_type == Cash::class) {
-$this->line($allocationReport->formulir->form_number, '1');
+                $this->line($allocationReport->formulir->form_number, '1');
                 $cashDetails = CashDetail::where('point_finance_cash_id', $allocationReport->formulir->formulirable_id)->with('allocation')->get();
                 foreach ($cashDetails as $detail) {
-$this->line($allocationReport->formulir->form_number, '2', $detail);
+                    $this->line($allocationReport->formulir->form_number, '2', $detail);
                     $type = $detail->reference;
                     if ($type) {
                     } else {
@@ -240,10 +240,10 @@ $this->line($allocationReport->formulir->form_number, '2', $detail);
                     $alReport->save();
                 }
             } else if ($allocationReport->formulir->formulirable_type == Bank::class) {
-$this->line($allocationReport->formulir->form_number, '3');
+                $this->line($allocationReport->formulir->form_number, '3');
                 $bankDetails = BankDetail::where('point_finance_bank_id', $allocationReport->formulir->formulirable_id)->with('allocation')->get();
                 foreach ($bankDetails as $detail) {
-$this->line($allocationReport->formulir->form_number, '4', $detail);
+                    $this->line($allocationReport->formulir->form_number, '4', $detail);
                     $type = $detail->reference;
                     if ($type) {
                     } else {
@@ -258,7 +258,7 @@ $this->line($allocationReport->formulir->form_number, '4', $detail);
                 }
             }
         }
-$this->line($allocationReport->formulir->form_number, '5');
+        $this->line($allocationReport->formulir->form_number, '5');
         $allocationReports = AllocationReport::join('allocation','allocation.id', '=', 'allocation_report.allocation_id')
             ->join('formulir', 'formulir.id', '=', 'allocation_report.formulir_id')
             ->where('allocation.name', 'like', '%(CASH FLOW)')

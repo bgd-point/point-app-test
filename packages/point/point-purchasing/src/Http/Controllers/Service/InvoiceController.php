@@ -57,7 +57,6 @@ class InvoiceController extends Controller {
         )->joinItem()->joinInvoice()->where(
             'point_purchasing_service_invoice_item.point_purchasing_service_invoice_id', '=', $id
         );
-        \Log::info($list_invoice_item);
         $list_invoice_service = InvoiceService::select('service.name as item_name',
             'point_purchasing_service_invoice_service.quantity as quantity ',
             'point_purchasing_service_invoice_service.service_notes as unit',
@@ -67,7 +66,6 @@ class InvoiceController extends Controller {
             'point_purchasing_service_invoice_service.point_purchasing_service_invoice_id', '=', $id
         );
 
-        \Log::info($list_invoice_service);
         $results = $list_invoice_item->union($list_invoice_service)->get();
 
         return response()->json($results);

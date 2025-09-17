@@ -135,7 +135,6 @@ class JournalHelper
 
     public static function categoryValue($coa_category_id, $date_from, $date_to)
     {
-        \Log::info($coa_category_id);
         // RETAINED EARNING
         if ($coa_category_id == 13) {
             $coa_from_category = Coa::where('coa_category_id', '=', 14)

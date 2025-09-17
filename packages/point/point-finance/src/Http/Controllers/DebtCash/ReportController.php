@@ -82,10 +82,6 @@ class ReportController extends Controller
             ->handedOver()
             ->sum('remaining_amount');
 
-        // \Log::info('amount ' . $view->total_cash_advance);
-        // \Log::info('used ' . $view->total_cash_advance_used);
-
-
         $view->opening_balance = $report['journal_debit'] - $report['journal_credit'];
         $view->url = url('finance/point/debt-report/export/?type=' . $type . '&subledger_id=' . $subledger . '&coa_id=' . $coa_id . '&date_from=' . $date_from . '&date_to=' . $date_to);
         $view->url_pdf = url('finance/point/debt-report/export/pdf?type=' . $type . '&subledger_id=' . $subledger . '&coa_id=' . $coa_id . '&date_from=' . $date_from . '&date_to=' . $date_to);

@@ -135,7 +135,6 @@ class CoaController extends Controller
             $coa = Coa::find($id);
             $coa->delete();
         } catch (\Exception $e) {
-            \Log::info($e->getMessage());
             return response()->json($this->errorDeleteMessage());
         }
 

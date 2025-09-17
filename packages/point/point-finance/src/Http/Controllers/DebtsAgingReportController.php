@@ -65,7 +65,6 @@ class DebtsAgingReportController extends Controller
                 }
             })
             ->get();
-        \Log::info($report);
         \Excel::create($file_name, function ($excel) use ($date,$subledger_id,$report) {
             $excel->sheet('Debts Aging Report', function ($sheet) use ($date,$subledger_id,$report) {
                 $data = array(

@@ -92,7 +92,6 @@ class AccountingHelper
 
     public static function coaOpeningBalanceAll($coa_id, $date_from)
     {
-        \Log::info("LARAVEL: " . $date_from .' === '.$coa_id);
         $journal = Journal::where('coa_id', $coa_id)
             ->where('form_date', '<', $date_from)
             ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')

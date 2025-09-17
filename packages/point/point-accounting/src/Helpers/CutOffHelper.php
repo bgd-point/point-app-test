@@ -116,7 +116,6 @@ class CutOffHelper
 
     private static function emptying($cut_off_account)
     {
-        \Log::info('emptying');
         // INVENTORY
         $inventories = Inventory::where('form_date', '<=', $cut_off_account->formulir->form_date)
             ->select('inventory.*')
@@ -260,7 +259,6 @@ class CutOffHelper
                     $inventory->price = $cut_off_inventory_detail->amount / $cut_off_inventory_detail->stock;
 
                     $inventory_helper = new InventoryHelper($inventory);
-                    \Log::info('in: ' . $inventory->quantity);
                     $inventory_helper->in();
 
                     // CUTOFF JOURNAL
@@ -330,7 +328,6 @@ class CutOffHelper
 
         if ($cut_off_receivable) {
             foreach ($cut_off_receivable->cutOffReceivableDetail as $cut_off_receivable_detail) {
-                \Log::info('Receivable ' . $cut_off_receivable_detail->coa->name . ' = ' . $cut_off_receivable_detail->amount);
                 if ($cut_off_account_detail->coa_id == $cut_off_receivable_detail->coa_id) {
                     $journal = new Journal();
                     $journal->form_date = date('Y-m-d 23:59:59', strtotime($cut_off_account->formulir->form_date));
@@ -413,7 +410,6 @@ class CutOffHelper
 
         // self::emptying($cut_off_account);
         foreach ($cut_off_account->cutOffAccountDetail as $cut_off_account_detail) {
-            \Log::info('Account ' . $cut_off_account_detail->coa->name . ' = ' . $cut_off_account_detail->debit . ' / ' . $cut_off_account_detail->credit . ' : ' . $cut_off_account_detail->coa . ' : ' .  get_class(new Person()) );
             if ($cut_off_account_detail->coa->has_subledger) {
                 // insert inventory
                 if ($cut_off_account_detail->coa->subledger_type == get_class(new Item())) {
@@ -422,7 +418,6 @@ class CutOffHelper
 
                 // insert account payable and receivable
                 if ($cut_off_account_detail->coa->subledger_type == get_class(new Person())) {
-                    \Log::info('masuk');
                     self::accountPayable($cut_off_account, $cut_off_account_detail);
                     self::accountReceivable($cut_off_account, $cut_off_account_detail);
                 }

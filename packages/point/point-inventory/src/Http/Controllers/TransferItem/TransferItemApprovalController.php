@@ -12,7 +12,6 @@ use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Traits\RequestApprovalTrait;
 use Point\PointInventory\Vesa\TransferItemVesa;
 use Point\PointInventory\Helpers\TransferItemHelper;
-use Point\PointInventory\Helpers\ReceiveItemHelper;
 use Point\PointInventory\Models\TransferItem\TransferItem;
 
 class TransferItemApprovalController extends Controller

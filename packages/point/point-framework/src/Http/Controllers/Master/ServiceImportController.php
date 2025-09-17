@@ -71,7 +71,6 @@ class ServiceImportController extends Controller
 
                     foreach ($results as $data) {
                         $service = Service::where('name', $data['name'])->first();
-                        \Log::info($service);
                         # Check if price not set
                         $price = 0;
                         if (!empty($data['price']) && is_numeric($data['price'])) {

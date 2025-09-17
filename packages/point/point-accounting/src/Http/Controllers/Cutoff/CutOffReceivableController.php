@@ -162,7 +162,6 @@ class CutOffReceivableController extends Controller
             self::restoreTempDefault($coa->id);
         }
         $view->details = TempDataHelper::getAllRowHaveKeyValue('cut.off.receivable', auth()->user()->id, 'coa_id', $coa->id);
-        \Log::info($view->details);
         return $view;
     }
 
