@@ -31,8 +31,9 @@ class Person extends Model
      */
     public function scopeSearch($q, $search)
     {
-        return $q->where('name', 'like', '%'.$search.'%')
-            ->orWhere('code', 'like', '%'.$search.'%');
+        return $q->where(function ($query) use ($search) {
+            $query->where('name', 'like', '%'.$search.'%')->orWhere('code', 'like', '%'.$search.'%');
+        });
     }
 
     /**
@@ -61,7 +62,6 @@ class Person extends Model
                 });
             });
 
-        \Log::info($response->get());
         return $response;
     }
 
