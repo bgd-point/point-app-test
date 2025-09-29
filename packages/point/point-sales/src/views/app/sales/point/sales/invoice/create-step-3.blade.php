@@ -29,7 +29,7 @@
                         <label class="col-md-3 control-label">Date</label>
 
                         <div class="col-md-3">
-                            <input type="text" name="form_date" class="form-control date input-datepicker"
+                            <input readonly type="text" name="form_date" class="form-control date input-datepicker"
                                    data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}"
                                    value="{{ date(date_format_get(), strtotime(\Carbon::now())) }}">
                         </div>
