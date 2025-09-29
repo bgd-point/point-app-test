@@ -298,7 +298,6 @@ class JournalHelper
             ->get();
 
         if ($journal->debit != $journal->credit) {
-            dd($journal->debit . ' / ' . $journal->credit);
             dd($journals->toArray());
             throw new PointException('Journal unbalance, '. $journal->debit .' = '. $journal->credit .' Please contact administrator to fix this error');
         }
