@@ -42,7 +42,7 @@ class InventoryCheck extends Command
      */
     public function handle()
     {
-        $this->line('STARTING');
+        $this->line('STARTING COMPLETE');
 
         $transferItems = TransferItem::join('formulir', 'formulir.id', '=', 'point_inventory_transfer_item.formulir_id')
             ->where('formulir.approval_status', 1)
@@ -54,6 +54,22 @@ class InventoryCheck extends Command
         foreach ($transferItems as $transferItem) {
             $inv = Inventory::where('formulir_id', '=', $transferItem->formulir_id)->sum('quantity');
             if ($inv > 0) {
+                $this->line($transferItem->formulir_id . ' - Problem TI');
+            }
+        }
+
+        $this->line('STARTING PENDING');
+
+        $transferItems = TransferItem::join('formulir', 'formulir.id', '=', 'point_inventory_transfer_item.formulir_id')
+            ->where('formulir.approval_status', 1)
+            ->where('formulir.form_status', 0)
+            ->where('formulir.form_date', '>', '2025-09-01')
+            ->select('point_inventory_transfer_item.*')
+            ->get();
+
+        foreach ($transferItems as $transferItem) {
+            $inv = Inventory::where('formulir_id', '=', $transferItem->formulir_id)->sum('quantity');
+            if ($inv == 0) {
                 $this->line($transferItem->formulir_id . ' - Problem TI');
             }
         }
