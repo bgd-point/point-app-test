@@ -30,7 +30,7 @@ class ReceiveItemHelper
             $transfer_item_detail->save();
 
             $inventory = new Inventory;
-            $inventory->form_date = $form_date;
+            $inventory->form_date = date('Y-m-d H:i:s');
             $inventory->formulir_id = $receive_item->formulir_id;
             $inventory->warehouse_id = $receive_item->warehouse_receiver_id;
             $inventory->item_id = $transfer_item_detail->item_id;

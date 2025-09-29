@@ -189,7 +189,7 @@ class PosHelper
             $inventory->item_id = $item_id[$i];
             $inventory->quantity = number_format_db($quantity[$i]);
             $inventory->price = number_format_db($price[$i]);
-            $inventory->form_date = $pos->formulir->form_date;
+            $inventory->form_date = date('Y-m-d H:i:s');
             $inventory->warehouse_id = $warehouse_id;
 
             $inventory_helper = new InventoryHelper($inventory);

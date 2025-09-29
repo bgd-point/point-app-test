@@ -170,7 +170,7 @@ class ManufactureHelper
             $quantity = number_format_db($request->input('quantity_output')[$i]);
             $inventory = new Inventory();
             $inventory->formulir_id = $formulir->id;
-            $inventory->form_date = $formulir->created_at;
+            $inventory->form_date = date('Y-m-d H:i:s');
             $inventory->warehouse_id = $input_product->warehouse_id;
             $inventory->item_id = $input_product->product_id;
             $inventory->quantity = $quantity;

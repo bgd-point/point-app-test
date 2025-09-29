@@ -300,7 +300,7 @@ class ItemImportController extends Controller
                     $inventory->item_id = $item->id;
                     $inventory->quantity = number_format_db($quantity);
                     $inventory->price = number_format_db($cost_of_sale);
-                    $inventory->form_date = $formulir->form_date;
+                    $inventory->form_date = date('Y-m-d H:i:s');
                     $inventory->warehouse_id = $warehouse->id;
 
                     $inventory_helper = new InventoryHelper($inventory);

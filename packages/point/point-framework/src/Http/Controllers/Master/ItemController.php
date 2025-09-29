@@ -253,7 +253,7 @@ class ItemController extends Controller
                 $inventory->item_id = $item->id;
                 $inventory->quantity = number_format_db($request->input('quantity')[$x]) * $item->unit()->first()->converter;
                 $inventory->price = number_format_db($request->input('cogs')[$x]) / $item->unit()->first()->converter;
-                $inventory->form_date = $form_date;
+                $inventory->form_date = date('Y-m-d H:i:s');
                 $inventory->warehouse_id = $warehouse;
 
                 $inventory_helper = new InventoryHelper($inventory);

@@ -147,7 +147,7 @@ class ServiceInvoiceHelper
             $inventory->item_id = $item->id;
             $inventory->quantity = $invoice_item->quantity * $invoice_item->converter;
             $inventory->price = $invoice_item->price / $invoice_item->converter;
-            $inventory->form_date = $formulir->form_date;
+            $inventory->form_date = date('Y-m-d H:i:s');
             $inventory->warehouse_id = UserWarehouse::getWarehouse(auth()->user()->id);
 
             $inventory_helper = new InventoryHelper($inventory);

@@ -260,7 +260,7 @@ class ServiceInvoiceHelper
                 $inventory->item_id = $data['request']->input('item_id')[$i];
                 $inventory->quantity = $quantity;
                 $inventory->price = $price;
-                $inventory->form_date = $data['formulir']->form_date;
+                $inventory->form_date = date('Y-m-d H:i:s');
                 $inventory->warehouse_id = $warehouse_id;
 
                 $inventory_helper = new InventoryHelper($inventory);
