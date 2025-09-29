@@ -26,7 +26,7 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Form Date *</label>
                     <div class="col-md-3">
-                        <input type="text" id="form_date" name="form_date" class="form-control date input-datepicker" data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}" value="{{ date(date_format_get(), strtotime(\Carbon::now())) }}">
+                        <input readonly type="text" id="form_date" name="form_date" class="form-control date" data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}" value="{{ date(date_format_get(), strtotime(\Carbon::now())) }}">
                     </div>
                     <div class="col-md-3">
                         <div class="input-group bootstrap-timepicker">
