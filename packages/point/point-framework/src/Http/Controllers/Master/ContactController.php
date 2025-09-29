@@ -34,6 +34,7 @@ class ContactController extends Controller
         $person_type = PersonHelper::getType($person_type_slug);
         $view = view('framework::app.master.contact.index');
         $view->person_type = $person_type;
+        \Log::info('person: ' . $person_type_slug . ' - ' . $person_type);
         $view->list_contact = Person::searchByType($person_type->id, $request->input('status'),$request->input('search'))->search($request->input('search'))->paginate(100);
 
         return $view;
