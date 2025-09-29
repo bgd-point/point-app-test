@@ -61,7 +61,7 @@ class Person extends Model
                 });
             });
 
-        \Log::info($response);
+        \Log::info($response->get());
         return $response;
     }
 
