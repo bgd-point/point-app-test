@@ -31,7 +31,7 @@
                         <label class="col-md-3 control-label">Form date *</label>
 
                         <div class="col-md-3">
-                            <input readonly type="text" name="form_date" class="form-control date"
+                            <input type="text" name="form_date" class="form-control date input-datepicker"
                                    data-date-format="{{\DateHelper::formatMasking()}}"
                                    placeholder="{{\DateHelper::formatMasking()}}"
                                    value="{{date(date_format_get(), strtotime(\Carbon::now()))}}">
