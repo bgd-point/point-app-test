@@ -71,8 +71,8 @@ class ReceiveItemHelper
             $journal->credit = $transfer_item_detail->cogs * $transfer_item_detail->qty_received;
             $journal->form_journal_id = $transfer_item->formulir_id;
             $journal->form_reference_id;
-            $journal->subledger_id;
-            $journal->subledger_type;
+            $journal->subledger_id = $transfer_item_detail->item_id;
+            $journal->subledger_type = get_class($transfer_item_detail->item);
             $journal->save();
         }
     }
