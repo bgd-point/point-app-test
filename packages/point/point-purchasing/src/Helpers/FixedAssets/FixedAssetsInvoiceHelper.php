@@ -108,7 +108,7 @@ class FixedAssetsInvoiceHelper
             // Journal inventory
             $total_per_row = $invoice_detail->quantity * $invoice_detail->price - $invoice_detail->quantity * $invoice_detail->price / 100 * $invoice_detail->discount;
             if ($request->input('type_of_tax') == 'include') {
-                $total_per_row = $total_per_row * 100 / 110;
+                $total_per_row = $total_per_row * 100 / 111;
             }
 
             $position = JournalHelper::position($invoice_detail->coa_id);

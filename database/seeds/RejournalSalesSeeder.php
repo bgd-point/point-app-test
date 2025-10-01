@@ -83,10 +83,10 @@ class RejournalSalesSeeder extends Seeder
             $tax_base = $subtotal - $discount;
             $tax = 0;
             if ($invoice->type_of_tax == 'include') {
-                $tax_base = $subtotal * 100 / 110;
-                $tax = $subtotal * 10 / 100;
+                $tax_base = $subtotal * 100 / 111;
+                $tax = $subtotal * 11 / 100;
             } elseif ($invoice->type_of_tax == 'exclude') {
-                $tax = $subtotal * 10 / 100;
+                $tax = $subtotal * 11 / 100;
             }
 
             $invoice->subtotal = $subtotal;
@@ -251,10 +251,10 @@ class RejournalSalesSeeder extends Seeder
             $tax_base = $subtotal - $discount;
             $tax = 0;
             if ($invoice->type_of_tax == 'include') {
-                $tax_base = $subtotal * 100 / 110;
-                $tax = $subtotal * 10 / 100;
+                $tax_base = $subtotal * 100 / 111;
+                $tax = $subtotal * 11 / 100;
             } elseif ($invoice->type_of_tax == 'exclude') {
-                $tax = $subtotal * 10 / 100;
+                $tax = $subtotal * 11 / 100;
             }
 
             $invoice->subtotal = $subtotal;

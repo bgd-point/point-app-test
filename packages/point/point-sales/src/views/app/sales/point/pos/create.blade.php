@@ -333,7 +333,7 @@
         }
 
         if($('#tax-choice-include-tax').prop('checked')) {
-            tax_base =  tax_base * 100 / 110;
+            tax_base =  tax_base * 100 / 111;
             tax =  tax_base * 0.1;
         }
 

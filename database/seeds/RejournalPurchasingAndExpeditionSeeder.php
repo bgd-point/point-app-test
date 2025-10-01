@@ -154,7 +154,7 @@ class RejournalPurchasingAndExpeditionSeeder extends Seeder
                 }
                 
                 if ($invoice->type_of_tax == 'include') {
-                    $total_per_row = $total_per_row * 100 / 110;
+                    $total_per_row = $total_per_row * 100 / 111;
                 }
 
                 \Log::info('Journal inventory invoice ');
@@ -188,10 +188,10 @@ class RejournalPurchasingAndExpeditionSeeder extends Seeder
             $tax_base = $subtotal - $discount;
             $tax = 0;
             if ($invoice->type_of_tax == 'include') {
-                $tax_base = $tax_base * 100 / 110;
-                $tax = $tax_base * 10 / 100;
+                $tax_base = $tax_base * 100 / 111;
+                $tax = $tax_base * 11 / 100;
             } elseif ($invoice->type_of_tax == 'exclude') {
-                $tax = $tax_base * 10 / 100;
+                $tax = $tax_base * 11 / 100;
             }
 
             $invoice->subtotal = $subtotal;
@@ -300,7 +300,7 @@ class RejournalPurchasingAndExpeditionSeeder extends Seeder
             foreach ($invoice->items as $invoice_detail) {
                 $total_per_row = $invoice_detail->quantity * $invoice_detail->price - $invoice_detail->quantity * $invoice_detail->price / 100 * $invoice_detail->discount;
                 if ($invoice->type_of_tax == 'include') {
-                    $total_per_row = $total_per_row * 100 / 110;
+                    $total_per_row = $total_per_row * 100 / 111;
                 }
 
                 $subtotal_item += $invoice_detail->quantity * $invoice_detail->price - $invoice_detail->quantity * $invoice_detail->price / 100 * $invoice_detail->discount;
@@ -336,11 +336,11 @@ class RejournalPurchasingAndExpeditionSeeder extends Seeder
             $tax_base = $subtotal - $discount;
             $tax = 0;
             if ($invoice->type_of_tax == 'include') {
-                $tax_base = $subtotal * 100 / 110;
-                $tax = $subtotal * 10 / 100;
-                $subtotal_service = $subtotal_service * 100 / 110;
+                $tax_base = $subtotal * 100 / 111;
+                $tax = $subtotal * 11 / 100;
+                $subtotal_service = $subtotal_service * 100 / 111;
             } elseif ($invoice->type_of_tax == 'exclude') {
-                $tax = $subtotal * 10 / 100;
+                $tax = $subtotal * 11 / 100;
             }
 
             $invoice->subtotal = $subtotal;

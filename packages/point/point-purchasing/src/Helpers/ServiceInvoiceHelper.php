@@ -125,7 +125,7 @@ class ServiceInvoiceHelper
             AllocationHelper::save($invoice->formulir_id, $invoice_item->allocation_id, $total_per_row * -1, $invoice_item->item_notes);
             
             if ($request->input('type_of_tax') == 'include') {
-                $total_per_row = $total_per_row * 100 / 110;
+                $total_per_row = $total_per_row * 100 / 111;
             }
             // Journal
             $position = JournalHelper::position($invoice_item->item->account_asset_id);
@@ -168,13 +168,13 @@ class ServiceInvoiceHelper
         $tax = 0;
 
         if ($request->input('type_of_tax') == 'include') {
-            $tax_base = $tax_base * 100 / 110;
-            $tax = $tax_base * 10 / 100;
-            $subtotal_service = $subtotal_service * 100 / 110;
+            $tax_base = $tax_base * 100 / 111;
+            $tax = $tax_base * 11 / 100;
+            $subtotal_service = $subtotal_service * 100 / 111;
         }
 
         if ($request->input('type_of_tax') == 'exclude') {
-            $tax = $tax_base * 10 / 100;
+            $tax = $tax_base * 11 / 100;
         }
 
         $total = $tax_base + $tax;

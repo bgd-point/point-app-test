@@ -131,7 +131,7 @@ class FixedAssetsPurchaseOrderHelper
         $tax = 0;
 
         if ($request->input('tax_type') == 'exclude') {
-            $tax = $tax_base * 10 / 100;
+            $tax = $tax_base * 11 / 100;
         }
         if ($request->input('tax_type') == 'include') {
             $tax_base =  $tax_base * 100 / 111;

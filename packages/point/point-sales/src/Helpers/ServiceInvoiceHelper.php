@@ -107,15 +107,15 @@ class ServiceInvoiceHelper
         $tax = 0;
 
         if ($request->input('type_of_tax') == 'include') {
-            $tax_base = $tax_base * 100 / 110;
-            $tax = $tax_base * 10 / 100;
+            $tax_base = $tax_base * 100 / 111;
+            $tax = $tax_base * 11 / 100;
 
-            $subtotal_item = $subtotal_item * 100 / 110;
-            $subtotal_service = $subtotal_service * 100 / 110;
+            $subtotal_item = $subtotal_item * 100 / 111;
+            $subtotal_service = $subtotal_service * 100 / 111;
         }
 
         if ($request->input('type_of_tax') == 'exclude') {
-            $tax = $tax_base * 10 / 100;
+            $tax = $tax_base * 11 / 100;
         }
 
         $total = $tax_base + $tax;

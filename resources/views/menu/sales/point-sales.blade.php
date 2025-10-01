@@ -32,6 +32,7 @@
         @if(request()->get('database_name') == 'p_kbretail' 
             || request()->get('database_name') == 'p_bumiananta' 
             || request()->get('database_name') == 'p_bmpratama'
+            || request()->get('database_name') == 'p_test'
             || request()->get('database_name') == 'p_big' 
             || request()->get('database_name') == 'p_bbl')
             <div class="col-md-4 col-lg-3">
