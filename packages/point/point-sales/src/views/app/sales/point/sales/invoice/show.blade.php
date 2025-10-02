@@ -272,10 +272,8 @@
                                     @endif
                                 @endif
 
-                                @if(request()->get('database_name') == 'p_kbretail' || request()->get('database_name') == 'p_test')
                                 <a href="{{url('sales/point/indirect/invoice/'.$invoice->id.'/retur')}}"
                                         class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Retur</a>
-                                @endif
 
                                 @if(formulir_view_cancel_or_request_cancel($invoice->formulir, 'delete.point.sales.invoice', 'approval.point.sales.invoice') == 1)
                                     <!-- <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger" onclick="secureCancelForm('{{url('formulir/cancel')}}', '{{ $invoice->formulir_id }}','approval.point.sales.invoice')">
