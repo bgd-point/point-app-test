@@ -27,37 +27,72 @@ class ClientMiddleware
 
             $project_url = $pieces[count($pieces) - 4];
 
-            $config = array();
-            $config['host'] = "localhost";
-            $config['database'] = "p_".$project_url;
+            if ($project_url === 'bidepo') {
+                \Config::set('database.connections.mysql.host', config('database.connections.pf.host'));
+                \Config::set('database.connections.mysql.port', config('database.connections.pf.port'));
+                \Config::set('database.connections.mysql.database', "p_".$project_url);
+                \Config::set('database.connections.mysql.username', config('database.connections.pf.username'));
+                \Config::set('database.connections.mysql.password', config('database.connections.pf.password'));
 
-            \Config::set('database.connections.mysql.host', $config['host']);
-            \Config::set('database.connections.mysql.database', $config['database']);
+                $project = \DB::connection('client')->table('project')->where('url', '=', $project_url)->first();
+                if (! $project) {
+                    throw new DomainNotFoundException();
+                }
 
-            $project = \DB::connection('client')->table('project')->where('url', '=', $project_url)->first();
-            if (! $project) {
-                throw new DomainNotFoundException();
+                $addons = \DB::connection('client')->table('addon_project')
+                    ->join('project', 'project.id', '=', 'addon_project.project_id')
+                    ->join('addon', 'addon.id', '=', 'addon_project.addon_id')
+                    ->select('addon.code')
+                    ->where('addon_project.project_id', '=', $project->id)
+                    ->get();
+                if (! $addons) {
+                    throw new PointException('Addon not found');
+                }
+
+                \Config::set('point.client.name', $project->name);
+                \Config::set('point.client.slug', $project->url);
+                \Config::set('point.client.channel', $project->url);
+                \Config::set('point.client.max_user', $project->number_of_user);
+                \Config::set('point.client.max_storage', $project->number_of_storage);
+
+                if (! $project->active) {
+                    throw new DomainNotFoundException();
+                }
+            } else {
+                $config = array();
+                $config['host'] = "localhost";
+                $config['database'] = "p_".$project_url;
+
+                \Config::set('database.connections.mysql.host', $config['host']);
+                \Config::set('database.connections.mysql.database', $config['database']);
+
+                $project = \DB::connection('client')->table('project')->where('url', '=', $project_url)->first();
+                if (! $project) {
+                    throw new DomainNotFoundException();
+                }
+
+                $addons = \DB::connection('client')->table('addon_project')
+                    ->join('project', 'project.id', '=', 'addon_project.project_id')
+                    ->join('addon', 'addon.id', '=', 'addon_project.addon_id')
+                    ->select('addon.code')
+                    ->where('addon_project.project_id', '=', $project->id)
+                    ->get();
+                if (! $addons) {
+                    throw new PointException('Addon not found');
+                }
+
+                \Config::set('point.client.name', $project->name);
+                \Config::set('point.client.slug', $project->url);
+                \Config::set('point.client.channel', $project->url);
+                \Config::set('point.client.max_user', $project->number_of_user);
+                \Config::set('point.client.max_storage', $project->number_of_storage);
+
+                if (! $project->active) {
+                    throw new DomainNotFoundException();
+                }
             }
 
-            $addons = \DB::connection('client')->table('addon_project')
-                ->join('project', 'project.id', '=', 'addon_project.project_id')
-                ->join('addon', 'addon.id', '=', 'addon_project.addon_id')
-                ->select('addon.code')
-                ->where('addon_project.project_id', '=', $project->id)
-                ->get();
-            if (! $addons) {
-                throw new PointException('Addon not found');
-            }
-
-            \Config::set('point.client.name', $project->name);
-            \Config::set('point.client.slug', $project->url);
-            \Config::set('point.client.channel', $project->url);
-            \Config::set('point.client.max_user', $project->number_of_user);
-            \Config::set('point.client.max_storage', $project->number_of_storage);
-
-            if (! $project->active) {
-                throw new DomainNotFoundException();
-            }
+            
         } else {
             $project = new stdClass();
             $project->name = 'DEVELOPMENT';

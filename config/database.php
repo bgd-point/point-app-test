@@ -88,6 +88,22 @@ return [
             'strict'    => false,
         ],
 
+        'pf' => [
+            'driver'    => 'mysql',
+            'host'      => env('DB_PF_HOST', 'localhost'),
+            'port'      => env('DB_PF_PORT', '3306'),
+            'database'  => env('DB_PF_DATABASE', 'forge'),
+            'username'  => env('DB_PF_USERNAME', 'forge'),
+            'password'  => env('DB_PF_PASSWORD', ''),
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix'    => '',
+            'strict'    => false,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('DB_PF_MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'pgsql' => [
             'driver'   => 'pgsql',
             'host'     => env('DB_HOST', 'localhost'),
