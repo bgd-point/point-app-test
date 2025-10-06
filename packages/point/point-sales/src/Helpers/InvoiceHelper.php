@@ -201,7 +201,7 @@ class InvoiceHelper
         $journal->subledger_type = get_class($data['invoice']->person);
         $journal->save();
 
-        // 2. Journal Income Tax  Payable
+        // 2. Journal Income Tax Payable
         if ($data['invoice']->tax != 0) {
             $income_tax_receivable = JournalHelper::getAccount('point sales indirect', 'income tax payable');
             $position = JournalHelper::position($income_tax_receivable);
