@@ -129,7 +129,7 @@ class InvoiceHelper
             $inventory->formulir_id = $formulir->id;
             $inventory->item_id = $item->id;
             $inventory->quantity = $invoice_detail->quantity * $invoice_detail->converter;
-            $inventory->price = $invoice_detail->price / $invoice_detail->converter;
+            $inventory->price = InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $item->id, $warehouse_id);
             $inventory->form_date = date('Y-m-d H:i:s');
             $inventory->warehouse_id = $warehouse_id;
 
