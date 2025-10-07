@@ -405,7 +405,7 @@ $opname = Inventory::where('item_id', '=', $item_id)
             ->first();
 
         if (!$last || (float) $last->total_quantity < abs($this->inventory->quantity)) {
-            // throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE');
+            throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE');
         }
 
         $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
