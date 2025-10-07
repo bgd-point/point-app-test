@@ -237,8 +237,8 @@ class ServiceInvoiceHelper
         $journal->$position = $data['value_of_service_income'];
         $journal->form_journal_id = $data['formulir']->id;
         $journal->form_reference_id;
-        $journal->subledger_id;
-        $journal->subledger_type;
+        $journal->subledger_id = $data['invoice']->person_id;
+        $journal->subledger_type = get_class($data['invoice']->person);
         $journal->save();
 
         if ($data['value_of_sale_of_goods'] > 0) {
