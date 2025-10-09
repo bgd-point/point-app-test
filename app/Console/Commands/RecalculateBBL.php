@@ -78,14 +78,14 @@ class RecalculateBBL extends Command
                 ->orderBy('formulir_id', 'asc')
                 ->get();
 
+            $prevCogs = 0;
             foreach($list_inventory as $index => $l_inventory) {
-                // $this->comment('total = ' . $l_inventory->total_quantity . ' ' . (float) $l_inventory->quantity);
                 if ($index == 0) {
-                    // $this->comment('if1');
                     $l_inventory->total_quantity = $l_inventory->quantity;
                     $totalQty = (float) $l_inventory->total_quantity;
                     $totalValue = $l_inventory->quantity * $l_inventory->price;
                     $l_inventory->recalculate = 0;
+                    
                     if ((float) $l_inventory->cogs == 0) {
                         $l_inventory->cogs = $cogs;
                     } else {
@@ -93,9 +93,12 @@ class RecalculateBBL extends Command
                     }
                     $l_inventory->total_value = $totalValue;
                     $l_inventory->save();
+                    $prevCogs = $l_inventory->cogs;
                 } else if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
-                    // $this->comment('if2');
                     $l_inventory->recalculate = 0;
+                    if ((float) $l_inventory->quantity < 0) {
+                        $l_inventory->cogs = $prevCogs;
+                    }
                     if ((float) $l_inventory->cogs == 0) {
                         $l_inventory->cogs = $cogs;
                     } else {
@@ -104,20 +107,19 @@ class RecalculateBBL extends Command
                     $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
                     $l_inventory->save();
                     $totalQty = (float) $l_inventory->total_quantity;
+                    $prevCogs = $l_inventory->cogs;
                 } else {
-                    // $this->comment('if3');
                     $l_inventory->recalculate = 0;
                     // if value 0 from output
                     if ($l_inventory->price == 0) {
                         $l_inventory->price = $cogs;
                     }
                     $l_inventory->total_quantity = (float) $totalQty + (float) $l_inventory->quantity;
-                    // $this->comment('calc = ' . $l_inventory->total_quantity . ' ' . (float) $totalQty . ' ' . (float) $l_inventory->quantity );
                     $l_inventory->total_value = $totalValue + ($l_inventory->quantity * $l_inventory->price);
+                    if ((float) $l_inventory->quantity < 0) {
+                        $l_inventory->cogs = $prevCogs;
+                    }
                     if ((float) $l_inventory->cogs == 0) {
-                        if ($l_inventory->item_id === 661) {
-                            // $this->comment($l_inventory->id . ' = ' . $l_inventory->cogs . ' = '. $cogs);
-                        }
                         $l_inventory->cogs = $cogs;
                     } else {
                         $cogs = $l_inventory->cogs;
@@ -126,6 +128,7 @@ class RecalculateBBL extends Command
                     $l_inventory->save();
                     $totalQty = (float) $l_inventory->total_quantity;
                     $totalValue = $l_inventory->total_value;
+                    $prevCogs = $l_inventory->cogs;
                 }
 
                 // value = 0, if total qty = 0
