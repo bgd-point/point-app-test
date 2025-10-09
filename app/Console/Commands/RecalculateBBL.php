@@ -98,6 +98,7 @@ class RecalculateBBL extends Command
                 } else if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
                     $l_inventory->recalculate = 0;
                     if ((float) $l_inventory->quantity < 0 || $l_inventory->formulir->formulirable_type === Retur::class) {
+                        $l_inventory->price = $prevCogs;
                         $l_inventory->cogs = $prevCogs;
                     }
                     if ((float) $l_inventory->cogs == 0) {
@@ -118,6 +119,7 @@ class RecalculateBBL extends Command
                     $l_inventory->total_quantity = (float) $totalQty + (float) $l_inventory->quantity;
                     $l_inventory->total_value = $totalValue + ($l_inventory->quantity * $l_inventory->price);
                     if ((float) $l_inventory->quantity < 0  || $l_inventory->formulir->formulirable_type === Retur::class) {
+                        $l_inventory->price = $prevCogs;
                         $l_inventory->cogs = $prevCogs;
                     }
                     if ((float) $l_inventory->cogs == 0) {
