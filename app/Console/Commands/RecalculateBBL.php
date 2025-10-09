@@ -11,6 +11,7 @@ use Point\Framework\Models\Master\Allocation;
 use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\StockOpname\StockOpnameItem;
 use Point\PointInventory\Models\TransferItem\TransferItem;
+use Point\PointSales\Models\Sales\Retur;
 
 class RecalculateBBL extends Command
 {
@@ -96,7 +97,7 @@ class RecalculateBBL extends Command
                     $prevCogs = $l_inventory->cogs;
                 } else if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
                     $l_inventory->recalculate = 0;
-                    if ((float) $l_inventory->quantity < 0) {
+                    if ((float) $l_inventory->quantity < 0 || $l_inventory->formulir->formulirable_type === Retur::class) {
                         $l_inventory->cogs = $prevCogs;
                     }
                     if ((float) $l_inventory->cogs == 0) {

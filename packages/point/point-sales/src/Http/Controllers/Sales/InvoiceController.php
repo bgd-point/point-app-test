@@ -426,7 +426,7 @@ class InvoiceController extends Controller
                 $inventory->formulir_id = $formulir->id;
                 $inventory->item_id = $retur_item->item_id;
                 $inventory->quantity = $retur_item->quantity * $retur_item->converter;
-                $inventory->price = $invoice_detail->price / $invoice_detail->converter;
+                $inventory->price = InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $retur_item->id, $warehouse_id);
                 $inventory->form_date = date('Y-m-d H:i:s');
                 $inventory->warehouse_id = $warehouse_id;
 
