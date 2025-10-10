@@ -134,9 +134,7 @@ class RecalculateBBL extends Command
                     $prevCogs = $l_inventory->cogs;
                 }
 
-                // value = 0, if total qty = 0
                 if ((float) $l_inventory->total_quantity <= 0) {
-                    // $this->comment('if4');
                     $l_inventory->total_value = 0;
 
                     if ((float) $l_inventory->total_quantity < 0) {
