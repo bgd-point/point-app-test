@@ -122,6 +122,7 @@ class RecalculateBBL extends Command
                         $l_inventory->price = $prevCogs;
                         $l_inventory->cogs = $prevCogs;
                     }
+                    $l_inventory->cogs = $l_inventory->quantity * $l_inventory->price;
                     if ((float) $l_inventory->cogs == 0) {
                         $l_inventory->cogs = $cogs;
                     } else {
