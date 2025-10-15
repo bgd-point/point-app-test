@@ -4,13 +4,8 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Point\Framework\Helpers\InventoryHelper;
-use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
-use Point\Framework\Models\Master\Allocation;
 use Point\PointInventory\Models\StockOpname\StockOpname;
-use Point\PointInventory\Models\StockOpname\StockOpnameItem;
-use Point\PointInventory\Models\TransferItem\TransferItem;
 use Point\PointSales\Models\Sales\Retur;
 
 class RecalculateTest extends Command
@@ -27,7 +22,7 @@ class RecalculateTest extends Command
      *
      * @var string
      */
-    protected $description = 'recalculate inventory';
+    protected $description = 'recalculate inventory using moving average cost (MAC) method';
 
     /**
      * Execute the console command.
@@ -36,102 +31,125 @@ class RecalculateTest extends Command
      */
     public function handle()
     {
-        $this->comment('recalculating inventory');
+        $this->comment('Starting inventory recalculation using MAC...');
 
         \DB::beginTransaction();
 
-        // Get all items
-        // Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
-        //     ->where('inventory.quantity', 0)
-        //     ->where('formulir.formulirable_type', '!=', 'Point\PointInventory\Models\StockOpname\StockOpname')
-        //     ->where('inventory.item_id', 102)
-        //     ->where('inventory.warehouse_id', 1)
-        //     ->where('inventory.form_date', '>=','2025-08-01')
-        //     ->where('inventory.form_date', '<','2025-09-01')
-        //     ->delete();
+        try {
+            // Retrieve inventory records, ordered chronologically
+            $list_inventory = Inventory::with('formulir')
+                ->where('inventory.item_id', 102)
+                ->where('inventory.warehouse_id', 1)
+                ->where('inventory.form_date', '>=', '2025-08-01')
+                ->where('inventory.form_date', '<', '2025-09-01')
+                ->orderBy('form_date', 'asc')
+                ->orderBy('formulir_id', 'asc')
+                ->get();
 
-        $list_inventory = Inventory::with('formulir')
-            ->where('inventory.item_id', 102)
-            ->where('inventory.warehouse_id', 1)
-            ->where('inventory.form_date', '>=','2025-08-01')
-            ->where('inventory.form_date', '<','2025-09-01')
-            ->orderBy('form_date', 'asc')
-            ->orderBy('formulir_id', 'asc')
-            ->get();
+            // Initialize tracking variables
+            $currentTotalQuantity = 0; // The rolling total quantity in stock
+            $currentTotalValue = 0;    // The rolling total value (cost) of stock
+            $currentCogs = 0;          // The calculated Moving Average Cost
 
-        $prevCogs = 0;
-        $prevTotal = 0;
-        foreach($list_inventory as $index => $l_inventory) {
-            if ($index == 0) {
-                $l_inventory->total_quantity = $l_inventory->quantity;
-                $totalQty = (float) $l_inventory->total_quantity;
-                $totalValue = $l_inventory->quantity * $l_inventory->price;
-                $l_inventory->recalculate = 0;
+            // Loop through all inventory records
+            foreach ($list_inventory as $l_inventory) {
+                $quantity = (float) $l_inventory->quantity;
+                $price = (float) $l_inventory->price;
+                $isStockOpname = $l_inventory->formulir->formulirable_type === StockOpname::class;
+                $isOutput = $quantity < 0 || $l_inventory->formulir->formulirable_type === Retur::class;
+
+                // --- 1. Calculate New Total Quantity ---
+                // Total quantity is always the previous total plus the current transaction's quantity
+                $newTotalQuantity = $currentTotalQuantity + $quantity;
+
+                if ($isOutput) {
+                    // --- 2. Handle Output/Negative Quantities (Sales, Returns Out, etc.) ---
+                    // For outputs, the cost is the current Moving Average Cost (MAC)
+                    $l_inventory->price = $currentCogs;
+                    $l_inventory->cogs = $currentCogs; // COGS for the transaction
+                    
+                    // The value of the transaction is Quantity * Current MAC
+                    $transactionValue = $quantity * $currentCogs;
+
+                    // New Total Value is Previous Total Value + Transaction Value (since quantity is negative, this subtracts)
+                    $newTotalValue = $currentTotalValue + $transactionValue;
+                    
+                    // The MAC doesn't change for output transactions unless the remaining stock is zero/negative
+                    $newCogs = $currentCogs;
+
+                } elseif ($isStockOpname) {
+                    // --- 3. Handle Stock Opname (SO) ---
+                    // SO represents the physical count. It resets the stock state.
+                    // Assuming SO is recorded as a single IN entry reflecting the count difference.
+
+                    // If it's an SO, we take the price recorded on the SO. If zero, use current MAC.
+                    $l_inventory->price = $price ?: $currentCogs; 
+                    
+                    // Value of the SO transaction
+                    $transactionValue = $quantity * $l_inventory->price;
+                    
+                    // New Total Value = Previous Total Value + Transaction Value
+                    $newTotalValue = $currentTotalValue + $transactionValue;
+
+                    // Recalculate MAC after the SO adjustment if the new total quantity is positive
+                    $newCogs = $newTotalQuantity > 0 ? $newTotalValue / $newTotalQuantity : 0;
+                    $l_inventory->cogs = $newCogs;
+
+                } else {
+                    // --- 4. Handle Input/Positive Quantities (Purchases, Returns In, etc.) ---
+                    
+                    // For inputs, the transaction value is Quantity * Price (from the record)
+                    $transactionValue = $quantity * $price;
+                    
+                    // New Total Value is Previous Total Value + Transaction Value
+                    $newTotalValue = $currentTotalValue + $transactionValue;
+
+                    // Recalculate MAC: (Total Value after transaction) / (Total Quantity after transaction)
+                    $newCogs = $newTotalQuantity > 0 ? $newTotalValue / $newTotalQuantity : 0;
+                    $l_inventory->cogs = $newCogs;
+                    
+                    // If the original price was 0, it should be updated to the new MAC for consistency.
+                    if ($price == 0) {
+                        $l_inventory->price = $newCogs;
+                    }
+                }
+
+                // --- 5. Finalizing and Saving the Inventory Record ---
                 
-                if ((float) $l_inventory->cogs == 0) {
-                    $l_inventory->cogs = $cogs;
-                } else {
-                    $cogs = $l_inventory->cogs;
+                // Ensure total value is 0 if total quantity is 0 or less
+                if ($newTotalQuantity <= 0) {
+                    $newTotalValue = 0;
+                    $newCogs = 0;
                 }
-                $l_inventory->total_value = $totalValue;
-                // $l_inventory->save();
-                $prevCogs = $l_inventory->cogs;
-                $prevTotal = $l_inventory->total_value;
-            } else if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
-                $l_inventory->recalculate = 0;
-                if ((float) $l_inventory->quantity < 0 || $l_inventory->formulir->formulirable_type === Retur::class) {
-                    $l_inventory->price = $prevCogs;
-                    $l_inventory->cogs = $prevCogs;
-                }
-                if ((float) $l_inventory->cogs == 0) {
-                    $l_inventory->cogs = $cogs;
-                } else {
-                    $cogs = $l_inventory->cogs;
-                }
-                $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
-                // $l_inventory->save();
-                $totalQty = (float) $l_inventory->total_quantity;
-                $prevCogs = $l_inventory->cogs;
-                $prevTotal = $l_inventory->total_value;
-            } else {
-                $l_inventory->recalculate = 0;
-                // if value 0 from output
-                if ($l_inventory->price == 0) {
-                    $l_inventory->price = $cogs;
-                }
-                $l_inventory->total_quantity = (float) $totalQty + (float) $l_inventory->quantity;
-                $l_inventory->total_value = $totalValue + ($l_inventory->quantity * $l_inventory->price);
-                if ((float) $l_inventory->quantity < 0  || $l_inventory->formulir->formulirable_type === Retur::class) {
-                    $l_inventory->price = $prevCogs;
-                    $l_inventory->cogs = $prevCogs;
-                }
-                if ((float) $l_inventory->cogs == 0) {
-                    $l_inventory->cogs = $cogs;
-                } else {
-                    $cogs = $l_inventory->cogs;
-                }
-                $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
-                // $l_inventory->save();
-                $l_inventory->cogs = ($prevTotal + ($l_inventory->quantity * $l_inventory->price)) / $l_inventory->total_quantity;
-                $this->comment($l_inventory->form_date . ' = ' . $l_inventory->cogs);
 
-                $totalQty = (float) $l_inventory->total_quantity;
-                $totalValue = $l_inventory->total_value;
-                $prevCogs = $l_inventory->cogs;
-                $prevTotal = $l_inventory->total_value;
+                $l_inventory->total_quantity = $newTotalQuantity;
+                $l_inventory->total_value = $newTotalValue;
+                $l_inventory->recalculate = 0; // Set to 0 after recalculation
+
+                // Save the changes to the database record
+                $l_inventory->save();
+
+                // Update tracking variables for the next iteration
+                $currentTotalQuantity = $newTotalQuantity;
+                $currentTotalValue = $newTotalValue;
+                $currentCogs = $newCogs;
+
+                $this->comment(
+                    $l_inventory->form_date 
+                    . ' | Qty: ' . $quantity 
+                    . ' | Price: ' . number_format($l_inventory->price, 4)
+                    . ' | New Total Qty: ' . $currentTotalQuantity
+                    . ' | New Total Val: ' . number_format($currentTotalValue, 2) 
+                    . ' | New COGS: ' . number_format($currentCogs, 4)
+                );
             }
 
-            if ((float) $l_inventory->total_quantity <= 0) {
-                $l_inventory->total_value = 0;
+            // \DB::commit();
+            $this->info('Inventory recalculation complete!');
 
-                if ((float) $l_inventory->total_quantity < 0) {
-                    $l_inventory->recalculate = 1;
-                }
-
-                // $l_inventory->save();
-            }
+        } catch (\Exception $e) {
+            \DB::rollback();
+            $this->error('An error occurred during recalculation: ' . $e->getMessage());
         }
-
-        \DB::commit();
     }
 }
