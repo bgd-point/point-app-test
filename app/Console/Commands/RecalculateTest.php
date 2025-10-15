@@ -56,9 +56,7 @@ class RecalculateTest extends Command
 
         \DB::beginTransaction();
 
-        $inventories = Inventory::where('inventory.item_id', 721)
-            ->where('inventory.warehouse_id', 81)
-            ->orderBy('form_date', 'asc')
+        $inventories = Inventory::orderBy('form_date', 'asc')
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'].$inventory['warehouse_id'];
@@ -77,10 +75,11 @@ class RecalculateTest extends Command
             $prevTotalQty = 0;
             $prevTotalValue = 0;
 
+            $this->comment($inventory->item_id . ' : ' . $inventory->warehouse_id);
+
             foreach($list_inventory as $index => $l_inventory) {
                 $l_inventory->recalculate = 0;
 
-                $this->comment($l_inventory->item_id . ' : ' . $l_inventory->warehouse_id);
     
                 // Handle the very first transaction to establish the baseline
                 if ($index == 0) {
@@ -90,7 +89,6 @@ class RecalculateTest extends Command
                     if ((float) $l_inventory->total_quantity == 0) {
                         $l_inventory->cogs = 0;
                     } else {
-                        $this->comment($l_inventory->item_id . ' : ' . $l_inventory->warehouse_id . ' = ' . $l_inventory->total_quantity);
                         $l_inventory->cogs = (float) $l_inventory->total_value / (float) $l_inventory->total_quantity;
                     }
     
