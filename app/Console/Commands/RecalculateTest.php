@@ -64,8 +64,13 @@ class RecalculateTest extends Command
                 }
 
                 $l_inventory->total_quantity = (float) $l_inventory->quantity + $prevTotalQty;
-                $l_inventory->total_value = (float) $l_inventory->quantity * (float) $l_inventory->price + $prevTotalValue;
-                $l_inventory->cogs = (float) $l_inventory->total_value / (float) $l_inventory->total_quantity;
+                if ($l_inventory->total_quantity > 0) {
+                    $l_inventory->total_value = (float) $l_inventory->quantity * (float) $l_inventory->price + $prevTotalValue;
+                    $l_inventory->cogs = (float) $l_inventory->total_value / (float) $l_inventory->total_quantity;
+                } else {
+                    $l_inventory->total_value = 0;
+                    $l_inventory->cogs = 0;
+                }
             }
 
             $prevCogs = (float) $l_inventory->cogs;
