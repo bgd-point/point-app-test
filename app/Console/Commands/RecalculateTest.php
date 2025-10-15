@@ -83,7 +83,11 @@ class RecalculateTest extends Command
                     $l_inventory->total_quantity = (float) $l_inventory->quantity;
                     $l_inventory->total_value = (float) $l_inventory->quantity * (float) $l_inventory->price;
                     // COGS is calculated based on the initial total value / total quantity
-                    $l_inventory->cogs = (float) $l_inventory->total_value / (float) $l_inventory->total_quantity;
+                    if ((float) $l_inventory->total_quantity === 0) {
+                        $l_inventory->cogs = 0;
+                    } else {
+                        $l_inventory->cogs = (float) $l_inventory->total_value / (float) $l_inventory->total_quantity;
+                    }
     
                 // Handle Stock Opname transactions
                 } else if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
@@ -146,7 +150,6 @@ class RecalculateTest extends Command
             }
         }
 
-
-        \DB::commit(); // Commit is commented out in the original code
+        \DB::commit(); 
     }
 }
