@@ -54,13 +54,24 @@ class RecalculateTest extends Command
         $prevTotalValue = 0;
 
         foreach($list_inventory as $index => $l_inventory) {
+            $l_inventory->recalculate = 0;
             if ($index == 0) {
                 $l_inventory->total_quantity = (float) $l_inventory->quantity;
                 $l_inventory->total_value = (float) $l_inventory->quantity * (float) $l_inventory->price;
                 $l_inventory->cogs = (float) $l_inventory->total_value / (float) $l_inventory->total_quantity;
+            } else if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
+                if ((float) $l_inventory->quantity < 0) {
+                    $l_inventory->price = $prevCogs;
+                    $l_inventory->cogs = $prevCogs;
+                }
+                $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
+            } else if ($l_inventory->formulir->formulirable_type === Retur::class) {
+                $l_inventory->price = $prevCogs;
+                $l_inventory->cogs = $prevCogs;
             } else {
                 if ((float) $l_inventory->quantity < 0) {
-                    $l_inventory->price = $l_inventory->cogs;
+                    $l_inventory->price = $prevCogs;
+                    $l_inventory->cogs = $prevCogs;
                 }
 
                 $l_inventory->total_quantity = (float) $l_inventory->quantity + $prevTotalQty;
