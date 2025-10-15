@@ -113,7 +113,7 @@ class RecalculateTest extends Command
                 $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
                 // $l_inventory->save();
                 $l_inventory->cogs = ($prevTotal + ($l_inventory->quantity * $l_inventory->price)) / $l_inventory->total_quantity;
-                $this->comment($l_inventory->id . ' = ' . $l_inventory->cogs);
+                $this->comment($l_inventory->form_date . ' = ' . $l_inventory->cogs);
 
                 $totalQty = (float) $l_inventory->total_quantity;
                 $totalValue = $l_inventory->total_value;
