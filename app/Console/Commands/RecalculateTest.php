@@ -87,7 +87,7 @@ class RecalculateTest extends Command
                     $l_inventory->total_quantity = (float) $l_inventory->quantity;
                     $l_inventory->total_value = (float) $l_inventory->quantity * (float) $l_inventory->price;
                     // COGS is calculated based on the initial total value / total quantity
-                    if ((float) $l_inventory->total_quantity === 0) {
+                    if ((float) $l_inventory->total_quantity == 0) {
                         $l_inventory->cogs = 0;
                     } else {
                         $this->comment($l_inventory->item_id . ' : ' . $l_inventory->warehouse_id . ' = ' . $l_inventory->total_quantity);
@@ -95,7 +95,7 @@ class RecalculateTest extends Command
                     }
     
                 // Handle Stock Opname transactions
-                } else if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
+                } else if ($l_inventory->formulir->formulirable_type == StockOpname::class) {
                     // If SO quantity is negative, it's costed at the previous average cost
                     if ((float) $l_inventory->quantity < 0) {
                         $l_inventory->price = $prevCogs;
@@ -106,7 +106,7 @@ class RecalculateTest extends Command
                     $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
     
                 // Handle Sales Return transactions (output)
-                } else if ($l_inventory->formulir->formulirable_type === Retur::class) {
+                } else if ($l_inventory->formulir->formulirable_type == Retur::class) {
                     // Output transactions (like Retur) are costed at the previous average cost
                     $l_inventory->price = $prevCogs;
                     $l_inventory->cogs = $prevCogs;
