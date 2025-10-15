@@ -98,7 +98,7 @@ class RecalculateTest extends Command
 
             $l_inventory->save();
 
-            $this->comment($l_inventory->form_date . ' = ' . $l_inventory->cogs);
+            $this->comment($l_inventory->form_date . ' Q= ' . $l_inventory->quantity. ' P= ' . $l_inventory->price . ' C= ' . $l_inventory->cogs . ' TQ= ' . $l_inventory->total_quantity . ' TV= ' . $l_inventory->total_value);
         }
 
         // \DB::commit();
