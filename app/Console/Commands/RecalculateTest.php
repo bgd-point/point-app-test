@@ -41,14 +41,14 @@ class RecalculateTest extends Command
         \DB::beginTransaction();
 
         // Get all items
-        Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
-            ->where('inventory.quantity', 0)
-            ->where('formulir.formulirable_type', '!=', 'Point\PointInventory\Models\StockOpname\StockOpname')
-            ->where('inventory.item_id', 102)
-            ->where('inventory.warehouse_id', 1)
-            ->where('inventory.form_date', '>=','2025-08-01')
-            ->where('inventory.form_date', '<','2025-09-01')
-            ->delete();
+        // Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+        //     ->where('inventory.quantity', 0)
+        //     ->where('formulir.formulirable_type', '!=', 'Point\PointInventory\Models\StockOpname\StockOpname')
+        //     ->where('inventory.item_id', 102)
+        //     ->where('inventory.warehouse_id', 1)
+        //     ->where('inventory.form_date', '>=','2025-08-01')
+        //     ->where('inventory.form_date', '<','2025-09-01')
+        //     ->delete();
 
         $list_inventory = Inventory::with('formulir')
             ->where('inventory.item_id', 102)
@@ -73,7 +73,7 @@ class RecalculateTest extends Command
                     $cogs = $l_inventory->cogs;
                 }
                 $l_inventory->total_value = $totalValue;
-                $l_inventory->save();
+                // $l_inventory->save();
                 $prevCogs = $l_inventory->cogs;
             } else if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
                 $l_inventory->recalculate = 0;
@@ -87,7 +87,7 @@ class RecalculateTest extends Command
                     $cogs = $l_inventory->cogs;
                 }
                 $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
-                $l_inventory->save();
+                // $l_inventory->save();
                 $totalQty = (float) $l_inventory->total_quantity;
                 $prevCogs = $l_inventory->cogs;
             } else {
@@ -108,7 +108,7 @@ class RecalculateTest extends Command
                     $cogs = $l_inventory->cogs;
                 }
                 $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
-                $l_inventory->save();
+                // $l_inventory->save();
                 
                 $this->comment($l_inventory->id . ' = ' . $l_inventory->cogs);
 
@@ -124,7 +124,7 @@ class RecalculateTest extends Command
                     $l_inventory->recalculate = 1;
                 }
 
-                $l_inventory->save();
+                // $l_inventory->save();
             }
         }
 
