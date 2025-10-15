@@ -90,6 +90,6 @@ class RecalculateTest extends Command
             $this->comment($l_inventory->form_date . ' = ' . $l_inventory->cogs);
         }
 
-        \DB::commit();
+        // \DB::commit();
     }
 }
