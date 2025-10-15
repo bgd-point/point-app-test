@@ -77,6 +77,8 @@ class RecalculateTest extends Command
 
             foreach($list_inventory as $index => $l_inventory) {
                 $l_inventory->recalculate = 0;
+
+                $this->comment($l_inventory->item_id . ' : ' . $l_inventory->warehouse_id);
     
                 // Handle the very first transaction to establish the baseline
                 if ($index == 0) {
