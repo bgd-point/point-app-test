@@ -43,8 +43,8 @@ class RecalculateTest extends Command
         $list_inventory = Inventory::with('formulir')
             ->where('inventory.item_id', 102)
             ->where('inventory.warehouse_id', 1)
-            ->where('inventory.form_date', '>=','2025-08-01')
-            ->where('inventory.form_date', '<','2025-09-01')
+            // ->where('inventory.form_date', '>=','2025-08-01')
+            // ->where('inventory.form_date', '<','2025-09-01')
             ->orderBy('form_date', 'asc')
             ->orderBy('formulir_id', 'asc')
             ->get();
@@ -59,8 +59,12 @@ class RecalculateTest extends Command
                 $l_inventory->total_value = (float) $l_inventory->quantity * (float) $l_inventory->price;
                 $l_inventory->cogs = (float) $l_inventory->total_value / (float) $l_inventory->total_quantity;
             } else {
+                if ((float) $l_inventory->quantity < 0) {
+                    $l_inventory->price = $l_inventory->cogs;
+                }
+
                 $l_inventory->total_quantity = (float) $l_inventory->quantity + $prevTotalQty;
-                $l_inventory->total_value = (float) $l_inventory->quantity * (float) $l_inventory->price;
+                $l_inventory->total_value = (float) $l_inventory->quantity * (float) $l_inventory->price + $prevTotalValue;
                 $l_inventory->cogs = (float) $l_inventory->total_value / (float) $l_inventory->total_quantity;
             }
 
