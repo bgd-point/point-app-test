@@ -56,7 +56,9 @@ class RecalculateTest extends Command
 
         \DB::beginTransaction();
 
-        $inventories = Inventory::orderBy('form_date', 'asc')
+        $inventories = Inventory::where('inventory.item_id', 721)
+            ->where('inventory.warehouse_id', 81)
+            ->orderBy('form_date', 'asc')
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'].$inventory['warehouse_id'];
@@ -88,6 +90,7 @@ class RecalculateTest extends Command
                     if ((float) $l_inventory->total_quantity === 0) {
                         $l_inventory->cogs = 0;
                     } else {
+                        $this->comment($l_inventory->item_id . ' : ' . $l_inventory->warehouse_id . ' = ' . $l_inventory->total_quantity);
                         $l_inventory->cogs = (float) $l_inventory->total_value / (float) $l_inventory->total_quantity;
                     }
     
