@@ -399,7 +399,7 @@ class InvoiceController extends Controller
         $tax_base = 0;
         $tax = 0;
         if ($invoice->tax > 0) {
-            $tax = $subtotal / $invoice->tax;
+            $tax = $subtotal / $invoice->subtotal * $invoice->tax;
         }
         $total = $subtotal - $tax;
 
