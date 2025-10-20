@@ -460,7 +460,7 @@ class InvoiceController extends Controller
                 'formulir' => $formulir,
                 'invoice' => $invoice
             );
-            self::journal($data);
+            self::journalRetur($data);
         }
 
         // Journal tax include
@@ -474,7 +474,7 @@ class InvoiceController extends Controller
                 'formulir' => $formulir,
                 'invoice' => $invoice
             );
-            self::journal($data);
+            self::journalRetur($data);
         }
 
 //        $invoice = Invoice::find($retur->point_sales_invoice_id);
@@ -496,6 +496,81 @@ class InvoiceController extends Controller
 
         gritter_success('retur form success', false);
         return redirect('sales/point/indirect/invoice/'.$id);
+    }
+
+    public static function journalRetur($data)
+    {
+        // 1. Journal Account Receivable
+        $account_receivable = JournalHelper::getAccount('point sales indirect', 'account receivable');
+        $position = JournalHelper::position($account_receivable);
+        $journal = new Journal;
+        $journal->form_date = $data['formulir']->form_date;
+        $journal->coa_id = $account_receivable;
+        $journal->description = 'invoice indirect sales [' . $data['formulir']->form_number.']';
+        $journal->$position = $data['value_of_account_receivable'];
+        $journal->form_journal_id = $data['formulir']->id;
+        $journal->form_reference_id;
+        $journal->subledger_id = $data['invoice']->person_id;
+        $journal->subledger_type = get_class($data['invoice']->person);
+        $journal->save();
+
+        // 2. Journal Income Tax  Payable
+        if ($data['invoice']->tax != 0) {
+            $income_tax_receivable = JournalHelper::getAccount('point sales indirect', 'income tax payable');
+            $position = JournalHelper::position($income_tax_receivable);
+            $journal = new Journal;
+            $journal->form_date = $data['formulir']->form_date;
+            $journal->coa_id = $income_tax_receivable;
+            $journal->description = 'invoice indirect sales [' . $data['formulir']->form_number.']';
+            $journal->$position = $data['value_of_income_tax_payable'];
+            $journal->form_journal_id = $data['formulir']->id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $data['invoice']->person_id;
+            $journal->subledger_type = get_class($data['invoice']->person);
+            $journal->save();
+        }
+
+        // 3. Journal Sales Of Goods
+        $sales_of_goods = JournalHelper::getAccount('point sales indirect', 'sale of goods');
+        $position = JournalHelper::position($sales_of_goods);
+        $journal = new Journal;
+        $journal->form_date = $data['formulir']->form_date;
+        $journal->coa_id = $sales_of_goods;
+        $journal->description = 'invoice indirect sales [' . $data['formulir']->form_number.']';
+        $journal->$position = $data['value_of_sale_of_goods'];
+        $journal->form_journal_id = $data['formulir']->id;
+        $journal->form_reference_id;
+        $journal->subledger_id = $data['invoice']->person_id;
+        $journal->subledger_type = get_class($data['invoice']->person);
+        $journal->save();
+
+        // 4. Journal Sales Discount
+        if ($data['invoice']->discount > 0) {
+            $sales_discount = JournalHelper::getAccount('point sales indirect', 'sales discount');
+            $position = JournalHelper::position($sales_discount);
+            $journal = new Journal;
+            $journal->form_date = $data['formulir']->form_date;
+            $journal->coa_id = $sales_discount;
+            $journal->description = 'invoice indirect sales [' . $data['formulir']->form_number.']';
+            $journal->$position = $data['value_of_discount'];
+            $journal->form_journal_id = $data['formulir']->id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $data['invoice']->person_id;
+            $journal->subledger_type = get_class($data['invoice']->person);
+            $journal->save();
+        }
+
+        $cost_of_sales_account = JournalHelper::getAccount('point sales indirect', 'cost of sales');
+        $journal = new Journal;
+        $journal->form_date = $data['formulir']->form_date;
+        $journal->coa_id = $cost_of_sales_account;
+        $journal->description = 'invoice indirect sales "' . $data['formulir']->form_number.'"';
+        $journal->debit = $data['value_of_cost_of_sales'];
+        $journal->form_journal_id = $data['formulir']->id;
+        $journal->form_reference_id;
+        $journal->subledger_id;
+        $journal->subledger_type;
+        $journal->save();
     }
 
     public static function journal($data)
