@@ -213,7 +213,7 @@ class JournalHelper
     {
         $journal = Journal::where('coa_id', $coa_id)
             ->where('form_date', '<', $date_from)
-            ->where('subledger_id', '<', $subledger_id)
+            ->where('subledger_id', '=', $subledger_id)
             ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
             ->groupBy('coa_id')
             ->first();

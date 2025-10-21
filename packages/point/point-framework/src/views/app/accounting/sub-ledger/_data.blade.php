@@ -32,7 +32,7 @@
             <td></td>
             @if(\Input::get('subledger_id'))
             <td>{{ number_format_accounting($opening_balance) }}</td>
-                @else
+            @else
             <td>{{ number_format_accounting($opening_balance) }}</td>
             @endif
         </tr>
