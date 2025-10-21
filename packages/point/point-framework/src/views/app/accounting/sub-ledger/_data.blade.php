@@ -13,6 +13,9 @@
         <?php
             $balance = 0;
             $opening_balance = 0;
+            if (request()->get('database_name') == 'p_test') {
+                dd($coa_id, $date_from, \Input::get('subledger_id'));
+            }
             if(\Input::get('subledger_id')) {
                 $opening_balance = \JournalHelper::coaOpeningBalanceSubledger($coa_id, $date_from, \Input::get('subledger_id'));
                 $balance = $opening_balance;
