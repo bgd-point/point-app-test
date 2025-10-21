@@ -401,7 +401,7 @@ class InvoiceController extends Controller
         if ($invoice->tax > 0) {
             $tax = $subtotal / $invoice->subtotal * $invoice->tax;
         }
-        $total = $subtotal - $tax;
+        $total = $subtotal + $tax;
 
         $retur->subtotal = $subtotal;
         $retur->tax = $tax;

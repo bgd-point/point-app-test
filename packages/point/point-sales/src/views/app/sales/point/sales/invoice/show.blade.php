@@ -205,7 +205,7 @@
                                             </tbody>
                                             <tfoot>
                                             <tr>
-                                                <td colspan="3" class="text-right">TOTAL</td>
+                                                <td colspan="3" class="text-right">SUBTOTAL</td>
                                                 <td class="text-right">{{ number_format_quantity($retur->subtotal) }}</td>
                                             </tr>
                                             <tr>
