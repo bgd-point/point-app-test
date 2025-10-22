@@ -257,7 +257,7 @@ $opname = Inventory::where('item_id', '=', $item_id)
             ->first();
 
         if (request()->get('database_name') == 'p_test') {
-            dd($inventory);
+            dd($item_id, $date, $warehouse_id, $inventory);
         }
 
         if (!$inventory) {
