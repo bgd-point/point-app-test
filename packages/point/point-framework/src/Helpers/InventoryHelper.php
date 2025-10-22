@@ -140,7 +140,7 @@ $opname = Inventory::where('item_id', '=', $item_id)
           ->select('inventory.*')
           ->first();
 
- if ($opname) {
+         if ($opname) {
          $opname->total_quantity += Inventory::where('item_id', '=', $item_id)
           ->where('form_date', '>', $opname->form_date)
           ->where('form_date', '<', $date_from)
@@ -255,6 +255,10 @@ $opname = Inventory::where('item_id', '=', $item_id)
             ->where('warehouse_id', '=', $warehouse_id)
             ->orderBy('form_date', 'desc')
             ->first();
+
+        if (request()->get('database_name') == 'p_test') {
+            dd($inventory);
+        }
 
         if (!$inventory) {
             return 0;
