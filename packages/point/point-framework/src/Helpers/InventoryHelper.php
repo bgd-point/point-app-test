@@ -256,10 +256,6 @@ $opname = Inventory::where('item_id', '=', $item_id)
             ->orderBy('form_date', 'desc')
             ->first();
 
-        if (request()->get('database_name') == 'p_test') {
-            dd($item_id, $date, $warehouse_id, $inventory);
-        }
-
         if (!$inventory) {
             return 0;
         }
