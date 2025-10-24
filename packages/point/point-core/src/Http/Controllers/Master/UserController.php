@@ -230,10 +230,12 @@ class UserController extends Controller
         $user = User::find(\Input::get('user_id'));
         $role = Role::find(\Input::get('role_id'));
 
-        if (RoleUser::check($user->id, $role->id)) {
+        if (RoleUser::check($user->id, $role->id)) {            
             $user->detachRole($role);
+            timeline_publish('update.user.role', 'remove role "' . $role->name . '" to "'. $user->name);
         } else {
             $user->attachRole($role);
+            timeline_publish('update.user.role', 'add role "' . $role->name . '" to "'. $user->name);
         }
 
         $response = array(
