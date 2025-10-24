@@ -195,10 +195,11 @@ class RoleController extends Controller
 
         if (RoleUser::check($user->id, $role->id)) {
             $user->detachRole($role);
-            timeline_publish('create.role', 'remove role "' . $role->name . '" from "'. $user->name);
+            dd('a');
+            timeline_publish('update.user.role', 'remove role "' . $role->name . '" from "'. $user->name);
         } else {
             $user->attachRole($role);
-            timeline_publish('create.role', 'add role "' . $role->name . '" from "'. $user->name);
+            timeline_publish('update.user.role', 'add role "' . $role->name . '" from "'. $user->name);
         }
         
         
