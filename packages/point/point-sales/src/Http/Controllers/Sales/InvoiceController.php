@@ -402,6 +402,7 @@ class InvoiceController extends Controller
             $tax = $subtotal / $invoice->subtotal * $invoice->tax;
         }
         
+        $total = 0;
         if ($invoice->type_of_tax === 'include') {
             $total = $subtotal;
         } else if ($invoice->type_of_tax === 'exclude') {
