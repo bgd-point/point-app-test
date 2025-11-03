@@ -44,7 +44,8 @@ class PaymentOrderHelper
         if (request()->get('database_name') == 'p_test' && auth()->user()->name != 'lioni') {
             $list_payment_order = $list_payment_order->join('point_finance_payment_order_detail', 'point_finance_payment_order.id', '=', 'point_finance_payment_order_detail.point_finance_payment_order_id')
             ->join('coa', 'coa.id', '=', 'point_finance_payment_order_detail.coa_id')
-            ->where('coa.name', 'not like', '%yuvelin%');
+            ->where('coa.name', 'not like', '%yuvelin%')
+            ->groupBy('point_finance_payment_order_detail.point_finance_payment_order_id');
         }
 
         return $list_payment_order;
