@@ -61,7 +61,7 @@ class CashController extends Controller
             });
         }
 
-        if (request()->get('database_name') == 'p_test' && request()->get('database_name') == 'p_personalfinance' && auth()->user()->name != 'lioni') {
+        if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
             $view->list_cash = $view->list_cash->join('point_finance_cash_detail', 'point_finance_cash.id', '=', 'point_finance_cash_detail.point_finance_cash_id')
             ->join('coa', 'coa.id', '=', 'point_finance_cash_detail.coa_id')
             ->where('coa.name', 'not like', '%lioni%')

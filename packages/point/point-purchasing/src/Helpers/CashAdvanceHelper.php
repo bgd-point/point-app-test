@@ -36,6 +36,11 @@ class CashAdvanceHelper
             });
         }
 
+        if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
+            $list_cash_advance = $list_cash_advance->join('coa', 'coa.id', '=', 'point_finance_cash_advance.coa_id')
+            ->where('coa.name', 'not like', '%lioni%');
+        }
+
         return $list_cash_advance;
     }
 
