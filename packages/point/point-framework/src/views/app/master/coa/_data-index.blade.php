@@ -39,7 +39,7 @@
                                             <div id="coa_group-{{$coa_group->id}}" class="panel-collapse collapse in">
                                                 <ul class="list-group ul-group-{{$counter}}" style="margin-left:20px">
                                                     @foreach($coa_group->coa as $coa)
-                                                        @if(preg_match('/lioni/i', $coa->name))
+                                                        @if(!preg_match('/lioni/i', $coa->name))
                                                         <?php ++$counter;?>
                                                         <li id="list-{{$counter}}" style="margin-left:15px;border:none" class="list-group-item hoverable">
                                                             <a style="margin-left:10px" href="javascript:void(0)" onclick="show({{$coa->id}}, 'coa')"><span id="coa-name-{{$counter}}">{{$coa->account}}</span></a>
@@ -52,7 +52,7 @@
                                     @endforeach
 
                                     @foreach($coa_category->coaWithoutGroup as $coa)
-                                        @if(preg_match('/lioni/i', $coa->name))
+                                        @if(!preg_match('/lioni/i', $coa->name))
                                         <?php ++$counter;?>
                                         <li id="list-{{$counter}}" class="list-group-item hoverable" style="border:none">
                                             <a href="javascript:void(0)" style="margin-left:10px" onclick="show({{$coa->id}}, 'coa')"><span id="coa-name-{{$counter}}">{{$coa->account}}</span></a>
