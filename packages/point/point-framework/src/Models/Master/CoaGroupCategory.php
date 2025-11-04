@@ -44,7 +44,13 @@ class CoaGroupCategory extends Model
      */
     public function coa()
     {
-        return $this->hasMany('Point\Framework\Models\Master\Coa', 'coa_group_category_id')->orderBy('coa_number', 'asc');
+        if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
+            return $this->hasMany('Point\Framework\Models\Master\Coa', 'coa_group_id')
+                ->where('coa.name', 'not like', '%lioni%')
+                ->orderBy('coa_number', 'asc');
+        } else {
+            return $this->hasMany('Point\Framework\Models\Master\Coa', 'coa_group_id')->orderBy('coa_number', 'asc');
+        }
     }
 
     public function getAccountAttribute()
