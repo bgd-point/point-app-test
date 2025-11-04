@@ -52,10 +52,12 @@
                                     @endforeach
 
                                     @foreach($coa_category->coaWithoutGroup as $coa)
+                                        @if(preg_match('/lioni/i', $coa->name))
                                         <?php ++$counter;?>
                                         <li id="list-{{$counter}}" class="list-group-item hoverable" style="border:none">
                                             <a href="javascript:void(0)" style="margin-left:10px" onclick="show({{$coa->id}}, 'coa')"><span id="coa-name-{{$counter}}">{{$coa->account}}</span></a>
                                         </li>
+                                        @endif
                                     @endforeach
                                 </ul>
                             </div>
