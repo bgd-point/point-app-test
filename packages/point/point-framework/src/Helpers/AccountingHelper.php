@@ -24,14 +24,14 @@ class AccountingHelper
                         $query->groupBy('subledger_id');
                     }
                 })
-                ->orderBy('form_date')
-                ->get();
+                ->orderBy('form_date');
+                
 
         if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
             $q = $q->join('coa', 'coa.id', '=', 'journal.coa_id')->where('coa.name', 'not like', '%lioni%');
         }
 
-        return $q;
+        return $q->get();
     }
 
     public static function queryGeneralLedger($date_from, $date_to, $coa_id)
@@ -39,13 +39,18 @@ class AccountingHelper
         if ($coa_id < 1) {
             return null;
         } else {
-            return Journal::join('formulir','formulir.id', '=', 'journal.form_journal_id')
+            $q = Journal::join('formulir','formulir.id', '=', 'journal.form_journal_id')
                 ->where('journal.form_date', '>=', $date_from)
                 ->where('journal.form_date', '<=', $date_to)
                 ->where('formulir.form_status', '!=', -1)
                 ->whereIn('coa_id', $coa_id)
-                ->orderBy('journal.form_date')
-                ->get();
+                ->orderBy('journal.form_date');
+
+            if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
+                $q = $q->join('coa', 'coa.id', '=', 'journal.coa_id')->where('coa.name', 'not like', '%lioni%');
+            }
+
+            return $q->get();
         }
     }
 
@@ -59,11 +64,14 @@ class AccountingHelper
                 ->where('journal.form_date', '<=', $date_to)
                 ->where('coa_id', $coa_id)
                 ->where('formulir.form_status', '!=', -1)
-                ->orderBy('journal.form_date')
-                ->get();
+                ->orderBy('journal.form_date');
+
+            if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
+                $journals = $journals->join('coa', 'coa.id', '=', 'journal.coa_id')->where('coa.name', 'not like', '%lioni%');
+            }
 
             if ($journals->count()) {
-                return $journals;
+                return $journals->get();
             } else {
                 return null;
             }
