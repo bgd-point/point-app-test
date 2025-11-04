@@ -45,6 +45,7 @@ class CoaGroupCategory extends Model
     public function coa()
     {
         if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
+            dd('gc');
             return $this->hasMany('Point\Framework\Models\Master\Coa', 'coa_group_id')
                 ->where('coa.name', 'not like', '%lioni%')
                 ->orderBy('coa_number', 'asc');
