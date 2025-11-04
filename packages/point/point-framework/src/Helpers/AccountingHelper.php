@@ -12,7 +12,7 @@ class AccountingHelper
             return [];
         }
 
-        return Journal::where('coa_id', '=', $coa_id)
+        $q = Journal::where('coa_id', '=', $coa_id)
                 ->where('form_date', '>=', $date_from)
                 ->where('form_date', '<=', $date_to)
                 ->where(function ($query) use ($subledger_id) {
@@ -26,6 +26,12 @@ class AccountingHelper
                 })
                 ->orderBy('form_date')
                 ->get();
+
+        if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
+            $q = $q->join('coa', 'coa.id', '=', 'journal.coa_id')->where('coa.name', 'not like', '%lioni%');
+        }
+
+        return $q;
     }
 
     public static function queryGeneralLedger($date_from, $date_to, $coa_id)

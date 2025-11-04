@@ -118,11 +118,20 @@ class ReportController extends Controller
     public static function dataReport($type, $date_from, $date_to, $coa_id, $subledger)
     {
         // payment type cash
-        $report_type = Cash::joinFormulir()->where('coa_id', $coa_id)->notArchived()->close()->selectOriginal()->orderByStandardAsc();
+        if ($type == 'cash') {
+            $report_type = Cash::joinFormulir()->where('coa_id', $coa_id)->notArchived()->close()->selectOriginal()->orderByStandardAsc();
 
+            if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
+                $report_type = $report_type->join('coa', 'coa.id', '=', 'point_finance_cash.coa_id')->where('coa.name', 'not like', '%lioni%');
+            }
+        }
         // payment type bank
         if ($type == 'bank') {
             $report_type = Bank::joinFormulir()->where('coa_id', $coa_id)->notArchived()->close()->selectOriginal()->orderByStandardAsc();
+
+            if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
+                $report_type = $report_type->join('coa', 'coa.id', '=', 'point_finance_bank.coa_id')->where('coa.name', 'not like', '%lioni%');
+            }
         }
 
         // getting data from Journal
