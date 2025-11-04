@@ -50,6 +50,9 @@ class CoaController extends Controller
     public function _listAsset()
     {
         $selected_coa = Coa::all();
+        if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
+            $selected_coa = CoaPosition::where('coa.name', 'not like', '%lioni%')->get();
+        }
         $coa_array = [];
         foreach ($selected_coa as $coa) {
             array_push($coa_array, ['text' => $coa->account, 'value' => $coa->id]);
@@ -64,6 +67,9 @@ class CoaController extends Controller
     public function _listSalesIncome()
     {
         $selected_coa = Coa::all();
+        if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
+            $selected_coa = CoaPosition::where('coa.name', 'not like', '%lioni%')->get();
+        }
         $coa_array = [];
         foreach ($selected_coa as $coa) {
             array_push($coa_array, ['text' => $coa->account, 'value' => $coa->id]);
@@ -78,6 +84,9 @@ class CoaController extends Controller
     public function _listExpense()
     {
         $selected_coa = Coa::all();
+        if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
+            $selected_coa = CoaPosition::where('coa.name', 'not like', '%lioni%')->get();
+        }
         $coa_array = [];
         foreach ($selected_coa as $coa) {
             array_push($coa_array, ['text' => $coa->account, 'value' => $coa->id]);
