@@ -44,7 +44,7 @@ class CoaPosition extends Model
      */
     public function coa()
     {
-        return $this->hasMany('Point\Framework\Models\Master\Coa', 'coa_group_id')->orderBy('coa_number', 'asc');
+        return $this->hasMany('Point\Framework\Models\Master\Coa', 'coa_position_id')->orderBy('coa_number', 'asc');
     }
 
     /**
