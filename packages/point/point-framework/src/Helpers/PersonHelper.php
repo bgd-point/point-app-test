@@ -23,6 +23,9 @@ class PersonHelper
 
         if ($person) {
             $code = explode('-', $person->code);
+            if (count($code) < 2) {
+                return $person_type->code;    
+            }
             if (is_numeric($code[1])) {
                 return $person_type->code . '-' . ($code[1] + 1);
             }
