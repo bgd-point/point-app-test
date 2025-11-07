@@ -61,9 +61,6 @@ class ItemController extends Controller
         $view = view('framework::app.master.item.create');
         $inventories_account = CoaCategory::where('name', 'Inventories')->first();
         $view->list_account_asset = $inventories_account->coa;
-        if (request()->get('database_name') == 'p_test') {
-            dd($view->list_account_asset);
-        }
         $view->list_item_category = ItemCategory::active()->get();
         $view->list_warehouse = Warehouse::active()->get();
         $view->list_unit = Unit::all();
