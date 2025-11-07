@@ -60,7 +60,7 @@ class CoaCategory extends Model
      */
     public function coa()
     {
-        return $this->hasMany('Point\Framework\Models\Master\Coa', 'coa_group_id')->orderBy('coa_number', 'asc');
+        return $this->hasMany('Point\Framework\Models\Master\Coa', 'coa_category_id')->orderBy('coa_number', 'asc');
     }
 
     public function coaWithoutGroup()
