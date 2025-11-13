@@ -18,7 +18,12 @@
                             </div>
                             <select id="example-chosen-multiple" name="coa_filter[]" class="selectize" data-placeholder="Choose one.." style="width: 250px;" multiple>
                                 @foreach($list_coa as $coa)
-                                    <option value="{{$coa->id}}" {{ in_array($coa->id, $coa_id) ? 'selected' : '' }}>{{$coa->account}}</option>
+                                    @if((request()->get('database_name') === 'p_personalfinance' || request()->get('database_name') === 'p_test') 
+                                        && auth()->user()->name !== 'lioni' 
+                                        && preg_match('/lioni/i', $coa->name))
+                                    @else
+                                        <option value="{{$coa->id}}" {{ in_array($coa->id, $coa_id) ? 'selected' : '' }}>{{$coa->account}}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
