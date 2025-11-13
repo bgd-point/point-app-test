@@ -163,7 +163,12 @@ $('#addItemRow').on( 'click', function () {
         '<div class="@if(access_is_allowed_to_view("create.coa")) input-group @endif"><select id="coa-id-'+counter+'" name="coa_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
             +'<option ></option>'
             @foreach($list_coa as $coa)
-            +'<option value="{{$coa->id}}">{{ $coa->account }}</option>'
+            @if((request()->get('database_name') === 'p_personalfinance' || request()->get('database_name') === 'p_test') 
+                && auth()->user()->name !== 'lioni' 
+                && preg_match('/lioni/i', $coa->name))
+            @else
+                +'<option value="{{$coa->id}}">{{ $coa->account }}</option>'
+            @endif
            @endforeach
         +'</select>'
         @if(access_is_allowed_to_view('create.coa'))
