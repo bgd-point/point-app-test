@@ -43,7 +43,12 @@
                         <select name="account_bank_id" class="selectize" data-placeholder="Choose oaccount...">
                             <option></option>
                             @foreach($list_bank_account as $bank_account)
-                                <option selected value="{{$bank_account->id}}">{{$bank_account->account}}</option>
+                                @if((request()->get('database_name') === 'p_personalfinance' || request()->get('database_name') === 'p_test') 
+                                    && auth()->user()->name !== 'lioni' 
+                                    && preg_match('/lioni/i', $bank_account->name))
+                                @else
+                                    <option selected value="{{$bank_account->id}}">{{$bank_account->account}}</option>
+                                @endif
                             @endforeach
                         </select>
                     </div>
