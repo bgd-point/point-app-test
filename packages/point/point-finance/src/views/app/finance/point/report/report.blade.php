@@ -32,7 +32,12 @@
                     <div class="col-md-6">
                         <select id="coa-id" name="coa_id" class="selectize" >
                             @foreach($list_coa as $coa)
-                                <option value="{{$coa->id}}">{{$coa->name}}</option>
+                                @if((request()->get('database_name') === 'p_personalfinance' || request()->get('database_name') === 'p_test') 
+                                    && auth()->user()->name !== 'lioni' 
+                                    && preg_match('/lioni/i', $coa->name))
+                                @else
+                                    <option value="{{$coa->id}}">{{$coa->name}}</option>
+                                @endif
                             @endforeach
                         </select>
                     </div>
