@@ -42,7 +42,7 @@
                             @foreach($list_invoice_by_person as $invoice_by_person)
                             @if (request()->get('database_name') == 'p_bbl' && $invoice->id === 4)
                                 <?php 
-                                    dd($list_invoice_by_person); 
+                                    // dd($list_invoice_by_person); 
                                 ?>
                             @endif
                             <tr id="list-{{$invoice->formulir_id}}">
