@@ -38,11 +38,13 @@
                                 ->selectOriginal()
                                 ->orderByStandard()
                                 ->get();
-                            if (request()->get('database_name') == 'p_bbl') {
-                                // dd($list_invoice_by_person);
-                            }
-                            ?>
+                                ?>
                             @foreach($list_invoice_by_person as $invoice_by_person)
+                            @if (request()->get('database_name') == 'p_bbl' && $invoice->person_id === 4)
+                                <?php 
+                                    dd($list_invoice_by_person); 
+                                ?>
+                            @endif
                             <tr id="list-{{$invoice->formulir_id}}">
                                 <td class="text-center">
                                     <a href="{{ url('sales/point/indirect/payment-collection/create-step-2/'.$invoice->person_id) }}"
