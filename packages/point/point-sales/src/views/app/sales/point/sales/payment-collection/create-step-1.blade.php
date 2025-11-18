@@ -40,7 +40,7 @@
                                 ->get();
                                 ?>
                             @foreach($list_invoice_by_person as $invoice_by_person)
-                            @if (request()->get('database_name') == 'p_bbl' && $invoice->person_id === 4)
+                            @if (request()->get('database_name') == 'p_bbl' && $invoice->id === 4)
                                 <?php 
                                     dd($list_invoice_by_person); 
                                 ?>
