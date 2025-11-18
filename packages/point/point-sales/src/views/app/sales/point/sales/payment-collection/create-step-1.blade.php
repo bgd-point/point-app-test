@@ -38,7 +38,7 @@
                                 ->selectOriginal()
                                 ->orderByStandard()
                                 ->get();
-                            dd(list_invoice_by_person);
+                            dd($list_invoice_by_person);
                             ?>
                             @foreach($list_invoice_by_person as $invoice_by_person)
                             <tr id="list-{{$invoice->formulir_id}}">
