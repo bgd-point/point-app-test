@@ -220,9 +220,9 @@ class MemoJournalController extends Controller
 
     public function _masterReference()
     {
-        if (!$this->validateCSRF()) {
-            return response()->json($this->restrictionAccessMessage());
-        }
+        // if (!$this->validateCSRF()) {
+        //     return response()->json($this->restrictionAccessMessage());
+        // }
 
         $coa_id = \Input::get('id');
         \Log::info('coa: '.$coa_id);
