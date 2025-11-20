@@ -300,7 +300,7 @@
             'description': $('#desc-'+counter).val(),
         };
 
-        addTemp('memo.journal', {{auth()->user()->id}}, keys);
+        // addTemp('memo.journal', {{auth()->user()->id}}, keys);
 
         $.ajax({
             url: "{{URL::to('accounting/point/memo-journal/update-master')}}",
