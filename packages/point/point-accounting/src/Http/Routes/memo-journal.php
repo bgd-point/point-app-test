@@ -6,13 +6,13 @@ Route::group(['prefix' => 'accounting/point', 'namespace' => 'Point\PointAccount
     Route::any('/memo-journal/{id}/reject', 'MemoJournalApprovalController@reject');
     Route::get('/memo-journal/reject-all', 'MemoJournalApprovalController@rejectAll');
     Route::get('/memo-journal/approve-all', 'MemoJournalApprovalController@approveAll');
-    
+    Route::get('/memo-journal/update-master', 'MemoJournalController@_masterReference');
+    Route::get('/memo-journal/update-form', 'MemoJournalController@_formReference');
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/memo-journal/vesa-approval', 'MemoJournalVesaController@approval');
         Route::get('/memo-journal/vesa-rejected', 'MemoJournalVesaController@rejected');
         // Ajax Request
-        Route::get('/memo-journal/update-master', 'MemoJournalController@_masterReference');
-        Route::get('/memo-journal/update-form', 'MemoJournalController@_formReference');
+        
         Route::post('/memo-journal/delete-temp', 'MemoJournalController@_removeTemp');
         Route::get('/memo-journal/clear-temp', 'MemoJournalController@clear');
         Route::get('/memo-journal/cancel/{id}', 'MemoJournalController@cancel');
