@@ -226,9 +226,10 @@ class MemoJournalController extends Controller
 
         $coa_id = \Input::get('id');
         \Log::info('coa: '.$coa_id);
-        $list_journal = Journal::joinCoa()->coaHasSubleger()->where('coa.id', $coa_id)->get();
-        \Log::info($list_journal);
-        $result = [];
+        try {
+            $list_journal = Journal::joinCoa()->coaHasSubleger()->where('coa.id', $coa_id)->get();
+
+            $result = [];
 
         if ($list_journal) {
             foreach ($list_journal as $journal) {
@@ -248,6 +249,11 @@ class MemoJournalController extends Controller
         );
 
         return response()->json($response);
+        } catch (\Exception $e) {
+            \Log::error('Error in joinCoa query: '.$e->getMessage());
+            \Log::error($e->getTraceAsString());
+        }
+        
     }
 
     public function _formReference()
