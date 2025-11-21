@@ -39,7 +39,7 @@
                                     }
                                 }
                             ?>
-                                @if($payment_reference->reference->form_status != -1 && show === true)
+                                @if($payment_reference->reference->form_status != -1 && $show === true)
                                     <tr>
                                         <td class="text-center">
                                             <a href="{{ url('finance/point/cash/'.$payment_reference->payment_flow.'/create/'.$payment_reference->id) }}" class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-external-link"></i> Create</a>
