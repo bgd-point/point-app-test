@@ -34,7 +34,7 @@
                             <?php 
                                 $show = false;
                                 foreach($payment_reference->detail as $payment_reference_detail) {
-                                    if (auth()->user()->name !== 'lioni' && preg_match('/lioni/i', $payment_reference_detail->coa->name)) {
+                                    if (auth()->user()->name !== 'lioni' && preg_match('/lioni/i', $payment_reference_detail->coa->account)) {
                                         $show = true;
                                     }
                                 }
