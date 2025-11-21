@@ -31,33 +31,41 @@
                             </thead>
                             <tbody>
                             @foreach($payment_references as $payment_reference)
-                                @if($payment_reference->reference->form_status != -1)
-                                <tr>
-                                    <td class="text-center">
-                                        <a href="{{ url('finance/point/cash/'.$payment_reference->payment_flow.'/create/'.$payment_reference->id) }}" class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-external-link"></i> Create</a>
-                                    </td>
-                                    <td>{{ date_format_view($payment_reference->reference->form_date) }}</td>
-                                    <td>{!! formulir_url($payment_reference->reference) !!}</td>
-                                    <td>{{ $payment_reference->person->codeName }}</td>
-                                    <td>{{ $payment_reference->reference->notes }}</td>
-                                </tr>
-                                <tr>
-                                    <th></th>
-                                    <th colspan="3">Description</th>
-                                    <th class="text-right">Amount</th>
-                                </tr>
-                                @foreach($payment_reference->detail as $payment_reference_detail)
+                            <?php 
+                                $show = false;
+                                foreach($payment_reference->detail as $payment_reference_detail) {
+                                    if (auth()->user()->name !== 'lioni' && preg_match('/lioni/i', $payment_reference_detail->coa->name)) {
+                                        $show = true;
+                                    }
+                                }
+                            ?>
+                                @if($payment_reference->reference->form_status != -1 && show === true)
+                                    <tr>
+                                        <td class="text-center">
+                                            <a href="{{ url('finance/point/cash/'.$payment_reference->payment_flow.'/create/'.$payment_reference->id) }}" class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-external-link"></i> Create</a>
+                                        </td>
+                                        <td>{{ date_format_view($payment_reference->reference->form_date) }}</td>
+                                        <td>{!! formulir_url($payment_reference->reference) !!}</td>
+                                        <td>{{ $payment_reference->person->codeName }}</td>
+                                        <td>{{ $payment_reference->reference->notes }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th colspan="3">Description</th>
+                                        <th class="text-right">Amount</th>
+                                    </tr>
+                                    @foreach($payment_reference->detail as $payment_reference_detail)
+                                        <tr>
+                                            <td></td>
+                                            <td colspan="3">[ {{ $payment_reference_detail->coa->account }} ] {{ $payment_reference_detail->notes_detail }}</td>
+                                            <td class="text-right">{{ number_format_price($payment_reference_detail->amount) }}</td>
+                                        </tr>
+                                    @endforeach
                                     <tr>
                                         <td></td>
-                                        <td colspan="3">[ {{ $payment_reference_detail->coa->account }} ] {{ $payment_reference_detail->notes_detail }}</td>
-                                        <td class="text-right">{{ number_format_price($payment_reference_detail->amount) }}</td>
+                                        <td colspan="3">
+                                        <td class="text-right"><b>{{ number_format_price($payment_reference->total) }}</b></td>
                                     </tr>
-                                @endforeach
-                                <tr>
-                                    <td></td>
-                                    <td colspan="3">
-                                    <td class="text-right"><b>{{ number_format_price($payment_reference->total) }}</b></td>
-                                </tr>
                                 @endif
                             @endforeach
                             </tbody>
