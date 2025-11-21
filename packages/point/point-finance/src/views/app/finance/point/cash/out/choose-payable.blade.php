@@ -32,10 +32,10 @@
                             <tbody>
                             @foreach($payment_references as $payment_reference)
                             <?php 
-                                $show = false;
+                                $show = true;
                                 foreach($payment_reference->detail as $payment_reference_detail) {
                                     if (auth()->user()->name !== 'lioni' && preg_match('/lioni/i', $payment_reference_detail->coa->account)) {
-                                        $show = true;
+                                        $show = false;
                                     }
                                 }
                             ?>
