@@ -56,7 +56,6 @@ class BankController extends Controller
 
         if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
             $view->list_bank = $view->list_bank->join('point_finance_bank_detail', 'point_finance_bank.id', '=', 'point_finance_bank_detail.point_finance_bank_id')
-            ->join('coa', 'coa.id', '=', 'point_finance_bank_detail.coa_id')
             ->where('coa.name', 'not like', '%lioni%')
             ->groupBy('point_finance_bank_detail.point_finance_bank_id');
         }
