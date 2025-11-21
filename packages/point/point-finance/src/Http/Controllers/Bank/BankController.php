@@ -26,7 +26,7 @@ class BankController extends Controller
         access_is_allowed('read.point.finance.cashier.bank');
 
         $view = view('point-finance::app.finance.point.bank.index');
-        $view->list_bank = Bank::joinFormulir()->joinPerson()->join('coa', 'coa.id', '=', 'point_finance_bank.coa_id')->notArchived()->selectOriginal();
+        $view->list_bank = Bank::joinFormulir()->joinPerson()->notArchived()->selectOriginal();
         
         if (\Input::has('order_by')) {
             $view->list_bank = $view->list_bank->orderBy(\Input::get('order_by'), \Input::get('order_type'));
@@ -56,6 +56,7 @@ class BankController extends Controller
 
         if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
             $view->list_bank = $view->list_bank->join('point_finance_bank_detail', 'point_finance_bank.id', '=', 'point_finance_bank_detail.point_finance_bank_id')
+            ->join('coa', 'coa.id', '=', 'point_finance_bank.coa_id')
             ->where('coa.name', 'not like', '%lioni%')
             ->groupBy('point_finance_bank_detail.point_finance_bank_id');
         }
