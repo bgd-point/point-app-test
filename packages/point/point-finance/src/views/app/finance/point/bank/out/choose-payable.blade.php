@@ -31,7 +31,15 @@
                             </thead>
                             <tbody>
                             @foreach($payment_references as $payment_reference)
-                                @if($payment_reference->reference->form_status != -1)
+                                <?php 
+                                    $show = true;
+                                    foreach($payment_reference->detail as $payment_reference_detail) {
+                                        if (auth()->user()->name !== 'lioni' && preg_match('/lioni/i', $payment_reference_detail->coa->account)) {
+                                            $show = false;
+                                        }
+                                    }
+                                ?>
+                                @if($payment_reference->reference->form_status != -1 && $show === true)
                                 <tr>
                                     <td class="text-center">
                                         <a href="{{ url('finance/point/bank/'.$payment_reference->payment_flow.'/create/'.$payment_reference->id) }}" class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-external-link"></i> Create</a>
