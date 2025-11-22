@@ -2,7 +2,7 @@
 
 @section('content')
     <div id="page-content">
-        @if(!request()->get('database_name') === 'p_personalfinance' || !request()->get('database_name') === 'p_test')
+        @if(!request()->get('database_name') === 'p_personalfinance')
         <h2 class="sub-header"><i class="fa fa-user"></i> Vesa <br/><span style="font-size:14px" class="label label-primary label-xs">Virtual Enterprise Smart Assistance</span></h2>
         <div class="panel panel-default">
             <div class="panel-body">
