@@ -454,6 +454,10 @@ class InvoiceController extends Controller
                 $journal->save();
             }
         }
+        
+        if (app('request')->get('database_name') == 'p_test') {
+            dd($total);
+        }
 
         // Journal tax exclude and non-tax
         if ($invoice->type_of_tax == 'exclude' || $invoice->type_of_tax == 'non') {
