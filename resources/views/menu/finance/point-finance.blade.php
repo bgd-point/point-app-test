@@ -70,7 +70,7 @@
 </div>
 @endif
 
-@if(client_has_addon('basic') && auth()->user()->may('read.allocation.report') && request()->get('database_name') != 'p_personalfinance')
+@if(client_has_addon('basic') && auth()->user()->may('read.allocation.report'))
 <div class="col-md-4 col-lg-3">
     <a href="{{url('finance/point/allocation-report')}}" class="widget widget-button">
         <div class="widget-content text-right clearfix">
