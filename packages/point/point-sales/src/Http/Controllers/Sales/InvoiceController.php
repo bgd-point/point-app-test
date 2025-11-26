@@ -457,10 +457,6 @@ class InvoiceController extends Controller
             }
         }
 
-        if (app('request')->get('database_name') == 'p_test') {
-            dd($total);
-        }
-
         // Journal tax exclude and non-tax
         if ($invoice->type_of_tax == 'exclude' || $invoice->type_of_tax == 'non') {
             $data = array(
@@ -524,9 +520,6 @@ class InvoiceController extends Controller
         $journal->form_reference_id;
         $journal->subledger_id = $data['invoice']->person_id;
         $journal->subledger_type = get_class($data['invoice']->person);
-        if (app('request')->get('database_name') == 'p_test') {
-            dd($position, $journal);
-        }
         $journal->save();
 
         // 2. Journal Income Tax  Payable
