@@ -407,6 +407,8 @@ class InvoiceController extends Controller
             $total = $subtotal;
         } else if ($invoice->type_of_tax === 'exclude') {
             $total = $subtotal + $tax;
+        } else {
+            $total = $subtotal;
         }
 
         $retur->subtotal = $subtotal;
@@ -454,7 +456,7 @@ class InvoiceController extends Controller
                 $journal->save();
             }
         }
-        
+
         if (app('request')->get('database_name') == 'p_test') {
             dd($total);
         }
