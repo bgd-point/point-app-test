@@ -518,7 +518,9 @@ class InvoiceController extends Controller
         $journal->form_reference_id;
         $journal->subledger_id = $data['invoice']->person_id;
         $journal->subledger_type = get_class($data['invoice']->person);
-        dd($journal);
+        if (app('request')->get('database_name') == 'p_test') {
+            dd($journal);
+        }
         $journal->save();
 
         // 2. Journal Income Tax  Payable
