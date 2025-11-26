@@ -519,7 +519,7 @@ class InvoiceController extends Controller
         $journal->subledger_id = $data['invoice']->person_id;
         $journal->subledger_type = get_class($data['invoice']->person);
         if (app('request')->get('database_name') == 'p_test') {
-            dd($journal);
+            dd($position, $journal);
         }
         $journal->save();
 
