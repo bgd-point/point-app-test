@@ -145,10 +145,10 @@
                             <!-- <a href="{{url('inventory/point/stock-correction/'.$stock_correction->id.'/edit')}}" class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a> -->
                             @endif
                             @if(formulir_view_cancel($stock_correction->formulir, 'delete.point.inventory.stock.correction'))
-                            <!-- <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
+                            <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                onclick="secureCancelForm('{{url('formulir/cancel')}}',
                                     '{{ $stock_correction->formulir_id }}',
-                                    'delete.point.inventory.stock.correction')"><i class="fa fa-times"></i> Cancel Form</a> -->
+                                    'delete.point.inventory.stock.correction')"><i class="fa fa-times"></i> Cancel Form</a>
                             @endif
                         </div>
                     </div>
