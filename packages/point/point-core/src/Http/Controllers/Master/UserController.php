@@ -232,10 +232,10 @@ class UserController extends Controller
 
         if (RoleUser::check($user->id, $role->id)) {            
             $user->detachRole($role);
-            // timeline_publish('update.user.role', 'remove role "' . $role->name . '" to "'. $user->name);
+            timeline_publish('update.user.role', 'remove role "' . $role->name . '" to "'. $user->name);
         } else {
             $user->attachRole($role);
-            // timeline_publish('update.user.role', 'add role "' . $role->name . '" to "'. $user->name);
+            timeline_publish('update.user.role', 'add role "' . $role->name . '" to "'. $user->name);
         }
 
         $response = array(
