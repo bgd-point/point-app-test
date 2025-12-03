@@ -29,14 +29,12 @@ class UnbalanceJournalChecker extends Command
     public function handle()
     {
         $journals = Journal::groupBy('form_journal_id');
-        \Log::info('Check : ' . $journals->get()->count());
         foreach ($journals->get() as $journal) {
             $debit = Journal::where('form_journal_id', $journal->form_journal_id)->sum('debit');
             $credit = Journal::where('form_journal_id', $journal->form_journal_id)->sum('credit');
 
             if ($debit != $credit) {
                 $this->comment($journal->form_journal_id . ' ' . $journal->formulir->form_number . ' ' . $journal->formulir->formulirable_type . ' ' . $debit . ' ' . $credit);
-                \Log::info($journal->form_journal_id . ' ' . $journal->formulir->form_number . ' ' . $journal->formulir->formulirable_type);
             }
         }
     }
