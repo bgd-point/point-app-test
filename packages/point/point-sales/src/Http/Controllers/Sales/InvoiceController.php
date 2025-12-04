@@ -478,16 +478,13 @@ class InvoiceController extends Controller
             $data = array(
                 'value_of_account_receivable' => $total * -1,
                 'value_of_income_tax_payable' => $tax * -1,
-                'value_of_sale_of_goods' => $tax_base * -1,
+                'value_of_sale_of_goods' => $subtotal * -1,
                 'value_of_cost_of_sales' => $cost_of_sales * -1,
                 'value_of_discount' => $discount,
                 'formulir' => $formulir,
                 'invoice' => $invoice
             );
-
-            if (request()->get('database_name') == 'p_test') {
-            dd($data);
-        }
+         
             self::journalRetur($data);
         }
 
@@ -542,10 +539,6 @@ class InvoiceController extends Controller
             $journal->subledger_id = $data['invoice']->person_id;
             $journal->subledger_type = get_class($data['invoice']->person);
             $journal->save();
-        }
-
-        if (request()->get('database_name') == 'p_test') {
-            dd($data['value_of_sale_of_goods']);
         }
 
         // 3. Journal Sales Of Goods
