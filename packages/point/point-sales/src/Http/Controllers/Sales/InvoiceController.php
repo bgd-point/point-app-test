@@ -471,9 +471,7 @@ class InvoiceController extends Controller
             self::journalRetur($data);
         }
 
-        if (request()->get('database_name') == 'p_test') {
-            dd($subtotal);
-        }
+        
 
         // Journal tax include
         if ($invoice->type_of_tax == 'include') {
@@ -486,6 +484,10 @@ class InvoiceController extends Controller
                 'formulir' => $formulir,
                 'invoice' => $invoice
             );
+
+            if (request()->get('database_name') == 'p_test') {
+            dd($data);
+        }
             self::journalRetur($data);
         }
 
