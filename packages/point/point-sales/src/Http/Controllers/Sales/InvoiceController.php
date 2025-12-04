@@ -538,6 +538,10 @@ class InvoiceController extends Controller
             $journal->save();
         }
 
+        if (request()->get('database_name') == 'p_test') {
+            dd($data['value_of_sale_of_goods']);
+        }
+
         // 3. Journal Sales Of Goods
         $sales_of_goods = JournalHelper::getAccount('point sales indirect', 'sale of goods');
         $position = JournalHelper::position($sales_of_goods);
