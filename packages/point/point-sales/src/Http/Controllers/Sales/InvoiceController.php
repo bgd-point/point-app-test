@@ -457,6 +457,10 @@ class InvoiceController extends Controller
             }
         }
 
+        if(request()->get('database_name') === 'p_test') {
+            dd($invoice->type_of_tax);
+        }
+
         // Journal tax exclude and non-tax
         if ($invoice->type_of_tax == 'exclude' || $invoice->type_of_tax == 'non') {
             if(request()->get('database_name') === 'p_test') {
