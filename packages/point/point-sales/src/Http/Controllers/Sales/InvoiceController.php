@@ -457,15 +457,8 @@ class InvoiceController extends Controller
             }
         }
 
-        if(request()->get('database_name') === 'p_test') {
-            dd($invoice->type_of_tax);
-        }
-
         // Journal tax exclude and non-tax
         if ($invoice->type_of_tax == 'exclude' || $invoice->type_of_tax == 'non') {
-            if(request()->get('database_name') === 'p_test') {
-                dd('a');
-            }
             $data = array(
                 'value_of_account_receivable' => $total * -1,
                 'value_of_income_tax_payable' => $tax * -1,
@@ -479,10 +472,7 @@ class InvoiceController extends Controller
         }
 
         // Journal tax include
-        if ($request->input('type_of_tax') == 'include') {
-            if(request()->get('database_name') === 'p_test') {
-                dd('b');
-            }
+        if ($invoice->type_of_tax == 'include') {
             $data = array(
                 'value_of_account_receivable' => $total * -1,
                 'value_of_income_tax_payable' => $tax * -1,
