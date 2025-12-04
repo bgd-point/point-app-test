@@ -136,10 +136,6 @@ class ReturHelper
             $journal->save();
         }
 
-        if(request()->get('database_name') === 'p_test') {
-            dd($retur->subtotal);
-        }
-
         // JOURNAL #2 of #2
         $default_account = JournalHelper::getAccount('point sales indirect', 'account receivable');
         $position = 'credit';
