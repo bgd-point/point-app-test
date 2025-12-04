@@ -136,7 +136,7 @@ class ReturHelper
             $journal->save();
         }
 
-        if(request()->get('database_name') != 'p_test') {
+        if(request()->get('database_name') === 'p_test') {
             dd($retur->subtotal);
         }
 
