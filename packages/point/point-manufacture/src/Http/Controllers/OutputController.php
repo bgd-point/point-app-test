@@ -32,6 +32,7 @@ class OutputController extends Controller
         $view->list_output = OutputProcess::joinFormulir()
             ->joinInput()
             ->join('point_manufacture_machine', 'point_manufacture_machine.id', '=', 'point_manufacture_output.machine_id')
+            ->join('point_manufacture_process', 'point_manufacture_process.id', '=', 'point_manufacture_input.process_id')
             ->notArchived()
             ->search(app('request')->input('date_from'),
                 app('request')->input('date_to'),

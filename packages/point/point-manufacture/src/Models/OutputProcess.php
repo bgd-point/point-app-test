@@ -48,7 +48,8 @@ class OutputProcess extends Model
 
         if ($search) {
             $q->where('formulir.form_number', 'like', '%' . $search . '%')
-                ->orWhere('point_manufacture_machine.name', 'like', '%' . $search . '%');
+                ->orWhere('point_manufacture_machine.name', 'like', '%' . $search . '%')
+                ->orWhere('point_manufacture_process.name', 'like', '%' . $search . '%');
         }
     }
 
