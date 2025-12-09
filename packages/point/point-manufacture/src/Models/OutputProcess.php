@@ -50,6 +50,11 @@ class OutputProcess extends Model
             $q->where('formulir.form_number', 'like', '%' . $search . '%')
                 ->orWhere('point_manufacture_machine.name', 'like', '%' . $search . '%')
                 ->orWhere('point_manufacture_process.name', 'like', '%' . $search . '%');
+
+             // search inside details
+            $q->whereHas('product.item', function ($d) use ($search) {
+                $d->where('name', 'like', "%{$search}%");
+            });
         }
     }
 
