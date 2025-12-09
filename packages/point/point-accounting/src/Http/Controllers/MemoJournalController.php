@@ -229,32 +229,36 @@ class MemoJournalController extends Controller
         try {
             $list_journal = Journal::joinCoa()->where('coa.has_subledger', '=', 1)->where('coa.id', $coa_id)->get();
             
-            \Log::info('vvvv ');
+            \Log::info('vvvv 1');
             $result = [];
 
-        if ($list_journal) {
-            foreach ($list_journal as $journal) {
-                if ($journal->subledger_id && $journal->subledger_type) {
-                    $subledger = $journal->subledger_type::find($journal->subledger_id);
-                    $temp = array(
-                        'value' => $journal->subledger_id.'#'.$journal->subledger_type,
-                        'text'  => $subledger->name
-                    );
-                    array_push($result, $temp);
+            if ($list_journal) {
+                \Log::info('vvvv 2');
+                foreach ($list_journal as $journal) {
+                    \Log::info('vvvv 3');
+                    if ($journal->subledger_id && $journal->subledger_type) {
+                        \Log::info('vvvv 4');
+                        $subledger = $journal->subledger_type::find($journal->subledger_id);
+                        \Log::info('vvvv 5');
+                        $temp = array(
+                            'value' => $journal->subledger_id.'#'.$journal->subledger_type,
+                            'text'  => $subledger->name
+                        );
+                        array_push($result, $temp);
+                    }
                 }
             }
-        }
-
-        $response = array(
-            'lists' => $result,
-        );
-
-        return response()->json($response);
+            \Log::info('vvvv 6');
+            $response = array(
+                'lists' => $result,
+            );
+            \Log::info('vvvv 7');
+            return response()->json($response);
         } catch (\Exception $e) {
             \Log::error('Error in joinCoa query: '.$e->getMessage());
             \Log::error($e->getTraceAsString());
         }
-        
+    
     }
 
     public function _formReference()
