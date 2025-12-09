@@ -315,7 +315,7 @@
                 selectize.clearOptions();
                 selectize.load(function(callback) {
                     callback(eval(JSON.stringify(data.lists)));
-                    //selectize.addItem(data.defaultID);
+                    selectize.addItem(data.defaultID);
                 });
             }, error: function(data) {
                 
