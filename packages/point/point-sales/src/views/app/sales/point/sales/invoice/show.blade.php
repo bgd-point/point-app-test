@@ -214,7 +214,11 @@
                                             </tr>
                                             <tr>
                                                 <td colspan="3" class="text-right">TOTAL</td>
+                                                @if($invoice->type_of_tax === 'include')
+                                                <td class="text-right">{{ number_format_quantity($retur->subtotal) }}</td>
+                                                @else
                                                 <td class="text-right">{{ number_format_quantity($retur->total) }}</td>
+                                                @endif
                                             </tr>
                                             <tr>
                                                 <td colspan="3" class="text-right"></td>
