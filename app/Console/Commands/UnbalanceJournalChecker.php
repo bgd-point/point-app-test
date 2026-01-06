@@ -42,8 +42,8 @@ class UnbalanceJournalChecker extends Command
 
         $journals = Journal::select(
             'form_journal_id',
-            DB::raw('SUM(debit) as total_debit'),
-            DB::raw('SUM(credit) as total_credit')
+            \DB::raw('SUM(debit) as total_debit'),
+            \DB::raw('SUM(credit) as total_credit')
         )
         ->where('form_date', '>=', '2025-11-01')
         ->groupBy('form_journal_id')
