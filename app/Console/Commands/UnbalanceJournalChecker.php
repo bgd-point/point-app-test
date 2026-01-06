@@ -29,7 +29,7 @@ class UnbalanceJournalChecker extends Command
     public function handle()
     {
         $journals = Journal::groupBy('form_journal_id');
-        foreach ($journals->where('form_date', '>=', '2025-12-01')->get() as $journal) {
+        foreach ($journals->where('form_date', '>=', '2025-11-01')->get() as $journal) {
             $debit = Journal::where('form_journal_id', $journal->form_journal_id)->sum('debit');
             $credit = Journal::where('form_journal_id', $journal->form_journal_id)->sum('credit');
 
