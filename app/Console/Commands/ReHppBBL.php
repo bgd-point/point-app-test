@@ -44,7 +44,6 @@ class ReHppBBL extends Command
 
         // Get all items
         $inventories = Inventory::orderBy('form_date', 'asc')
-            ->where('item_id', 610)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'].$inventory['warehouse_id'];
