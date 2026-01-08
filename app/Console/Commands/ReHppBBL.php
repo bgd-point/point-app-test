@@ -72,7 +72,7 @@ class ReHppBBL extends Command
                 $this->comment($l_inventory->formulir->form_number . ' ' . $totalValue . ' / ' . $l_inventory->total_quantity . ' = ' . $totalValue / $l_inventory->total_quantity);
                 if ($l_inventory->total_quantity > 0) {
                     $l_inventory->cogs = $totalValue / $l_inventory->total_quantity;
-                    $cogs = $l_inventory->cogs
+                    $cogs = $l_inventory->cogs;
                 } else {
                     $l_inventory->cogs = $cogs;
                 }
