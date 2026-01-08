@@ -91,7 +91,7 @@
                                         <li class="active"><a href="#block-tabs-invoice">INVOICE</a></li>
                                         <li><a href="#block-tabs-cutoff">CUTOFF</a></li>
                                         <li><a href="#block-tabs-downpayment">DOWNPAYMENT</a></li>
-                                        <li><a href="#block-tabs-retur">RETUR</a></li>
+                                        <!-- <li><a href="#block-tabs-retur">RETUR</a></li> -->
                                         <li><a href="#block-tabs-other">OTHERS</a></li>
                                     </ul>
                                 </div>
