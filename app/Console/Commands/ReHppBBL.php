@@ -44,6 +44,7 @@ class ReHppBBL extends Command
 
         // Get all items
         $inventories = Inventory::orderBy('form_date', 'asc')
+            ->where('item_id', 610)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'];
@@ -74,16 +75,16 @@ class ReHppBBL extends Command
             if ($totalV < 0 ||  $totalQ < 0) {
                 if (round($totalV) < 0) {
                     $hpp = 0;
-                    // $this->comment('C1 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV .' F: '. $journal->form_journal_id);
+                    $this->comment('C1 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV .' F: '. $journal->form_journal_id);
                     // continue;
                 }
             } else if ($totalV == 0) {
                 $hpp = 0;
-                // $this->comment('C2 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
+                $this->comment('C2 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
                 // continue;
             } else {
                 if ($totalQ == 0) {
-                    // $this->comment('C3 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
+                    $this->comment('C3 = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV);
                     $hpp = 0;
                 } else {
                     $hpp = round($totalV, 4) / $totalQ;
