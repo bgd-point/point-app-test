@@ -106,6 +106,7 @@ class ReHppBBL extends Command
                 $l_inventory->cogs = $hpp;
                 $l_inventory->total_value = $totalValue;
                 $l_inventory->save();
+                $this->comment($l_inventory->form_date);
             }
         }
 
