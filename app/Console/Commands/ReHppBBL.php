@@ -93,6 +93,7 @@ class ReHppBBL extends Command
             
 
             $this->comment('CC = item = ' . $inventory->item->code . ', Hpp = ' . $hpp);
+            $this->comment($list_inventory->count());
             // $this->comment('CC = item = ' . $inventory->item->code . ', Total Quantity = ' . $totalQ . ', Total Value = ' . $totalV . ', Hpp = ' . $hpp);
 
             $totalQty = 0;
