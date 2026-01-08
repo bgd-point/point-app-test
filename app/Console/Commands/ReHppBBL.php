@@ -66,8 +66,8 @@ class ReHppBBL extends Command
                 $totalValue = round($totalValue + $value, 4);
 
                 $this->comment($l_inventory->formulir->form_number . ' ' . $value . ' + ' . $l_inventory->total_value . ' = ' . $totalValue);
-                // $this->comment($l_inventory->formulir->form_number . ' ' . $totalValue . ' / ' . $l_inventory->total_quantity . ' = ' . $totalValue / $l_inventory->total_quantity);
-                // $l_inventory->cogs = $totalValue / $l_inventory->total_quantity;
+                $this->comment($l_inventory->formulir->form_number . ' ' . $totalValue . ' / ' . $l_inventory->total_quantity . ' = ' . $totalValue / $l_inventory->total_quantity);
+                $l_inventory->cogs = $totalValue / $l_inventory->total_quantity;
                 $l_inventory->recalculate = 0;
                 $l_inventory->total_value = $totalValue;
                 $l_inventory->save();
