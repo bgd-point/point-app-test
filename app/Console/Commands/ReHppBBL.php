@@ -60,14 +60,22 @@ class ReHppBBL extends Command
 
             $totalQty = 0;
             $totalValue = 0;
+            $cogs = 0;
             foreach($list_inventory as $index => $l_inventory) {
 
                 $value = $l_inventory->quantity * $l_inventory->price;
+
+                $totalQty = $totalQty + $l_inventory->quantity;
                 $totalValue = round($totalValue + $value, 4);
 
                 $this->comment($l_inventory->formulir->form_number . ' ' . $value . ' + ' . $l_inventory->total_value . ' = ' . $totalValue);
                 $this->comment($l_inventory->formulir->form_number . ' ' . $totalValue . ' / ' . $l_inventory->total_quantity . ' = ' . $totalValue / $l_inventory->total_quantity);
-                $l_inventory->cogs = $totalValue / $l_inventory->total_quantity;
+                if ($l_inventory->total_quantity > 0) {
+                    $l_inventory->cogs = $totalValue / $l_inventory->total_quantity;
+                    $cogs = $l_inventory->cogs
+                } else {
+                    $l_inventory->cogs = $cogs;
+                }
                 $l_inventory->recalculate = 0;
                 $l_inventory->total_value = $totalValue;
                 $l_inventory->save();
