@@ -64,6 +64,7 @@ class ReHppBBL extends Command
                 $value = $l_inventory->quantity * $l_inventory->price;
                 $totalValue = round($totalValue + $value, 4);
 
+                $l_inventory->cogs = $totalValue / $l_inventory->total_quantity;
                 $l_inventory->recalculate = 0;
                 $l_inventory->total_value = $totalValue;
                 $l_inventory->save();
