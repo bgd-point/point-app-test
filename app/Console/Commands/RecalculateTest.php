@@ -57,8 +57,6 @@ class RecalculateTest extends Command
         \DB::beginTransaction();
 
         $inventories = Inventory::orderBy('form_date', 'asc')
-            ->where('inventory.item_id', 610)
-            ->where('inventory.warehouse_id', 2)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'].$inventory['warehouse_id'];
@@ -150,8 +148,6 @@ class RecalculateTest extends Command
                 }
     
                 $l_inventory->save();
-    
-                // $this->comment($l_inventory->form_date . ' Q= ' . $l_inventory->quantity. ' P= ' . $l_inventory->price . ' C= ' . $l_inventory->cogs . ' TQ= ' . $l_inventory->total_quantity . ' TV= ' . $l_inventory->total_value);
             }
         }
 
