@@ -57,6 +57,8 @@ class RecalculateTest extends Command
         \DB::beginTransaction();
 
         $inventories = Inventory::orderBy('form_date', 'asc')
+            ->where('inventory.item_id', 610)
+            ->where('inventory.warehouse_id', 2)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'].$inventory['warehouse_id'];
