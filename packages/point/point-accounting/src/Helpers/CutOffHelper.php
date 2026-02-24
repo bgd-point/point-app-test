@@ -43,19 +43,19 @@ class CutOffHelper
             ->first();
 
         if (! $cut_off_account) {
-            return false;            
+            // return false;            
         }
 
         if (! self::checkInventory($cut_off_account)) {
-            return false;
+            // return false;
         }
 
         if (! self::checkAccountPerson($cut_off_account)) {
-            return false;
+            // return false;
         }
 
         if (! self::checkFixedAssets($cut_off_account)) {
-            return false;
+            // return false;
         }
 
         self::insertJournal($cut_off_account);
