@@ -110,6 +110,7 @@ class CutOffHelper
                     || trim($cut_off_account_detail->$position) == trim($account_receivable_amount)) {
                     return true;
                 } else {
+                    dd('e: payable / receivable = ' . $cut_off_account_detail->coa_id);
                     return false;
                 }
             }
