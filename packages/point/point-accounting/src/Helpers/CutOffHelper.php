@@ -43,14 +43,17 @@ class CutOffHelper
             ->first();
 
         if (! $cut_off_account) {
+            dd('e: account');
             return false;            
         }
 
         if (! self::checkInventory($cut_off_account)) {
+            dd('e: inventory');
             return false;
         }
 
         if (! self::checkAccountPerson($cut_off_account)) {
+            dd('e: payable receivable');
             return false;
         }
 
