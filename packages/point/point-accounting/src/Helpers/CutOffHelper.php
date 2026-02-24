@@ -54,9 +54,9 @@ class CutOffHelper
             // return false;
         }
 
-        if (! self::checkFixedAssets($cut_off_account)) {
+        // if (! self::checkFixedAssets($cut_off_account)) {
             // return false;
-        }
+        // }
 
         self::insertJournal($cut_off_account);
 
