@@ -228,7 +228,11 @@ class MemoJournalController extends Controller
         \Log::info('coa: '.$coa_id);
         try {
             \Log::info('vvvv 0');
-            $list_journal = Journal::joinCoa()->where('coa.has_subledger', '=', 1)->where('coa.id', $coa_id)->get();
+            $list_journal = Journal::joinCoa()->where('coa.has_subledger', '=', 1)
+                ->where('coa.id', $coa_id)->get()
+                ->orderBy('journal.created_at', 'desc')
+                ->limit(100)
+                ->get();
             
             \Log::info('vvvv 1');
             $result = [];
