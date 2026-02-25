@@ -43,17 +43,14 @@ class CutOffHelper
             ->first();
 
         if (! $cut_off_account) {
-            dd('e: account');
             return false;            
         }
 
         if (! self::checkInventory($cut_off_account)) {
-            dd('e: inventory');
             return false;
         }
 
         if (! self::checkAccountPerson($cut_off_account)) {
-            dd('e: payable receivable');
             return false;
         }
 
@@ -430,7 +427,7 @@ class CutOffHelper
                 // insert fixed assets
                 if ($cut_off_account_detail->coa->subledger_type == get_class(new FixedAsset())) {
                     // self::accountFixedAsset($cut_off_account, $cut_off_account_detail);
-                    self::accountNonSubledger($cut_off_account, $cut_off_account_detail);
+                    // self::accountNonSubledger($cut_off_account, $cut_off_account_detail);
                 }
             } else {
                 // insert coa non subledger account
