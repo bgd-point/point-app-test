@@ -120,7 +120,13 @@ class TempDataHelper extends Facade
      */
     public static function remove($id)
     {
-        return Temp::find($id)->delete();
+        \Log::info($id);
+        if ($id) {
+            $temp = Temp::find($id);
+            if ($temp) {
+                return $temp->delete();
+            }
+        }
     }
 
     protected static function getFacadeAccessor()
