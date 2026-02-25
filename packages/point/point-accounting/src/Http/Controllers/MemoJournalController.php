@@ -231,7 +231,7 @@ class MemoJournalController extends Controller
             $list_journal = Journal::joinCoa()->where('coa.has_subledger', '=', 1)
                 ->where('coa.id', $coa_id)
                 ->orderBy('journal.id', 'desc')
-                ->limit(100)
+                ->limit(1000)
                 ->get();
             
             \Log::info('vvvv 1');
