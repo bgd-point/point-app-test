@@ -43,6 +43,8 @@ class CutOffInventoryHelper
         $cut_off_inventory->save();
 
         $details = TempDataHelper::get('cut.off.inventory', auth()->user()->id);
+
+        dd($details);
         $coa_temp = [];
         foreach ($details as $inventory) {
             $cut_off_inventory_detail = new CutOffInventoryDetail;
