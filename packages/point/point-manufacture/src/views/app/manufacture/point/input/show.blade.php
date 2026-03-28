@@ -200,11 +200,11 @@
                                 <div class="form-group">
                                     <div class="col-md-12">
                                         <!-- <a href="{{url('manufacture/point/process-io/'. $input->process_id .'/input/'.$input->id.'/edit')}}"
-                                           class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a>
+                                           class="btn btn-effect-ripple btn-info"><i class="fa fa-pencil"></i> Edit</a> -->
                                         <a href="javascript:void(0)" class="btn btn-effect-ripple btn-danger"
                                            onclick="secureCancelForm('{{url('formulir/cancel')}}',
                                            {{$input->formulir_id}},'delete.point.manufacture.input')">
-                                            <i class="fa fa-times"></i> Cancel</a> -->
+                                            <i class="fa fa-times"></i> Cancel</a>
                                     </div>
                                 </div>
                             </fieldset>
