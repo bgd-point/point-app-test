@@ -50,7 +50,7 @@ class ReceiveItemHelper
         foreach ($transfer_item->items as $transfer_item_detail) {
             // JOURNAL #1 of #2 - Invetory Received
             $journal = new Journal();
-            $journal->form_date = $transfer_item->formulir->form_date;
+            $journal->form_date = date('Y-m-d H:i:s');
             $journal->coa_id = $transfer_item_detail->item->account_asset_id;
             $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
             $journal->debit = $transfer_item_detail->cogs * $transfer_item_detail->qty_received;
@@ -64,7 +64,7 @@ class ReceiveItemHelper
             // JOURNAL #2 of #2 - Inventory In Transit
             $in_transit_account = JournalHelper::getAccount('point inventory transfer item', 'inventory in transit');
             $journal = new Journal();
-            $journal->form_date = $transfer_item->formulir->form_date;
+            $journal->form_date = date('Y-m-d H:i:s');
             $journal->coa_id = $in_transit_account;
             $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
             $journal->debit = 0;
