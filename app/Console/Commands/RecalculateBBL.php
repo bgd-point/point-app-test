@@ -117,7 +117,7 @@ class RecalculateBBL extends Command
                     $l_inventory->save();
                     $totalQty = (float) $l_inventory->total_quantity;
                     $totalValue = $l_inventory->total_value;
-                    $prevCogs = $l_inventory->cogs;
+                    // $prevCogs = $l_inventory->cogs;
                 }
 
                 if ((float) $l_inventory->total_quantity <= 0) {
