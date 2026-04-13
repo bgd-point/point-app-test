@@ -43,7 +43,7 @@ class InventoryHelper
 
     public static function getOpeningStock($date_from, $item_id, $warehouse_id)
     {
-$opname = Inventory::where('item_id', '=', $item_id)
+        $opname = Inventory::where('item_id', '=', $item_id)
           ->join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
           ->where('inventory.form_date', '<', $date_from)
           ->where('inventory.warehouse_id', '=', $warehouse_id)
@@ -132,7 +132,7 @@ $opname = Inventory::where('item_id', '=', $item_id)
 
     public static function getOpeningStockAll($date_from, $item_id)
     {
-$opname = Inventory::where('item_id', '=', $item_id)
+        $opname = Inventory::where('item_id', '=', $item_id)
           ->join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
           ->where('inventory.form_date', '<', $date_from)
           ->where('formulir.formulirable_type', 'like', '%StockOpname%')
@@ -252,7 +252,6 @@ $opname = Inventory::where('item_id', '=', $item_id)
     {
         $inventory = Inventory::where('item_id', '=', $item_id)
             ->where('form_date', '<=', $date)
-            ->where('warehouse_id', '=', $warehouse_id)
             ->orderBy('form_date', 'desc')
             ->first();
 
@@ -374,7 +373,6 @@ $opname = Inventory::where('item_id', '=', $item_id)
     {
         $last = Inventory::where('item_id', '=', $this->inventory->item_id)
             ->where('form_date', '<=', $this->inventory->form_date)
-            ->where('warehouse_id', '=', $this->inventory->warehouse_id)
             ->orderBy('form_date', 'desc')
             ->orderBy('id', 'desc')
             ->first();
@@ -408,10 +406,16 @@ $opname = Inventory::where('item_id', '=', $item_id)
             throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE');
         }
 
-        $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
-        $this->inventory->total_value = $last->total_value + ($this->inventory->quantity * $last->cogs);
+        $cogs = Inventory::where('item_id', '=', $this->inventory->item_id)
+            ->where('form_date', '<=', $this->inventory->form_date)
+            ->orderBy('form_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
 
-        $this->inventory->cogs = $last->cogs;
+        $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
+        $this->inventory->total_value = $last->total_value + ($this->inventory->quantity * $cogs->cogs);
+
+        $this->inventory->cogs = $cogs->cogs;
     }
 
     private function markRecalculate()
