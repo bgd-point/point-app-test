@@ -44,7 +44,6 @@ class RecalculateBBL extends Command
         Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('inventory.quantity', 0)
             ->where('formulir.formulirable_type', '!=', 'Point\PointInventory\Models\StockOpname\StockOpname')
-            ->where('inventory.item_id', '=', 606)
             ->delete();
         
         $inventories = Inventory::orderBy('form_date', 'asc')
@@ -53,9 +52,13 @@ class RecalculateBBL extends Command
                 return $inventory['item_id'];
             });
 
+        $this->comment(count($inventories));
+
         foreach ($inventories as $inventory) {
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
+                ->where('form_date', '>', '2025-11-01')
+                ->where('form_date', '<', '2025-11-10')
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->get();
