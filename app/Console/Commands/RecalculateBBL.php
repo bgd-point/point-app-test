@@ -66,6 +66,7 @@ class RecalculateBBL extends Command
 
             $prevCogs = 0;
             foreach($list_inventory as $index => $l_inventory) {
+                $this->comment($l_inventory->id . ' = ' . $l_inventory->form_date . ' = ' . $cogs . ' / ' . $prevCogs);
                 if ($index == 0) {
                     $l_inventory->total_quantity = $l_inventory->quantity;
                     $totalQty = (float) $l_inventory->total_quantity;
@@ -96,7 +97,6 @@ class RecalculateBBL extends Command
                     $totalQty = (float) $l_inventory->total_quantity;
                     $prevCogs = $l_inventory->cogs;
                 } else {
-                    $this->comment($l_inventory->id . ' = ' . $l_inventory->form_date . ' = ' . $cogs . ' / ' . $prevCogs);
                     $l_inventory->recalculate = 0;
                     // if value 0 from output
                     if ($l_inventory->price == 0) {
