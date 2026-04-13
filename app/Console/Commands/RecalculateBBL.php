@@ -44,6 +44,7 @@ class RecalculateBBL extends Command
         Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('inventory.quantity', 0)
             ->where('formulir.formulirable_type', '!=', 'Point\PointInventory\Models\StockOpname\StockOpname')
+            ->where('inventory.item_id', '=', 606)
             ->delete();
         
         $inventories = Inventory::orderBy('form_date', 'asc')
@@ -54,7 +55,8 @@ class RecalculateBBL extends Command
 
         foreach ($inventories as $inventory) {
             $list_inventory = Inventory::with('formulir')
-                ->where('item_id', '=', $inventory->item_id)
+                // ->where('item_id', '=', $inventory->item_id)
+                ->where('item_id', '=', 606)
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->get();
@@ -91,6 +93,7 @@ class RecalculateBBL extends Command
                     $totalQty = (float) $l_inventory->total_quantity;
                     $prevCogs = $l_inventory->cogs;
                 } else {
+                    $this->comment($l_inventory->id, $cogs, $prevCogs);
                     $l_inventory->recalculate = 0;
                     // if value 0 from output
                     if ($l_inventory->price == 0) {
