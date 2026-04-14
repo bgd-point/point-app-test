@@ -107,6 +107,7 @@ class RecalculateBBL extends Command
                     if ($l_inventory->quantity > 0 && StockCorrection::class) {
                         $this->comment('1b ' . $prevCogs);
                         $l_inventory->price = $prevCogs;
+                        $l_inventory->cogs = $prevCogs;
                     }
                     $l_inventory->total_quantity = (float) $totalQty + (float) $l_inventory->quantity;
                     $l_inventory->total_value = $totalValue + ($l_inventory->quantity * $l_inventory->price);
