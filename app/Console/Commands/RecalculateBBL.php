@@ -8,6 +8,7 @@ use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Master\Allocation;
+use Point\PointInventory\Models\StockCorrection\StockCorrection;
 use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\StockOpname\StockOpnameItem;
 use Point\PointInventory\Models\TransferItem\TransferItem;
@@ -100,8 +101,12 @@ class RecalculateBBL extends Command
                     $l_inventory->recalculate = 0;
                     // if value 0 from output
                     if ($l_inventory->price == 0) {
-                        $this->comment(1);
+                        $this->comment('1a');
                         $l_inventory->price = $cogs;
+                    }
+                    if ($l_inventory->quantity > 0 && StockCorrection::class) {
+                        $this->comment('1b');
+                        $l_inventory->price = $prevCogs;
                     }
                     $l_inventory->total_quantity = (float) $totalQty + (float) $l_inventory->quantity;
                     $l_inventory->total_value = $totalValue + ($l_inventory->quantity * $l_inventory->price);
