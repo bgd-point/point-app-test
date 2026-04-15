@@ -57,7 +57,10 @@ class RecalculateTest extends Command
 
         \DB::beginTransaction();
 
-        $inventories = Inventory::orderBy('form_date', 'asc')
+        $inventories = Inventory::where('item_id', '=', 606)
+            ->where('form_date', '>', '2025-11-01')
+            ->where('form_date', '<', '2025-11-10')
+            ->orderBy('form_date', 'asc')
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'];
