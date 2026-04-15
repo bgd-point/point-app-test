@@ -36,6 +36,7 @@ class Kernel extends ConsoleKernel
         Commands\ReHppBBL::class,
         Commands\ReHppBBL::class,
         Commands\RecalculateBBL::class,
+        Commands\RecalculateJournalHpp::class,
         Commands\RecalculateTest::class,
         Commands\RecalculateDate::class,
         // Commands\Recalculate::class,
