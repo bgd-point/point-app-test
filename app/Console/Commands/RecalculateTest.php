@@ -86,6 +86,13 @@ class RecalculateTest extends Command
                     $iValue = round(abs($l_inventory->quantity * $l_inventory->price),4);
                     if ($jValue !== $iValue) {
                         $this->comment($journal->id . ' = ' . $iValue . ' != ' . $jValue . ' = ' . $journal->coa->coa_number . ' = ' . $journal->coa->name);
+
+                        if ($journal->debit > 0) {
+                            $journal->debit = $iValue;
+                        } else {
+                            $journal->credit = $iValue;
+                        }
+                        $journal->save();
                     }
                 }
             }
