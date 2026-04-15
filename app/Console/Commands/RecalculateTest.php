@@ -57,52 +57,16 @@ class RecalculateTest extends Command
 
         \DB::beginTransaction();
 
-        $inventories = Inventory::where('item_id', '=', 606)
-            ->where('form_date', '>', '2025-11-01')
-            ->where('form_date', '<', '2025-11-10')
-            ->orderBy('form_date', 'asc')
-            ->get()
-            ->unique(function ($inventory) {
-                return $inventory['item_id'];
-            });
+        $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
+            ->join('formulir', 'formulir.id', '=', 'journal.form_journal_id')
+            ->where('formulir.formulirable_type', '=', 'Point\PointManufacture\Models\OutputProcess')
+            ->where('journal.debit', '>', 0)
+            ->select('journal.*')
+            ->get();
 
-        foreach ($inventories as $inventory) {
-
-            $list_inventory = Inventory::with('formulir')
-                ->where('inventory.item_id', $inventory->item_id)
-                ->where('form_date', '>', '2025-11-01')
-                ->where('form_date', '<', '2025-11-10')
-                ->orderBy('form_date', 'asc')
-                ->orderBy('formulir_id', 'asc')
-                ->get();
-
-            $this->comment('INVENTORY ' . $inventory->item_id);
-
-            foreach($list_inventory as $index => $l_inventory) {
-                $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
-                    ->where('journal.form_journal_id', '=', $l_inventory->formulir_id)
-                    ->where('journal.subledger_id', '>', 0)
-                    ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
-                    ->select('journal.*')
-                    ->get();
-
-                foreach($journals as $journal) {
-                    $jValue = round(abs($journal->debit + $journal->credit),4);
-                    $iValue = round(abs($l_inventory->quantity * $l_inventory->price),4);
-                    if ($jValue !== $iValue) {
-                        $this->comment($journal->id . ' = ' . $iValue . ' != ' . $jValue . ' = ' . $journal->coa->coa_number . ' = ' . $journal->coa->name);
-
-                        if ($journal->debit > 0) {
-                            $this->comment($journal->id . ' = ' . $iValue . ' (DEBIT FIXED) ');
-                            $journal->debit = $iValue;
-                        } else {
-                            $this->comment($journal->id . ' = ' . $iValue . ' (CREDIT FIXED) ');
-                            $journal->credit = $iValue;
-                        }
-                        $journal->save();
-                    }
-                }
-            }
+        foreach($journals as $journal) {
+            $inventory = Inventory::where('formulir_id', '=', $journal->form_journal_id)->get();
+            $this->comment($journal->id . ' = ' . $journal->debit . ' = ' . count($inventory));
         }
 
         \DB::commit(); 

@@ -94,7 +94,7 @@ class RecalculateJournalHpp extends Command
                             $this->comment($journal->id . ' = ' . $iValue . ' (CREDIT FIXED) ');
                             $journal->credit = $iValue;
                         }
-                        // $journal->save();
+                        $journal->save();
                     }
                 }
             }
