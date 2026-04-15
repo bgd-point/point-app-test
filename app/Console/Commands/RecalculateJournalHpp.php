@@ -91,7 +91,7 @@ class RecalculateJournalHpp extends Command
                             $this->comment($journal->id . ' = ' . $iValue . ' (DEBIT FIXED) ');
                             $journal->debit = $iValue;
 
-                            $j = Journal::where('formulir_id', '=', $journal->form_journal_id)
+                            $j = Journal::where('form_journal_id', '=', $journal->form_journal_id)
                                 ->where('coa_id', '=', 385)
                                 ->get();
 
@@ -100,7 +100,7 @@ class RecalculateJournalHpp extends Command
                             $this->comment($journal->id . ' = ' . $iValue . ' (CREDIT FIXED) ');
                             $journal->credit = $iValue;
 
-                            $j = Journal::where('formulir_id', '=', $journal->form_journal_id)
+                            $j = Journal::where('form_journal_id', '=', $journal->form_journal_id)
                                 ->where('coa_id', '=', 385)
                                 ->get();
 
