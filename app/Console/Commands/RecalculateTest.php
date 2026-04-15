@@ -71,7 +71,19 @@ class RecalculateTest extends Command
 
             // $inventory->price = $journal->debit / $inventory->quantity;
             // $inventory->save();
-            $this->comment($journal->id . ' = ' . $journal->form_journal_id . ' = ' . $inventory->price . ' = ' . $journal->debit / $inventory->quantity);
+            $this->comment($journal->id . ' & ' . $journal->form_journal_id . ' = ' . $inventory->price . ' = ' . $journal->debit / $inventory->quantity);
+
+            // $journal = new Journal();
+            // $journal->form_date = $inventory->formulir->form_date;
+            // $journal->coa_id = $inventory->item->account_asset_id;
+            // $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
+            // $journal->debit = 0;
+            // $journal->credit = abs($inventory->quantity * $inventory->price);
+            // $journal->form_journal_id = $inventory->formulir->id;
+            // $journal->form_reference_id;
+            // $journal->subledger_id = $inventory->item_id;
+            // $journal->subledger_type = get_class($inventory->item);
+            // $journal->save();
         }
 
         \DB::commit(); 
