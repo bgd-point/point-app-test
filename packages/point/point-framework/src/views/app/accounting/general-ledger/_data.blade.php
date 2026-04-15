@@ -51,9 +51,9 @@
                     @else
                     <td>{{ $journal->description }}</td>
                 @endif
-                <td style="text-align:right">{{ $journal->debit }}</td>
-                <td style="text-align:right">{{ $journal->credit }}</td>
-                <td style="text-align:right">{{ $balance }}</td>
+                <td style="text-align:right">{{ number_format_accounting($journal->debit, 4) }}</td>
+                <td style="text-align:right">{{ number_format_accounting($journal->credit, 4) }}</td>
+                <td style="text-align:right">{{ number_format_accounting($balance, 4) }}</td>
             </tr>
         @endforeach
     </tbody>
