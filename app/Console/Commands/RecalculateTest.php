@@ -12,6 +12,7 @@ use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\StockOpname\StockOpnameItem;
 use Point\PointInventory\Models\TransferItem\TransferItem;
 use Point\PointSales\Models\Sales\Retur;
+use Point\Framework\Models\Journal;
 
 /**
  * Class RecalculateTest
@@ -59,95 +60,31 @@ class RecalculateTest extends Command
         $inventories = Inventory::orderBy('form_date', 'asc')
             ->get()
             ->unique(function ($inventory) {
-                return $inventory['item_id'].$inventory['warehouse_id'];
+                return $inventory['item_id']
             });
 
         foreach ($inventories as $inventory) {
 
             $list_inventory = Inventory::with('formulir')
                 ->where('inventory.item_id', $inventory->item_id)
-                ->where('inventory.warehouse_id', $inventory->warehouse_id)
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->get();
 
-            $prevCogs = 0;
-            $prevTotalQty = 0;
-            $prevTotalValue = 0;
-
-            $this->comment($inventory->item_id . ' : ' . $inventory->warehouse_id);
+            $this->comment('INVENTORY ' . $inventory->item_id);
 
             foreach($list_inventory as $index => $l_inventory) {
-                $l_inventory->recalculate = 0;
+                $journals = Journal::where('form_journal_id', '=', $l_inventory->formulir_id)
+                    ->where('subledger_id', '>', 0)
+                    ->get();
 
-    
-                // Handle the very first transaction to establish the baseline
-                if ($index == 0) {
-                    $l_inventory->total_quantity = (float) $l_inventory->quantity;
-                    $l_inventory->total_value = (float) $l_inventory->quantity * (float) $l_inventory->price;
-                    // COGS is calculated based on the initial total value / total quantity
-                    if ((float) $l_inventory->total_quantity == 0) {
-                        $l_inventory->cogs = 0;
-                    } else {
-                        $l_inventory->cogs = (float) $l_inventory->total_value / (float) $l_inventory->total_quantity;
-                    }
-    
-                // Handle Stock Opname transactions
-                } else if ($l_inventory->formulir->formulirable_type == StockOpname::class) {
-                    // If SO quantity is negative, it's costed at the previous average cost
-                    if ((float) $l_inventory->quantity < 0) {
-                        $l_inventory->price = $prevCogs;
-                        $l_inventory->cogs = $prevCogs;
-                    }
-                    // NOTE: The total_quantity is not updated here, which may be a bug in the original logic.
-                    // NOTE: The total_value calculation is flawed as it uses $l_inventory->total_quantity before updating it.
-                    $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
-    
-                // Handle Sales Return transactions (output)
-                } else if ($l_inventory->formulir->formulirable_type == Retur::class) {
-                    // Output transactions (like Retur) are costed at the previous average cost
-                    $l_inventory->price = $prevCogs;
-                    $l_inventory->cogs = $prevCogs;
-    
-                // Handle all other transactions (Inputs and regular Outputs)
-                } else {
-                    // For output transactions (quantity < 0), use the previous average cost (MAC)
-                    if ((float) $l_inventory->quantity < 0) {
-                        $l_inventory->price = $prevCogs;
-                        $l_inventory->cogs = $prevCogs;
-                    }
-    
-                    // Calculate the new running total quantity
-                    $l_inventory->total_quantity = (float) $l_inventory->quantity + $prevTotalQty;
-    
-                    if ($l_inventory->total_quantity > 0) {
-                        // Calculate the new running total value (Transaction Value + Previous Total Value)
-                        $l_inventory->total_value = (float) $l_inventory->quantity * (float) $l_inventory->price + $prevTotalValue;
-                        
-                        // Calculate the new Moving Average Cost (MAC)
-                        $l_inventory->cogs = (float) $l_inventory->total_value / (float) $l_inventory->total_quantity;
-                    } else {
-                        $l_inventory->total_value = 0;
-                        $l_inventory->cogs = 0;
+                foreach($journals as $journal) {
+                    $jValue = $journal->debit + $journal->credit;
+                    $iValue = $l_inventory->quantity * $l_inventory->price;
+                    if ($jValue !== $iValue) {
+                        $this->comment($journal->id . ' = ' . $iValue . ' != ' . $jValue);
                     }
                 }
-    
-                // Update the rolling tracking variables for the next iteration
-                $prevCogs = (float) $l_inventory->cogs;
-                $prevTotalQty = (float) $l_inventory->total_quantity;
-                $prevTotalValue = (float) $l_inventory->total_value;
-    
-                // Final check to ensure value is zero if stock is zero or less
-                if ((float) $l_inventory->total_quantity <= 0) {
-                    $l_inventory->total_value = 0;
-                }
-    
-                // Flag for potential attention if stock goes negative
-                if ((float) $l_inventory->total_quantity < 0) {
-                    $l_inventory->recalculate = 1;
-                }
-    
-                $l_inventory->save();
             }
         }
 
