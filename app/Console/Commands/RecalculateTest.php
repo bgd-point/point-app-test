@@ -77,6 +77,7 @@ class RecalculateTest extends Command
                 $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
                     ->where('journal.form_journal_id', '=', $l_inventory->formulir_id)
                     ->where('journal.subledger_id', '>', 0)
+                    ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
                     ->select('journal.*')
                     ->get();
 
