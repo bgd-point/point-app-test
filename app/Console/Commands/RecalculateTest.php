@@ -90,7 +90,7 @@ class RecalculateTest extends Command
                     $jValue = round(abs($journal->debit + $journal->credit),4);
                     $iValue = round(abs($l_inventory->quantity * $l_inventory->price),4);
                     if ($jValue !== $iValue) {
-                        // $this->comment($journal->id . ' = ' . $iValue . ' != ' . $jValue . ' = ' . $journal->coa->coa_number . ' = ' . $journal->coa->name);
+                        $this->comment($journal->id . ' = ' . $iValue . ' != ' . $jValue . ' = ' . $journal->coa->coa_number . ' = ' . $journal->coa->name);
 
                         if ($journal->debit > 0) {
                             $this->comment($journal->id . ' = ' . $iValue . ' (DEBIT FIXED) ');
