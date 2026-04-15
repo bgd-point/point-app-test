@@ -67,7 +67,8 @@ class RecalculateTest extends Command
         foreach($journals as $journal) {
             $inventory = Inventory::where('formulir_id', '=', $journal->form_journal_id)
                 ->where('item_id', '=', $journal->subledger_id)
-                ->get();
+                ->first();
+                
             $total = $inventory->quantity * $inventory->price;
             $this->comment($journal->id . ' = ' . $journal->debit . ' = ' . $total);
         }
