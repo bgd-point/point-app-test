@@ -71,7 +71,7 @@ class RecalculateTest extends Command
 
             $inventory->price = $journal->debit / $inventory->quantity;
             // $inventory->save();
-            $this->comment($journal->id . ' = ' . $journal->formulir_id . ' = ' . $inventory->price);
+            $this->comment($journal->id . ' = ' . $journal->form_journal_id . ' = ' . $inventory->price);
         }
 
         \DB::commit(); 
