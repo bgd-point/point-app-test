@@ -53,18 +53,16 @@
                         $cogs = $opening_inventory ? $opening_inventory->cogs : 0;
                         ?>
                         <tr>
-                            @if(!$warehouse) <td>{{$opening_inventory ? $opening_inventory->warehouse->name : '-' }}</td> @endif
-                            <td>
-                                -
-                            </td>
-                            <td>-</td>
+                            @if(!$warehouse) <td>{{$opening_inventory ? $opening_inventory->warehouse->name : '' }}</td> @endif
+                            <td></td>
+                            <td></td>
                             <td>{{date_format_view($date_from)}}</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>{{number_format_quantity($cogs)}}</td>
-                            <td>{{number_format_quantity($total_quantity)}}</td>
-                            <td>{{number_format_quantity($total_value)}}</td>
+                            <td style="text-align:right"></td>
+                            <td style="text-align:right"></td>
+                            <td style="text-align:right"></td>
+                            <td style="text-align:right">{{number_format_quantity($cogs)}}</td>
+                            <td style="text-align:right">{{number_format_quantity($total_quantity)}}</td>
+                            <td style="text-align:right">{{number_format_quantity($total_value)}}</td>
                         </tr>
                         @foreach($list_inventory as $inventory)
                             <?php $total_quantity += $inventory->quantity ?>

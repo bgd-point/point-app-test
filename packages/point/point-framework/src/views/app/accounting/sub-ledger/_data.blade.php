@@ -4,9 +4,9 @@
             <th>Date</th>
             <th>Reference</th>
             <th>Description</th>
-            <th>Debit</th>
-            <th>Credit</th>
-            <th>Balance</th>
+            <th style="text-align:right">Debit</th>
+            <th style="text-align:right">Credit</th>
+            <th style="text-align:right">Balance</th>
         </tr>
     </thead>
     <tbody>
@@ -31,9 +31,9 @@
             <td></td>
             <td></td>
             @if(\Input::get('subledger_id'))
-            <td>{{ number_format_accounting($opening_balance) }}</td>
+            <td style="text-align:right">{{ number_format_accounting($opening_balance, 4) }}</td>
             @else
-            <td>{{ number_format_accounting($opening_balance) }}</td>
+            <td style="text-align:right">{{ number_format_accounting($opening_balance, 4) }}</td>
             @endif
         </tr>
         
@@ -54,9 +54,9 @@
             <td>{{ date_format_view($journal->form_date) }}</td>
             <td>{{ $journal->formulir->form_number }}</td>
             <td>{{ $journal->description }}</td>
-            <td>{{ number_format_accounting($journal->debit) }}</td>
-            <td>{{ number_format_accounting($journal->credit) }}</td>
-            <td>{{ number_format_accounting($balance) }}</td>
+            <td style="text-align:right">{{ number_format_accounting($journal->debit, 4) }}</td>
+            <td style="text-align:right">{{ number_format_accounting($journal->credit, 4) }}</td>
+            <td style="text-align:right">{{ number_format_accounting($balance, 4) }}</td>
         </tr>
         @endforeach
         @endif

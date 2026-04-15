@@ -5,9 +5,9 @@
             <th>Reference</th>
             <th>Master</th>
             <th>Description</th>
-            <th>Debit</th>
-            <th>Credit</th>
-            <th>Balance</th>
+            <th style="text-align:right">Debit</th>
+            <th style="text-align:right">Credit</th>
+            <th style="text-align:right">Balance</th>
         </tr>
     </thead>
     <tbody>
@@ -19,7 +19,7 @@
             <td>OPENING BALANCE</td>
             <td></td>
             <td></td>
-            <td>{{ number_format_accounting($balance)}}</td>
+            <td style="text-align:right">{{ number_format_accounting($balance, 4)}}</td>
         </tr>
 
         @foreach($journals as $journal)
@@ -51,9 +51,9 @@
                     @else
                     <td>{{ $journal->description }}</td>
                 @endif
-                <td>{{ number_format_accounting($journal->debit) }}</td>
-                <td>{{ number_format_accounting($journal->credit) }}</td>
-                <td>{{ number_format_accounting($balance) }}</td>
+                <td style="text-align:right">{{ number_format_accounting($journal->debit, 4) }}</td>
+                <td style="text-align:right">{{ number_format_accounting($journal->credit, 4) }}</td>
+                <td style="text-align:right">{{ number_format_accounting($balance, 4) }}</td>
             </tr>
         @endforeach
     </tbody>
