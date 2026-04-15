@@ -43,10 +43,10 @@ class NumberHelper
      * @param  double $number
      * @return string
      */
-    public static function formatAccounting($number)
+    public static function formatAccounting($number, $decimal = 2)
     {
         $original_number = $number;
-        $number = number_format(abs($number), 2, '.', ',');
+        $number = number_format(abs($number), $decimal, '.', ',');
         return $original_number < 0 ? "(" . $number . ")" : $number;
     }
 
