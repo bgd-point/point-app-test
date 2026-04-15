@@ -19,7 +19,7 @@ class NumberHelper
     /**
      * Convert number from database to price format
      * @param  double $number
-     * @param  int $decimal =2
+     * @param  int $decimal=2
      * @return double
      */
     public static function formatPrice($number, $decimal = 2)
@@ -30,7 +30,7 @@ class NumberHelper
     /**
      * Convert number from database to quantity format
      * @param  double $number
-     * @param  int $decimal =2
+     * @param  int $decimal=2
      * @return double
      */
     public static function formatQuantity($number, $decimal = 2)
@@ -41,6 +41,7 @@ class NumberHelper
     /**
      * Convert number from database to accounting format
      * @param  double $number
+     * @param  int $decimal=2
      * @return string
      */
     public static function formatAccounting($number, $decimal = 2)
