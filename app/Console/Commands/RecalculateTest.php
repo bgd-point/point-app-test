@@ -83,7 +83,7 @@ class RecalculateTest extends Command
 
                 foreach($journals as $journal) {
                     $jValue = round(abs($journal->debit + $journal->credit),4);
-                    $iValue = round($l_inventory->quantity * $l_inventory->price,4);
+                    $iValue = round(abs($l_inventory->quantity * $l_inventory->price),4);
                     if ($jValue !== $iValue) {
                         $this->comment($journal->id . ' = ' . $iValue . ' != ' . $jValue . ' = ' . $journal->coa->coa_number . ' = ' . $journal->coa->name);
                     }
