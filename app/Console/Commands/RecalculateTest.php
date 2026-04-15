@@ -74,15 +74,17 @@ class RecalculateTest extends Command
             $this->comment('INVENTORY ' . $inventory->item_id);
 
             foreach($list_inventory as $index => $l_inventory) {
-                $journals = Journal::where('form_journal_id', '=', $l_inventory->formulir_id)
-                    ->where('subledger_id', '>', 0)
+                $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
+                    ->where('journal.form_journal_id', '=', $l_inventory->formulir_id)
+                    ->where('journal.subledger_id', '>', 0)
+                    ->select('journal.*')
                     ->get();
 
                 foreach($journals as $journal) {
-                    $jValue = $journal->debit + $journal->credit;
+                    $jValue = abs($journal->debit + $journal->credit);
                     $iValue = $l_inventory->quantity * $l_inventory->price;
                     if ($jValue !== $iValue) {
-                        $this->comment($journal->id . ' = ' . $iValue . ' != ' . $jValue);
+                        $this->comment($journal->id . ' = ' . $iValue . ' != ' . $jValue . ' = ' . $journal->coa->coa_number . ' = ' . $journal->coa->name);
                     }
                 }
             }
