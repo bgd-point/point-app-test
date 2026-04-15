@@ -60,7 +60,7 @@ class RecalculateTest extends Command
         $inventories = Inventory::orderBy('form_date', 'asc')
             ->get()
             ->unique(function ($inventory) {
-                return $inventory['item_id']
+                return $inventory['item_id'];
             });
 
         foreach ($inventories as $inventory) {
