@@ -54,9 +54,9 @@ if (! function_exists('number_format_accounting')) {
      * @param $number
      * @return string
      */
-    function number_format_accounting($number)
+    function number_format_accounting($number, $decimal = 2)
     {
-        return NumberHelper::formatAccounting($number);
+        return NumberHelper::formatAccounting($number, $decimal);
     }
 }
 
