@@ -69,7 +69,7 @@ class RecalculateTest extends Command
                 ->where('item_id', '=', $journal->subledger_id)
                 ->first();
 
-            $inventory->price = $journal->debit / $inventory->quantity;
+            $inventory->price = number_format_db($journal->debit / $inventory->quantity);
             // $inventory->save();
             $this->comment($journal->id . ' = ' . $journal->form_journal_id . ' = ' . $inventory->price);
         }
