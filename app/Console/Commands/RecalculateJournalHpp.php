@@ -90,11 +90,23 @@ class RecalculateJournalHpp extends Command
                         if ($journal->debit > 0) {
                             $this->comment($journal->id . ' = ' . $iValue . ' (DEBIT FIXED) ');
                             $journal->debit = $iValue;
+
+                            $j = Journal::where('formulir_id', '=', $journal->form_journal_id)
+                                ->where('coa_id', '=', 385)
+                                ->get();
+
+                            $this->comment($journal->form_journal_id . ' = ' . count($j));
                         } else {
                             $this->comment($journal->id . ' = ' . $iValue . ' (CREDIT FIXED) ');
                             $journal->credit = $iValue;
+
+                            $j = Journal::where('formulir_id', '=', $journal->form_journal_id)
+                                ->where('coa_id', '=', 385)
+                                ->get();
+
+                            $this->comment($journal->form_journal_id . ' = ' . count($j));
                         }
-                        $journal->save();
+                        // $journal->save();
                     }
                 }
             }
