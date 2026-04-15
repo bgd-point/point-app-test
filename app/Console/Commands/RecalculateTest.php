@@ -68,9 +68,10 @@ class RecalculateTest extends Command
             $inventory = Inventory::where('formulir_id', '=', $journal->form_journal_id)
                 ->where('item_id', '=', $journal->subledger_id)
                 ->first();
-                
-            $total = $inventory->quantity * $inventory->price;
-            $this->comment($journal->id . ' = ' . $journal->debit . ' = ' . $total);
+
+            $inventory->price = $journal->debit / $inventory->quantity;
+            // $inventory->save();
+            $this->comment($journal->id . ' = ' . $journal->formulir_id . ' = ' . $inventory->price);
         }
 
         \DB::commit(); 
