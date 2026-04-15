@@ -76,7 +76,7 @@ class RecalculateJournalHpp extends Command
             foreach($list_inventory as $index => $l_inventory) {
                 $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
                     ->where('journal.form_journal_id', '=', $l_inventory->formulir_id)
-                    ->where('journal.subledger_id', '>', 0)
+                    ->where('journal.subledger_id', '=', $l_inventory->item_id)
                     ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
                     ->select('journal.*')
                     ->get();
@@ -94,7 +94,7 @@ class RecalculateJournalHpp extends Command
                             $this->comment($journal->id . ' = ' . $iValue . ' (CREDIT FIXED) ');
                             $journal->credit = $iValue;
                         }
-                        $journal->save();
+                        // $journal->save();
                     }
                 }
             }
