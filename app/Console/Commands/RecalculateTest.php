@@ -65,7 +65,9 @@ class RecalculateTest extends Command
             ->get();
 
         foreach($journals as $journal) {
-            $inventory = Inventory::where('formulir_id', '=', $journal->form_journal_id)->get();
+            $inventory = Inventory::where('formulir_id', '=', $journal->form_journal_id)
+                ->where('item_id', '=', $journal->subledger_id)
+                ->get();
             $this->comment($journal->id . ' = ' . $journal->debit . ' = ' . count($inventory));
         }
 
