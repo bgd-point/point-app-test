@@ -57,58 +57,93 @@ class RecalculateTest extends Command
 
         \DB::beginTransaction();
 
-        $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
-            ->join('formulir', 'formulir.id', '=', 'journal.form_journal_id')
-            ->where('formulir.formulirable_type', '=', 'Point\PointManufacture\Models\OutputProcess')
-            ->where('journal.debit', '>', 0)
-            ->select('journal.*')
+        /**
+         * FIX OUTPUT SELISIH KOMA
+         */
+
+        // $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
+        //     ->join('formulir', 'formulir.id', '=', 'journal.form_journal_id')
+        //     ->where('formulir.formulirable_type', '=', 'Point\PointManufacture\Models\OutputProcess')
+        //     ->where('journal.debit', '>', 0)
+        //     ->select('journal.*')
+        //     ->get();
+
+        // foreach($journals as $journal) {
+        //     $inventory = Inventory::where('formulir_id', '=', $journal->form_journal_id)
+        //         ->where('item_id', '=', $journal->subledger_id)
+        //         ->first();
+
+        //     $a = $inventory->price * $inventory->quantity;
+        //     $b = $journal->debit;
+                
+        //     if ($a !== $b) {
+        //         $c = $b - $a;
+        //         $this->comment($journal->id . ' & ' . $journal->form_journal_id . ' = ' . $a . ' = ' . $b . ' = ' . ($b - $a));
+    
+        //         $j = new Journal();
+        //         $j->form_date = $journal->form_date;
+        //         $j->coa_id = $journal->coa_id;
+        //         $j->description = 'Pembulatan';
+        //         if ($c > 0) {
+        //             $j->debit = 0;
+        //             $j->credit = abs($c);
+        //         } else {
+        //             $j->debit = abs($c);
+        //             $j->credit = 0;
+        //         }
+        //         $j->form_journal_id = $journal->form_journal_id;
+        //         $j->form_reference_id = $journal->form_reference_id;
+        //         $j->subledger_id = $journal->subledger_id;
+        //         $j->subledger_type = $journal->subledger_type;
+        //         $j->save();
+                
+        //         $j = new Journal();
+        //         $j->form_date = $journal->form_date;
+        //         $j->coa_id = 472;
+        //         $j->description = 'Pembulatan';
+        //         if ($c > 0) {
+        //             $j->debit = abs($c);
+        //             $j->credit = 0;
+        //         } else {
+        //             $j->debit = 0;
+        //             $j->credit = abs($c);
+        //         }
+        //         $j->form_journal_id = $journal->form_journal_id;
+        //         $j->form_reference_id = $journal->form_reference_id;
+        //         $j->subledger_id = $journal->subledger_id;
+        //         $j->subledger_type = $journal->subledger_type;
+        //         $j->save();
+        //     }
+        // }
+
+        /**
+         * FIX INVENTORY COGS != JOURNAL
+         */
+
+        $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+            ->where('formulir.formulirable_type', '=', 'Point\PointSales\Models\Sales\Invoice')
+            ->select('inventory.*')
             ->get();
 
-        foreach($journals as $journal) {
-            $inventory = Inventory::where('formulir_id', '=', $journal->form_journal_id)
-                ->where('item_id', '=', $journal->subledger_id)
+        foreach($inventories as $inventory) {
+            $journal = Journal::where('coa_id', '=', 385)
+                ->where('form_journal_id', '=', $inventory->formulir_id)
+                ->where('journal.subledger_id', '=', $inventory->item_id)
+                ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
+                ->select('journal.*')
                 ->first();
 
-            $a = $inventory->price * $inventory->quantity;
-            $b = $journal->debit;
-                
-            if ($a !== $b) {
-                $c = $b - $a;
-                $this->comment($journal->id . ' & ' . $journal->form_journal_id . ' = ' . $a . ' = ' . $b . ' = ' . ($b - $a));
-    
-                $j = new Journal();
-                $j->form_date = $journal->form_date;
-                $j->coa_id = $journal->coa_id;
-                $j->description = 'Pembulatan';
-                if ($c > 0) {
-                    $j->debit = 0;
-                    $j->credit = abs($c);
-                } else {
-                    $j->debit = abs($c);
-                    $j->credit = 0;
-                }
-                $j->form_journal_id = $journal->form_journal_id;
-                $j->form_reference_id = $journal->form_reference_id;
-                $j->subledger_id = $journal->subledger_id;
-                $j->subledger_type = $journal->subledger_type;
-                $j->save();
-                
-                $j = new Journal();
-                $j->form_date = $journal->form_date;
-                $j->coa_id = 472;
-                $j->description = 'Pembulatan';
-                if ($c > 0) {
-                    $j->debit = abs($c);
-                    $j->credit = 0;
-                } else {
-                    $j->debit = 0;
-                    $j->credit = abs($c);
-                }
-                $j->form_journal_id = $journal->form_journal_id;
-                $j->form_reference_id = $journal->form_reference_id;
-                $j->subledger_id = $journal->subledger_id;
-                $j->subledger_type = $journal->subledger_type;
-                $j->save();
+            $jValue = round(abs($journal->debit + $journal->credit),4);
+            $iValue = round(abs($l_inventory->quantity * $l_inventory->price),4);
+
+            if ($iValue !== $jValue) {
+                $this->comment($journal->id . ' = ' . $inventory->id . ' | ' . $jValue . ' = ' . $iValue);
+            }
+            
+            if ($journal->debit > 0) {
+                // $this->comment($inventory->debit);
+            } else {
+
             }
         }
 
