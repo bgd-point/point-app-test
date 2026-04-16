@@ -69,30 +69,47 @@ class RecalculateTest extends Command
                 ->where('item_id', '=', $journal->subledger_id)
                 ->first();
 
-            // $inventory->price = $journal->debit / $inventory->quantity;
-            // $inventory->save();
             $a = $inventory->price * $inventory->quantity;
             $b = $journal->debit;
-
-            if (round($inventory->price, 4) !== round($journal->debit / $inventory->quantity, 4)) {
-                // $this->comment($journal->id . ' & ' . $journal->form_journal_id . ' = ' . $inventory->price . ' = ' . round($journal->debit / $inventory->quantity, 4));
-            }
                 
             if ($a !== $b) {
+                $c = $b - $a;
                 $this->comment($journal->id . ' & ' . $journal->form_journal_id . ' = ' . $a . ' = ' . $b . ' = ' . ($b - $a));
+    
+                $j = new Journal();
+                $j->form_date = $journal->form_date;
+                $j->coa_id = $journal->coa_id;
+                $j->description = 'Pembulatan';
+                if ($c > 0) {
+                    $j->debit = 0;
+                    $j->credit = abs($c);
+                } else {
+                    $j->debit = abs($c);
+                    $j->credit = 0;
+                }
+                $j->form_journal_id = $journal->form_journal_id;
+                $j->form_reference_id = $journal->form_reference_id;
+                $j->subledger_id = $journal->subledger_id
+                $j->subledger_type = $journal->subledger_type
+                $j->save();
+                
+                $j = new Journal();
+                $j->form_date = $journal->form_date;
+                $j->coa_id = 472;
+                $j->description = 'Pembulatan';
+                if ($c > 0) {
+                    $j->debit = abs($c);
+                    $j->credit = 0;
+                } else {
+                    $j->debit = 0;
+                    $j->credit = abs($c);
+                }
+                $j->form_journal_id = $journal->form_journal_id;
+                $j->form_reference_id = $journal->form_reference_id;
+                $j->subledger_id = $journal->subledger_id
+                $j->subledger_type = $journal->subledger_type
+                $j->save();
             }
-
-            // $journal = new Journal();
-            // $journal->form_date = $inventory->formulir->form_date;
-            // $journal->coa_id = $inventory->item->account_asset_id;
-            // $journal->description = 'Manufacture input process ' . $inventory->item->codeName;
-            // $journal->debit = 0;
-            // $journal->credit = abs($inventory->quantity * $inventory->price);
-            // $journal->form_journal_id = $inventory->formulir->id;
-            // $journal->form_reference_id;
-            // $journal->subledger_id = $inventory->item_id;
-            // $journal->subledger_type = get_class($inventory->item);
-            // $journal->save();
         }
 
         \DB::commit(); 
