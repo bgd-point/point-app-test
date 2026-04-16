@@ -48,10 +48,9 @@ class RecalculateBBL extends Command
             ->delete();
         
         $inventories = Inventory::orderBy('form_date', 'asc')
-            // ->where('item_id', '=', 606)
             ->get()
             ->unique(function ($inventory) {
-                return $inventory['item_id'];
+                return $inventory['item_id'].$inventory['warehouse_id'];
             });
 
         $this->comment(count($inventories));
@@ -59,6 +58,7 @@ class RecalculateBBL extends Command
         foreach ($inventories as $inventory) {
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
+                ->where('warehouse_id', '=', $inventory->warehouse_id)
                 // ->where('form_date', '>', '2025-11-01')
                 // ->where('form_date', '<', '2025-11-10')
                 ->orderBy('form_date', 'asc')
