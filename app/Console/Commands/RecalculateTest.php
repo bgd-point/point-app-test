@@ -157,12 +157,14 @@ class RecalculateTest extends Command
             } else {
                 $journal->credit = $iValue;
             }
+            $journal->save();
             
             if ($jHpp->debit > 0) {
                 $jHpp->debit = $iValue;
             } else {
                 $jHpp->credit = $iValue;
             }
+            $jHpp->save();
 
         }
 
