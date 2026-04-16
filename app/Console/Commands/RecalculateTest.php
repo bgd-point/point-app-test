@@ -133,6 +133,12 @@ class RecalculateTest extends Command
                 ->select('journal.*')
                 ->first();
 
+            // where('coa_id', '=', 385) => HPP
+            $jHpp = Journal::where('coa_id', '=', 385)
+                ->where('form_journal_id', '=', $inventory->formulir_id)
+                ->select('journal.*')
+                ->first();
+
             if (!$journal) {
                 $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
                 continue;
@@ -147,10 +153,17 @@ class RecalculateTest extends Command
             }
             
             if ($journal->debit > 0) {
-                // $this->comment($inventory->debit);
+                $journal->debit = $iValue;
             } else {
-
+                $journal->credit = $iValue;
             }
+            
+            if ($jHpp->debit > 0) {
+                $jHpp->debit = $iValue;
+            } else {
+                $jHpp->credit = $iValue;
+            }
+
         }
 
         \DB::commit(); 
