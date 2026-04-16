@@ -133,8 +133,14 @@ class RecalculateTest extends Command
                 ->select('journal.*')
                 ->first();
 
-            $jValue = round(abs($journal->debit + $journal->credit),4);
-            $iValue = round(abs($inventory->quantity * $inventory->price),4);
+            if (!$journal) {
+                $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
+                continue;
+            }
+
+
+            $jValue = round(abs($journal->debit + $journal->credit), 4);
+            $iValue = round(abs($inventory->quantity * $inventory->price), 4);
 
             if ($iValue !== $jValue) {
                 $this->comment($journal->id . ' = ' . $inventory->id . ' | ' . $jValue . ' = ' . $iValue);
