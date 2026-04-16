@@ -48,7 +48,7 @@ class RecalculateBBL extends Command
             ->delete();
         
         $inventories = Inventory::orderBy('form_date', 'asc')
-            ->where('item_id', '=', 606)
+            // ->where('item_id', '=', 606)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'];
