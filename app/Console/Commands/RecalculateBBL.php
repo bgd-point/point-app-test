@@ -123,7 +123,7 @@ class RecalculateBBL extends Command
                         $this->comment(4);
                         $cogs = $l_inventory->cogs;
                     }
-                    $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
+                    $l_inventory->total_value = $l_inventory->price * $l_inventory->total_quantity;
                     $l_inventory->save();
                     $totalQty = (float) $l_inventory->total_quantity;
                     $totalValue = $l_inventory->total_value;
