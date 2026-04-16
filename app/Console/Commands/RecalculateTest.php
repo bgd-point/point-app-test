@@ -79,7 +79,7 @@ class RecalculateTest extends Command
             }
                 
             if ($a !== $b) {
-                $this->comment($journal->id . ' & ' . $journal->form_journal_id . ' = ' . $a . ' = ' . $b);
+                $this->comment($journal->id . ' & ' . $journal->form_journal_id . ' = ' . $a . ' = ' . $b . ' / ' . $b - $a);
             }
 
             // $journal = new Journal();
