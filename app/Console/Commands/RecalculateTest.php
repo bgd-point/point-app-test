@@ -71,8 +71,15 @@ class RecalculateTest extends Command
 
             // $inventory->price = $journal->debit / $inventory->quantity;
             // $inventory->save();
+            $a = $inventory->price * $inventory->quantity;
+            $b = $journal->debit;
+
             if (round($inventory->price, 4) !== round($journal->debit / $inventory->quantity, 4)) {
-                $this->comment($journal->id . ' & ' . $journal->form_journal_id . ' = ' . $inventory->price . ' = ' . round($journal->debit / $inventory->quantity, 4));
+                // $this->comment($journal->id . ' & ' . $journal->form_journal_id . ' = ' . $inventory->price . ' = ' . round($journal->debit / $inventory->quantity, 4));
+            }
+                
+            if ($a !== $b) {
+                $this->comment($journal->id . ' & ' . $journal->form_journal_id . ' = ' . $a . ' = ' . $b);
             }
 
             // $journal = new Journal();
