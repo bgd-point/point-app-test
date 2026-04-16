@@ -89,8 +89,8 @@ class RecalculateTest extends Command
                 }
                 $j->form_journal_id = $journal->form_journal_id;
                 $j->form_reference_id = $journal->form_reference_id;
-                $j->subledger_id = $journal->subledger_id
-                $j->subledger_type = $journal->subledger_type
+                $j->subledger_id = $journal->subledger_id;
+                $j->subledger_type = $journal->subledger_type;
                 $j->save();
                 
                 $j = new Journal();
@@ -106,8 +106,8 @@ class RecalculateTest extends Command
                 }
                 $j->form_journal_id = $journal->form_journal_id;
                 $j->form_reference_id = $journal->form_reference_id;
-                $j->subledger_id = $journal->subledger_id
-                $j->subledger_type = $journal->subledger_type
+                $j->subledger_id = $journal->subledger_id;
+                $j->subledger_type = $journal->subledger_type;
                 $j->save();
             }
         }
