@@ -126,8 +126,8 @@ class RecalculateTest extends Command
             ->get();
 
         foreach($inventories as $inventory) {
-            $journal = Journal::where('coa_id', '=', 385)
-                ->where('form_journal_id', '=', $inventory->formulir_id)
+            // where('coa_id', '=', 385) => HPP
+            $journal = Journal::where('form_journal_id', '=', $inventory->formulir_id)
                 ->where('journal.subledger_id', '=', $inventory->item_id)
                 ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
                 ->select('journal.*')
