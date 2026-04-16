@@ -134,7 +134,7 @@ class RecalculateTest extends Command
                 ->first();
 
             $jValue = round(abs($journal->debit + $journal->credit),4);
-            $iValue = round(abs($l_inventory->quantity * $l_inventory->price),4);
+            $iValue = round(abs($inventory->quantity * $inventory->price),4);
 
             if ($iValue !== $jValue) {
                 $this->comment($journal->id . ' = ' . $inventory->id . ' | ' . $jValue . ' = ' . $iValue);
