@@ -151,4 +151,106 @@ class RecalculateBBL extends Command
             }
         }
     }
+
+    public function handleValue()
+    {
+        $this->comment('handle value');
+
+        // Get all items
+        Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+            ->where('inventory.quantity', 0)
+            ->where('formulir.formulirable_type', '!=', 'Point\PointInventory\Models\StockOpname\StockOpname')
+            ->delete();
+        
+        $inventories = Inventory::orderBy('form_date', 'asc')
+            ->get()
+            ->unique(function ($inventory) {
+                return $inventory['item_id'];
+            });
+
+        $this->comment(count($inventories));
+
+        foreach ($inventories as $inventory) {
+            $list_inventory = Inventory::with('formulir')
+                ->where('item_id', '=', $inventory->item_id)
+                ->where('warehouse_id', '=', $inventory->warehouse_id)
+                ->orderBy('form_date', 'asc')
+                ->orderBy('formulir_id', 'asc')
+                ->get();
+
+            $prevCogs = 0;
+            foreach($list_inventory as $index => $l_inventory) {
+                $this->comment($l_inventory->id . ' = ' . $l_inventory->form_date . ' = ' . $prevCogs);
+                if ($index == 0) {
+                    $totalQty = (float) $l_inventory->total_quantity;
+                    $totalValue = $l_inventory->quantity * $l_inventory->price;
+                    $l_inventory->recalculate = 0;
+                    
+                    if ((float) $l_inventory->cogs == 0) {
+                        $l_inventory->cogs = $cogs;
+                    } else {
+                        $cogs = $l_inventory->cogs;
+                    }
+                    $l_inventory->total_value = $totalValue;
+                    $l_inventory->save();
+                    $prevCogs = $l_inventory->cogs;
+                } else if ($l_inventory->formulir->formulirable_type === StockOpname::class) {
+                    $l_inventory->recalculate = 0;
+                    if ((float) $l_inventory->quantity < 0 || $l_inventory->formulir->formulirable_type === Retur::class) {
+                        $l_inventory->price = $prevCogs;
+                        $l_inventory->cogs = $prevCogs;
+                    }
+                    if ((float) $l_inventory->cogs == 0) {
+                        $l_inventory->cogs = $cogs;
+                    } else {
+                        $cogs = $l_inventory->cogs;
+                    }
+                    $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
+                    $l_inventory->save();
+                    $totalQty = (float) $l_inventory->total_quantity;
+                    $prevCogs = $l_inventory->cogs;
+                } else {
+                    $l_inventory->recalculate = 0;
+                    // if value 0 from output
+                    if ($l_inventory->price == 0) {
+                        $this->comment('1a ' . $cogs);
+                        $l_inventory->price = $cogs;
+                    }
+                    if ($l_inventory->quantity > 0 && $l_inventory->formulir->formulirable_type === StockCorrection::class) {
+                        $this->comment('1b ' . $prevCogs);
+                        $l_inventory->price = $prevCogs;
+                        $l_inventory->cogs = $prevCogs;
+                    }
+                    $l_inventory->total_value = $totalValue + ($l_inventory->quantity * $l_inventory->price);
+                    if ((float) $l_inventory->quantity < 0  || $l_inventory->formulir->formulirable_type === Retur::class) {
+                        $this->comment(2);
+                        $l_inventory->price = $prevCogs;
+                        $l_inventory->cogs = $prevCogs;
+                    }
+                    if ((float) $l_inventory->cogs == 0) {
+                        $this->comment(3);
+                        $l_inventory->cogs = $cogs;
+                    } else {
+                        $this->comment(4);
+                        $cogs = $l_inventory->cogs;
+                    }
+                    $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
+                    $l_inventory->save();
+                    $totalQty = (float) $l_inventory->total_quantity;
+                    $totalValue = $l_inventory->total_value;
+                    $prevCogs = $l_inventory->cogs;
+                }
+
+                if ((float) $l_inventory->total_quantity <= 0) {
+                    $l_inventory->total_value = 0;
+
+                    if ((float) $l_inventory->total_quantity < 0) {
+                        $l_inventory->recalculate = 1;
+                    }
+
+                    $l_inventory->save();
+                }
+            }
+        }
+    }
 }
