@@ -42,6 +42,7 @@ class RecalculateBBL extends Command
         \DB::beginTransaction();
 
         $this->handleQty();
+        $this->handleValue();
 
         \DB::commit();
     }
