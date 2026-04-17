@@ -41,6 +41,15 @@ class RecalculateBBL extends Command
 
         \DB::beginTransaction();
 
+        $this->handleQty();
+
+        \DB::commit();
+    }
+
+    public function handleQty()
+    {
+        $this->comment('handle inventory');
+
         // Get all items
         Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('inventory.quantity', 0)
@@ -141,7 +150,5 @@ class RecalculateBBL extends Command
                 }
             }
         }
-
-        \DB::commit();
     }
 }
