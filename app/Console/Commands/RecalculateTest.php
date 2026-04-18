@@ -53,6 +53,8 @@ class RecalculateTest extends Command
                 return $inventory['item_id'].$inventory['warehouse_id'];
             });
 
-        $this->comment($inventories);
+        foreach ($inventories as $inventory) {
+            $this->comment($inventory->warehouse_id);
+        }
     }
 }
