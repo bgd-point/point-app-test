@@ -51,7 +51,7 @@ class RecalculateTest extends Command
             ->get();
 
         foreach ($inventories as $inventory) {
-            if ($inventory->item_id = 877) {
+            if ($inventory->item_id == 877) {
                 $this->comment($inventory->item_id . ' = '. $inventory);
                 $this->comment('');
             }
