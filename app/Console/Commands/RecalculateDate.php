@@ -12,6 +12,7 @@ use Point\Framework\Models\Master\Allocation;
 use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\StockOpname\StockOpnameItem;
 use Point\PointInventory\Models\TransferItem\TransferItem;
+use Point\PointSales\Models\Sales\Invoice;
 
 class RecalculateDate extends Command
 {
@@ -60,11 +61,12 @@ class RecalculateDate extends Command
             }
         }
 
-        $list_sales = Point\PointSales\Models\Sales\Invoice::join('formulir', 'formulir.id', '=', 'point_sales_invoice.formulir_id')
+        $list_sales = Invoice::join('formulir', 'formulir.id', '=', 'point_sales_invoice.formulir_id')
             ->select('point_sales_invoice.*')
             ->get();
-            
+
         foreach ($list_sales as $sales) {
+            $this->comment($sales->formulir_id);
             $journals = Journal::where('form_journal_id', '=', $sales->formulir->id)
                 ->get();
             
