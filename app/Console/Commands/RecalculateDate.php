@@ -60,6 +60,20 @@ class RecalculateDate extends Command
             }
         }
 
+        $list_sales = Point\PointSales\Models\Sales\Invoice::join('formulir', 'formulir.id', '=', 'point_sales_invoice.formulir_id')
+            ->select('point_sales_invoice.*')
+            ->get();
+            
+        foreach ($list_sales as $sales) {
+            $journals = Journal::where('form_journal_id', '=', $sales->formulir->id)
+                ->get();
+            
+            foreach($journals as $journal) {
+                $journal->form_date = $sales->formulir->approval_at;
+                $journal->save();
+            }
+        }
+
         \DB::commit();
     }
 }
