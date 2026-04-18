@@ -222,7 +222,7 @@ class RecalculateBBL extends Command
                         $l_inventory->cogs = $prevCogs;
                     }
                     if ($l_inventory->formulir->formulirable_type === TransferItem::class) {
-                        $this->comment('transfer_item ' . $prevCogs);
+                        $this->comment($l_inventory->formulir->form_number . 'transfer_item ' . $prevCogs);
                         $l_inventory->price = $prevCogs;
                         $l_inventory->cogs = $prevCogs;
                     }
