@@ -54,12 +54,12 @@ class RecalculateBBL extends Command
         // Get all items
         Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('inventory.quantity', 0)
-            ->where('item_id', 863)
-            ->where('warehouse_id', 1)
             ->where('formulir.formulirable_type', '!=', 'Point\PointInventory\Models\StockOpname\StockOpname')
             ->delete();
         
         $inventories = Inventory::orderBy('form_date', 'asc')
+            ->where('item_id', 863)
+            ->where('warehouse_id', 1)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'].$inventory['warehouse_id'];
