@@ -47,8 +47,7 @@ class RecalculateDate extends Command
                 $transferItem->received_date = $transferItem->formulir->updated_at;
                 $transferItem->save();
 
-                $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
-                    ->where('form_journal_id', '=', $transferItem->formulir->id)
+                $journals = Journal::where('form_journal_id', '=', $transferItem->formulir->id)
                     ->get();
                 
                 foreach($journals as $journal) {
