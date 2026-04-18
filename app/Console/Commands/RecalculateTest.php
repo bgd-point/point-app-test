@@ -54,7 +54,7 @@ class RecalculateTest extends Command
             });
 
         foreach ($inventories as $inventory) {
-            $this->comment($inventory->warehouse_id);
+            $this->comment($inventory->warehouse->name);
         }
     }
 }
