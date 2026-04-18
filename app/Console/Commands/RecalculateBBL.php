@@ -215,11 +215,9 @@ class RecalculateBBL extends Command
                     $l_inventory->recalculate = 0;
                     // if value 0 from output
                     if ($l_inventory->price == 0) {
-                        $this->comment('1a ' . $cogs);
                         $l_inventory->price = $cogs;
                     }
                     if ($l_inventory->quantity > 0 && $l_inventory->formulir->formulirable_type === StockCorrection::class) {
-                        $this->comment('1b ' . $prevCogs);
                         $l_inventory->price = $prevCogs;
                         $l_inventory->cogs = $prevCogs;
                     }
