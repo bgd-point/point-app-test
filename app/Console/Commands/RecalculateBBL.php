@@ -228,15 +228,12 @@ class RecalculateBBL extends Command
                     }
                     $l_inventory->total_value = $totalValue + ($l_inventory->quantity * $l_inventory->price);
                     if ((float) $l_inventory->quantity < 0  || $l_inventory->formulir->formulirable_type === Retur::class) {
-                        $this->comment(2);
                         $l_inventory->price = $prevCogs;
                         $l_inventory->cogs = $prevCogs;
                     }
                     if ((float) $l_inventory->cogs == 0) {
-                        $this->comment(3);
                         $l_inventory->cogs = $cogs;
                     } else {
-                        $this->comment(4);
                         $cogs = $l_inventory->cogs;
                     }
                     $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
