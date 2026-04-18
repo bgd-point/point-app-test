@@ -54,6 +54,7 @@ class RecalculateBBL extends Command
         // Get all items
         Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('inventory.quantity', 0)
+            ->where('item_id', 863)
             ->where('formulir.formulirable_type', '!=', 'Point\PointInventory\Models\StockOpname\StockOpname')
             ->delete();
         
@@ -109,26 +110,21 @@ class RecalculateBBL extends Command
                     $l_inventory->recalculate = 0;
                     // if value 0 from output
                     if ($l_inventory->price == 0) {
-                        $this->comment('1a ' . $cogs);
                         $l_inventory->price = $cogs;
                     }
                     if ($l_inventory->quantity > 0 && $l_inventory->formulir->formulirable_type === StockCorrection::class) {
-                        $this->comment('1b ' . $prevCogs);
                         $l_inventory->price = $prevCogs;
                         $l_inventory->cogs = $prevCogs;
                     }
                     $l_inventory->total_quantity = (float) $totalQty + (float) $l_inventory->quantity;
                     $l_inventory->total_value = $totalValue + ($l_inventory->quantity * $l_inventory->price);
                     if ((float) $l_inventory->quantity < 0  || $l_inventory->formulir->formulirable_type === Retur::class) {
-                        $this->comment(2);
                         $l_inventory->price = $prevCogs;
                         $l_inventory->cogs = $prevCogs;
                     }
                     if ((float) $l_inventory->cogs == 0) {
-                        $this->comment(3);
                         $l_inventory->cogs = $cogs;
                     } else {
-                        $this->comment(4);
                         $cogs = $l_inventory->cogs;
                     }
                     $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
