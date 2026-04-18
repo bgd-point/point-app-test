@@ -39,12 +39,12 @@ class RecalculateBBL extends Command
     {
         $this->comment('recalculating inventory');
 
-        \DB::beginTransaction();
+        
 
         $this->handleQty();
         // $this->handleValue();
 
-        \DB::commit();
+        
     }
 
     public function handleQty()
@@ -64,6 +64,7 @@ class RecalculateBBL extends Command
             });
 
         foreach ($inventories as $inventory) {
+            \DB::beginTransaction();
             $list_inventory = Inventory::with('formulir')->with('item')
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
@@ -144,6 +145,7 @@ class RecalculateBBL extends Command
                     $l_inventory->save();
                 }
             }
+            \DB::commit();
         }
     }
 
