@@ -40,7 +40,9 @@ class RecalculateDate extends Command
 
         \DB::beginTransaction();
 
-        $transferItems = TransferItem::join('formulir', 'formulir.id', '=', 'journal.form_journal_id')->get();            
+        $transferItems = TransferItem::join('formulir', 'formulir.id', '=', 'point_inventory_transfer_item.formulir_id')
+            ->select('point_inventory_transfer_item.*')
+            ->get();            
 
         foreach($transferItems as $transferItem) {
             if ($transferItem->received_date) {
