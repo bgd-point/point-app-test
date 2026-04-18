@@ -222,6 +222,11 @@ class RecalculateBBL extends Command
                         $l_inventory->price = $prevCogs;
                         $l_inventory->cogs = $prevCogs;
                     }
+                    if ($l_inventory->formulir->formulirable_type === TransferItem::class) {
+                        $this->comment('1b ' . $prevCogs);
+                        $l_inventory->price = $prevCogs;
+                        $l_inventory->cogs = $prevCogs;
+                    }
                     $l_inventory->total_value = $totalValue + ($l_inventory->quantity * $l_inventory->price);
                     if ((float) $l_inventory->quantity < 0  || $l_inventory->formulir->formulirable_type === Retur::class) {
                         $this->comment(2);
