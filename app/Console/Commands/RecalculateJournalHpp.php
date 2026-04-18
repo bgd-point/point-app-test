@@ -30,14 +30,14 @@ class RecalculateJournalHpp extends Command
      *
      * @var string
      */
-    protected $signature = 'dev:recalculate:journal-hpp';
+    protected $signature = 'dev:recalculate:test';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'recalculate journal hpp';
+    protected $description = 'recalculate inventory';
 
     /**
      * Execute the console command.
@@ -57,58 +57,114 @@ class RecalculateJournalHpp extends Command
 
         \DB::beginTransaction();
 
-        $inventories = Inventory::orderBy('form_date', 'asc')
-            ->get()
-            ->unique(function ($inventory) {
-                return $inventory['item_id'];
-            });
+        /**
+         * FIX INVENTORY COGS != JOURNAL
+         */
 
-        foreach ($inventories as $inventory) {
+        $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+            ->where('formulir.formulirable_type', '=', 'Point\PointSales\Models\Sales\Invoice')
+            ->select('inventory.*')
+            ->get();
 
-            $list_inventory = Inventory::with('formulir')
-                ->where('inventory.item_id', $inventory->item_id)
-                ->orderBy('form_date', 'asc')
-                ->orderBy('formulir_id', 'asc')
-                ->get();
+        foreach($inventories as $inventory) {
+            // where('coa_id', '=', 385) => HPP
+            $journal = Journal::where('form_journal_id', '=', $inventory->formulir_id)
+                ->where('journal.subledger_id', '=', $inventory->item_id)
+                ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
+                ->select('journal.*')
+                ->first();
 
-            $this->comment('INVENTORY ' . $inventory->item_id);
+            // where('coa_id', '=', 385) => HPP
+            $jHpp = Journal::where('coa_id', '=', 385)
+                ->where('form_journal_id', '=', $inventory->formulir_id)
+                ->select('journal.*')
+                ->first();
 
-            foreach($list_inventory as $index => $l_inventory) {
-                $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
-                    ->where('journal.form_journal_id', '=', $l_inventory->formulir_id)
-                    ->where('journal.subledger_id', '=', $l_inventory->item_id)
-                    ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
-                    ->select('journal.*')
-                    ->get();
+            if (!$journal) {
+                $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
+                continue;
+            }
 
-                foreach($journals as $journal) {
-                    $jValue = round(abs($journal->debit + $journal->credit),4);
-                    $iValue = round(abs($l_inventory->quantity * $l_inventory->price),4);
-                    if ($jValue !== $iValue) {
-                        $this->comment($journal->id . ' = ' . $iValue . ' != ' . $jValue . ' = ' . $journal->coa->coa_number . ' = ' . $journal->coa->name);
 
-                        if ($journal->debit > 0) {
-                            $this->comment($journal->id . ' = ' . $iValue . ' (DEBIT FIXED) ');
-                            $journal->debit = $iValue;
+            $jValue = round(abs($journal->debit + $journal->credit), 4);
+            $iValue = round(abs($inventory->quantity * $inventory->price), 4);
 
-                            $j = Journal::where('form_journal_id', '=', $journal->form_journal_id)
-                                ->where('coa_id', '=', 385)
-                                ->get();
+            if ($iValue !== $jValue) {
+                $this->comment($journal->formulir->form_number . ' = ' . $inventory->id . ' | ' . $jValue . ' = ' . $iValue);
+            }
+            
+            if ($journal->debit > 0) {
+                $journal->debit = $iValue;
+            } else {
+                $journal->credit = $iValue;
+            }
+            $journal->save();
+            
+            if ($jHpp->debit > 0) {
+                $jHpp->debit = $iValue;
+            } else {
+                $jHpp->credit = $iValue;
+            }
+            $jHpp->save();
 
-                            $this->comment($journal->form_journal_id . ' = ' . count($j));
-                        } else {
-                            $this->comment($journal->id . ' = ' . $iValue . ' (CREDIT FIXED) ');
-                            $journal->credit = $iValue;
+        }
 
-                            $j = Journal::where('form_journal_id', '=', $journal->form_journal_id)
-                                ->where('coa_id', '=', 385)
-                                ->get();
+        /**
+         * FIX OUTPUT SELISIH KOMA
+         */
 
-                            $this->comment($journal->form_journal_id . ' = ' . count($j));
-                        }
-                        // $journal->save();
-                    }
+        $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
+            ->join('formulir', 'formulir.id', '=', 'journal.form_journal_id')
+            ->where('formulir.formulirable_type', '=', 'Point\PointManufacture\Models\OutputProcess')
+            ->where('journal.debit', '>', 0)
+            ->select('journal.*')
+            ->get();
+
+        foreach($journals as $journal) {
+            $inventory = Inventory::where('formulir_id', '=', $journal->form_journal_id)
+                ->where('item_id', '=', $journal->subledger_id)
+                ->first();
+
+            $a = $inventory->price * $inventory->quantity;
+            $b = $journal->debit;
+                
+            if ($a !== $b) {
+                $c = $b - $a;
+                $this->comment($journal->id . ' & ' . $journal->form_journal_id . ' = ' . $a . ' = ' . $b . ' = ' . ($b - $a));
+    
+                $j = new Journal();
+                $j->form_date = $journal->form_date;
+                $j->coa_id = $journal->coa_id;
+                $j->description = 'Pembulatan';
+                if ($c > 0) {
+                    $j->debit = 0;
+                    $j->credit = abs($c);
+                } else {
+                    $j->debit = abs($c);
+                    $j->credit = 0;
                 }
+                $j->form_journal_id = $journal->form_journal_id;
+                $j->form_reference_id = $journal->form_reference_id;
+                $j->subledger_id = $journal->subledger_id;
+                $j->subledger_type = $journal->subledger_type;
+                $j->save();
+                
+                $j = new Journal();
+                $j->form_date = $journal->form_date;
+                $j->coa_id = 472;
+                $j->description = 'Pembulatan';
+                if ($c > 0) {
+                    $j->debit = abs($c);
+                    $j->credit = 0;
+                } else {
+                    $j->debit = 0;
+                    $j->credit = abs($c);
+                }
+                $j->form_journal_id = $journal->form_journal_id;
+                $j->form_reference_id = $journal->form_reference_id;
+                $j->subledger_id = $journal->subledger_id;
+                $j->subledger_type = $journal->subledger_type;
+                $j->save();
             }
         }
 

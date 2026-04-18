@@ -40,19 +40,21 @@ class RecalculateDate extends Command
 
         \DB::beginTransaction();
 
-        $formulirs = Formulir::where('form_date', '>=', '2025-06-01')->get();
+        $transferItems = TransferItem::join('formulir', 'formulir.id', '=', 'journal.form_journal_id')->get();            
 
-        foreach ($formulirs as $formulir) {
-            $inventories = Inventory::where('formulir_id', $formulir->id)->get();
-            foreach ($inventories as $inventory) {
-                $inventory->form_date = $formulir->form_date;
-                $inventory->save();
-            }
+        foreach($transferItems as $transferItem) {
+            if ($transferItem->received_date) {
+                $transferItem->received_date = $transferItem->formulir->updated_at;
+                $transferItem->save();
 
-            $journals = Journal::where('form_journal_id', $formulir->id)->get();
-            foreach ($journals as $journal) {
-                $journal->form_date = $formulir->form_date;
-                $journal->save();
+                $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
+                    ->where('form_journal_id', '=', $transferItem->formulir->id)
+                    ->get();
+                
+                foreach($journals as $journal) {
+                    $journal->form_date = $transferItem->received_date;
+                    $journal->save();
+                }       
             }
         }
 
