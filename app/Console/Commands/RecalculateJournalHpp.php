@@ -109,6 +109,54 @@ class RecalculateJournalHpp extends Command
 
         }
 
+        // TI
+        $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+            ->where('formulir.formulirable_type', '=', 'Point\PointInventory\Models\TransferItem\TransferItem')
+            ->select('inventory.*')
+            ->get();
+
+        foreach($inventories as $inventory) {
+            $journal = Journal::where('form_journal_id', '=', $inventory->formulir_id)
+                ->where('journal.subledger_id', '=', $inventory->item_id)
+                ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
+                ->select('journal.*')
+                ->first();
+
+            // where('coa_id', '=', 178) => SEDIAAN DALAM PERJALANAN
+            $jHpp = Journal::where('coa_id', '=', 178)
+                ->where('form_journal_id', '=', $inventory->formulir_id)
+                ->select('journal.*')
+                ->first();
+
+            if (!$journal) {
+                $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
+                continue;
+            }
+
+
+            $jValue = round(abs($journal->debit + $journal->credit), 4);
+            $iValue = round(abs($inventory->quantity * $inventory->price), 4);
+
+            if ($iValue !== $jValue) {
+                $this->comment($journal->formulir->form_number . ' = ' . $inventory->id . ' | ' . $jValue . ' = ' . $iValue);
+            }
+            
+            if ($journal->debit > 0) {
+                $journal->debit = $iValue;
+            } else {
+                $journal->credit = $iValue;
+            }
+            $journal->save();
+            
+            if ($jHpp->debit > 0) {
+                $jHpp->debit = $iValue;
+            } else {
+                $jHpp->credit = $iValue;
+            }
+            $jHpp->save();
+
+        }
+
         /**
          * FIX OUTPUT SELISIH KOMA
          */
