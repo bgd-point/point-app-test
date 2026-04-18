@@ -58,7 +58,7 @@ class RecalculateBBL extends Command
             ->delete();
         
         $inventories = Inventory::orderBy('form_date', 'asc')
-            ->where('item_id', 863)
+            ->where('item_id', 97)
             ->where('warehouse_id', 1)
             ->get()
             ->unique(function ($inventory) {
