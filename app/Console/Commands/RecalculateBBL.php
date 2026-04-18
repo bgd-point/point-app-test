@@ -64,7 +64,7 @@ class RecalculateBBL extends Command
             });
 
         foreach ($inventories as $inventory) {
-            $list_inventory = Inventory::with('formulir')
+            $list_inventory = Inventory::with('formulir')->with('item')
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
                 // ->where('form_date', '>=', '2026-04-01')
@@ -75,7 +75,7 @@ class RecalculateBBL extends Command
             $prevCogs = 0;
             foreach($list_inventory as $index => $l_inventory) {
                 if ($inventory->item_id === 877) {
-                    $this->comment($l_inventory->id . ' = ' . $l_inventory->form_date . ' = ' . $l_inventory->total_quantity);
+                    $this->comment($l_inventory->formulir->form_number . ' = ' . $l_inventory->item->code . ' = ' . $l_inventory->form_date . ' = ' . $l_inventory->total_quantity);
                 }
                 if ($index == 0) {
                     $l_inventory->total_quantity = $l_inventory->quantity;
