@@ -125,6 +125,7 @@ class RecalculateJournalHpp extends Command
             // where('coa_id', '=', 178) => SEDIAAN DALAM PERJALANAN
             $jHpp = Journal::where('coa_id', '=', 178)
                 ->where('form_journal_id', '=', $inventory->formulir_id)
+                ->where('subledger_id', '=', $inventory->item_id)
                 ->select('journal.*')
                 ->first();
 
