@@ -373,10 +373,11 @@ class InventoryHelper
     {
         $last = Inventory::where('item_id', '=', $this->inventory->item_id)
             ->where('form_date', '<=', $this->inventory->form_date)
+            ->where('warehouse_id', '=', $this->inventory->warehouse_id)
             ->orderBy('form_date', 'desc')
             ->orderBy('id', 'desc')
             ->first();
-
+        
         if ($last) {
             $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
             $this->inventory->total_value = $last->total_value + ($this->inventory->quantity * $this->inventory->price);
