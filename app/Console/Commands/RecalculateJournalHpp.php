@@ -130,6 +130,7 @@ class RecalculateJournalHpp extends Command
             $iValue = round(abs($inventory->quantity * $inventory->price), 4);
 
             foreach ($journals as $journal) {
+                $this->comment($journal->description);
                 if ($journal->debit > 0) {
                     $journal->debit = $iValue;
                 } else {
