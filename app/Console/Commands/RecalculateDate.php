@@ -50,6 +50,7 @@ class RecalculateDate extends Command
                 $transferItem->save();
 
                 $journals = Journal::where('form_journal_id', '=', $transferItem->formulir->id)
+                    ->where('description', 'like', 'receive item%')
                     ->get();
                 
                 foreach($journals as $journal) {
