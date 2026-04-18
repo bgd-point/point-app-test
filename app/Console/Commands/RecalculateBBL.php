@@ -58,8 +58,6 @@ class RecalculateBBL extends Command
             ->delete();
         
         $inventories = Inventory::orderBy('form_date', 'asc')
-            ->where('item_id', 97)
-            ->where('warehouse_id', 1)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'].$inventory['warehouse_id'];
@@ -76,7 +74,9 @@ class RecalculateBBL extends Command
 
             $prevCogs = 0;
             foreach($list_inventory as $index => $l_inventory) {
-                $this->comment($l_inventory->id . ' = ' . $l_inventory->form_date . ' = ' . $l_inventory->total_quantity);
+                if ($inventory->item_id === 877) {
+                    $this->comment($l_inventory->id . ' = ' . $l_inventory->form_date . ' = ' . $l_inventory->total_quantity);
+                }
                 if ($index == 0) {
                     $l_inventory->total_quantity = $l_inventory->quantity;
                     $totalQty = (float) $l_inventory->total_quantity;
