@@ -66,7 +66,7 @@ class RecalculateBBL extends Command
             });
 
         $this->comment(count($inventories));
-
+        dd();
         foreach ($inventories as $inventory) {
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
