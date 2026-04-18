@@ -175,7 +175,6 @@ class RecalculateBBL extends Command
         foreach ($inventories as $inventory) {
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
-                ->where('warehouse_id', '=', $inventory->warehouse_id)
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->get();
