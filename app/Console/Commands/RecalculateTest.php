@@ -47,6 +47,7 @@ class RecalculateTest extends Command
         $this->comment('handle inventory');
 
         $inventories = Inventory::orderBy('form_date', 'asc')
+            ->where('item_id', 877)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'].$inventory['warehouse_id'];
