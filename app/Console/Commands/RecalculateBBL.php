@@ -164,6 +164,7 @@ class RecalculateBBL extends Command
             ->delete();
         
         $inventories = Inventory::orderBy('form_date', 'asc')
+            ->where('item_id', 606)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'];
@@ -223,7 +224,7 @@ class RecalculateBBL extends Command
                         $l_inventory->cogs = $prevCogs;
                     }
                     if ($l_inventory->formulir->formulirable_type === TransferItem::class) {
-                        $this->comment('1b ' . $prevCogs);
+                        $this->comment('transfer_item ' . $prevCogs);
                         $l_inventory->price = $prevCogs;
                         $l_inventory->cogs = $prevCogs;
                     }
