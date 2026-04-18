@@ -14,14 +14,14 @@ use Point\PointInventory\Models\StockOpname\StockOpnameItem;
 use Point\PointInventory\Models\TransferItem\TransferItem;
 use Point\PointSales\Models\Sales\Retur;
 
-class RecalculateBBL extends Command
+class RecalculateTest extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'dev:recalculate:bbl';
+    protected $signature = 'dev:recalculate:test';
 
     /**
      * The console command description.
@@ -51,7 +51,7 @@ class RecalculateBBL extends Command
             ->unique(function ($inventory) {
                 return $inventory['item_id'].$inventory['warehouse_id'];
             });
-            
+
         $this->comment($inventories);
     }
 }
