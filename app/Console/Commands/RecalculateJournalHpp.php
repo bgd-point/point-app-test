@@ -30,7 +30,7 @@ class RecalculateJournalHpp extends Command
      *
      * @var string
      */
-    protected $signature = 'dev:recalculate:test';
+    protected $signature = 'dev:recalculate:jhpp';
 
     /**
      * The console command description.
