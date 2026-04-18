@@ -55,6 +55,7 @@ class RecalculateBBL extends Command
         Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('inventory.quantity', 0)
             ->where('item_id', 863)
+            ->where('warehouse_id', 1)
             ->where('formulir.formulirable_type', '!=', 'Point\PointInventory\Models\StockOpname\StockOpname')
             ->delete();
         
