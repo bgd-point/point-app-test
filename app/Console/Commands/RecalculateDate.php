@@ -84,7 +84,7 @@ class RecalculateDate extends Command
                 ->get();
             
             foreach($journals as $journal) {
-                $journal->form_date = $retur->received_date;
+                $journal->form_date = $retur->formulir->form_date;
                 $journal->save();
             }       
         }
