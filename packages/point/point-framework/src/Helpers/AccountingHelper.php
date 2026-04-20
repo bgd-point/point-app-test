@@ -24,6 +24,7 @@ class AccountingHelper
                         $query->groupBy('subledger_id');
                     }
                 })
+                ->select('journal.*')
                 ->orderBy('form_date');
                 
 
@@ -44,6 +45,7 @@ class AccountingHelper
                 ->where('journal.form_date', '<=', $date_to)
                 ->where('formulir.form_status', '!=', -1)
                 ->whereIn('coa_id', $coa_id)
+                ->select('journal.*')
                 ->orderBy('journal.form_date');
 
             if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
@@ -64,6 +66,7 @@ class AccountingHelper
                 ->where('journal.form_date', '<=', $date_to)
                 ->where('coa_id', $coa_id)
                 ->where('formulir.form_status', '!=', -1)
+                ->select('journal.*')
                 ->orderBy('journal.form_date');
 
             if ((request()->get('database_name') == 'p_test' || request()->get('database_name') == 'p_personalfinance') && auth()->user()->name != 'lioni') {
