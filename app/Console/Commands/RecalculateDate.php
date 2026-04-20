@@ -13,6 +13,7 @@ use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\StockOpname\StockOpnameItem;
 use Point\PointInventory\Models\TransferItem\TransferItem;
 use Point\PointSales\Models\Sales\Invoice;
+use Point\PointSales\Models\Sales\Retur;
 
 class RecalculateDate extends Command
 {
@@ -44,7 +45,6 @@ class RecalculateDate extends Command
         $transferItems = TransferItem::join('formulir', 'formulir.id', '=', 'point_inventory_transfer_item.formulir_id')
             ->select('point_inventory_transfer_item.*')
             ->get();            
-
         foreach($transferItems as $transferItem) {
             if ($transferItem->received_date) {
                 $transferItem->received_date = $transferItem->formulir->updated_at;
@@ -74,6 +74,19 @@ class RecalculateDate extends Command
                 $journal->form_date = $sales->formulir->approval_at;
                 $journal->save();
             }
+        }
+
+        $returs = Retur::join('formulir', 'formulir.id', '=', 'point_sales_retur.formulir_id')
+            ->select('point_sales_retur.*')
+            ->get();            
+        foreach($returs as $retur) {
+            $journals = Journal::where('form_journal_id', '=', $retur->formulir->id)
+                ->get();
+            
+            foreach($journals as $journal) {
+                $journal->form_date = $retur->received_date;
+                $journal->save();
+            }       
         }
 
         \DB::commit();
