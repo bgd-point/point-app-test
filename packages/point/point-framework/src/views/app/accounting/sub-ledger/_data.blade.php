@@ -52,7 +52,7 @@
         
         <tr>
             <td>{{ date_format_view($journal->form_date) }}</td>
-            <td>{{ $journal->formulir->form_number }}</td>
+            <td>{{ $journal->formulir->form_number }} {{ $journal->id }}</td>
             <td>{{ $journal->description }}</td>
             <td style="text-align:right">{{ number_format_accounting($journal->debit, 4) }}</td>
             <td style="text-align:right">{{ number_format_accounting($journal->credit, 4) }}</td>
