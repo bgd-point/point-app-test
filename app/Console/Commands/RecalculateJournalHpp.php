@@ -171,6 +171,37 @@ class RecalculateJournalHpp extends Command
             }
         }
 
+        // SC
+        $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+            ->where('formulir.formulirable_type', '=', 'Point\PointInventory\Models\StockCorrection\StockCorrection')
+            ->select('inventory.*')
+            ->get();
+
+        foreach($inventories as $inventory) {
+            $journals = Journal::where('form_journal_id', '=', $inventory->formulir_id)
+                ->where('journal.subledger_id', '=', $inventory->item_id)
+                ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
+                ->select('journal.*')
+                ->get();
+
+            if (!count($journals)) {
+                $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
+                continue;
+            }
+
+            $iValue = round(abs($inventory->quantity * $inventory->price), 4);
+
+            foreach ($journals as $journal) {
+                $this->comment($journal->description);
+                if ($journal->debit > 0) {
+                    $journal->debit = $iValue;
+                } else {
+                    $journal->credit = $iValue;
+                }
+                $journal->save();
+            }
+        }
+
         /**
          * FIX OUTPUT SELISIH KOMA
          */
