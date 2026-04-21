@@ -132,114 +132,114 @@ class RecalculateJournalHpp extends Command
             }
         }
 
-        // // TI
-        // $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
-        //     ->where('formulir.formulirable_type', '=', 'Point\PointInventory\Models\TransferItem\TransferItem')
-        //     ->select('inventory.*')
-        //     ->get();
+        // TI
+        $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+            ->where('formulir.formulirable_type', '=', 'Point\PointInventory\Models\TransferItem\TransferItem')
+            ->select('inventory.*')
+            ->get();
 
-        // foreach($inventories as $inventory) {
-        //     $journals = Journal::where('form_journal_id', '=', $inventory->formulir_id)
-        //         ->where('journal.subledger_id', '=', $inventory->item_id)
-        //         ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
-        //         ->select('journal.*')
-        //         ->get();
+        foreach($inventories as $inventory) {
+            $journals = Journal::where('form_journal_id', '=', $inventory->formulir_id)
+                ->where('journal.subledger_id', '=', $inventory->item_id)
+                ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
+                ->select('journal.*')
+                ->get();
 
-        //     if (!count($journals)) {
-        //         $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
-        //         continue;
-        //     }
+            if (!count($journals)) {
+                $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
+                continue;
+            }
 
-        //     $iValue = round(abs($inventory->quantity * $inventory->price), 4);
+            $iValue = round(abs($inventory->quantity * $inventory->price), 4);
 
-        //     foreach ($journals as $journal) {
-        //         $this->comment($journal->description);
-        //         if ($journal->debit > 0) {
-        //             $journal->debit = $iValue;
-        //         } else {
-        //             $journal->credit = $iValue;
-        //         }
-        //         $journal->save();
-        //     }
-        // }
+            foreach ($journals as $journal) {
+                $this->comment($journal->description);
+                if ($journal->debit > 0) {
+                    $journal->debit = $iValue;
+                } else {
+                    $journal->credit = $iValue;
+                }
+                $journal->save();
+            }
+        }
 
-        // // INPUT MANUFACTURE
-        // $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
-        //     ->where('formulir.formulirable_type', '=', 'Point\PointManufacture\Models\InputProcess')
-        //     ->select('inventory.*')
-        //     ->get();
+        // INPUT MANUFACTURE
+        $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+            ->where('formulir.formulirable_type', '=', 'Point\PointManufacture\Models\InputProcess')
+            ->select('inventory.*')
+            ->get();
 
-        // foreach($inventories as $inventory) {
-        //     $journals = Journal::where('form_journal_id', '=', $inventory->formulir_id)
-        //         ->where('journal.subledger_id', '=', $inventory->item_id)
-        //         ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
-        //         ->select('journal.*')
-        //         ->get();
+        foreach($inventories as $inventory) {
+            $journals = Journal::where('form_journal_id', '=', $inventory->formulir_id)
+                ->where('journal.subledger_id', '=', $inventory->item_id)
+                ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
+                ->select('journal.*')
+                ->get();
 
-        //     if (!count($journals)) {
-        //         $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
-        //         continue;
-        //     }
+            if (!count($journals)) {
+                $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
+                continue;
+            }
 
-        //     $iValue = round(abs($inventory->quantity * $inventory->price), 4);
+            $iValue = round(abs($inventory->quantity * $inventory->price), 4);
 
-        //     foreach ($journals as $journal) {
-        //         $this->comment($journal->description);
-        //         if ($journal->debit > 0) {
-        //             $journal->debit = $iValue;
-        //         } else {
-        //             $journal->credit = $iValue;
-        //         }
-        //         $journal->save();
-        //     }
-        // }
+            foreach ($journals as $journal) {
+                $this->comment($journal->description);
+                if ($journal->debit > 0) {
+                    $journal->debit = $iValue;
+                } else {
+                    $journal->credit = $iValue;
+                }
+                $journal->save();
+            }
+        }
 
         // SC
-        // $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
-        //     ->where('formulir.formulirable_type', '=', 'Point\PointInventory\Models\StockCorrection\StockCorrection')
-        //     ->select('inventory.*')
-        //     ->get();
+        $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+            ->where('formulir.formulirable_type', '=', 'Point\PointInventory\Models\StockCorrection\StockCorrection')
+            ->select('inventory.*')
+            ->get();
 
-        // foreach($inventories as $inventory) {
-        //     $journals = Journal::where('form_journal_id', '=', $inventory->formulir_id)
-        //         ->where('journal.subledger_id', '=', $inventory->item_id)
-        //         ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
-        //         ->select('journal.*')
-        //         ->get();
+        foreach($inventories as $inventory) {
+            $journals = Journal::where('form_journal_id', '=', $inventory->formulir_id)
+                ->where('journal.subledger_id', '=', $inventory->item_id)
+                ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
+                ->select('journal.*')
+                ->get();
 
-        //     if (!count($journals)) {
-        //         $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
-        //         continue;
-        //     }
+            if (!count($journals)) {
+                $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
+                continue;
+            }
 
-        //     $iValue = round(abs($inventory->quantity * $inventory->price), 4);
+            $iValue = round(abs($inventory->quantity * $inventory->price), 4);
 
-        //     foreach ($journals as $journal) {
+            foreach ($journals as $journal) {
 
-        //         $nextId = $journal->id + 1;
-        //         $jHpp = Journal::where('coa_id', '=', 385)
-        //             ->where('id', '=', $nextId)
-        //             ->where('form_journal_id', '=', $journal->form_journal_id)
-        //             ->select('journal.*')
-        //             ->first();
+                $nextId = $journal->id + 1;
+                $jHpp = Journal::where('coa_id', '=', 385)
+                    ->where('id', '=', $nextId)
+                    ->where('form_journal_id', '=', $journal->form_journal_id)
+                    ->select('journal.*')
+                    ->first();
 
-        //         if (!$jHpp) {
-        //             $this->comment("Missing pair for ID {$journal->id}, expected {$nextId}");
-        //             continue;
-        //         }
+                if (!$jHpp) {
+                    $this->comment("Missing pair for ID {$journal->id}, expected {$nextId}");
+                    continue;
+                }
 
-        //         $this->comment($journal->description . ' = ' . $journal->id);
-        //         if ($journal->debit > 0) {
-        //             $journal->debit = $iValue;
-        //             $jHpp->credit = $iValue;
-        //         } else {
-        //             $journal->credit = $iValue;
-        //             $jHpp->debit = $iValue;
-        //         }
-        //         $journal->save();
-        //         $jHpp->save();
-        //     }
-        // }
+                $this->comment($journal->description . ' = ' . $journal->id);
+                if ($journal->debit > 0) {
+                    $journal->debit = $iValue;
+                    $jHpp->credit = $iValue;
+                } else {
+                    $journal->credit = $iValue;
+                    $jHpp->debit = $iValue;
+                }
+                $journal->save();
+                $jHpp->save();
+            }
+        }
 
         // /**
         //  * FIX OUTPUT SELISIH KOMA
@@ -302,67 +302,67 @@ class RecalculateJournalHpp extends Command
         /**
          * FIX JOURNAL RETUR
          */
-        // $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
-        //     ->join('formulir', 'formulir.id', '=', 'journal.form_journal_id')
-        //     ->where('formulir.formulirable_type', '=', 'Point\PointSales\Models\Sales\Retur')
-        //     ->select('journal.*')
-        //     ->groupBy('form_journal_id')
-        //     ->get();
+        $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
+            ->join('formulir', 'formulir.id', '=', 'journal.form_journal_id')
+            ->where('formulir.formulirable_type', '=', 'Point\PointSales\Models\Sales\Retur')
+            ->select('journal.*')
+            ->groupBy('form_journal_id')
+            ->get();
             
-        // foreach($journals as $journal) {
-        //     $this->comment($journal->formulir->form_number);
-        //     $retur = Retur::where('formulir_id', '=', $journal->form_journal_id)->first();
+        foreach($journals as $journal) {
+            $this->comment($journal->formulir->form_number);
+            $retur = Retur::where('formulir_id', '=', $journal->form_journal_id)->first();
 
-        //     $inv = Invoice::where('id', $retur->point_sales_invoice_id)->first();
-        //     $invJournals = Journal::where('form_journal_id', '=', $inv->formulir->id)
-        //         ->select('journal.*')
-        //         ->get();
+            $inv = Invoice::where('id', $retur->point_sales_invoice_id)->first();
+            $invJournals = Journal::where('form_journal_id', '=', $inv->formulir->id)
+                ->select('journal.*')
+                ->get();
 
-        //     Journal::where('form_journal_id', $retur->formulir->id)->delete();
+            Journal::where('form_journal_id', $retur->formulir->id)->delete();
 
-        //     foreach ($invJournals as $invJournal) { 
-        //         $j = new Journal();
-        //         $j->form_date = $retur->formulir->form_date;
-        //         $j->coa_id = $invJournal->coa_id;
-        //         $j->description = $invJournal->description;
-        //         $j->debit = $invJournal->credit;
-        //         $j->credit = $invJournal->debit;
-        //         $j->form_journal_id = $retur->formulir->id;
-        //         $j->form_reference_id = $invJournal->form_reference_id;
-        //         $j->subledger_id = $invJournal->subledger_id;
-        //         $j->subledger_type = $invJournal->subledger_type;
-        //         $j->save();
+            foreach ($invJournals as $invJournal) { 
+                $j = new Journal();
+                $j->form_date = $retur->formulir->form_date;
+                $j->coa_id = $invJournal->coa_id;
+                $j->description = $invJournal->description;
+                $j->debit = $invJournal->credit;
+                $j->credit = $invJournal->debit;
+                $j->form_journal_id = $retur->formulir->id;
+                $j->form_reference_id = $invJournal->form_reference_id;
+                $j->subledger_id = $invJournal->subledger_id;
+                $j->subledger_type = $invJournal->subledger_type;
+                $j->save();
 
-        //         $this->comment($j);
-        //     }
-        // }
+                $this->comment($j);
+            }
+        }
 
-        // $returs = Retur::join('formulir', 'formulir.id', '=', 'point_sales_retur.formulir_id')
-        //     ->where('formulir.form_status', '=', 0)
-        //     ->get();
+        $returs = Retur::join('formulir', 'formulir.id', '=', 'point_sales_retur.formulir_id')
+            ->where('formulir.form_status', '=', 0)
+            ->get();
 
-        // foreach($returs as $retur) {
-        //     $inv = Invoice::where('id', $retur->point_sales_invoice_id)->first();
-        //     $invJournals = Journal::where('form_journal_id', '=', $inv->formulir->id)
-        //         ->select('journal.*')
-        //         ->get();
+        foreach($returs as $retur) {
+            $inv = Invoice::where('id', $retur->point_sales_invoice_id)->first();
+            $invJournals = Journal::where('form_journal_id', '=', $inv->formulir->id)
+                ->select('journal.*')
+                ->get();
 
-        //     foreach ($invJournals as $invJournal) { 
-        //         $j = new Journal();
-        //         $j->form_date = $retur->formulir->form_date;
-        //         $j->coa_id = $invJournal->coa_id;
-        //         $j->description = $invJournal->description;
-        //         $j->debit = $invJournal->credit;
-        //         $j->credit = $invJournal->debit;
-        //         $j->form_journal_id = $retur->formulir->id;
-        //         $j->form_reference_id = $invJournal->form_reference_id;
-        //         $j->subledger_id = $invJournal->subledger_id;
-        //         $j->subledger_type = $invJournal->subledger_type;
-        //         $j->save();
+            foreach ($invJournals as $invJournal) { 
+                $j = new Journal();
+                $j->form_date = $retur->formulir->form_date;
+                $j->coa_id = $invJournal->coa_id;
+                $j->description = $invJournal->description;
+                $j->debit = $invJournal->credit;
+                $j->credit = $invJournal->debit;
+                $j->form_journal_id = $retur->formulir->id;
+                $j->form_reference_id = $invJournal->form_reference_id;
+                $j->subledger_id = $invJournal->subledger_id;
+                $j->subledger_type = $invJournal->subledger_type;
+                $j->save();
 
-        //         $this->comment($j);
-        //     }
-        // }
+                $this->comment($j);
+            }
+        }
 
         \DB::commit(); 
     }
