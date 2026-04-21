@@ -158,6 +158,7 @@ class RecalculateBBL extends Command
             ->delete();
         
         $inventories = Inventory::orderBy('form_date', 'asc')
+            ->where('item_id', 606)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'];
@@ -174,7 +175,6 @@ class RecalculateBBL extends Command
 
             $prevCogs = 0;
             foreach($list_inventory as $index => $l_inventory) {
-                $this->comment($l_inventory->id . ' = ' . $l_inventory->form_date . ' = ' . $prevCogs);
                 if ($index == 0) {
                     $totalQty = (float) $l_inventory->total_quantity;
                     $totalValue = $l_inventory->quantity * $l_inventory->price;
@@ -229,6 +229,7 @@ class RecalculateBBL extends Command
                         $cogs = $l_inventory->cogs;
                     }
                     $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
+                    $this->comment($l_inventory->id . ' = ' . $l_inventory->form_date . ' = ' . $prevCogs);
                     $l_inventory->save();
                     $totalQty = (float) $l_inventory->total_quantity;
                     $totalValue = $l_inventory->total_value;
