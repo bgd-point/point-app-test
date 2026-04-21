@@ -12,6 +12,7 @@ use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\StockOpname\StockOpnameItem;
 use Point\PointInventory\Models\TransferItem\TransferItem;
 use Point\PointSales\Models\Sales\Retur;
+use Point\PointSales\Models\Sales\Invoice;
 use Point\Framework\Models\Journal;
 
 /**
@@ -274,7 +275,8 @@ class RecalculateJournalHpp extends Command
             $this->comment($journal->formulir->form_number);
             $retur = Retur::where('formulir_id', '=', $journal->form_journal_id)->first();
 
-            $invJournals = Journal::where('form_journal_id', '=', $retur->point_sales_invoice_id)
+            $inv = Invoice::where('id', $retur->point_sales_invoice_id)->first();
+            $invJournals = Journal::where('form_journal_id', '=', $inv->formulir->id)
                 ->select('journal.*')
                 ->get();
 
