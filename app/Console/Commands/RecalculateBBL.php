@@ -171,6 +171,7 @@ class RecalculateBBL extends Command
                 ->where('item_id', '=', $inventory->item_id)
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
+                ->select('inventory.*')
                 ->get();
 
             $prevCogs = 0;
