@@ -342,6 +342,7 @@ class RecalculateJournalHpp extends Command
             ->get();
 
         foreach($returs as $retur) {
+            Journal::where('form_journal_id', $retur->formulir->id)->delete();
             $inv = Invoice::where('id', $retur->point_sales_invoice_id)->first();
             $invJournals = Journal::where('form_journal_id', '=', $inv->formulir->id)
                 ->select('journal.*')
