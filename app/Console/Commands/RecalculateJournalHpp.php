@@ -103,10 +103,19 @@ class RecalculateJournalHpp extends Command
 
             $this->comment($jHpp);
             if ($jHpp) {
+                $debit = Journal::where('form_journal_id', $inventory->formulir_id)
+                    ->where('journal.subledger_type', "Point\Framework\Models\Master\Item")
+                    ->sum('debit');
+
+                $credit = Journal::where('form_journal_id', $inventory->formulir_id)
+                    ->where('journal.subledger_type', "Point\Framework\Models\Master\Item")
+                    ->sum('credit');
+
+                $val = $debit + $credit;
                 if ($jHpp->debit > 0) {
-                    $jHpp->debit = $iValue;
+                    $jHpp->debit = $val;
                 } else {
-                    $jHpp->credit = $iValue;
+                    $jHpp->credit = $val;
                 }
                 $jHpp->save();
             } else {
