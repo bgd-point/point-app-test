@@ -292,6 +292,8 @@ class RecalculateJournalHpp extends Command
                 $j->subledger_id = $invJournal->subledger_id;
                 $j->subledger_type = $invJournal->subledger_type;
                 $j->save();
+
+                $this->comment($j);
             }
         }
 
