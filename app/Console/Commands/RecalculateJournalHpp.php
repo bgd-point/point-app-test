@@ -267,6 +267,7 @@ class RecalculateJournalHpp extends Command
             ->join('formulir', 'formulir.id', '=', 'journal.form_journal_id')
             ->where('formulir.formulirable_type', '=', 'Point\PointSales\Models\Sales\Retur')
             ->select('journal.*')
+            ->groupBy('form_journal_id')
             ->get();
             
         foreach($journals as $journal) {
