@@ -111,7 +111,7 @@ class RecalculateJournalHpp extends Command
                     ->sum('credit');
 
                 $val = $debit + $credit;
-                $this->comment($val);
+                $this->comment($jHpp->id . ' = '. $val);
                 if ($jHpp->debit > 0) {
                     $jHpp->debit = $val;
                 } else {
