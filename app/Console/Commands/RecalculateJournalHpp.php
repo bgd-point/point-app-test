@@ -200,7 +200,7 @@ class RecalculateJournalHpp extends Command
                     ->select('journal.*')
                     ->first();
 
-                if (!jHpp) {
+                if (!$jHpp) {
                     $this->comment($journal->id);
                     continue;
                 }
