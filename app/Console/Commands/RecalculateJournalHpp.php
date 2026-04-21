@@ -109,12 +109,13 @@ class RecalculateJournalHpp extends Command
                 }
                 $jHpp->save();
             } else {
+                $this->comment('here');
                 $j = new Journal();
                 $j->form_date = $journal->formulir->form_date;
                 $j->coa_id = 385;
                 $j->description = $journal->description;
-                $j->debit = $journal->debit;
-                $j->credit = $journal->credit;
+                $j->debit = $journal->credit;
+                $j->credit = $journal->debit;
                 $j->form_journal_id = $journal->formulir->id;
                 $j->form_reference_id = $journal->form_reference_id;
                 $j->save();
