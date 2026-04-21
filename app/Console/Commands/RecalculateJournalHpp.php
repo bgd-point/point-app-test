@@ -299,6 +299,33 @@ class RecalculateJournalHpp extends Command
             }
         }
 
+        $returs = Retur::join('formulir', 'formulir.id', '=', 'point_sales_retur.formulir_id')
+            ->where('formulir.form_status', '=', 0)
+            ->get();
+
+        foreach($returs as $retur) {
+            $inv = Invoice::where('id', $retur->point_sales_invoice_id)->first();
+            $invJournals = Journal::where('form_journal_id', '=', $inv->formulir->id)
+                ->select('journal.*')
+                ->get();
+
+            foreach ($invJournals as $invJournal) { 
+                $j = new Journal();
+                $j->form_date = $retur->formulir->form_date;
+                $j->coa_id = $invJournal->coa_id;
+                $j->description = $invJournal->description;
+                $j->debit = $invJournal->credit;
+                $j->credit = $invJournal->debit;
+                $j->form_journal_id = $retur->formulir->id;
+                $j->form_reference_id = $invJournal->form_reference_id;
+                $j->subledger_id = $invJournal->subledger_id;
+                $j->subledger_type = $invJournal->subledger_type;
+                $j->save();
+
+                $this->comment($j);
+            }
+        }
+
         \DB::commit(); 
     }
 }
