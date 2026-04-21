@@ -200,7 +200,7 @@ class RecalculateJournalHpp extends Command
                     ->select('journal.*')
                     ->first();
 
-                $this->comment($journal->description);
+                $this->comment($journal->description . ' = ' . $journal->id + 1);
                 if ($journal->debit > 0) {
                     $journal->debit = $iValue;
                     $jHpp->credit = $iValue;
