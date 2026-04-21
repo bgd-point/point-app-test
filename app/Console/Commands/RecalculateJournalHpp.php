@@ -194,14 +194,15 @@ class RecalculateJournalHpp extends Command
 
             foreach ($journals as $journal) {
 
+                $nextId = $journal->id + 1;
                 $jHpp = Journal::where('coa_id', '=', 385)
-                    ->where('id', '=', $journal->id + 1)
+                    ->where('id', '=', $nextId)
                     ->where('form_journal_id', '=', $journal->form_journal_id)
                     ->select('journal.*')
                     ->first();
 
                 if (!$jHpp) {
-                    $this->comment($journal->id);
+                    $this->comment("Missing pair for ID {$journal->id}, expected {$nextId}");
                     continue;
                 }
 
@@ -214,6 +215,7 @@ class RecalculateJournalHpp extends Command
                     $jHpp->debit = $iValue;
                 }
                 $journal->save();
+                $jHpp->save();
             }
         }
 
