@@ -230,7 +230,7 @@ class RecalculateBBL extends Command
                         $cogs = $l_inventory->cogs;
                     }
                     $l_inventory->total_value = $l_inventory->cogs * $l_inventory->total_quantity;
-                    $this->comment($l_inventory->id . ' = ' . $l_inventory->form_date . ' = ' . $prevCogs);
+                    $this->comment($l_inventory->item_id . ' = ' . $l_inventory->id . ' = ' . $l_inventory->form_date . ' = ' . $prevCogs);
                     $l_inventory->save();
                     $totalQty = (float) $l_inventory->total_quantity;
                     $totalValue = $l_inventory->total_value;
