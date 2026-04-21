@@ -205,7 +205,7 @@ class RecalculateJournalHpp extends Command
                     continue;
                 }
 
-                // $this->comment($journal->description . ' = ' . $journal->id + 1);
+                $this->comment($journal->description . ' = ' . $journal->id);
                 if ($journal->debit > 0) {
                     $journal->debit = $iValue;
                     $jHpp->credit = $iValue;
