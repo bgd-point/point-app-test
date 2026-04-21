@@ -101,6 +101,7 @@ class RecalculateJournalHpp extends Command
             }
             $journal->save();
 
+            $this->comment($jHpp);
             if ($jHpp) {
                 if ($jHpp->debit > 0) {
                     $jHpp->debit = $iValue;
