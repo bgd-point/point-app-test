@@ -45,7 +45,6 @@ class UnbalanceJournalChecker extends Command
             \DB::raw('SUM(debit) as total_debit'),
             \DB::raw('SUM(credit) as total_credit')
         )
-        ->where('form_date', '>=', '2025-11-01')
         ->groupBy('form_journal_id')
         ->havingRaw('ABS(SUM(debit) - SUM(credit)) > 0.01')
         ->get();
