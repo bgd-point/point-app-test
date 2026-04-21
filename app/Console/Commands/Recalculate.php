@@ -49,7 +49,6 @@ class Recalculate extends Command
         foreach ($inventories as $inventory) {
             
             // FIX DATE
-            
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
