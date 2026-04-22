@@ -40,7 +40,7 @@ class RecalculateBBL extends Command
         $this->comment('recalculating inventory');
 
         $this->handleQty();
-        $this->handleValue();
+        // $this->handleValue();
     }
 
     public function handleQty()
