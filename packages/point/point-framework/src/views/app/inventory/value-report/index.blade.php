@@ -93,7 +93,7 @@
                             <th style="text-align: center">VALUE</th>
                             <th style="text-align: center">QTY</th>
                             <th style="text-align: center">LAST BUY PRICE</th>
-                            <!-- <th style="text-align: center">VALUE</th> -->
+                            <th style="text-align: center">VALUE</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -240,25 +240,9 @@
                                 <td style="text-align: right">{{number_format_quantity($value_out)}}</td>
                                 <td style="text-align: right">{{number_format_quantity($closing_stock)}}</td>
                                 <td style="text-align: right">{{number_format_quantity($price)}}</td>
-                                <!-- <td style="text-align: right">{{number_format_quantity($closing_stock * $price)}}</td> -->
+                                <td style="text-align: right">{{number_format_quantity($closing_stock * $price)}}</td>
                             </tr>
                         @endforeach
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <!-- <td style="text-align: right;font-weight: bold">{{ number_format_quantity($total_closing_value) }}</td> -->
-                        </tr>
                         </tbody>
                     </table>
                     {!! $inventory->appends([
