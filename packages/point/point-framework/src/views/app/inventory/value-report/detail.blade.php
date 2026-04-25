@@ -88,8 +88,8 @@
                                 <td style="text-align:right">@if($inventory->quantity > 0) {{number_format_quantity($inventory->price, 4)}} @else {{number_format_quantity($inventory->cogs, 4)}} @endif</td>
                                 <td style="text-align:right">@if($inventory->quantity > 0) {{number_format_quantity($inventory->quantity * $inventory->price, 4)}} @else {{number_format_quantity($inventory->quantity * $inventory->cogs, 4)}} @endif</td>
                                 <td style="text-align:right">{{number_format_quantity($inventory->cogs, 4)}}</td>
-                                <td style="text-align:right">{{number_format_quantity($inventory->total_quantity)}}</td>
-                                <td style="text-align:right">{{number_format_quantity($inventory->total_value, 4)}}</td>
+                                <td style="text-align:right">{{number_format_quantity($inventory->total_quantity_all)}}</td>
+                                <td style="text-align:right">{{number_format_quantity($inventory->total_value_all, 4)}}</td>
                             </tr>
                         @endforeach
                         </tbody>
