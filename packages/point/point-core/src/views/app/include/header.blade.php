@@ -25,7 +25,7 @@
 
         <!-- Header Link -->
         <li class="animation-fadeInQuick">
-            <a href=""><strong>{{ config('point.client.name') }}</strong></a>
+            <a href=""><strong>Testing | {{ config('point.client.name') }}</strong></a>
         </li>
         <!-- END Header Link -->
     </ul>
