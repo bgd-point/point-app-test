@@ -21,7 +21,7 @@ class RecalculateAll extends Command
      *
      * @var string
      */
-    protected $signature = 'dev:recalculate:bbl';
+    protected $signature = 'dev:recalculate:all';
 
     /**
      * The console command description.
