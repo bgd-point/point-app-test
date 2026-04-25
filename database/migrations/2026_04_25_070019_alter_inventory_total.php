@@ -13,7 +13,7 @@ class AlterInventoryTotal extends Migration
      */
     public function up()
     {
-        Schema::table('alter_inventory_total', function (Blueprint $table) {
+        Schema::table('inventory', function (Blueprint $table) {
             $table->decimal('total_quantity_all', 16, 4)->default(0);
             $table->decimal('total_value_all', 16, 4)->default(0);
         });
@@ -26,7 +26,7 @@ class AlterInventoryTotal extends Migration
      */
     public function down()
     {
-        Schema::table('alter_inventory_total', function (Blueprint $table) {
+        Schema::table('inventory', function (Blueprint $table) {
             $table->dropColumn('point_sales_invoice_id');
         });
     }
