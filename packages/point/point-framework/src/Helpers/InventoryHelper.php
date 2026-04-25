@@ -400,7 +400,7 @@ class InventoryHelper
         if ($this->inventory->total_quantity == 0) {
             $this->inventory->cogs = 0;
         } else {
-            $this->inventory->cogs = $this->inventory->total_value / $this->inventory->total_quantity;
+            $this->inventory->cogs = $this->inventory->total_value_all / $this->inventory->total_quantity_all;
         }
     }
 

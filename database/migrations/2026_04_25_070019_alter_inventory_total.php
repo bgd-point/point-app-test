@@ -27,7 +27,8 @@ class AlterInventoryTotal extends Migration
     public function down()
     {
         Schema::table('inventory', function (Blueprint $table) {
-            $table->dropColumn('point_sales_invoice_id');
+            $table->dropColumn('total_quantity_all');
+            $table->dropColumn('total_value_all');
         });
     }
 }
