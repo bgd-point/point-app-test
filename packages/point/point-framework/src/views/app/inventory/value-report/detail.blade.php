@@ -90,14 +90,14 @@
                                 <td style="text-align:right">{{number_format_quantity($inventory->cogs, 4)}}</td>
                                 <td style="text-align:right">
                                     === {{$warehouse}} ===
-                                    @if($warehouse && $warehouse->id === 0)
+                                    @if(!$warehouse || $warehouse->id === 0)
                                     {{number_format_quantity($inventory->total_quantity_all)}}
                                     @else 
                                     {{number_format_quantity($inventory->total_quantity)}}
                                     @endif
                                 </td>
                                 <td style="text-align:right">
-                                    @if($warehouse && $warehouse->id === 0)
+                                    @if(!$warehouse || $warehouse->id === 0)
                                     {{number_format_quantity($inventory->total_value_all, 4)}}
                                     @else 
                                     {{number_format_quantity($inventory->total_value, 4)}}
