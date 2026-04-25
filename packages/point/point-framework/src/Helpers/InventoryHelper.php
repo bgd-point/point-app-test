@@ -378,12 +378,22 @@ class InventoryHelper
             ->orderBy('id', 'desc')
             ->first();
         
+        $lastVal = Inventory::where('item_id', '=', $this->inventory->item_id)
+            ->where('form_date', '<=', $this->inventory->form_date)
+            ->orderBy('form_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+        
         if ($last) {
             $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
-            $this->inventory->total_value = $last->total_value + ($this->inventory->quantity * $this->inventory->price);
+            $this->inventory->total_quantity_all = $lastVal->total_quantity + $this->inventory->quantity;
+            $this->inventory->total_value = $lastVal->total_value_all + ($this->inventory->quantity * $this->inventory->price);
+            $this->inventory->total_value_all = $lastVal->total_value_all + ($this->inventory->quantity * $this->inventory->price);
         } else {
             $this->inventory->total_quantity = $this->inventory->quantity;
             $this->inventory->total_value = $this->inventory->quantity * $this->inventory->price;
+            $this->inventory->total_quantity_all = $this->inventory->quantity;
+            $this->inventory->total_value_all = $this->inventory->quantity * $this->inventory->price;
         }
 
         // handle error division by zero
@@ -402,6 +412,13 @@ class InventoryHelper
             ->orderBy('form_date', 'desc')
             ->orderBy('id', 'desc')
             ->first();
+        
+        $lastAll = Inventory::where('item_id', '=', $this->inventory->item_id)
+            ->where('form_date', '<=', $this->inventory->form_date)
+            ->where('warehouse_id', '=', $this->inventory->warehouse_id)
+            ->orderBy('form_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
 
         if (!$last || (float) $last->total_quantity < abs($this->inventory->quantity)) {
             throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE');
@@ -414,7 +431,9 @@ class InventoryHelper
             ->first();
 
         $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
+        $this->inventory->total_quantity_all = $lastAll->total_quantity + $this->inventory->quantity;
         $this->inventory->total_value = $last->total_value + ($this->inventory->quantity * $cogs->cogs);
+        $this->inventory->total_value_all = $lastAll->total_value + ($this->inventory->quantity * $cogs->cogs);
 
         $this->inventory->cogs = $cogs->cogs;
     }
