@@ -111,10 +111,12 @@ class RecalculateBBL extends Command
                     if ($l_inventory->price == 0) {
                         $l_inventory->price = $cogs;
                     }
+                    // if stock correction get hpp from previous
                     if ($l_inventory->quantity > 0 && $l_inventory->formulir->formulirable_type === StockCorrection::class) {
                         $l_inventory->price = $prevCogs;
                         $l_inventory->cogs = $prevCogs;
                     }
+                    // temporary fix qty minus
                     $l_inventory->total_quantity = (float) $totalQty + (float) $l_inventory->quantity;
                     $l_inventory->total_value = $totalValue + ($l_inventory->quantity * $l_inventory->price);
                     if ((float) $l_inventory->quantity < 0  || $l_inventory->formulir->formulirable_type === Retur::class) {
