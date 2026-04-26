@@ -383,6 +383,8 @@ class InventoryHelper
             ->orderBy('form_date', 'desc')
             ->orderBy('id', 'desc')
             ->first();
+
+        dd($lastVal);
         
         if ($last) {
             $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
