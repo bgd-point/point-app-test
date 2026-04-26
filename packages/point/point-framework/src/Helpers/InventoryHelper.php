@@ -435,9 +435,9 @@ class InventoryHelper
             ->first();
 
         $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
-        $this->inventory->total_quantity_all = $lastAll->total_quantity + $this->inventory->quantity;
+        $this->inventory->total_quantity_all = $lastAll->total_quantity_all + $this->inventory->quantity;
         $this->inventory->total_value = $last->total_value + ($this->inventory->quantity * $cogs->cogs);
-        $this->inventory->total_value_all = $lastAll->total_value + ($this->inventory->quantity * $cogs->cogs);
+        $this->inventory->total_value_all = $lastAll->total_value_all + ($this->inventory->quantity * $cogs->cogs);
 
         $this->inventory->cogs = $cogs->cogs;
     }
