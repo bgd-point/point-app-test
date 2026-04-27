@@ -92,7 +92,7 @@
                             <th style="text-align: center">QTY</th>
                             <th style="text-align: center">VALUE</th>
                             <th style="text-align: center">QTY</th>
-                            <!-- <th style="text-align: center">VALUE</th> -->
+                            <th style="text-align: center">VALUE</th>
                             <th style="text-align: center">LAST BUY PRICE</th>
                         </tr>
                         </thead>
@@ -239,7 +239,7 @@
                                 <td style="text-align: right">{{number_format_quantity($stock_out)}}</td>
                                 <td style="text-align: right">{{number_format_quantity($value_out)}}</td>
                                 <td style="text-align: right">{{number_format_quantity($closing_stock)}}</td>
-                                <!-- <td style="text-align: right">{{number_format_quantity($closing_stock * $price)}}</td> -->
+                                <td style="text-align: right">{{number_format_quantity($closing_value)}}</td>
                                 <td style="text-align: right">{{number_format_quantity($price)}}</td>
                             </tr>
                         @endforeach
