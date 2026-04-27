@@ -164,8 +164,12 @@ class ManufactureHelper
         $i = 0;
         $totalInv = 0;
         foreach ($input_process->product as $input_product) {
-            $totalInv += (float) $input_product->quantity;
+            $quantity = number_format_db($request->input('quantity_output')[$i]);
+            $totalInv += (float) $quantity;
+            $i++;
         }
+
+        $i = 0;
         foreach ($input_process->product as $input_product) {
             $quantity = number_format_db($request->input('quantity_output')[$i]);
             $inventory = new Inventory();
@@ -240,6 +244,7 @@ class ManufactureHelper
             $journal->coa_id = $work_in_process_account_id;
             $journal->description = 'Manufacture output process ' . $inventory->item->codeName;
             $journal->debit = 0;
+            // 500035.4530 * 10 / 
             $journal->credit = abs($cjournal->debit) * $inventory->quantity / $totalInv;
             $journal->form_journal_id = $inventory->formulir->id;
             $journal->form_reference_id;
