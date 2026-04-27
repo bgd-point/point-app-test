@@ -161,7 +161,11 @@ class InvoiceHelper
             $inventory->formulir_id = $formulir->id;
             $inventory->item_id = $item->id;
             $inventory->quantity = $invoice_detail->quantity * $invoice_detail->converter;
-            $inventory->price = $invoice_detail->price / $invoice_detail->converter;
+            if ($request->input('type_of_tax') == 'include') {
+                $inventory->price = ($invoice_detail->price * 100 / 111) / $invoice_detail->converter;
+            } else {
+                $inventory->price = $invoice_detail->price / $invoice_detail->converter;
+            }
             $inventory->form_date = date('Y-m-d H:i:s');
             $inventory->warehouse_id = $warehouse_id;
 
