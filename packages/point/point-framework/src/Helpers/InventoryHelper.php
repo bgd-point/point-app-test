@@ -172,7 +172,7 @@ class InventoryHelper
             ->first();
 
         if ($inventory) {
-            return $inventory->total_value;
+            return $inventory->total_value_all;
         }
 
         return 0;
