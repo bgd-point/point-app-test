@@ -184,7 +184,7 @@ class InventoryHelper
             ->where('form_date', '>=', $date_from)
             ->where('form_date', '<=', $date_to)
             ->where('quantity', '>=', 0)
-            ->select(DB::raw('SUM(quantity * cogs) as value'))->first()->value;
+            ->select(DB::raw('SUM(quantity * price) as value'))->first()->value;
     }
 
     public static function getValueOutAll($date_from, $date_to, $item_id)
@@ -193,7 +193,7 @@ class InventoryHelper
             ->where('form_date', '>=', $date_from)
             ->where('form_date', '<=', $date_to)
             ->where('quantity', '<', 0)
-            ->select(DB::raw('SUM(quantity * cogs) as value'))->first()->value;
+            ->select(DB::raw('SUM(quantity * price) as value'))->first()->value;
     }
 
     /**
