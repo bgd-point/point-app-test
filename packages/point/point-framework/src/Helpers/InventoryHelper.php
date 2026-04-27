@@ -88,10 +88,18 @@ class InventoryHelper
 
     public static function getOpeningValue($date_from, $item_id, $warehouse_id)
     {
-        return Inventory::where('item_id', '=', $item_id)
+        $inventory = Inventory::where('item_id', '=', $item_id)
             ->where('form_date', '<', $date_from)
             ->where('warehouse_id', '=', $warehouse_id)
-            ->select(DB::raw('SUM(quantity * price) as value'))->first()->value;
+            ->orderBy('form_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if ($inventory) {
+            return $inventory->total_value;
+        }
+
+        return 0;
     }
 
     public static function getValueIn($date_from, $date_to, $item_id, $warehouse_id)
