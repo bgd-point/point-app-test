@@ -244,7 +244,6 @@ class ManufactureHelper
             $journal->coa_id = $work_in_process_account_id;
             $journal->description = 'Manufacture output process ' . $inventory->item->codeName;
             $journal->debit = 0;
-            // 500035.4530 * 10 / 
             $journal->credit = abs($cjournal->debit) * $inventory->quantity / $totalInv;
             $journal->form_journal_id = $inventory->formulir->id;
             $journal->form_reference_id;
