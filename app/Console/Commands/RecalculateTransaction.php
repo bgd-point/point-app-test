@@ -66,7 +66,7 @@ class RecalculateTransaction extends Command
                 // Journal inventory
                 $total_per_row = $invoice_detail->quantity * $invoice_detail->price - $invoice_detail->quantity * $invoice_detail->price / 100 * $invoice_detail->discount;
                 if ($invoice->discount) {
-                    $discounty = $total_per_row * $discount / $subtotal;
+                    $discounty = $total_per_row * $invoice->discount / $invoice->subtotal;
                     $total_per_row = $total_per_row - $discounty;
                 }
                 if ($request->input('type_of_tax') == 'include') {
