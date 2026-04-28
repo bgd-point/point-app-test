@@ -105,7 +105,7 @@ class RecalculateTransaction extends Command
 
                 $price = $invoice_detail->price;
                 if ($invoice->type_of_tax == 'include') {
-                    $inventory->price = $price - ($price * 100 / 111) / $invoice_detail->converter;
+                    $inventory->price = $price / 1.11 / $invoice_detail->converter;
                 } else {
                     $inventory->price = $price / $invoice_detail->converter;
                 }
