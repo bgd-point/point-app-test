@@ -44,7 +44,7 @@ class MigrateTenant extends Command
 
         foreach($databases as $database) {
             $connectionName = $this->argument('connection-name');
-            $databaseName = $database;
+            $databaseName = 'p_'.$database;
             
             \Config::set('database.connections.'.$connectionName.'.database', $databaseName);
             \DB::reconnect($connectionName);
