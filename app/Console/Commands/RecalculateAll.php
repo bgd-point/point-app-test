@@ -37,16 +37,10 @@ class RecalculateAll extends Command
      */
     public function handle()
     {
-        $this->comment('recalculating inventory');
-
-        $this->handleQty();
-    }
-
-    public function handleQty()
-    {
         $this->comment('handle inventory all');
 
-        $inventories = Inventory::all();
+        $inventories = Inventory::where('item_id', 608)->get();
+        // $inventories = Inventory::all();
 
         foreach ($inventories as $inventory) {
             \DB::beginTransaction();
@@ -59,6 +53,7 @@ class RecalculateAll extends Command
             $prevTotalQty = 0;
             $prevTotalVal = 0;
             foreach($list_inventory as $index => $l_inventory) {
+                $this->comment($l_inventory->id . ' = ' . );
                 $l_inventory->total_quantity_all = $prevTotalQty + $l_inventory->quantity;
                 $l_inventory->total_value_all = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
                 $l_inventory->save();
