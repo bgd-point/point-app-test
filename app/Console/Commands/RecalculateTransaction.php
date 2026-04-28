@@ -115,8 +115,8 @@ class RecalculateTransaction extends Command
             // Journal tax exclude and non-tax
             if ($invoice->type_of_tax == 'exclude' || $invoice->type_of_tax == 'non') {
                 $data = array(
-                    'value_of_account_payable' => $total,
-                    'value_of_income_tax_receiveable' => $tax,
+                    'value_of_account_payable' => $invoice->total,
+                    'value_of_income_tax_receiveable' => $invoice->tax,
                     'value_of_expedition_cost' => $invoice->expedition_fee,
                     'formulir' => $invoice->formulir,
                     'invoice' => $invoice
@@ -126,8 +126,8 @@ class RecalculateTransaction extends Command
                 $dc->credit += round($dc2->credit , 4);
             } elseif ($invoice->type_of_tax == 'include') {
                 $data = array(
-                    'value_of_account_payable' => $total,
-                    'value_of_income_tax_receiveable' => $tax,
+                    'value_of_account_payable' => $invoice->total,
+                    'value_of_income_tax_receiveable' => $invoice->tax,
                     'value_of_expedition_cost' => $invoice->expedition_fee,
                     'formulir' => $invoice->formulir,
                     'invoice' => $invoice
