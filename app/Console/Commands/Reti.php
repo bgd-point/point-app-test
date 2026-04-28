@@ -70,6 +70,9 @@ class Reti extends Command
 
             $transfer_item = TransferItem::where('formulir_id', $formulir->id)->first();
 
+            Inventory::where('formulir_id', $transfer_item->formulir->id)->delete();
+            Journal::where('form_journal_id', $transfer_item->formulir->id)->delete();
+
             foreach ($transfer_item->items as $transfer_item_detail) {
                 $inventory = new Inventory;
                 $inventory->form_date = $transfer_item->formulir->form_date;
