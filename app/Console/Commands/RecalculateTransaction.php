@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Point\Framework\Helpers\InventoryHelper;
+use Point\Framework\Helpers\JournalHelper;
+use Point\Framework\Helpers\ReferHelper;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Inventory;
