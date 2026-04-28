@@ -256,7 +256,7 @@ class RecalculateTransaction extends Command
         $position = JournalHelper::position($account_receiveable);
         
         $journal = new Journal;
-        $journal->form_date = $invoice->formulir->approval_at;
+        $journal->form_date = $data['formulir']->approval_at;
         $journal->coa_id = $account_receiveable;
         $journal->description = 'Invoice Purchasing [' . $data['formulir']->form_number.']';
         $journal->$position = $data['value_of_account_payable'];
@@ -272,7 +272,7 @@ class RecalculateTransaction extends Command
         $income_tax_receiveable = JournalHelper::getAccount('point purchasing', 'income tax receivable');
         $position = JournalHelper::position($income_tax_receiveable);
         $journal = new Journal;
-        $journal->form_date = $invoice->formulir->approval_at;
+        $journal->form_date = $data['formulir']->approval_at;
         $journal->coa_id = $income_tax_receiveable;
         $journal->description = 'Invoice Purchasing [' . $data['formulir']->form_number.']';
         $journal->$position = $data['value_of_income_tax_receiveable'];
@@ -289,7 +289,7 @@ class RecalculateTransaction extends Command
             $expedition = JournalHelper::getAccount('point purchasing', 'expedition cost');
             $position = JournalHelper::position($expedition);
             $journal = new Journal;
-            $journal->form_date = $invoice->formulir->approval_at;
+            $journal->form_date = $data['formulir']->approval_at;
             $journal->coa_id = $expedition;
             $journal->description = 'Invoice Purchasing [' . $data['formulir']->form_number.']';
             $journal->$position = $data['value_of_expedition_cost'];
