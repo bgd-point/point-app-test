@@ -438,7 +438,7 @@ class InventoryHelper
             $this->inventory->total_value_all = $this->inventory->quantity * $cogs->cogs;
         }
 
-        if ((float) $last->total_quantity < abs($this->inventory->quantity)) {
+        if (!$last || (float) $last->total_quantity < abs($this->inventory->quantity)) {
             throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE');
         }
 
