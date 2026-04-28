@@ -75,9 +75,7 @@ class RecalculateTest extends Command
             Inventory::where('formulir_id', $output->formulir_id)->delete();
             Journal::where('form_journal_id', $output->formulir_id)->delete();
 
-            $value = InputProcess::join('formulir', 'point_manufacture_input.formulir_id', '=', 'formulir.id')
-                ->where('point_manufacture_input.id', $output->input_id)
-                ->sum('debit');
+            $value = Journal::where('point_manufacture_input.id', $output->input_id)->sum('debit');
 
             foreach ($output->products as $product) {
                 $totalQty = 0;
