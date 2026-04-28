@@ -99,9 +99,9 @@ class RecalculateTransaction extends Command
                 $inventory->item_id = $item->id;
                 $inventory->quantity = $invoice_detail->quantity * $invoice_detail->converter;
 
-                $price = $total_per_row / $inventory->quantity;
+                $price = $invoice_detail->price;
                 if ($invoice->type_of_tax == 'include') {
-                    $inventory->price = ($price * 100 / 111) / $invoice_detail->converter;
+                    $inventory->price = ($price * 11 / 111) / $invoice_detail->converter;
                 } else {
                     $inventory->price = $price / $invoice_detail->converter;
                 }
