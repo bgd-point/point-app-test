@@ -37,7 +37,8 @@ class RecalculateTest extends Command
      */
     public function handle()
     {
-        self::fixOutput();
+        self::fixInput();
+        // self::fixOutput();
     }
 
     public static function fixInput()
