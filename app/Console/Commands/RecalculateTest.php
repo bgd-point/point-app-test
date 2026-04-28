@@ -83,7 +83,7 @@ class RecalculateTest extends Command
                 $totalQty += (float) $product->quantity;
             }
 
-            if ($totalQty == 0) 
+            if ($totalQty == 0) {
                 \Log::info('zero: ' . $output->id);
             }
 
