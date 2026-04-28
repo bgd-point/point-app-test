@@ -159,7 +159,7 @@ class RecalculateTransaction extends Command
             $income_tax_receivable = JournalHelper::getAccount('point sales indirect', 'income tax payable');
             $position = JournalHelper::position($income_tax_receivable);
             $journal = new Journal;
-            $journal->form_date = $invoice->formulir->approval_at;
+            $journal->form_date = $data['invoice']->formulir->approval_at;
             $journal->coa_id = $income_tax_receivable;
             $journal->description = 'invoice indirect sales [' . $data['formulir']->form_number.']';
             $journal->$position = $data['value_of_income_tax_payable'];
