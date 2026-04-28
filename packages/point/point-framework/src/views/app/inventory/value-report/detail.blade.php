@@ -38,16 +38,24 @@
                         </thead>
                         <tbody>
                         <?php
-                        $opening_inventory = \Point\Framework\Models\Inventory::where('item_id', '=', $item->id)
-                            ->where('form_date', '<', $date_from)
-                            ->where(function ($query) use ($warehouse) {
-                                if ($warehouse) {
-                                    $query->where('warehouse_id', '=', $warehouse->id);
-                                }
-                            })
-                            ->orderBy('form_date', '=', 'asc')
-                            ->orderBy('formulir_id', '=', 'asc')
-                            ->first();
+                        if ($warehouse) {
+                            $opening_inventory = \Point\Framework\Models\Inventory::where('item_id', '=', $item->id)
+                                ->where('form_date', '<', $date_from)
+                                ->where(function ($query) use ($warehouse) {
+                                    if ($warehouse) {
+                                        $query->where('warehouse_id', '=', $warehouse->id);
+                                    }
+                                })
+                                ->orderBy('form_date', '=', 'asc')
+                                ->orderBy('formulir_id', '=', 'asc')
+                                ->first();
+                        } else {
+                            $opening_inventory = \Point\Framework\Models\Inventory::where('item_id', '=', $item->id)
+                                ->where('form_date', '<', $date_from)
+                                ->orderBy('form_date', '=', 'asc')
+                                ->orderBy('formulir_id', '=', 'asc')
+                                ->first();
+                        }
                         $total_quantity = $opening_inventory ? $opening_inventory->total_quantity : 0;
                         $total_value = $opening_inventory ? $opening_inventory->total_value : 0;
                         $cogs = $opening_inventory ? $opening_inventory->cogs : 0;
