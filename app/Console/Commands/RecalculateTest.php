@@ -79,7 +79,7 @@ class RecalculateTest extends Command
             $value = Journal::where('form_journal_id', $output->input->formulir_id)->sum('debit');
 
             $totalQty = 0;
-            \Log::info($output->product);
+            \Log::info($output->id . ' = ' . $output->product);
             foreach ($output->product as $product) {
                 $totalQty += (float) $product->quantity;
             }
