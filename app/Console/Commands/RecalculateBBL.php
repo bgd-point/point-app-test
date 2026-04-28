@@ -160,6 +160,7 @@ class RecalculateBBL extends Command
             ->delete();
         
         $inventories = Inventory::orderBy('form_date', 'asc')
+            // ->where('item_id', 608)
             ->get()
             ->unique(function ($inventory) {
                 return $inventory['item_id'];
@@ -176,6 +177,7 @@ class RecalculateBBL extends Command
                 ->get();
 
             $prevCogs = 0;
+            $prev = null;
             foreach($list_inventory as $index => $l_inventory) {
                 if ($index == 0) {
                     $totalQty = (float) $l_inventory->total_quantity;
@@ -246,6 +248,8 @@ class RecalculateBBL extends Command
 
                     $l_inventory->save();
                 }
+
+                $prev = $l_inventory;
             }
         }
     }
