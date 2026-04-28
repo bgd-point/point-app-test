@@ -144,7 +144,7 @@ class RecalculateTransaction extends Command
         $position = JournalHelper::position($account_receivable);
         
         $journal = new Journal;
-        $journal->form_date = $invoice->formulir->approval_at;
+        $journal->form_date = $data['invoice']->formulir->approval_at;
         $journal->coa_id = $account_receivable;
         $journal->description = 'invoice indirect sales [' . $data['formulir']->form_number.']';
         $journal->$position = $data['value_of_account_receivable'];
@@ -174,7 +174,7 @@ class RecalculateTransaction extends Command
         $sales_of_goods = JournalHelper::getAccount('point sales indirect', 'sale of goods');
         $position = JournalHelper::position($sales_of_goods);
         $journal = new Journal;
-        $journal->form_date = $invoice->formulir->approval_at;
+        $journal->form_date = $data['invoice']->formulir->approval_at;
         $journal->coa_id = $sales_of_goods;
         $journal->description = 'invoice indirect sales [' . $data['formulir']->form_number.']';
         $journal->$position = $data['value_of_sale_of_goods'];
@@ -189,7 +189,7 @@ class RecalculateTransaction extends Command
             $sales_discount = JournalHelper::getAccount('point sales indirect', 'sales discount');
             $position = JournalHelper::position($sales_discount);
             $journal = new Journal;
-            $journal->form_date = $invoice->formulir->approval_at;
+            $journal->form_date = $data['invoice']->formulir->approval_at;
             $journal->coa_id = $sales_discount;
             $journal->description = 'invoice indirect sales [' . $data['formulir']->form_number.']';
             $journal->$position = $data['value_of_discount'];
@@ -205,7 +205,7 @@ class RecalculateTransaction extends Command
             $cost_of_sales = JournalHelper::getAccount('point sales indirect', 'expedition income');
             $position = JournalHelper::position($cost_of_sales);
             $journal = new Journal;
-            $journal->form_date = $invoice->formulir->approval_at;
+            $journal->form_date = $data['invoice']->formulir->approval_at;
             $journal->coa_id = $cost_of_sales;
             $journal->description = 'invoice indirect sales [' . $data['formulir']->form_number.']';
             $journal->$position = $data['value_of_expedition_income'];
@@ -218,7 +218,7 @@ class RecalculateTransaction extends Command
 
         $cost_of_sales_account = JournalHelper::getAccount('point sales indirect', 'cost of sales');
         $journal = new Journal;
-        $journal->form_date = $invoice->formulir->approval_at;
+        $journal->form_date = $data['invoice']->formulir->approval_at;
         $journal->coa_id = $cost_of_sales_account;
         $journal->description = 'invoice indirect sales "' . $data['formulir']->form_number.'"';
         $journal->debit = $data['value_of_cost_of_sales'];
