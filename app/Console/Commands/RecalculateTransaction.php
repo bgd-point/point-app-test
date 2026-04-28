@@ -168,83 +168,83 @@ class RecalculateTransaction extends Command
             }
         }
 
-        // $this->comment('recalculating transaction sales');
+        $this->comment('recalculating transaction sales');
         
-        // $list_sales = SalesInvoice::join('formulir', 'formulir.id', '=', 'point_sales_invoice.formulir_id')
-        //     ->where('point_sales_invoice.type_of_tax', 'include')
-        //     ->select('point_sales_invoice.*')
-        //     ->get();
+        $list_sales = SalesInvoice::join('formulir', 'formulir.id', '=', 'point_sales_invoice.formulir_id')
+            ->where('point_sales_invoice.type_of_tax', 'include')
+            ->select('point_sales_invoice.*')
+            ->get();
 
-        // foreach ($list_sales as $invoice) {
-        //     $this->comment($invoice->formulir_id);
-        //     Inventory::where('formulir_id', '=', $invoice->formulir->id)->delete();
-        //     Journal::where('form_journal_id', '=', $invoice->formulir->id)->delete();
+        foreach ($list_sales as $invoice) {
+            $this->comment($invoice->formulir_id);
+            Inventory::where('formulir_id', '=', $invoice->formulir->id)->delete();
+            Journal::where('form_journal_id', '=', $invoice->formulir->id)->delete();
 
-        //     $cost_of_sales = 0;
-        //     foreach ($invoice->items as $invoice_detail) {
-        //         $delivery_order_item = ReferHelper::getReferBy(get_class($invoice_detail), $invoice_detail->id, get_class($invoice), $invoice->id);
+            $cost_of_sales = 0;
+            foreach ($invoice->items as $invoice_detail) {
+                $delivery_order_item = ReferHelper::getReferBy(get_class($invoice_detail), $invoice_detail->id, get_class($invoice), $invoice->id);
     
-        //         if ($delivery_order_item) {
-        //             $delivery_order = DeliveryOrder::find($delivery_order_item->point_sales_delivery_order_id);
-        //             $warehouse_id = $delivery_order->warehouse_id;
-        //         }
-        //         $item = Item::find($invoice_detail->item_id);
-        //         $inventory = new Inventory();
-        //         $inventory->formulir_id = $invoice->formulir->id;
-        //         $inventory->item_id = $item->id;
-        //         $inventory->quantity = $invoice_detail->quantity * $invoice_detail->converter;
-        //         $inventory->price = InventoryHelper::getCostOfSales($invoice->formulir->approval_at, $item->id, $warehouse_id);
-        //         $inventory->form_date = $invoice->formulir->approval_at;
-        //         $inventory->warehouse_id = $warehouse_id;
+                if ($delivery_order_item) {
+                    $delivery_order = DeliveryOrder::find($delivery_order_item->point_sales_delivery_order_id);
+                    $warehouse_id = $delivery_order->warehouse_id;
+                }
+                $item = Item::find($invoice_detail->item_id);
+                $inventory = new Inventory();
+                $inventory->formulir_id = $invoice->formulir->id;
+                $inventory->item_id = $item->id;
+                $inventory->quantity = $invoice_detail->quantity * $invoice_detail->converter;
+                $inventory->price = InventoryHelper::getCostOfSales($invoice->formulir->approval_at, $item->id, $warehouse_id);
+                $inventory->form_date = $invoice->formulir->approval_at;
+                $inventory->warehouse_id = $warehouse_id;
 
-        //         $inventory_helper = new InventoryHelper($inventory);
-        //         $inventory_helper->out();
+                $inventory_helper = new InventoryHelper($inventory);
+                $inventory_helper->out();
 
-        //         $cost = InventoryHelper::getCostOfSales(\Carbon::now(), $inventory->item_id, $inventory->warehouse_id) * abs($inventory->quantity);
-        //         $cost_of_sales += $cost;
+                $cost = InventoryHelper::getCostOfSales(\Carbon::now(), $inventory->item_id, $inventory->warehouse_id) * abs($inventory->quantity);
+                $cost_of_sales += $cost;
 
-        //         $journal = new Journal;
-        //         $journal->form_date = $invoice->formulir->approval_at;
-        //         $journal->coa_id = $inventory->item->account_asset_id;
-        //         $journal->description = 'invoice "' . $inventory->item->codeName.'"';
-        //         $journal->credit = $cost;
-        //         $journal->form_journal_id = $invoice->formulir_id;
-        //         $journal->form_reference_id;
-        //         $journal->subledger_id = $inventory->item_id;
-        //         $journal->subledger_type = get_class($inventory->item);
-        //         $journal->save();
-        //     }
+                $journal = new Journal;
+                $journal->form_date = $invoice->formulir->approval_at;
+                $journal->coa_id = $inventory->item->account_asset_id;
+                $journal->description = 'invoice "' . $inventory->item->codeName.'"';
+                $journal->credit = $cost;
+                $journal->form_journal_id = $invoice->formulir_id;
+                $journal->form_reference_id;
+                $journal->subledger_id = $inventory->item_id;
+                $journal->subledger_type = get_class($inventory->item);
+                $journal->save();
+            }
             
-        //     // Journal tax exclude and non-tax
-        //     if ($invoice->type_of_tax == 'exclude' || $invoice->type_of_tax == 'non') {
-        //         $data = array(
-        //             'value_of_account_receivable' => $invoice->total,
-        //             'value_of_income_tax_payable' => $invoice->tax,
-        //             'value_of_sale_of_goods' => $invoice->subtotal,
-        //             'value_of_cost_of_sales' => $cost_of_sales,
-        //             'value_of_discount' => $invoice->discount * (-1),
-        //             'value_of_expedition_income' => $invoice->expedition_fee,
-        //             'formulir' => $invoice->formulir,
-        //             'invoice' => $invoice
-        //         );
-        //         self::journalSales($data);
-        //     }
+            // Journal tax exclude and non-tax
+            if ($invoice->type_of_tax == 'exclude' || $invoice->type_of_tax == 'non') {
+                $data = array(
+                    'value_of_account_receivable' => $invoice->total,
+                    'value_of_income_tax_payable' => $invoice->tax,
+                    'value_of_sale_of_goods' => $invoice->subtotal,
+                    'value_of_cost_of_sales' => $cost_of_sales,
+                    'value_of_discount' => $invoice->discount * (-1),
+                    'value_of_expedition_income' => $invoice->expedition_fee,
+                    'formulir' => $invoice->formulir,
+                    'invoice' => $invoice
+                );
+                self::journalSales($data);
+            }
 
-        //     // Journal tax include
-        //     if ($invoice->type_of_tax == 'include') {
-        //         $data = array(
-        //             'value_of_account_receivable' => $invoice->total,
-        //             'value_of_income_tax_payable' => $invoice->tax,
-        //             'value_of_sale_of_goods' => $invoice->tax_base,
-        //             'value_of_cost_of_sales' => $cost_of_sales,
-        //             'value_of_discount' => $invoice->discount,
-        //             'value_of_expedition_income' => $invoice->expedition_fee,
-        //             'formulir' => $invoice->formulir,
-        //             'invoice' => $invoice
-        //         );
-        //         self::journalSales($data);
-        //     }
-        // }
+            // Journal tax include
+            if ($invoice->type_of_tax == 'include') {
+                $data = array(
+                    'value_of_account_receivable' => $invoice->total,
+                    'value_of_income_tax_payable' => $invoice->tax,
+                    'value_of_sale_of_goods' => $invoice->tax_base,
+                    'value_of_cost_of_sales' => $cost_of_sales,
+                    'value_of_discount' => $invoice->discount,
+                    'value_of_expedition_income' => $invoice->expedition_fee,
+                    'formulir' => $invoice->formulir,
+                    'invoice' => $invoice
+                );
+                self::journalSales($data);
+            }
+        }
 
         \DB::commit();
     }
