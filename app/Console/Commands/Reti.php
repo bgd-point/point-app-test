@@ -58,7 +58,7 @@ class Reti extends Command
         $formulirs = Formulir::where('formulirable_type', '=', TransferItem::class)
             ->whereNotNull('form_number')
             ->whereNull('canceled_at')
-            ->where('approval_status', '=', 1)
+            ->where('approval_status', '=', 11)
             // ->where('form_date', '>=', '2026-04-01 00:00:00')
             ->get();
 
@@ -89,7 +89,6 @@ class Reti extends Command
                 $inventory->formulir_id = $transfer_item->formulir_id;
                 $inventory->warehouse_id = $transfer_item->warehouse_receiver_id;
                 $inventory->item_id = $transfer_item_detail->item_id;
-                $inventory->quantity = $transfer_item_detail->qty_send;
                 $inventory->price = $transfer_item_detail->cogs;
                 $inventory->quantity = $transfer_item_detail->qty_received;
                 if ($transfer_item_detail->qty_received > 0) {
@@ -109,8 +108,6 @@ class Reti extends Command
     {
         $debit = 0;
         $credit = 0;
-
-
         foreach ($transfer_item->items as $transfer_item_detail) {
 
             // JOURNAL #1 of #2 - SEND ITEM
