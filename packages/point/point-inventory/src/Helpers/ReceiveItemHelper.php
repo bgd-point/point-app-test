@@ -48,7 +48,7 @@ class ReceiveItemHelper
     public static function updateJournal($transfer_item)
     {
         foreach ($transfer_item->items as $transfer_item_detail) {
-            if ($transfer_item_detail->cogs * $transfer_item_detail->qty_received !== 0) {
+            if ($transfer_item_detail->qty_received != 0) {
                 // JOURNAL #1 of #2 - Invetory Received
                 $journal = new Journal();
                 $journal->form_date = date('Y-m-d H:i:s');
