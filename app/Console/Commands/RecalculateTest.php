@@ -77,28 +77,26 @@ class RecalculateTest extends Command
 
             $value = Journal::where('form_journal_id', $output->input->formulir_id)->sum('debit');
 
-            foreach ($output->products as $product) {
-                $totalQty = 0;
-                foreach ($output->product as $product) {
-                    $totalQty += (float) $product->quantity;
-                }
+            $totalQty = 0;
+            foreach ($output->product as $product) {
+                $totalQty += (float) $product->quantity;
+            }
 
-                $cogs_product = $value / $totalQty;
+            $cogs_product = $value / $totalQty;
 
-                foreach ($output->product as $product) {
-                    $inventory = new Inventory();
-                    $inventory->formulir_id = $product->formulir->id;
-                    $inventory->form_date = $product->formulir->approval_at;
-                    $inventory->warehouse_id = $product->warehouse_id;
-                    $inventory->item_id = $product->product_id;
-                    $inventory->quantity = $product->quantity;
-                    $inventory->price = $cogs_product;
+            foreach ($output->product as $product) {
+                $inventory = new Inventory();
+                $inventory->formulir_id = $product->formulir->id;
+                $inventory->form_date = $product->formulir->approval_at;
+                $inventory->warehouse_id = $product->warehouse_id;
+                $inventory->item_id = $product->product_id;
+                $inventory->quantity = $product->quantity;
+                $inventory->price = $cogs_product;
 
-                    $inventory_helper = new InventoryHelper($inventory);
-                    $inventory_helper->in();
+                $inventory_helper = new InventoryHelper($inventory);
+                $inventory_helper->in();
 
-                    self::addJournalOutput($inventory, $totalQty);
-                }
+                self::addJournalOutput($inventory, $totalQty);
             }
         }
     }
