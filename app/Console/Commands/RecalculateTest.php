@@ -10,9 +10,16 @@ use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Journal;
-use Point\PointManufacture\Models\InputProcess;
-use Point\PointManufacture\Models\OutputProcess;
 use Point\Framework\Models\Master\Item;
+use Point\PointManufacture\Models\Formula;
+use Point\PointManufacture\Models\FormulaMaterial;
+use Point\PointManufacture\Models\FormulaProduct;
+use Point\PointManufacture\Models\InputMaterial;
+use Point\PointManufacture\Models\InputProcess;
+use Point\PointManufacture\Models\InputProduct;
+use Point\PointManufacture\Models\OutputProcess;
+use Point\PointManufacture\Models\OutputProduct;
+
 
 class RecalculateTest extends Command
 {
