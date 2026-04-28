@@ -222,4 +222,3 @@ class RecalculateTransaction extends Command
         $journal->save();
     }
 }
-}
