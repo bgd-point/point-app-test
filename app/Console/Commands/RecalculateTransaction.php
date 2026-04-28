@@ -57,6 +57,10 @@ class RecalculateTransaction extends Command
             $dc->debit = 0;
             $dc->credit = 0;
 
+            $invoice->tax = $invoice->subtotal * 11 / 111;
+            $invoice->tax_base = $invoice->subtotal - $invoice->tax;
+            $invoice->total = $invoice->subtotal;
+
             Inventory::where('formulir_id', '=', $invoice->formulir->id)->delete();
             Journal::where('form_journal_id', '=', $invoice->formulir->id)->delete();
 
