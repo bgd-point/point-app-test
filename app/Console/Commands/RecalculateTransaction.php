@@ -116,7 +116,7 @@ class RecalculateTransaction extends Command
                     'formulir' => $formulir,
                     'invoice' => $invoice
                 );
-                $dc2 = self::journal($data);
+                $dc2 = self::journalPurchasing($data);
                 $dc->debit += round($dc2->debit , 4);
                 $dc->credit += round($dc2->credit , 4);
             } elseif ($request->input('type_of_tax') == 'include') {
@@ -127,7 +127,7 @@ class RecalculateTransaction extends Command
                     'formulir' => $formulir,
                     'invoice' => $invoice
                 );
-                $dc2 = self::journal($data);
+                $dc2 = self::journalPurchasing($data);
                 $dc->debit += round($dc2->debit, 4);
                 $dc->credit += round($dc2->credit, 4);
             }
