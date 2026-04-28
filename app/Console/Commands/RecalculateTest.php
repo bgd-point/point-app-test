@@ -39,7 +39,7 @@ class RecalculateTest extends Command
     public function handle()
     {
         Journal::where('description', 'Pembulatan')
-            ->where('subledger_type', '!=', NULL)
+            ->whereNotNull('subledger_type')
             ->delete();
     }
 }
