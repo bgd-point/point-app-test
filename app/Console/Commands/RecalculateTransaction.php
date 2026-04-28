@@ -80,7 +80,7 @@ class RecalculateTransaction extends Command
                 $position = JournalHelper::position($invoice_detail->item->account_asset_id);
 
                 $journal = new Journal();
-                $journal->form_date = date('Y-m-d H:i:s');
+                $journal->form_date = $invoice->formulir->approval_at;
                 $journal->coa_id = $invoice_detail->item->account_asset_id;
                 $journal->description = 'Goods Received [' . $invoice->formulir->form_number.']';
                 $journal->$position = $total_per_row;
@@ -105,7 +105,7 @@ class RecalculateTransaction extends Command
                 } else {
                     $inventory->price = $price / $invoice_detail->converter;
                 }
-                $inventory->form_date = date('Y-m-d H:i:s');
+                $inventory->form_date = $invoice->formulir->approval_at;
                 $inventory->warehouse_id = $warehouse_id;
 
                 $inventory_helper = new InventoryHelper($inventory);
@@ -146,7 +146,7 @@ class RecalculateTransaction extends Command
                 $fcredit = floor($dc->credit * $factor) / $factor;
 
                 $journal = new Journal();
-                $journal->form_date = date('Y-m-d H:i:s');
+                $journal->form_date = $invoice->formulir->approval_at;
                 $coa_selisih = \DB::table('coa')->where('name', 'PENDAPATAN (BEBAN) SELISIH PEMBAYARAN')->first();
                 if ($coa_selisih) {
                     $journal->coa_id = $coa_selisih->id;
@@ -256,7 +256,7 @@ class RecalculateTransaction extends Command
         $position = JournalHelper::position($account_receiveable);
         
         $journal = new Journal;
-        $journal->form_date = date('Y-m-d H:i:s');
+        $journal->form_date = $invoice->formulir->approval_at;
         $journal->coa_id = $account_receiveable;
         $journal->description = 'Invoice Purchasing [' . $data['formulir']->form_number.']';
         $journal->$position = $data['value_of_account_payable'];
@@ -272,7 +272,7 @@ class RecalculateTransaction extends Command
         $income_tax_receiveable = JournalHelper::getAccount('point purchasing', 'income tax receivable');
         $position = JournalHelper::position($income_tax_receiveable);
         $journal = new Journal;
-        $journal->form_date = date('Y-m-d H:i:s');
+        $journal->form_date = $invoice->formulir->approval_at;
         $journal->coa_id = $income_tax_receiveable;
         $journal->description = 'Invoice Purchasing [' . $data['formulir']->form_number.']';
         $journal->$position = $data['value_of_income_tax_receiveable'];
@@ -289,7 +289,7 @@ class RecalculateTransaction extends Command
             $expedition = JournalHelper::getAccount('point purchasing', 'expedition cost');
             $position = JournalHelper::position($expedition);
             $journal = new Journal;
-            $journal->form_date = date('Y-m-d H:i:s');
+            $journal->form_date = $invoice->formulir->approval_at;
             $journal->coa_id = $expedition;
             $journal->description = 'Invoice Purchasing [' . $data['formulir']->form_number.']';
             $journal->$position = $data['value_of_expedition_cost'];
