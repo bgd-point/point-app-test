@@ -72,8 +72,8 @@ class RecalculateTest extends Command
             ->get();
 
         foreach ($outputs as $output) {
-            Inventory::where('formulir_id', $output.formulir_id)->delete();
-            Journal::where('form_journal_id', $output.formulir_id)->delete();
+            Inventory::where('formulir_id', $output->formulir_id)->delete();
+            Journal::where('form_journal_id', $output->formulir_id)->delete();
 
             $value = InputProcess::join('formulir', 'point_manufacture_input.formulir_id', '=', 'formulir.id')
                 ->where('point_manufacture_input.id', $output->input_id)
