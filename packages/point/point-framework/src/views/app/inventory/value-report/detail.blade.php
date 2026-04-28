@@ -49,15 +49,17 @@
                                 ->orderBy('form_date', '=', 'asc')
                                 ->orderBy('formulir_id', '=', 'asc')
                                 ->first();
+                                $total_quantity = $opening_inventory ? $opening_inventory->total_quantity : 0;
+                                $total_value = $opening_inventory ? $opening_inventory->total_value : 0;
                         } else {
                             $opening_inventory = \Point\Framework\Models\Inventory::where('item_id', '=', $item->id)
                                 ->where('form_date', '<', $date_from)
                                 ->orderBy('form_date', '=', 'asc')
                                 ->orderBy('formulir_id', '=', 'asc')
                                 ->first();
+                                $total_quantity = $opening_inventory ? $opening_inventory->total_quantity_all : 0;
+                                $total_value = $opening_inventory ? $opening_inventory->total_value_all : 0;
                         }
-                        $total_quantity = $opening_inventory ? $opening_inventory->total_quantity : 0;
-                        $total_value = $opening_inventory ? $opening_inventory->total_value : 0;
                         $cogs = $opening_inventory ? $opening_inventory->cogs : 0;
                         ?>
                         <tr>
