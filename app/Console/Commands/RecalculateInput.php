@@ -44,7 +44,9 @@ class RecalculateInput extends Command
      */
     public function handle()
     {
-        $inputs = InputProcess::join('formulir', 'point_manufacture_input.formulir_id', '=', 'formulir.id')->get();
+        $inputs = InputProcess::join('formulir', 'point_manufacture_input.formulir_id', '=', 'formulir.id')
+            ->select('point_manufacture_input.*')
+            ->get();
 
         foreach ($inputs as $input) {
             foreach ($input->material as $material) {
