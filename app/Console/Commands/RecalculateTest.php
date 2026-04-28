@@ -45,24 +45,22 @@ class RecalculateTest extends Command
         $inputs = InputProcess::join('formulir', 'point_manufacture_input.formulir_id', '=', 'formulir.id')->get();
 
         foreach ($inputs as $input) {
+            foreach ($input->material as $material) {
+                $inventory = new Inventory;
+                $inventory->formulir_id = $input->formulir->id;
+                $inventory->item_id = $material->material_id;
+                $inventory->quantity = $material->quantity * InputMaterial::unit($material->material_id);
+                $inventory->cogs = InventoryHelper::getCostOfSales($input->formulir->approval_at, $material->material_id, $material->warehouse_id);
+                $inventory->price = $inventory->cogs;
+                $inventory->form_date = $input->formulir->approval_at;
+                $inventory->warehouse_id = $material->warehouse_id;
 
+                $inventory_helper = new InventoryHelper($inventory);
+                $inventory_helper->out();
+
+                self::addJournalInput($inventory);
+            }
         }
-
-        // foreach ($input_approval->material as $material) {
-        //     $inventory = new Inventory;
-        //     $inventory->formulir_id = $input_approval->formulir->id;
-        //     $inventory->item_id = $material->material_id;
-        //     $inventory->quantity = $material->quantity * InputMaterial::unit($material->material_id);
-        //     $inventory->cogs = InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $material->material_id, $material->warehouse_id);
-        //     $inventory->price = $inventory->cogs;
-        //     $inventory->form_date = date('Y-m-d H:i:s');
-        //     $inventory->warehouse_id = $material->warehouse_id;
-
-        //     $inventory_helper = new InventoryHelper($inventory);
-        //     $inventory_helper->out();
-
-        //     self::addJournalInput($inventory);
-        // }
     }
 
     public static function fixOutput()
