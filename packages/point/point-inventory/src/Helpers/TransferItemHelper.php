@@ -86,7 +86,7 @@ class TransferItemHelper
         }
     }
 
-    private static function updateJournal($transfer_item)
+    public static function updateJournal($transfer_item)
     {
         $debit = 0;
         $credit = 0;

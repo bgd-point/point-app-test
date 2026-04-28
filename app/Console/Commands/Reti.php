@@ -7,9 +7,12 @@ use Illuminate\Console\Command;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
+use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Allocation;
 use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\TransferItem\TransferItem;
+use Point\PointInventory\Helpers\TransferItemHelper;
+use Point\PointInventory\Helpers\ReceiveItemHelper;
 
 class Reti extends Command
 {
@@ -48,16 +51,9 @@ class Reti extends Command
             ->get();
 
         foreach ($formulirs as $formulir) {
-            $qty = 0;
-            $inventories = Inventory::where('formulir_id', $formulir->id)->get();
-
             $this->line('FORM NUMBER : ' . $formulir->form_number . ' DELETED');
-
             Inventory::where('formulir_id', $formulir->id)->delete();
-
-            foreach ($inventories as $inventory) {
-                $qty += $inventory->quantity;
-            }
+            Journal::where('form_journal_id', $formulir->id)->delete();
         }
 
         $formulirs = Formulir::where('formulirable_type', '=', TransferItem::class)
@@ -73,8 +69,6 @@ class Reti extends Command
             $this->line('FORM NUMBER : ' . $formulir->form_number . ' ADDED');
 
             $transfer_item = TransferItem::where('formulir_id', $formulir->id)->first();
-
-            Inventory::where('formulir_id', $formulir->id)->delete();
 
             foreach ($transfer_item->items as $transfer_item_detail) {
                 $inventory = new Inventory;
@@ -102,15 +96,8 @@ class Reti extends Command
                 }
             }
 
-            $inventories = Inventory::where('formulir_id', $formulir->id)->get();
-
-            foreach ($inventories as $inventory) {
-                $qty += $inventory->quantity;
-            }
-
-            if ($qty != 0) {
-                $this->line($formulir->form_number . ' = ' . $qty . ' = ' . $formulir->id);
-            }
+            TransferItemHelper::updateJournal($transfer_item);
+            ReceiveItemHelper::updateJournal($transfer_item);
         }
 
         \DB::commit();
