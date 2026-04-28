@@ -47,6 +47,7 @@ class Kernel extends ConsoleKernel
         Commands\JournalCheck::class,
         Commands\Masking::class,
         Commands\Trial::class,
+        Commands\MigrateTenantDabataseCommand::class,
         Commands\CheckInventoryCommand::class,
     ];
 
