@@ -83,7 +83,11 @@ class RecalculateTest extends Command
                 $totalQty += (float) $product->quantity;
             }
 
-            $cogs_product = $value / $totalQty;
+            if ($totalQty == 0) {
+                $this->comment('zero: ' . $output->id);
+            }
+
+            $cogs_product = $totalQty === 0 ? $value / $totalQty : 0;
 
             foreach ($output->product as $product) {
                 $inventory = new Inventory();
