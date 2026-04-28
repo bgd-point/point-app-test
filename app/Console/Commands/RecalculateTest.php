@@ -13,6 +13,7 @@ use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\StockOpname\StockOpnameItem;
 use Point\PointInventory\Models\TransferItem\TransferItem;
 use Point\PointSales\Models\Sales\Retur;
+use Point\Framework\Models\Journal;
 
 class RecalculateTest extends Command
 {
@@ -28,7 +29,7 @@ class RecalculateTest extends Command
      *
      * @var string
      */
-    protected $description = 'recalculate inventory';
+    protected $description = 'recalculate';
 
     /**
      * Execute the console command.
@@ -37,24 +38,8 @@ class RecalculateTest extends Command
      */
     public function handle()
     {
-        $this->comment('recalculating inventory');
-
-        $this->handleQty();
-    }
-
-    public function handleQty()
-    {
-        $this->comment('handle inventory');
-
-        $inventories = Inventory::select('item_id', 'warehouse_id')
-            ->groupBy('item_id', 'warehouse_id')
-            ->get();
-
-        foreach ($inventories as $inventory) {
-            if ($inventory->item_id == 877) {
-                $this->comment($inventory->item_id . ' = '. $inventory);
-                $this->comment('');
-            }
-        }
+        Journal::where('description', 'Pembulatan')
+            ->where('subledger_type', '!=', NULL)
+            ->delete();
     }
 }
