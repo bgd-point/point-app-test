@@ -38,7 +38,7 @@ class RecalculateTransaction extends Command
      */
     public function handle()
     {
-        $this->comment('recalculating transaction');
+        $this->comment('recalculating transaction purchasing');
 
         $list_purchasing = PurchasingInvoice::join('formulir', 'formulir.id', '=', 'point_purchasing_invoice.formulir_id')
             ->where('point_purchasing_invoice.type_of_tax', 'include')
@@ -50,6 +50,8 @@ class RecalculateTransaction extends Command
             Inventory::where('formulir_id', '=', $invoice->formulir->id)->delete();
             Journal::where('form_journal_id', '=', $invoice->formulir->id)->delete();
         }
+
+        $this->comment('recalculating transaction sales');
         
         $list_sales = SalesInvoice::join('formulir', 'formulir.id', '=', 'point_sales_invoice.formulir_id')
             ->where('point_purchasing_invoice.type_of_tax', 'include')
