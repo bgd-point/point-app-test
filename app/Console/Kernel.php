@@ -40,6 +40,8 @@ class Kernel extends ConsoleKernel
         Commands\RecalculateTest::class,
         Commands\RecalculateTransaction::class,
         Commands\RecalculateDate::class,
+        Commands\RecalculateInput::class,
+        Commands\RecalculateOutput::class,
         // Commands\Recalculate::class,
         Commands\RejournalIO::class,
         // Commands\Reinvoice::class,
