@@ -83,8 +83,8 @@ class RecalculateTest extends Command
                 $totalQty += (float) $product->quantity;
             }
 
-            if ($totalQty == 0) {
-                $this->comment('zero: ' . $output->id);
+            if ($totalQty == 0) 
+                \Log::info('zero: ' . $output->id);
             }
 
             $cogs_product = $totalQty === 0 ? $value / $totalQty : 0;
