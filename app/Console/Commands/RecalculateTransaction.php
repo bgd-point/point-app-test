@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\ReferHelper;
+use Point\PointPurchasing\Models\Inventory\GoodsReceived;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Inventory;
