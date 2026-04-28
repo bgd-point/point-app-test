@@ -262,7 +262,6 @@ class RecalculateJournalHpp extends Command
             $iValue = round(abs($inventory->quantity * $inventory->price), 4);
 
             foreach ($journals as $journal) {
-
                 $nextId = $journal->id + 1;
                 $jHpp = Journal::where('debit', '>', 0)
                     ->where('id', '=', $nextId)

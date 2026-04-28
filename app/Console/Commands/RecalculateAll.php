@@ -51,8 +51,7 @@ class RecalculateAll extends Command
         foreach ($inventories as $inventory) {
             \DB::beginTransaction();
             
-            $list_inventory = Inventory::with('formulir')->with('item')
-                ->where('item_id', '=', $inventory->item_id)
+            $list_inventory = Inventory::where('item_id', '=', $inventory->item_id)
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->get();
