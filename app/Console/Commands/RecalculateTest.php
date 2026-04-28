@@ -66,8 +66,6 @@ class RecalculateTest extends Command
 
     public static function fixOutput()
     {
-        $input_process = InputProcess::find($request->input('input_id'));
-
         $outputs = OutputProcess::join('formulir', 'point_manufacture_output.formulir_id', '=', 'formulir.id')
             ->where('formulir.approval_status', 1)
             ->where('formulir.form_status', 1)
