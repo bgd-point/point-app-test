@@ -11,8 +11,6 @@ use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Allocation;
 use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\TransferItem\TransferItem;
-use Point\PointInventory\Helpers\TransferItemHelper;
-use Point\PointInventory\Helpers\ReceiveItemHelper;
 
 class Reti extends Command
 {
@@ -99,10 +97,97 @@ class Reti extends Command
                 }
             }
 
-            TransferItemHelper::updateJournal($transfer_item);
-            ReceiveItemHelper::updateJournal($transfer_item);
+            self::updateJournalTI($transfer_item);
+            self::updateJournalRI($transfer_item);
         }
 
         \DB::commit();
+    }
+
+    public static function updateJournalTI($transfer_item)
+    {
+        $debit = 0;
+        $credit = 0;
+
+
+        foreach ($transfer_item->items as $transfer_item_detail) {
+
+            // JOURNAL #1 of #2 - SEND ITEM
+            $position = JournalHelper::position($transfer_item_detail->item->account_asset_id);
+            $journal = new Journal();
+            $journal->form_date = $transfer_item->formulir->approval_at;
+            $journal->coa_id = $transfer_item_detail->item->account_asset_id;
+            $journal->description = $transfer_item->formulir->form_number;
+            $journal->$position = $transfer_item_detail->cogs * $transfer_item_detail->qty_send * -1;
+            $journal->form_journal_id = $transfer_item->formulir_id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $transfer_item_detail->item_id;
+            $journal->subledger_type = get_class($transfer_item_detail->item);
+            $journal->save();
+
+            if ($position == 'debit') {
+                $debit += $transfer_item_detail->amount;
+            } else {
+                $credit += $transfer_item_detail->amount;
+            }
+
+            // JOURNAL #2 of #2 - ITEM IN TRANSIT
+            $inventory_in_transit = JournalHelper::getAccount('point inventory transfer item', 'inventory in transit');
+            $position = JournalHelper::position($inventory_in_transit);
+            $journal = new Journal();
+            $journal->form_date = $transfer_item->formulir->approval_at;
+            $journal->coa_id = $inventory_in_transit;
+            $journal->description = $transfer_item->formulir->form_number;
+            $journal->$position = $transfer_item_detail->cogs * $transfer_item_detail->qty_send;
+            $journal->form_journal_id = $transfer_item->formulir_id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $transfer_item_detail->item_id;
+            $journal->subledger_type = get_class($transfer_item_detail->item);
+            $journal->save();
+
+            if ($position == 'debit') {
+                $debit += $transfer_item->total;
+            } else {
+                $credit += $transfer_item->total;
+            }
+
+            if ($debit != $credit) {
+                throw new PointException('Unbalance Journal');
+            }
+        }
+    }
+
+    public static function updateJournalRI($transfer_item)
+    {
+        foreach ($transfer_item->items as $transfer_item_detail) {
+            if ($transfer_item_detail->qty_received != 0) {
+                // JOURNAL #1 of #2 - Invetory Received
+                $journal = new Journal();
+                $journal->form_date = $transfer_item->received_date;
+                $journal->coa_id = $transfer_item_detail->item->account_asset_id;
+                $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
+                $journal->debit = $transfer_item_detail->cogs * $transfer_item_detail->qty_received;
+                $journal->credit = 0;
+                $journal->form_journal_id = $transfer_item->formulir_id;
+                $journal->form_reference_id;
+                $journal->subledger_id = $transfer_item_detail->item_id;
+                $journal->subledger_type = get_class($transfer_item_detail->item);
+                $journal->save();
+
+                // JOURNAL #2 of #2 - Inventory In Transit
+                $in_transit_account = JournalHelper::getAccount('point inventory transfer item', 'inventory in transit');
+                $journal = new Journal();
+                $journal->form_date = $transfer_item->received_date;
+                $journal->coa_id = $in_transit_account;
+                $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
+                $journal->debit = 0;
+                $journal->credit = $transfer_item_detail->cogs * $transfer_item_detail->qty_received;
+                $journal->form_journal_id = $transfer_item->formulir_id;
+                $journal->form_reference_id;
+                $journal->subledger_id = $transfer_item_detail->item_id;
+                $journal->subledger_type = get_class($transfer_item_detail->item);
+                $journal->save();
+            }
+        }
     }
 }
