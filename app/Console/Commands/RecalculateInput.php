@@ -50,11 +50,11 @@ class RecalculateInput extends Command
 
         foreach ($inputs as $input) {
             $inputMaterial = InputMaterial::where('input_id', $input->id)->get();
+            \Log::info($input->id . ' = ' . count($input->material));
             foreach ($inputMaterial as $material) {
                 Journal::where('form_journal_id', $input->formulir->id)->delete();
                 Inventory::where('formulir_id', $input->formulir->id)->delete();
                 
-                \Log::info($input->id . ' = ' . $input->material);
                 $inventory = new Inventory;
                 $inventory->formulir_id = $input->formulir->id;
                 $inventory->item_id = $material->material_id;
