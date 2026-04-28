@@ -415,20 +415,32 @@ class InventoryHelper
             ->orderBy('id', 'desc')
             ->first();
 
-        if (!$last || (float) $last->total_quantity < abs($this->inventory->quantity)) {
-            // throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE');
-        }
-
         $cogs = Inventory::where('item_id', '=', $this->inventory->item_id)
             ->where('form_date', '<=', $this->inventory->form_date)
             ->orderBy('form_date', 'desc')
             ->orderBy('id', 'desc')
             ->first();
 
-        $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
-        $this->inventory->total_quantity_all = $lastAll->total_quantity_all + $this->inventory->quantity;
-        $this->inventory->total_value = $last->total_value + ($this->inventory->quantity * $cogs->cogs);
-        $this->inventory->total_value_all = $lastAll->total_value_all + ($this->inventory->quantity * $cogs->cogs);
+        if (!$last) {
+            $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
+            $this->inventory->total_quantity_all = $lastAll->total_quantity_all + $this->inventory->quantity;
+            $this->inventory->total_value = $last->total_value + ($this->inventory->quantity * $cogs->cogs);
+            $this->inventory->total_value_all = $lastAll->total_value_all + ($this->inventory->quantity * $cogs->cogs);
+        } else if ($lastAll) {
+            $this->inventory->total_quantity = $this->inventory->quantity;
+            $this->inventory->total_quantity_all = $lastAll->total_quantity_all + $this->inventory->quantity;
+            $this->inventory->total_value = $this->inventory->quantity * $cogs->cogs;
+            $this->inventory->total_value_all = $lastAll->total_value_all + ($this->inventory->quantity * $cogs->cogs);
+        } else {
+            $this->inventory->total_quantity = $this->inventory->quantity;
+            $this->inventory->total_quantity_all = $this->inventory->quantity;
+            $this->inventory->total_value = $this->inventory->quantity * $cogs->cogs;
+            $this->inventory->total_value_all = $this->inventory->quantity * $cogs->cogs;
+        }
+
+        if ((float) $last->total_quantity < abs($this->inventory->quantity)) {
+            throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE');
+        }
 
         $this->inventory->cogs = $cogs->cogs;
     }
