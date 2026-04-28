@@ -54,6 +54,9 @@ class RecalculateTransaction extends Command
         foreach ($list_purchasing as $invoice) {
             $this->comment($invoice->formulir_id);
             $dc = new \stdClass();
+            $dc->debit = 0;
+            $dc->credit = 0;
+            
             Inventory::where('formulir_id', '=', $invoice->formulir->id)->delete();
             Journal::where('form_journal_id', '=', $invoice->formulir->id)->delete();
 
