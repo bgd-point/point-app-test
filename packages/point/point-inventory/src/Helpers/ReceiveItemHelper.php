@@ -48,32 +48,34 @@ class ReceiveItemHelper
     public static function updateJournal($transfer_item)
     {
         foreach ($transfer_item->items as $transfer_item_detail) {
-            // JOURNAL #1 of #2 - Invetory Received
-            $journal = new Journal();
-            $journal->form_date = date('Y-m-d H:i:s');
-            $journal->coa_id = $transfer_item_detail->item->account_asset_id;
-            $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
-            $journal->debit = $transfer_item_detail->cogs * $transfer_item_detail->qty_received;
-            $journal->credit = 0;
-            $journal->form_journal_id = $transfer_item->formulir_id;
-            $journal->form_reference_id;
-            $journal->subledger_id = $transfer_item_detail->item_id;
-            $journal->subledger_type = get_class($transfer_item_detail->item);
-            $journal->save();
+            if ($transfer_item_detail->cogs * $transfer_item_detail->qty_received !== 0) {
+                // JOURNAL #1 of #2 - Invetory Received
+                $journal = new Journal();
+                $journal->form_date = date('Y-m-d H:i:s');
+                $journal->coa_id = $transfer_item_detail->item->account_asset_id;
+                $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
+                $journal->debit = $transfer_item_detail->cogs * $transfer_item_detail->qty_received;
+                $journal->credit = 0;
+                $journal->form_journal_id = $transfer_item->formulir_id;
+                $journal->form_reference_id;
+                $journal->subledger_id = $transfer_item_detail->item_id;
+                $journal->subledger_type = get_class($transfer_item_detail->item);
+                $journal->save();
 
-            // JOURNAL #2 of #2 - Inventory In Transit
-            $in_transit_account = JournalHelper::getAccount('point inventory transfer item', 'inventory in transit');
-            $journal = new Journal();
-            $journal->form_date = date('Y-m-d H:i:s');
-            $journal->coa_id = $in_transit_account;
-            $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
-            $journal->debit = 0;
-            $journal->credit = $transfer_item_detail->cogs * $transfer_item_detail->qty_received;
-            $journal->form_journal_id = $transfer_item->formulir_id;
-            $journal->form_reference_id;
-            $journal->subledger_id = $transfer_item_detail->item_id;
-            $journal->subledger_type = get_class($transfer_item_detail->item);
-            $journal->save();
+                // JOURNAL #2 of #2 - Inventory In Transit
+                $in_transit_account = JournalHelper::getAccount('point inventory transfer item', 'inventory in transit');
+                $journal = new Journal();
+                $journal->form_date = date('Y-m-d H:i:s');
+                $journal->coa_id = $in_transit_account;
+                $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
+                $journal->debit = 0;
+                $journal->credit = $transfer_item_detail->cogs * $transfer_item_detail->qty_received;
+                $journal->form_journal_id = $transfer_item->formulir_id;
+                $journal->form_reference_id;
+                $journal->subledger_id = $transfer_item_detail->item_id;
+                $journal->subledger_type = get_class($transfer_item_detail->item);
+                $journal->save();
+            }
         }
     }
 }
