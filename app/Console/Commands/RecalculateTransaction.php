@@ -10,6 +10,7 @@ use Point\Framework\Helpers\ReferHelper;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Inventory;
+use Point\PointSales\Models\Sales\DeliveryOrder;
 use Point\Framework\Models\Master\Allocation;
 use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\StockOpname\StockOpnameItem;
