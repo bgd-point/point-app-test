@@ -84,7 +84,7 @@ class RecalculateTest extends Command
             }
 
             if ($totalQty == 0) {
-                \Log::info('zero: ' . $output->id);
+                \Log::info('zero: ' . $output->id .' / '. $value . ' \ ' . $totalQty);
                 $cogs_product = 0;
             } else {
                 $cogs_product = $value / $totalQty;
