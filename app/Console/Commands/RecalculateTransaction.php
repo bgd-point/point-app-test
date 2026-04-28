@@ -115,7 +115,7 @@ class RecalculateTransaction extends Command
                     'formulir' => $invoice->formulir,
                     'invoice' => $invoice
                 );
-                self::journal($data);
+                self::journalSales($data);
             }
 
             // Journal tax include
@@ -130,7 +130,7 @@ class RecalculateTransaction extends Command
                     'formulir' => $invoice->formulir,
                     'invoice' => $invoice
                 );
-                self::journal($data);
+                self::journalSales($data);
             }
         }
 
