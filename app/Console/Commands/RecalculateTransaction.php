@@ -54,7 +54,7 @@ class RecalculateTransaction extends Command
         $this->comment('recalculating transaction sales');
         
         $list_sales = SalesInvoice::join('formulir', 'formulir.id', '=', 'point_sales_invoice.formulir_id')
-            ->where('point_purchasing_invoice.type_of_tax', 'include')
+            ->where('point_sales_invoice.type_of_tax', 'include')
             ->select('point_sales_invoice.*')
             ->get();
 
