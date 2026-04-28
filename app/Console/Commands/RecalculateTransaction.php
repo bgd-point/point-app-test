@@ -56,7 +56,7 @@ class RecalculateTransaction extends Command
             $dc = new \stdClass();
             $dc->debit = 0;
             $dc->credit = 0;
-            
+
             Inventory::where('formulir_id', '=', $invoice->formulir->id)->delete();
             Journal::where('form_journal_id', '=', $invoice->formulir->id)->delete();
 
@@ -95,7 +95,7 @@ class RecalculateTransaction extends Command
                 // insert new inventory
                 $item = Item::find($invoice_detail->item_id);
                 $inventory = new Inventory();
-                $inventory->formulir_id = $formulir->id;
+                $inventory->formulir_id = $invoice->formulir->id;
                 $inventory->item_id = $item->id;
                 $inventory->quantity = $invoice_detail->quantity * $invoice_detail->converter;
 
@@ -118,7 +118,7 @@ class RecalculateTransaction extends Command
                     'value_of_account_payable' => $total,
                     'value_of_income_tax_receiveable' => $tax,
                     'value_of_expedition_cost' => $invoice->expedition_fee,
-                    'formulir' => $formulir,
+                    'formulir' => $invoice->formulir,
                     'invoice' => $invoice
                 );
                 $dc2 = self::journalPurchasing($data);
@@ -129,7 +129,7 @@ class RecalculateTransaction extends Command
                     'value_of_account_payable' => $total,
                     'value_of_income_tax_receiveable' => $tax,
                     'value_of_expedition_cost' => $invoice->expedition_fee,
-                    'formulir' => $formulir,
+                    'formulir' => $invoice->formulir,
                     'invoice' => $invoice
                 );
                 $dc2 = self::journalPurchasing($data);
