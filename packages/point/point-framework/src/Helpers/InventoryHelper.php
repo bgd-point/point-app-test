@@ -421,7 +421,7 @@ class InventoryHelper
             ->orderBy('id', 'desc')
             ->first();
 
-        if (!$last) {
+        if ($last) {
             $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
             $this->inventory->total_quantity_all = $lastAll->total_quantity_all + $this->inventory->quantity;
             $this->inventory->total_value = $last->total_value + ($this->inventory->quantity * $cogs->cogs);
