@@ -1,6 +1,6 @@
 <?php
 
-namespace Point\TenantDatabase;
+namespace App\Console\Commands;
 
 use \Illuminate\Console\Command as Command;
 use \Symfony\Component\Console\Input\InputOption as InputOption;
