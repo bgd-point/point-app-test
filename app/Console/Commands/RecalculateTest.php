@@ -70,6 +70,7 @@ class RecalculateTest extends Command
         $outputs = OutputProcess::join('formulir', 'point_manufacture_output.formulir_id', '=', 'formulir.id')
             ->where('formulir.approval_status', 1)
             ->where('formulir.form_status', 1)
+            ->select('point_manufacture_output.*')
             ->get();
 
         foreach ($outputs as $output) {
