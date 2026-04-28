@@ -6,7 +6,7 @@ use \Illuminate\Console\Command as Command;
 use \Symfony\Component\Console\Input\InputOption as InputOption;
 use \Symfony\Component\Console\Input\InputArgument as InputArgument;
 
-class MigrateTenantDabataseCommand extends Command
+class MigrateTenant extends Command
 {
 
     /**
@@ -14,7 +14,7 @@ class MigrateTenantDabataseCommand extends Command
      *
      * @var string
      */
-    protected $name = 'migrate:tenant';
+    protected $name = 'migrate:tenant-db';
 
     /**
      * The console command description.
