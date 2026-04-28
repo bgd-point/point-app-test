@@ -140,7 +140,7 @@ class InvoiceHelper
             $cost_of_sales += $cost;
 
             $journal = new Journal;
-            $journal->form_date = $invoice->formulir->form_date;
+            $journal->form_date = date('Y-m-d H:i:s');
             $journal->coa_id = $inventory->item->account_asset_id;
             $journal->description = 'invoice "' . $inventory->item->codeName.'"';
             $journal->credit = $cost;
