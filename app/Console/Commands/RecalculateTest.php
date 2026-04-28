@@ -54,6 +54,7 @@ class RecalculateTest extends Command
 
         foreach ($inputs as $input) {
             foreach ($input->material as $material) {
+                \Log::info($input->id . ' = ' . $input->material);
                 $inventory = new Inventory;
                 $inventory->formulir_id = $input->formulir->id;
                 $inventory->item_id = $material->material_id;
