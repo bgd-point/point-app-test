@@ -86,8 +86,8 @@ class RecalculateTest extends Command
 
             foreach ($output->product as $product) {
                 $inventory = new Inventory();
-                $inventory->formulir_id = $product->formulir->id;
-                $inventory->form_date = $product->formulir->approval_at;
+                $inventory->formulir_id = $output->formulir->id;
+                $inventory->form_date = $output->formulir->approval_at;
                 $inventory->warehouse_id = $product->warehouse_id;
                 $inventory->item_id = $product->product_id;
                 $inventory->quantity = $product->quantity;
