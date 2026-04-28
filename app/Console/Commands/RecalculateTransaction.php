@@ -68,7 +68,7 @@ class RecalculateTransaction extends Command
             Inventory::where('formulir_id', '=', $invoice->formulir->id)->delete();
             Journal::where('form_journal_id', '=', $invoice->formulir->id)->delete();
 
-            
+            $cost_of_sales = 0;
             foreach ($invoice->items as $invoice_detail) {
                 $delivery_order_item = ReferHelper::getReferBy(get_class($invoice_detail), $invoice_detail->id, get_class($invoice), $invoice->id);
     
