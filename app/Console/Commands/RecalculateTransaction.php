@@ -112,7 +112,7 @@ class RecalculateTransaction extends Command
                     'value_of_cost_of_sales' => $cost_of_sales,
                     'value_of_discount' => $invoice->discount * (-1),
                     'value_of_expedition_income' => $invoice->expedition_fee,
-                    'formulir' => $formulir,
+                    'formulir' => $invoice->formulir,
                     'invoice' => $invoice
                 );
                 self::journal($data);
@@ -127,7 +127,7 @@ class RecalculateTransaction extends Command
                     'value_of_cost_of_sales' => $cost_of_sales,
                     'value_of_discount' => $invoice->discount,
                     'value_of_expedition_income' => $invoice->expedition_fee,
-                    'formulir' => $formulir,
+                    'formulir' => $invoice->formulir,
                     'invoice' => $invoice
                 );
                 self::journal($data);
