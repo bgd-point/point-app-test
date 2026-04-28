@@ -69,7 +69,7 @@ class RecalculateTransaction extends Command
                     $discounty = $total_per_row * $invoice->discount / $invoice->subtotal;
                     $total_per_row = $total_per_row - $discounty;
                 }
-                if ($request->input('type_of_tax') == 'include') {
+                if ($invoice->type_of_tax == 'include') {
                     $total_per_row = $total_per_row * 100 / 111;
                 }
 
@@ -96,7 +96,7 @@ class RecalculateTransaction extends Command
                 $inventory->quantity = $invoice_detail->quantity * $invoice_detail->converter;
 
                 $price = $total_per_row / $inventory->quantity;
-                if ($request->input('type_of_tax') == 'include') {
+                if ($invoice->type_of_tax == 'include') {
                     $inventory->price = ($price * 100 / 111) / $invoice_detail->converter;
                 } else {
                     $inventory->price = $price / $invoice_detail->converter;
@@ -109,7 +109,7 @@ class RecalculateTransaction extends Command
             }
 
             // Journal tax exclude and non-tax
-            if ($request->input('type_of_tax') == 'exclude' || $request->input('type_of_tax') == 'non') {
+            if ($invoice->type_of_tax == 'exclude' || $invoice->type_of_tax == 'non') {
                 $data = array(
                     'value_of_account_payable' => $total,
                     'value_of_income_tax_receiveable' => $tax,
@@ -120,7 +120,7 @@ class RecalculateTransaction extends Command
                 $dc2 = self::journalPurchasing($data);
                 $dc->debit += round($dc2->debit , 4);
                 $dc->credit += round($dc2->credit , 4);
-            } elseif ($request->input('type_of_tax') == 'include') {
+            } elseif ($invoice->type_of_tax == 'include') {
                 $data = array(
                     'value_of_account_payable' => $total,
                     'value_of_income_tax_receiveable' => $tax,
