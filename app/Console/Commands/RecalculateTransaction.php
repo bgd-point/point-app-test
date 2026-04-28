@@ -104,7 +104,7 @@ class RecalculateTransaction extends Command
             }
             
             // Journal tax exclude and non-tax
-            if ($request->input('type_of_tax') == 'exclude' || $request->input('type_of_tax') == 'non') {
+            if ($invoice->type_of_tax == 'exclude' || $invoice->type_of_tax == 'non') {
                 $data = array(
                     'value_of_account_receivable' => $invoice->total,
                     'value_of_income_tax_payable' => $invoice->tax,
@@ -119,7 +119,7 @@ class RecalculateTransaction extends Command
             }
 
             // Journal tax include
-            if ($request->input('type_of_tax') == 'include') {
+            if ($invoice->type_of_tax == 'include') {
                 $data = array(
                     'value_of_account_receivable' => $invoice->total,
                     'value_of_income_tax_payable' => $invoice->tax,
