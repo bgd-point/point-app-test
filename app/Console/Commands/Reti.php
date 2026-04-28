@@ -58,7 +58,7 @@ class Reti extends Command
         $formulirs = Formulir::where('formulirable_type', '=', TransferItem::class)
             ->whereNotNull('form_number')
             ->whereNull('canceled_at')
-            ->where('approval_status', '=', 11)
+            ->where('approval_status', '=', 1)
             // ->where('form_date', '>=', '2026-04-01 00:00:00')
             ->get();
 
@@ -72,33 +72,33 @@ class Reti extends Command
             Inventory::where('formulir_id', $transfer_item->formulir->id)->delete();
             Journal::where('form_journal_id', $transfer_item->formulir->id)->delete();
 
-            foreach ($transfer_item->items as $transfer_item_detail) {
-                $inventory = new Inventory;
-                $inventory->form_date = $transfer_item->formulir->form_date;
-                $inventory->formulir_id = $transfer_item->formulir_id;
-                $inventory->warehouse_id = $transfer_item->warehouse_sender_id;
-                $inventory->item_id = $transfer_item_detail->item_id;
-                $inventory->quantity = $transfer_item_detail->qty_send;
-                $inventory->price = $transfer_item_detail->cogs;
+            // foreach ($transfer_item->items as $transfer_item_detail) {
+            //     $inventory = new Inventory;
+            //     $inventory->form_date = $transfer_item->formulir->form_date;
+            //     $inventory->formulir_id = $transfer_item->formulir_id;
+            //     $inventory->warehouse_id = $transfer_item->warehouse_sender_id;
+            //     $inventory->item_id = $transfer_item_detail->item_id;
+            //     $inventory->quantity = $transfer_item_detail->qty_send;
+            //     $inventory->price = $transfer_item_detail->cogs;
 
-                $inventory_helper = new InventoryHelper($inventory);
-                $inventory_helper->out();
+            //     $inventory_helper = new InventoryHelper($inventory);
+            //     $inventory_helper->out();
 
-                $inventory = new Inventory;
-                $inventory->form_date = $transfer_item->formulir->form_date;
-                $inventory->formulir_id = $transfer_item->formulir_id;
-                $inventory->warehouse_id = $transfer_item->warehouse_receiver_id;
-                $inventory->item_id = $transfer_item_detail->item_id;
-                $inventory->price = $transfer_item_detail->cogs;
-                $inventory->quantity = $transfer_item_detail->qty_received;
-                if ($transfer_item_detail->qty_received > 0) {
-                    $inventory_helper = new InventoryHelper($inventory);
-                    $inventory_helper->in();
-                }
-            }
+            //     $inventory = new Inventory;
+            //     $inventory->form_date = $transfer_item->formulir->form_date;
+            //     $inventory->formulir_id = $transfer_item->formulir_id;
+            //     $inventory->warehouse_id = $transfer_item->warehouse_receiver_id;
+            //     $inventory->item_id = $transfer_item_detail->item_id;
+            //     $inventory->price = $transfer_item_detail->cogs;
+            //     $inventory->quantity = $transfer_item_detail->qty_received;
+            //     if ($transfer_item_detail->qty_received > 0) {
+            //         $inventory_helper = new InventoryHelper($inventory);
+            //         $inventory_helper->in();
+            //     }
+            // }
 
-            self::updateJournalTI($transfer_item);
-            self::updateJournalRI($transfer_item);
+            // self::updateJournalTI($transfer_item);
+            // self::updateJournalRI($transfer_item);
         }
 
         \DB::commit();
