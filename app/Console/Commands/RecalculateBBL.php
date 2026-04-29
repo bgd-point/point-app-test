@@ -60,10 +60,6 @@ class RecalculateBBL extends Command
 
         foreach ($inventories as $inventory) {
             \DB::beginTransaction();
-            if ($inventory->item_id === 877) {
-                $this->comment($inventory);
-            }
-            
             $list_inventory = Inventory::with('formulir')->with('item')
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
