@@ -13,6 +13,7 @@ use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\StockOpname\StockOpnameItem;
 use Point\PointInventory\Models\TransferItem\TransferItem;
 use Point\PointSales\Models\Sales\Retur;
+use Point\Framework\Models\Master\Warehouse;
 
 class RecalculateAll extends Command
 {
@@ -39,8 +40,8 @@ class RecalculateAll extends Command
     {
         $this->comment('handle inventory all');
 
-        // $inventories = Inventory::where('item_id', 608)->get();
         $inventories = Inventory::all();
+        $warehouses = Warehouse::all();
 
         foreach ($inventories as $inventory) {
             \DB::beginTransaction();
@@ -65,6 +66,27 @@ class RecalculateAll extends Command
                 $prevTotalQty = $l_inventory->total_quantity_all;
                 $prevTotalVal = $l_inventory->total_value_all;
             }
+
+            foreach ($warehouses as $warehouse) {
+                $list_inventory = Inventory::where('item_id', '=', $inventory->item_id)
+                    ->where('warehouse_id', $warehouse->id)
+                    ->orderBy('form_date', 'asc')
+                    ->orderBy('formulir_id', 'asc')
+                    ->get();
+
+                $prevTotalQty = 0;
+                $prevTotalVal = 0;
+
+                foreach($list_inventory as $index => $l_inventory) {
+                    $l_inventory->total_quantity = $prevTotalQty + $l_inventory->quantity;
+                    $l_inventory->total_value = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
+                    $l_inventory->save();
+
+                    $prevTotalQty = $l_inventory->total_quantity;
+                    $prevTotalVal = $l_inventory->total_value;
+                }
+            }
+
             \DB::commit();
         }
     }
