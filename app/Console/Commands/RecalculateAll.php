@@ -46,7 +46,6 @@ class RecalculateAll extends Command
         $i = 0;
         foreach ($inventories as $inventory) {
             $i++;
-            $this->comment('I' . count($inventories) . ' = ' . $i);
             \DB::beginTransaction();
             
             $list_inventory = Inventory::where('item_id', '=', $inventory->item_id)
@@ -73,7 +72,6 @@ class RecalculateAll extends Command
             $k = 0;
             foreach ($warehouses as $warehouse) {
                 $k++;
-                $this->comment('W' . count($warehouses) . ' = ' . $k);
                 $list_inventory = Inventory::where('item_id', '=', $inventory->item_id)
                     ->where('warehouse_id', $warehouse->id)
                     ->orderBy('form_date', 'asc')
@@ -86,7 +84,7 @@ class RecalculateAll extends Command
                 $j = 0;
                 foreach($list_inventory as $index => $l_inventory) {
                     $j++;
-                    $this->comment('J' . count($list_inventory) . ' = ' . $j);
+                    $this->comment('I' . count($inventories) . ' = ' . $i . ' | W' . count($warehouses) . ' = ' . $k . ' | J' . count($list_inventory) . ' = ' . $j);
                     $l_inventory->total_quantity = $prevTotalQty + $l_inventory->quantity;
                     $l_inventory->total_value = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
                     $l_inventory->save();
