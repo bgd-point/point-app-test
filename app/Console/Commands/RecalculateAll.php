@@ -70,10 +70,10 @@ class RecalculateAll extends Command
                 $prevTotalVal = $l_inventory->total_value_all;
             }
 
-            $i = 0;
+            $k = 0;
             foreach ($warehouses as $warehouse) {
-                $i++;
-                $this->comment('W' . count($warehouses) . ' = ' . $i);
+                $k++;
+                $this->comment('W' . count($warehouses) . ' = ' . $k);
                 $list_inventory = Inventory::where('item_id', '=', $inventory->item_id)
                     ->where('warehouse_id', $warehouse->id)
                     ->orderBy('form_date', 'asc')
