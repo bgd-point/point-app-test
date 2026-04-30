@@ -40,7 +40,7 @@ class MigrateTenant extends Command
      */
     public function fire()
     {
-        $databases = ["7steps", "andika", "bananta", "bankbi", "bankbim", "bbl", "bbl2", "bbl4", "bbla", "bblarchive", "bbm", "bidepo", "big", "bim", "bintangbaru", "bintangbarutest", "bjm", "blk", "bmj", "bmp", "bmpratama", "bmr", "bmrpalu", "bns", "bumiananta", "bumifinance", "bumiindo", "bumimandiri", "bumishares", "cahayasurya", "connect", "cskj", "demo", "demo2", "demoksp", "elshada", "fiw", "gbl", "glomamu", "gmb", "gpr", "gprdwi", "gprtri", "gradin", "instruction", "kbfoodtruck", "kblidah", "kbmanukan", "kbmusi", "kbretail", "liberta", "mastergrade", "nuskb", "pastelpajamas", "personalfinance", "randusari", "skm", "test", "test05", "test3933"];
+        $databases = ["7steps", "andika", "bananta", "bankbi", "bankbim", "bbl2", "bbl4", "bbla", "bblarchive", "bbm", "bidepo", "big", "bim", "bintangbaru", "bintangbarutest", "bjm", "blk", "bmj", "bmp", "bmpratama", "bmr", "bmrpalu", "bns", "bumiananta", "bumifinance", "bumiindo", "bumimandiri", "bumishares", "cahayasurya", "connect", "cskj", "demo", "demo2", "demoksp", "elshada", "fiw", "gbl", "glomamu", "gmb", "gpr", "gprdwi", "gprtri", "gradin", "instruction", "kbfoodtruck", "kblidah", "kbmanukan", "kbmusi", "liberta", "mastergrade", "nuskb", "pastelpajamas", "personalfinance", "randusari", "skm", "test", "test05", "test3933"];
 
         foreach($databases as $database) {
             $connectionName = $this->argument('connection-name');
@@ -53,6 +53,7 @@ class MigrateTenant extends Command
             $this->info('Creating migration table in tenant database "'.$databaseName.'"...');
 
             $this->call('migrate', ['--force' => true]);
+            $this->call('dev:recalculate:all', ['--force' => true]);
         }
     }
 
