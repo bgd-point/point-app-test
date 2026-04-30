@@ -393,7 +393,7 @@ class InventoryHelper
         }
 
         // handle error division by zero
-        if ($this->inventory->total_quantity_all == 0) {
+        if ($this->inventory->total_quantity_all == 0 || $this->inventory->total_value_all <= 0) {
             $this->inventory->cogs = 0;
         } else {
             $this->inventory->cogs = $this->inventory->total_value_all / $this->inventory->total_quantity_all;
