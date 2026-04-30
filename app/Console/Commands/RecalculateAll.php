@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Point\Framework\Helpers\InventoryHelper;
+use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Master\Allocation;
@@ -40,15 +41,16 @@ class RecalculateAll extends Command
     {
         $this->comment('handle inventory all');
 
+        $items = Item::all();
         $inventories = Inventory::all();
         $warehouses = Warehouse::all();
 
         $i = 0;
-        foreach ($inventories as $inventory) {
+        foreach ($items as $item) {
             $i++;
             \DB::beginTransaction();
             
-            $list_inventory = Inventory::where('item_id', '=', $inventory->item_id)
+            $list_inventory = Inventory::where('item_id', '=', $item->id)
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->get();
@@ -69,32 +71,33 @@ class RecalculateAll extends Command
                 $prevTotalVal = $l_inventory->total_value_all;
             }
 
-            $k = 0;
-            foreach ($warehouses as $warehouse) {
-                $k++;
-                $list_inventory = Inventory::where('item_id', '=', $inventory->item_id)
-                    ->where('warehouse_id', $warehouse->id)
-                    ->orderBy('form_date', 'asc')
-                    ->orderBy('formulir_id', 'asc')
-                    ->get();
+            // $k = 0;
+            // foreach ($warehouses as $warehouse) {
+            //     $k++;
+            //     $list_inventory = Inventory::where('item_id', '=', $inventory->item_id)
+            //         ->where('warehouse_id', $warehouse->id)
+            //         ->orderBy('form_date', 'asc')
+            //         ->orderBy('formulir_id', 'asc')
+            //         ->get();
 
-                $prevTotalQty = 0;
-                $prevTotalVal = 0;
+            //     $prevTotalQty = 0;
+            //     $prevTotalVal = 0;
 
-                $j = 0;
-                foreach($list_inventory as $index => $l_inventory) {
-                    $j++;
-                    $this->comment('I' . count($inventories) . ' = ' . $i . ' | W' . count($warehouses) . ' = ' . $k . ' | J' . count($list_inventory) . ' = ' . $j);
-                    $l_inventory->total_quantity = $prevTotalQty + $l_inventory->quantity;
-                    $l_inventory->total_value = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
-                    $l_inventory->save();
+            //     $j = 0;
+            //     foreach($list_inventory as $index => $l_inventory) {
+            //         $j++;
+            //         $this->comment('I' . count($inventories) . ' = ' . $i . ' | W' . count($warehouses) . ' = ' . $k . ' | J' . count($list_inventory) . ' = ' . $j);
+            //         $l_inventory->total_quantity = $prevTotalQty + $l_inventory->quantity;
+            //         $l_inventory->total_value = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
+            //         $l_inventory->save();
 
-                    $prevTotalQty = $l_inventory->total_quantity;
-                    $prevTotalVal = $l_inventory->total_value;
-                }
-            }
+            //         $prevTotalQty = $l_inventory->total_quantity;
+            //         $prevTotalVal = $l_inventory->total_value;
+            //     }
+            // }
 
-            \DB::commit();
         }
+        
+        \DB::commit();
     }
 }
