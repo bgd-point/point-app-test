@@ -44,11 +44,11 @@ class RecalculateAll extends Command
         $items = Item::all();
         $inventories = Inventory::all();
         $warehouses = Warehouse::all();
-
+        
         $i = 0;
         foreach ($items as $item) {
-            $i++;
             \DB::beginTransaction();
+            $i++;
             
             $list_inventory = Inventory::where('item_id', '=', $item->id)
                 ->orderBy('form_date', 'asc')
@@ -97,8 +97,8 @@ class RecalculateAll extends Command
             //     }
             // }
 
+            \DB::commit();
         }
         
-        \DB::commit();
     }
 }
