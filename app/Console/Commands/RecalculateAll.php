@@ -57,6 +57,7 @@ class RecalculateAll extends Command
 
             $prevTotalQty = 0;
             $prevTotalVal = 0;
+            $this->comment('I' . count($$items) . ' = ' . $i);
             foreach($list_inventory as $index => $l_inventory) {
                 $l_inventory->total_quantity_all = $prevTotalQty + $l_inventory->quantity;
                 $l_inventory->total_value_all = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
