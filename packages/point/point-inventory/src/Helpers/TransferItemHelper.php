@@ -81,6 +81,7 @@ class TransferItemHelper
             $inventory->item_id = $transfer_item_detail->item_id;
             $inventory->quantity = $transfer_item_detail->qty_send;
             $inventory->price = $transfer_item_detail->cogs;
+            
             $inventory_helper = new InventoryHelper($inventory);
             $inventory_helper->out();
         }
