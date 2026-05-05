@@ -40,7 +40,7 @@ class RecalculateBBL extends Command
         $this->comment('recalculating inventory');
 
         $this->handleQty();
-        $this->handleValue();
+        // $this->handleValue();
     }
 
     public function handleQty()
@@ -65,13 +65,14 @@ class RecalculateBBL extends Command
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
+                ->orderBy('id', 'asc')
                 ->get();
 
             $prevCogs = 0;
             foreach($list_inventory as $index => $l_inventory) {
-                if ($inventory->item_id === 877) {
-                    $this->comment($l_inventory->formulir->form_number . ' = ' . $l_inventory->item->code . ' = ' . $l_inventory->form_date . ' = ' . $l_inventory->total_quantity);
-                }
+                // if ($inventory->item_id === 877) {
+                //     $this->comment($l_inventory->formulir->form_number . ' = ' . $l_inventory->item->code . ' = ' . $l_inventory->form_date . ' = ' . $l_inventory->total_quantity);
+                // }
                 if ($index == 0) {
                     $l_inventory->total_quantity = $l_inventory->quantity;
                     $totalQty = (float) $l_inventory->total_quantity;
