@@ -69,6 +69,8 @@ class PurchaseRequisitionHelper
             $purchase_requisition_detail->save();
         }
 
+        dd($purchase_requisition_detail);
+
         return $purchase_requisition;
     }
     
