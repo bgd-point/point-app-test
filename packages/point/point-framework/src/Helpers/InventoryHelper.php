@@ -134,8 +134,8 @@ class InventoryHelper
         $opname = Inventory::where('item_id', '=', $item_id)
             ->join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('inventory.form_date', '<', $date_from)
-            ->orderBy('form_date', 'desc')
-            ->orderBy('id', 'desc')
+            ->orderBy('inventory.form_date', 'desc')
+            ->orderBy('inventory.formulir_id', 'desc')
             ->select('inventory.*')
             ->first();
 
