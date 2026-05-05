@@ -51,16 +51,16 @@ class PurchaseRequest extends Request
                 $rules['employee_id'] = 'accepted';
             }
         }
-        // item_id
+        // item_id0.
         for ($i=0 ; $i<count(\Input::get('item_id')) ; $i++) {
             $rules['item_id.'.$i] = 'required';
             $rules['item_quantity.'.$i] = 'required';
 
-            if (number_format_db(\Input::get('item_quantity.'.$i)) < 1) {
+            if (number_format_db(\Input::get('item_quantity.'.$i)) <= 0) {
                 $rules['item_quantity.'.$i] = 'accepted';
             }
 
-            if (number_format_db(\Input::get('item_price.'.$i)) < 1) {
+            if (number_format_db(\Input::get('item_price.'.$i)) <= 0) {
                 $rules['item_price.'.$i] = 'accepted';
             }
         }
