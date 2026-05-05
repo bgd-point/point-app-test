@@ -72,7 +72,6 @@ class PurchaseRequisitionController extends Controller
     public function create()
     {
         access_is_allowed('create.point.purchasing.requisition');
-        dd();
         $view = view('point-purchasing::app.purchasing.point.inventory.purchase-requisition.create');
         $view->list_employee= PersonHelper::getByType(['employee']);
         $view->list_user_approval = UserHelper::getAllUser();

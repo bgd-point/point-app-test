@@ -55,7 +55,7 @@ class PurchaseRequisitionHelper
         $purchase_requisition->required_date = date_format_db($request->input('required_date'));
         $purchase_requisition->include_cash_advance = $request->input('include_cash_advance') ? 1 : 0 ;
         $purchase_requisition->save();
-
+        dd($request->input('item_id'));
         for ($i=0 ; $i<count($request->input('item_id')) ; $i++) {
             $purchase_requisition_detail = new PurchaseRequisitionItem;
             $purchase_requisition_detail->point_purchasing_requisition_id = $purchase_requisition->id;
