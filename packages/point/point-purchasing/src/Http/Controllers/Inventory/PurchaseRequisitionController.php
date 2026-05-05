@@ -100,6 +100,7 @@ class PurchaseRequisitionController extends Controller
 
         FormulirHelper::isAllowedToCreate('create.point.purchasing.requisition', date_format_db($request['form_date']), []);
         $formulir = FormulirHelper::create($request->input(), 'point-purchasing-requisition');
+        dd('qweqw');
         $purchase_requisition = PurchaseRequisitionHelper::create($request, $formulir);
         timeline_publish('create.purchase.requisition', 'added new purchase requisition '  . $purchase_requisition->formulir->form_number);
 
