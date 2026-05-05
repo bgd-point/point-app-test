@@ -56,7 +56,7 @@ class PurchaseRequisitionHelper
         $purchase_requisition->include_cash_advance = $request->input('include_cash_advance') ? 1 : 0 ;
         $purchase_requisition->save();
         for ($i=0 ; $i<count($request->input('item_id')) ; $i++) {
-            // dd($request->input('item_id')[$i] . ' = '. $request->input('item_quantity')[$i] . ' = '. $request->input('item_price')[$i]);
+            dd($request->input('item_id')[$i] . ' = '. $request->input('item_quantity')[$i] . ' = '. $request->input('item_price')[$i]);
             $purchase_requisition_detail = new PurchaseRequisitionItem;
             $purchase_requisition_detail->point_purchasing_requisition_id = $purchase_requisition->id;
             $purchase_requisition_detail->item_id = $request->input('item_id')[$i];

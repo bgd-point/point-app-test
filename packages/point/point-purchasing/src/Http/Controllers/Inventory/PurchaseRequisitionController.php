@@ -98,7 +98,7 @@ class PurchaseRequisitionController extends Controller
 
         DB::beginTransaction();
 
-        // dd('asd');
+        dd('asd');
         FormulirHelper::isAllowedToCreate('create.point.purchasing.requisition', date_format_db($request['form_date']), []);
         // dd('def');
         $formulir = FormulirHelper::create($request->input(), 'point-purchasing-requisition');
