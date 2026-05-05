@@ -49,7 +49,6 @@ class PurchaseRequisitionHelper
     public static function create(Request $request, $formulir)
     {
         $purchase_requisition = new PurchaseRequisition;
-        dd('ax');
         $purchase_requisition->formulir_id = $formulir->id;
         $purchase_requisition->employee_id = $request->input('employee_id');
         $purchase_requisition->supplier_id = $request->input('supplier_id') ? : null;
