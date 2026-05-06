@@ -258,7 +258,9 @@ class InventoryValueReportController extends Controller
                                     $ci = \Point\PointAccounting\Models\CutOffInventoryDetail::where('subledger_id', $item->item_id)->first();
 
                                     if ($ci) {
-                                        $price = $ci->amount / $ci->stock;
+                                        if ($ci->stock != 0) {
+                                            $price = $ci->amount / $ci->stock;
+                                        }
                                     } else {
                                         $product = \Point\PointManufacture\Models\InputProduct::join('point_manufacture_input', 'point_manufacture_input.id', '=', 'point_manufacture_input_product.input_id')
                                             ->join('formulir', 'point_manufacture_input.formulir_id', '=', 'formulir.id')
