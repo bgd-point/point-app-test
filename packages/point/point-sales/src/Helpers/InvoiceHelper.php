@@ -149,6 +149,18 @@ class InvoiceHelper
             $journal->subledger_id = $inventory->item_id;
             $journal->subledger_type = get_class($inventory->item);
             $journal->save();
+
+            $cost_of_sales_account = JournalHelper::getAccount('point sales indirect', 'cost of sales');
+            $journal = new Journal;
+            $journal->form_date = date('Y-m-d H:i:s');
+            $journal->coa_id = $cost_of_sales_account;
+            $journal->description = 'invoice indirect sales "' . $inventory->formulir->form_number.'"';
+            $journal->debit = $cost;
+            $journal->form_journal_id = $invoice->formulir_id;
+            $journal->form_reference_id;
+            $journal->subledger_id;
+            $journal->subledger_type;
+            $journal->save();
         }
         
         // Journal tax exclude and non-tax
@@ -263,16 +275,16 @@ class InvoiceHelper
             $journal->save();
         }
 
-        $cost_of_sales_account = JournalHelper::getAccount('point sales indirect', 'cost of sales');
-        $journal = new Journal;
-        $journal->form_date = date('Y-m-d H:i:s');
-        $journal->coa_id = $cost_of_sales_account;
-        $journal->description = 'invoice indirect sales "' . $data['formulir']->form_number.'"';
-        $journal->debit = $data['value_of_cost_of_sales'];
-        $journal->form_journal_id = $data['formulir']->id;
-        $journal->form_reference_id;
-        $journal->subledger_id;
-        $journal->subledger_type;
-        $journal->save();
+        // $cost_of_sales_account = JournalHelper::getAccount('point sales indirect', 'cost of sales');
+        // $journal = new Journal;
+        // $journal->form_date = date('Y-m-d H:i:s');
+        // $journal->coa_id = $cost_of_sales_account;
+        // $journal->description = 'invoice indirect sales "' . $data['formulir']->form_number.'"';
+        // $journal->debit = $data['value_of_cost_of_sales'];
+        // $journal->form_journal_id = $data['formulir']->id;
+        // $journal->form_reference_id;
+        // $journal->subledger_id;
+        // $journal->subledger_type;
+        // $journal->save();
     }
 }
