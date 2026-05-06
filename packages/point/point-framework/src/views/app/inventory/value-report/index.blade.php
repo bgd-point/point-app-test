@@ -154,7 +154,9 @@
     
                                     if ($ci) {
                                         if ($item->item_id == 89) { info('here C');}
-                                        $price = $ci->amount / $ci->stock;
+                                        if ($ci->stock != 0) {
+                                            $price = $ci->amount / $ci->stock;
+                                        }
                                     } else {
                                         if ($item->item_id == 89) { info('here D');}
                                         $product = \Point\PointManufacture\Models\InputProduct::join('point_manufacture_input', 'point_manufacture_input.id', '=', 'point_manufacture_input_product.input_id')
