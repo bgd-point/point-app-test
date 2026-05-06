@@ -58,7 +58,7 @@ class InvoiceHelper
         $invoice->person_id = $request->input('person_id');
         $invoice->expedition_fee = number_format_db($request->input('expedition_fee'));
         $invoice->save();
-dd('xx');
+
         $subtotal = 0;
         $amount = 0;
         for ($i=0 ; $i < count($request->input('item_id')) ; $i++) {
