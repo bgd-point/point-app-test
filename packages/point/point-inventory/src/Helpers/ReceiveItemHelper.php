@@ -37,9 +37,9 @@ class ReceiveItemHelper
             // $inventory->price = number_format_db($price[$i]);
             $inventory->quantity = number_format_db($quantity[$i]);
             if ($inventory->quantity > 0) {
-                $inventory->price = InventoryHelper::getCostOfSalesAbove0(date('Y-m-d H:i:s'), $transfer_item_detail->item_id, $transfer_item->warehouse_receiver_id);
+                $inventory->price = InventoryHelper::getCostOfSalesAbove0(date('Y-m-d H:i:s'), $transfer_item_detail->item_id, $receive_item->warehouse_receiver_id);
             } else {
-                $inventory->price = InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $transfer_item_detail->item_id, $transfer_item->warehouse_receiver_id);
+                $inventory->price = InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $transfer_item_detail->item_id, $receive_item->warehouse_receiver_id);
             }
             if ($quantity > 0) {
                 $inventory_helper = new InventoryHelper($inventory);
