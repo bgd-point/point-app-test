@@ -76,7 +76,11 @@ class StockCorrectionHelper
             $inventory->warehouse_id = $stock_correction->warehouse_id;
             $inventory->item_id = $stock_correction_item->item_id;
             $inventory->quantity = $stock_correction_item->quantity_correction;
-            $inventory->price =  InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $stock_correction_item->item_id, $stock_correction->warehouse_id);
+            if ($inventory->quantity > 0) {
+                $inventory->price =  InventoryHelper::getCostOfSalesAbove0(date('Y-m-d H:i:s'), $stock_correction_item->item_id, $stock_correction->warehouse_id);
+            } else {
+                $inventory->price =  InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $stock_correction_item->item_id, $stock_correction->warehouse_id);
+            }
 
             if ($inventory->quantity < 0) {
                 $inventory->quantity *= -1;

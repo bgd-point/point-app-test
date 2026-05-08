@@ -77,8 +77,12 @@ class StockOpnameHelper
             $inventory->formulir_id = $stock_opname->formulir_id;
             $inventory->warehouse_id = $stock_opname->warehouse_id;
             $inventory->item_id = $stock_opname_item->item_id;
-            $inventory->price =  InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $stock_opname_item->item_id, $stock_opname->warehouse_id);
             $quantity = $stock_opname_item->quantity_opname - $stock_opname_item->stock_in_database;
+            if ($inventory->quantity > 0) {
+                $inventory->price =  InventoryHelper::getCostOfSalesAbove0(date('Y-m-d H:i:s'), $stock_opname_item->item_id, $stock_opname->warehouse_id);
+                } else {
+                $inventory->price =  InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $stock_opname_item->item_id, $stock_opname->warehouse_id);
+            }
             if ($quantity < 0) {
                 $inventory->quantity = $quantity * -1;
                 $inventory_helper = new InventoryHelper($inventory);

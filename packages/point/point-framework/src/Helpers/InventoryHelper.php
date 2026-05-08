@@ -253,6 +253,21 @@ class InventoryHelper
         return $inventory->cogs;
     }
 
+    public static function getCostOfSalesAbove0($date, $item_id, $warehouse_id)
+    {
+        $inventory = Inventory::where('item_id', '=', $item_id)
+            ->where('form_date', '<=', $date)
+            ->where('cogs', '>', 0)
+            ->orderBy('form_date', 'desc')
+            ->first();
+
+        if (!$inventory) {
+            return 0;
+        }
+
+        return $inventory->cogs;
+    }
+
     /**
      * Get average cost of sales from all warehouse
      *
