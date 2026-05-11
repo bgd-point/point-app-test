@@ -49,6 +49,7 @@ class InventoryHelper
           ->where('inventory.warehouse_id', '=', $warehouse_id)
           ->orderBy('inventory.form_date', 'desc')
           ->orderBy('inventory.formulir_id', 'desc')
+          ->orderBy('inventory.id', 'desc')
           ->select('inventory.*')
           ->first();
 
@@ -136,6 +137,7 @@ class InventoryHelper
             ->where('inventory.form_date', '<', $date_from)
             ->orderBy('inventory.form_date', 'desc')
             ->orderBy('inventory.formulir_id', 'desc')
+            ->orderBy('inventory.id', 'desc')
             ->select('inventory.*')
             ->first();
 
