@@ -97,8 +97,8 @@
                                 </td>
                                 <td>{{date_format_view($inventory->form_date)}}</td>
                                 <td style="text-align:right">{{number_format_quantity($inventory->quantity)}}</td>
-                                <td style="text-align:right">@if($inventory->quantity > 0) {{number_format_quantity($inventory->price, 4)}} @else {{number_format_quantity($inventory->cogs, 4)}} @endif</td>
-                                <td style="text-align:right">@if($inventory->quantity > 0) {{number_format_quantity($inventory->quantity * $inventory->price, 4)}} @else {{number_format_quantity($inventory->quantity * $inventory->cogs, 4)}} @endif</td>
+                                <td style="text-align:right">@if($inventory->quantity > 0) {{number_format_quantity($inventory->price, 4)}} @else {{number_format_quantity($inventory->price, 4)}} @endif</td>
+                                <td style="text-align:right">@if($inventory->quantity > 0) {{number_format_quantity($inventory->quantity * $inventory->price, 4)}} @else {{number_format_quantity($inventory->quantity * $inventory->price, 4)}} @endif</td>
                                 <td style="text-align:right">{{number_format_quantity($inventory->cogs, 4)}}</td>
                                 <td style="text-align:right">
                                     @if(!$warehouse || $warehouse->id === 0)
