@@ -95,12 +95,18 @@
                                                     <th>NOTES</th>
                                                     <th>AVAILABLE INVOICE</th>
                                                     <th>INVOICE</th>
+                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
+                                                <?php $i = 0; ?>
                                                 @foreach($list_invoice as $invoice)
                                                     <?php
                                                     $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice), $invoice->id, $invoice->total);
+                                                    $allocation_name = 'Without Allocation';
+                                                    if ($invoice->items->first()) {
+                                                        $allocation_name = $invoice->items->first()->allocation ? $invoice->items->first()->allocation->name : 'Without Allocation';
+                                                    }
                                                     ?>
                                                     <tr>
                                                         <td class="text-center">
@@ -130,7 +136,15 @@
                                                             <input type="hidden" name="original_amount_invoice[]"
                                                                    value="{{$invoice->total}}"/>
                                                         </td>
+                                                        <td>
+                                                            <select id="invoice-allocation-id-{{$i}}" name="invoice_allocation_id[]" class="selectize" style="width: 150px;" data-placeholder="Choose one..">
+                                                                @foreach($list_allocation as $allocation)
+                                                                    <option value="{{$allocation->id}}" @if($invoice->items->first() && $allocation->id == $invoice->items->first()->allocation_id) selected @endif>{{$allocation->name}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
                                                     </tr>
+                                                    <?php $i++; ?>
                                                 @endforeach
                                                 </tbody>
                                             </table>
@@ -149,9 +163,11 @@
                                                     <th>NOTES</th>
                                                     <th>AVAILABLE AMOUNT</th>
                                                     <th>CUTOFF</th>
+                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
+                                                <?php $i = 0; ?>
                                                 @foreach($list_cut_off_payable as $cut_off_payable)
                                                     <?php
                                                     $cut_off_payable_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($cut_off_payable), $cut_off_payable->id, $cut_off_payable->amount);
@@ -178,7 +194,7 @@
                                                         <td>{{ number_format_price($cut_off_payable_remaining) }}</td>
                                                         <td>
                                                             <input type="text"
-                                                                   id="total-cutoff-{{$cut_off_payable->cutoffPayable->formulir->id}}"
+                                                                   id="total-cutoff-{{$cut_off_payable->id}}"
                                                                    name="amount_cutoff[]"
                                                                    class="form-control format-price row-total"
                                                                    onkeyup="updateCutoff()" value="{{$cut_off_payable_remaining}}"/>
@@ -187,7 +203,15 @@
                                                             <input type="hidden" name="original_amount_cutoff[]"
                                                                    value="{{$cut_off_payable->amount}}"/>
                                                         </td>
+                                                        <td>
+                                                            <select id="cutoff-allocation-id-{{$i}}" name="cutoff_allocation_id[]" class="selectize" style="width: 150px;" data-placeholder="Choose one..">
+                                                                @foreach($list_allocation as $allocation)
+                                                                    <option value="{{$allocation->id}}" @if($allocation->id == 1) selected @endif>{{$allocation->name}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
                                                     </tr>
+                                                    <?php $i++; ?>
                                                 @endforeach
                                                 </tbody>
                                             </table>
@@ -206,9 +230,11 @@
                                                     <th>NOTES</th>
                                                     <th>AVAILABLE DOWNPAYMENT</th>
                                                     <th>DOWNPAYMENT</th>
+                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
+                                                <?php $i = 0; ?>
                                                 @foreach($list_downpayment as $downpayment)
                                                     <?php
                                                     $downpayment_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($downpayment), $downpayment->id, $downpayment->amount);
@@ -235,9 +261,9 @@
                                                         <td>{{ number_format_price($downpayment_remaining) }}</td>
                                                         <td>
                                                             <input type="text"
-                                                                   id="amount-downpayment-{{$downpayment->formulir_id}}"
+                                                                   id="total-downpayment-{{$downpayment->formulir_id}}"
                                                                    name="amount_downpayment[]"
-                                                                   class="form-control format-price row-amount"
+                                                                   class="form-control format-price row-total"
                                                                    onkeyup="updateDownpayment()"
                                                                    value="{{$downpayment_remaining}}"/>
                                                             <input type="hidden" name="available_downpayment[]"
@@ -245,7 +271,15 @@
                                                             <input type="hidden" name="original_amount_downpayment[]"
                                                                    value="{{$downpayment->amount}}"/>
                                                         </td>
+                                                        <td>
+                                                            <select id="downpayment-allocation-id-{{$i}}" name="downpayment_allocation_id[]" class="selectize" style="width: 150px;" data-placeholder="Choose one..">
+                                                                @foreach($list_allocation as $allocation)
+                                                                    <option value="{{$allocation->id}}" @if($allocation->id == 1) selected @endif>{{$allocation->name}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
                                                     </tr>
+                                                    <?php $i++; ?>
                                                 @endforeach
                                                 </tbody>
                                             </table>
@@ -265,9 +299,11 @@
                                                     <th>NOTES</th>
                                                     <th>AVAILABLE CASH ADVANCE</th>
                                                     <th>CASH ADVANCE</th>
+                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
+                                                <?php $i = 0; ?>
                                                 @foreach($list_cash_advance as $cash_advance)
                                                     <?php
                                                     $cash_advance_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($cash_advance),
@@ -297,9 +333,9 @@
                                                         <td>{{ number_format_price($cash_advance_remaining) }}</td>
                                                         <td>
                                                             <input type="text"
-                                                                   id="amount-cash-advance-{{$cash_advance->formulir_id}}"
+                                                                   id="total-cash-advance-{{$cash_advance->formulir_id}}"
                                                                    name="amount_cash_advance[]"
-                                                                   class="form-control format-price row-amount"
+                                                                   class="form-control format-price row-total"
                                                                    onkeyup="updateCashAdvance()"
                                                                    value="{{$cash_advance_remaining}}"/>
                                                             <input type="hidden" name="available_cash_advance[]"
@@ -307,7 +343,15 @@
                                                             <input type="hidden" name="original_amount_cash_advance[]"
                                                                    value="{{$cash_advance->amount}}"/>
                                                         </td>
+                                                        <td>
+                                                            <select id="cash-advance-allocation-id-{{$i}}" name="cash_advance_allocation_id[]" class="selectize" style="width: 150px;" data-placeholder="Choose one..">
+                                                                @foreach($list_allocation as $allocation)
+                                                                    <option value="{{$allocation->id}}" @if($allocation->id == 1) selected @endif>{{$allocation->name}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
                                                     </tr>
+                                                    <?php $i++; ?>
                                                 @endforeach
                                                 </tbody>
                                             </table>
@@ -327,9 +371,11 @@
                                                     <th>ITEM</th>
                                                     <th>AVAILABLE RETUR</th>
                                                     <th>RETUR</th>
+                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
+                                                <?php $i = 0; ?>
                                                 @foreach($list_retur as $retur)
                                                     <?php
                                                     $retur_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($retur),
@@ -369,7 +415,15 @@
                                                             <input type="hidden" name="original_amount_retur[]"
                                                                    value="{{$retur->total}}"/>
                                                         </td>
+                                                        <td>
+                                                            <select id="retur-allocation-id-{{$i}}" name="retur_allocation_id[]" class="selectize" style="width: 150px;" data-placeholder="Choose one..">
+                                                                @foreach($list_allocation as $allocation)
+                                                                    <option value="{{$allocation->id}}" @if($retur->items->first() && $allocation->id == $retur->items->first()->allocation_id) selected @endif>{{$allocation->name}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
                                                     </tr>
+                                                    <?php $i++; ?>
                                                 @endforeach
                                                 </tbody>
                                             </table>
@@ -500,14 +554,13 @@
                 '<input type="text" id="total-' + counter + '" name="total[]" class="form-control format-price-alt row-total calculate" value="0" />',
                 '<select id="allocation-id-' + counter + '" name="allocation_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
                 @foreach($list_allocation as $allocation)
-                 + '<option value="{{$allocation->id}}">{{$allocation->name}}</option>'
+                 + '<option value="{{$allocation->id}}" @if($allocation->id == 1) selected @endif>{{$allocation->name}}</option>'
                 @endforeach
              + '</select>'
             ]).draw(false);
 
             initSelectize('#item-id-' + counter);
             initSelectize('#allocation-id-' + counter);
-            initSelectize('#unit-id-' + counter);
             initFormatNumber();
 
             $("textarea").on("click", function () {

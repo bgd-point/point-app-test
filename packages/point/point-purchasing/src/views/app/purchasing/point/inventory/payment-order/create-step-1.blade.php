@@ -12,11 +12,13 @@
 
         <div class="panel panel-default">
             <div class="panel-body">
-                <form action="{{ url('purchasing/point/payment-order/create-step-1') }}" method="get">
-                    <input type="text" class="form-control" name="search_supplier" placeholder="SUPPLIER"
-                        @if(app('request')->input('search_supplier')) value="{{ app('request')->input('search_supplier') }}" @endif
-                    />
-                    <input type="submit" name="search" id="search" value="search" class="btn btn-primary" />
+                <form action="{{ url('purchasing/point/payment-order/create-step-1') }}" method="get" class="form-inline" style="margin-bottom: 20px;">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="search_supplier" placeholder="Search Supplier"
+                            @if(app('request')->input('search_supplier')) value="{{ app('request')->input('search_supplier') }}" @endif
+                        />
+                    </div>
+                    <input type="submit" name="search" id="search" value="Search" class="btn btn-primary" />
                 </form>
 
                 <div class="table-responsive">
@@ -24,15 +26,16 @@
                     <table class="table table-striped table-bordered">
                         <thead>
                         <tr>
-                            <th width="100px" class="text-center"></th>
+                            <th width="120px" class="text-center">Action</th>
                             <th>Supplier</th>
-                            <th>From Invoice</th>
-                            <th>Remaining</th>
+                            <th>Date</th>
+                            <th>Invoice Number</th>
+                            <th class="text-right" width="150px">Remaining</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td colspan="3">From Invoice</td>
+                        <tr class="info">
+                            <td colspan="5"><strong>From Invoice</strong></td>
                         </tr>
                         @foreach($list_invoice as $invoice)
                             <?php
@@ -66,8 +69,8 @@
                             @endforeach
                         @endforeach
                         @if(count($list_cut_off_payable) > 0)
-                        <tr>
-                            <td colspan="3">From Cutoff</td>
+                        <tr class="info">
+                            <td colspan="5"><strong>From Cutoff</strong></td>
                         </tr>
                         @foreach($list_cut_off_payable as $cut_off_payable)
                         <?php
@@ -78,16 +81,18 @@
                             <td class="text-center">
                                 <a href="{{ url('purchasing/point/payment-order/create-step-2/'.$cut_off_payable->person_id) }}"
                                    class="btn btn-effect-ripple btn-xs btn-info"><i class="fa fa-external-link"></i>
-                                    Payment Collection</a>
+                                    PAYMENT ORDER</a>
                             </td>
                             <td>
                                 {!! get_url_person($cut_off_payable->person_id) !!}
                             </td>
                             <td>
                                 {{date_format_view($reference_payable->formulir->form_date)}}
+                            </td>
+                            <td>
                                 <a href="{{url('accounting/point/cut-off/payable/'.$reference_payable->id)}}"> {{$reference_payable->formulir->form_number}}</a>
                             </td>
-                            <td></td>
+                            <td class="text-right">-</td>
                         </tr>
                         @endforeach
                         @endif

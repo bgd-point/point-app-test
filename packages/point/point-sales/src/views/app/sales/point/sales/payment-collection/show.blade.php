@@ -81,34 +81,35 @@
                                             <th>DATE</th>
                                             <th>FORM NUMBER</th>
                                             <th>NOTES</th>
+                                            <th>ALLOCATION</th>
                                             <th class="text-right">TOTAL</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach(\Point\Framework\Helpers\ReferHelper::getRefers(get_class($payment_collection), $payment_collection->id) as $refer)
+                                        @foreach($payment_collection->details as $payment_collection_detail)
                                             <?php
-                                            $payment_collection_detail = \Point\PointSales\Models\Sales\PaymentCollectionDetail::find($refer->to_id);
-                                            $reference_type = $refer->by_type;
-                                            $reference = $reference_type::find($refer->by_id);
-                                            if (get_class($reference) == get_class(new Point\PointAccounting\Models\CutOffReceivableDetail())) {
+                                            $reference_type = $payment_collection_detail->reference_type;
+                                            $reference = $reference_type::find($payment_collection_detail->reference_id);
+                                            if ($reference && get_class($reference) == get_class(new Point\PointAccounting\Models\CutOffReceivableDetail())) {
                                                 $reference->formulir = $reference->cutoffReceivable->formulir;
                                             }
-                                            if (get_class($reference) == get_class(new \Point\PointAccounting\Models\MemoJournalDetail())) {
+                                            if ($reference && get_class($reference) == get_class(new \Point\PointAccounting\Models\MemoJournalDetail())) {
                                                 $reference->formulir = $reference->memoJournal->formulir;
                                             }
                                             ?>
                                             <tr>
                                                 <td>
-                                                    {{ date_format_view($reference->formulir->form_date) }}
+                                                    {{ $reference ? date_format_view($reference->formulir->form_date) : '' }}
                                                 </td>
-                                                <td>{{ $reference->formulir->form_number }}</td>
+                                                <td>{{ $reference ? $reference->formulir->form_number : '' }}</td>
                                                 <td>{{ $payment_collection_detail->detail_notes }}</td>
+                                                <td>{{ $payment_collection_detail->allocation->name }}</td>
                                                 <td class="text-right">{{ number_format_quantity($payment_collection_detail->amount) }}</td>
                                             </tr>
                                         @endforeach
 
                                         <tr>
-                                            <td colspan="4"><h4><b>Others</b></h4></td>
+                                            <td colspan="5"><h4><b>Others</b></h4></td>
                                         </tr>
                                         @foreach($payment_collection->others as $payment_collection_other)
                                             <tr>
@@ -116,13 +117,14 @@
                                                     {{$payment_collection_other->coa->account}} <br/>
                                                 </td>
                                                 <td>{{$payment_collection_other->other_notes}}</td>
+                                                <td>{{$payment_collection_other->allocation->name}}</td>
                                                 <td class="text-right">{{number_format_quantity($payment_collection_other->amount)}}</td>
                                             </tr>
                                         @endforeach
                                         </tbody>
                                         <tfoot>
                                         <tr>
-                                            <td colspan="3" class="text-right"><h4><b>TOTAL</b></h4></td>
+                                            <td colspan="4" class="text-right"><h4><b>TOTAL</b></h4></td>
                                             <td class="text-right">{{number_format_quantity($payment_collection->total_payment)}}</td>
                                         </tr>
                                         </tfoot>

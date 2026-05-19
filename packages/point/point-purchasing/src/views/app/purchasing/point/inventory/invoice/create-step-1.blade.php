@@ -64,6 +64,11 @@
                     </table>
                     {!! $list_goods_received->render() !!}
                 </div>
+                @else
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle"></i> 
+                    No goods received records available. Please create <a href="{{ url('purchasing/point/goods-received') }}">Goods Received</a> first.
+                </div>
                 @endif
             </div>
         </div>

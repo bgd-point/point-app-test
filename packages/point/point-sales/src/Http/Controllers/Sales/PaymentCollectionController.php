@@ -158,6 +158,7 @@ class PaymentCollectionController extends Controller
         $view->amount_invoice = number_format_db(\Input::get('amount_invoice'));
         $view->available_invoice = number_format_db(\Input::get('available_invoice'));
         $view->original_amount_invoice = number_format_db(\Input::get('original_amount_invoice'));
+        $view->invoice_allocation_id = \Input::get('invoice_allocation_id');
 
         $view->list_memo_journal_detail = MemoJournalDetail::whereIn('id', \Input::get('memo_journal_detail_id'))->get();
         $view->memo_journal_detail_rid = \Input::get('memo_journal_detail_rid');
@@ -168,6 +169,7 @@ class PaymentCollectionController extends Controller
         $view->amount_memo_journal_detail = number_format_db(\Input::get('amount_memo_journal_detail'));
         $view->available_memo_journal_detail = number_format_db(\Input::get('available_memo_journal_detail'));
         $view->original_amount_memo_journal_detail = number_format_db(\Input::get('original_amount_memo_journal_detail'));
+        $view->memo_journal_detail_allocation_id = \Input::get('memo_journal_detail_allocation_id');
 
         $view->list_retur = Retur::whereIn('formulir_id', \Input::get('retur_id'))->get();
         $view->retur_rid = \Input::get('retur_rid');
@@ -177,6 +179,7 @@ class PaymentCollectionController extends Controller
         $view->amount_retur = number_format_db(\Input::get('amount_retur'));
         $view->available_retur = number_format_db(\Input::get('available_retur'));
         $view->original_amount_retur = number_format_db(\Input::get('original_amount_retur'));
+        $view->retur_allocation_id = \Input::get('retur_allocation_id');
 
         $view->list_downpayment = Downpayment::whereIn('formulir_id', \Input::get('downpayment_id'))->get();
         $view->downpayment_rid = \Input::get('downpayment_rid');
@@ -186,6 +189,7 @@ class PaymentCollectionController extends Controller
         $view->amount_downpayment = number_format_db(\Input::get('amount_downpayment'));
         $view->available_downpayment = number_format_db(\Input::get('available_downpayment'));
         $view->original_amount_downpayment = number_format_db(\Input::get('original_amount_downpayment'));
+        $view->downpayment_allocation_id = \Input::get('downpayment_allocation_id');
 
         $view->list_cut_off_receivable = CutOffReceivableDetail::whereIn('id', \Input::get('cut_off_id'))->get();
         $view->cutoff_rid = \Input::get('cut_off_rid');
@@ -195,6 +199,7 @@ class PaymentCollectionController extends Controller
         $view->amount_cutoff = number_format_db(\Input::get('amount_cutoff'));
         $view->available_cutoff = number_format_db(\Input::get('available_cutoff'));
         $view->original_amount_cutoff = number_format_db(\Input::get('original_amount_cutoff'));
+        $view->cutoff_allocation_id = \Input::get('cutoff_allocation_id');
 
         $view->payment_date = date_format_db(\Input::get('payment_date'), \Input::get('time'));
         $view->approval_to = User::find(\Input::get('approval_to'));
@@ -229,6 +234,7 @@ class PaymentCollectionController extends Controller
         $references_account = [];
         $references_detail_id = [];
         $references_detail_type = [];
+        $references_allocation_id = [];
         $formulir_id = [];
         $invoice_id = $request->input('invoice_id');
         for ($i=0;$i < count($invoice_id);$i++) {
@@ -241,6 +247,7 @@ class PaymentCollectionController extends Controller
             array_push($references_account, SettingJournal::where('group', 'point sales indirect')->where('name', 'account receivable')->first()->coa_id);
             array_push($references_amount, $request->input('invoice_amount')[$i]);
             array_push($references_amount_original, $request->input('invoice_amount_original')[$i]);
+            array_push($references_allocation_id, $request->input('invoice_allocation_id')[$i]);
             array_push($references_notes, $request->input('invoice_notes')[$i]);
             array_push($references, $reference_type::find($invoice_id[$i]));
         }
@@ -255,6 +262,7 @@ class PaymentCollectionController extends Controller
             array_push($references_account, SettingJournal::where('group', 'point sales indirect')->where('name', 'account receivable')->first()->coa_id);
             array_push($references_amount, $request->input('memo_journal_detail_amount')[$i]);
             array_push($references_amount_original, $request->input('memo_journal_detail_amount_original')[$i]);
+            array_push($references_allocation_id, $request->input('memo_journal_detail_allocation_id')[$i]);
             array_push($references_notes, $request->input('memo_journal_detail_notes')[$i]);
             array_push($references, $reference_type::find(MemoJournalDetail::find($memo_journal_detail_id[$i])->memo_journal_id));
         }
@@ -269,6 +277,7 @@ class PaymentCollectionController extends Controller
             array_push($references_account, SettingJournal::where('group', 'point sales indirect')->where('name', 'account receivable')->first()->coa_id);
             array_push($references_amount, $request->input('retur_amount')[$i]);
             array_push($references_amount_original, $request->input('retur_amount_original')[$i]);
+            array_push($references_allocation_id, $request->input('retur_allocation_id')[$i]);
             array_push($references_notes, $request->input('retur_notes')[$i]);
             array_push($references, $reference_type::find($retur_id[$i]));
         }
@@ -283,6 +292,7 @@ class PaymentCollectionController extends Controller
             array_push($references_account, SettingJournal::where('group', 'point sales indirect')->where('name', 'sales downpayment')->first()->coa_id);
             array_push($references_amount, $request->input('downpayment_amount')[$i]);
             array_push($references_amount_original, $request->input('downpayment_amount_original')[$i]);
+            array_push($references_allocation_id, $request->input('downpayment_allocation_id')[$i]);
             array_push($references_notes, $request->input('downpayment_notes')[$i]);
             array_push($references, $reference_type::find($downpayment_id[$i]));
         }
@@ -298,6 +308,7 @@ class PaymentCollectionController extends Controller
             array_push($references_account, CutOffReceivableDetail::find($cutoff_id[$i])->coa_id);
             array_push($references_amount, $request->input('cutoff_amount')[$i]);
             array_push($references_amount_original, $request->input('cutoff_amount_original')[$i]);
+            array_push($references_allocation_id, $request->input('cutoff_allocation_id')[$i]);
             array_push($references_notes, $request->input('cutoff_notes')[$i]);
             array_push($references, $reference_type::find($cutoff_id[$i]));
         }
@@ -307,7 +318,7 @@ class PaymentCollectionController extends Controller
         FormulirHelper::isAllowedToCreate('create.point.sales.payment.collection', date_format_db($request->input('form_date'), $request->input('time')), $formulir_id);
         $formulir = FormulirHelper::create($request->input(), 'point-sales-payment-collection');
         $payment_collection = PaymentCollectionHelper::create($request, $formulir, $references, $references_account, $references_type,
-        $references_id, $references_amount, $references_amount_original, $references_notes, $references_detail_id, $references_detail_type);
+        $references_id, $references_amount, $references_amount_original, $references_notes, $references_detail_id, $references_detail_type, [], $references_allocation_id);
         timeline_publish('create.payment.collection', 'added new payment collection '  . $payment_collection->formulir->form_number);
         DB::commit();
 
@@ -408,6 +419,7 @@ class PaymentCollectionController extends Controller
         $view->available_invoice = number_format_db(\Input::get('available_invoice'));
         $view->original_amount_invoice = number_format_db(\Input::get('original_amount_invoice'));
         $view->invoice_amount_edit = number_format_db(\Input::get('invoice_amount_edit'));
+        $view->invoice_allocation_id = \Input::get('invoice_allocation_id');
 
         $view->list_retur = Retur::whereIn('formulir_id', \Input::get('retur_id'))->get();
         $view->retur_rid = \Input::get('retur_rid');
@@ -418,6 +430,7 @@ class PaymentCollectionController extends Controller
         $view->available_retur = number_format_db(\Input::get('available_retur'));
         $view->original_amount_retur = number_format_db(\Input::get('original_amount_retur'));
         $view->retur_amount_edit = number_format_db(\Input::get('retur_amount_edit'));
+        $view->retur_allocation_id = \Input::get('retur_allocation_id');
 
         $view->list_downpayment = Downpayment::whereIn('formulir_id', \Input::get('downpayment_id'))->get();
         $view->downpayment_rid = \Input::get('downpayment_rid');
@@ -428,6 +441,7 @@ class PaymentCollectionController extends Controller
         $view->available_downpayment = number_format_db(\Input::get('available_downpayment'));
         $view->original_amount_downpayment = number_format_db(\Input::get('original_amount_downpayment'));
         $view->downpayment_amount_edit = number_format_db(\Input::get('downpayment_amount_edit'));
+        $view->downpayment_allocation_id = \Input::get('downpayment_allocation_id');
 
         $view->list_cut_off_receivable = CutOffReceivableDetail::whereIn('id', \Input::get('cut_off_id'))->get();
         $view->cutoff_rid = \Input::get('cut_off_rid');
@@ -438,6 +452,7 @@ class PaymentCollectionController extends Controller
         $view->available_cutoff = number_format_db(\Input::get('available_cutoff'));
         $view->original_amount_cutoff = number_format_db(\Input::get('original_amount_cutoff'));
         $view->cutoff_amount_edit = number_format_db(\Input::get('cutoff_amount_edit'));
+        $view->cutoff_allocation_id = \Input::get('cutoff_allocation_id');
 
         $view->payment_date = date_format_db(\Input::get('payment_date'), \Input::get('time'));
         $view->approval_to = User::find(\Input::get('approval_to'));
@@ -474,6 +489,7 @@ class PaymentCollectionController extends Controller
         $references_notes = [];
         $references_detail_id = [];
         $references_detail_type = [];
+        $references_allocation_id = [];
         $formulir_id = [];
         $invoice_id = $request->input('invoice_id');
         for ($i=0;$i < count($invoice_id);$i++) {
@@ -487,6 +503,7 @@ class PaymentCollectionController extends Controller
             array_push($references_amount, $request->input('invoice_amount')[$i]);
             array_push($references_amount_original, $request->input('invoice_amount_original')[$i]);
             array_push($references_amount_edit, $request->input('invoice_amount_edit')[$i]);
+            array_push($references_allocation_id, $request->input('invoice_allocation_id')[$i]);
             array_push($references_notes, $request->input('invoice_notes')[$i]);
             array_push($references, $reference_type::find($invoice_id[$i]));
         }
@@ -501,6 +518,7 @@ class PaymentCollectionController extends Controller
             array_push($references_amount, $request->input('retur_amount')[$i]);
             array_push($references_amount_original, $request->input('retur_amount_original')[$i]);
             array_push($references_amount_edit, $request->input('retur_amount_edit')[$i]);
+            array_push($references_allocation_id, $request->input('retur_allocation_id')[$i]);
             array_push($references_notes, $request->input('retur_notes')[$i]);
             array_push($references, $reference_type::find($retur_id[$i]));
         }
@@ -516,6 +534,7 @@ class PaymentCollectionController extends Controller
             array_push($references_amount, $request->input('downpayment_amount')[$i]);
             array_push($references_amount_original, $request->input('downpayment_amount_original')[$i]);
             array_push($references_amount_edit, $request->input('downpayment_amount_edit')[$i]);
+            array_push($references_allocation_id, $request->input('downpayment_allocation_id')[$i]);
             array_push($references_notes, $request->input('downpayment_notes')[$i]);
             array_push($references, $reference_type::find($downpayment_id[$i]));
         }
@@ -532,6 +551,7 @@ class PaymentCollectionController extends Controller
             array_push($references_amount, $request->input('cutoff_amount')[$i]);
             array_push($references_amount_original, $request->input('cutoff_amount_original')[$i]);
             array_push($references_amount_edit, $request->input('cutoff_amount_edit')[$i]);
+            array_push($references_allocation_id, $request->input('cutoff_allocation_id')[$i]);
             array_push($references_notes, $request->input('cutoff_notes')[$i]);
             array_push($references, $reference_type::find($cutoff_id[$i]));
         }
@@ -544,7 +564,7 @@ class PaymentCollectionController extends Controller
         $formulir_old = self::archive($request->input(), $payment_collection->formulir_id);
         $formulir = FormulirHelper::update($request->input(), $formulir_old->archived, $formulir_old->form_raw_number);
         $payment_collection = PaymentCollectionHelper::create($request, $formulir, $references, $references_account, $references_type,
-        $references_id, $references_amount, $references_amount_original, $references_notes, $references_detail_id, $references_detail_type, $references_amount_edit);
+        $references_id, $references_amount, $references_amount_original, $references_notes, $references_detail_id, $references_detail_type, $references_amount_edit, $references_allocation_id);
         timeline_publish('update.payment.collection', 'added new payment collection '  . $payment_collection->formulir->form_number);
 
         DB::commit();
