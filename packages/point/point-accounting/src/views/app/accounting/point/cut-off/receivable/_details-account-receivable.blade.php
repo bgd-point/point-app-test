@@ -13,7 +13,7 @@
                 <tr>
                     <td><strong>{{Point\Framework\Models\Master\Person::find($receivable->subledger_id)->codeName}}</strong></td>
                     <td><input type="text" readonly name="notes[]" value="{{$receivable->notes}}" class="form-control" ></td>
-                    <td><input type="text" readonly name="amount[]" id="amount-{{$i}}" class="form-control text-right" value="{{number_format_quantity($receivable->amount)}}" /></td>
+                    <td><input type="text" readonly name="amount[]" id="amount-{{$i}}" class="form-control format-quantity-alt text-right" value="{{number_format_quantity($receivable->amount)}}" /></td>
                 </tr>
                 <?php $i++;?>
             @endforeach
