@@ -62,8 +62,8 @@ function addRow() {
         '<select id="subledger-'+counter+'" name="subledger_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
             +'<option ></option>'
         +'</select>',
-        '<input type="text" name="amount[]" id="amount-'+counter+'" onkeyup="calculate()" class="form-control format-quantity text-right" value="0" />',
         '<input type="text" name="notes[]" id="notes-'+counter+'" class="form-control" />',
+        '<input type="text" name="amount[]" id="amount-'+counter+'" onkeyup="calculate()" class="form-control format-quantity-alt text-right" value="0" />',
     ] ).draw( false );
 
     initFormatNumber();
