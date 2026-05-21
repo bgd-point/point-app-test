@@ -99,6 +99,7 @@
                                             <td>
                                                 @if($coa_debit)
                                                     <input type="text" onkeyup="updateTemp({{$index}}, 'debit')" id="debit-{{$index}}" value="{{ $coa_debit['amount']}}" name="debit[]" class="form-control text-right format-quantity-alt">
+                                                    <input type="text" name="quantity_correction[]" class="form-control format-quantity-alt text-right" value=0 />
                                                 @else
                                                     <input type="text" onkeyup="updateTemp({{$index}}, 'debit')" id="debit-{{$index}}" name="debit[]"class="form-control text-right format-quantity-alt" value={{ $position == 'debit' ? $total : 0 }}>
                                                 @endif
