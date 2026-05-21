@@ -98,16 +98,16 @@
                                             <td>{{$coa->account}}</td>
                                             <td>
                                                 @if($coa_debit)
-                                                    <input type="text" onkeyup="updateTemp({{$index}}, 'debit')" id="debit-{{$index}}" value="{{ $coa_debit['amount']}}" name="debit[]" class="form-control text-right format-quantity">
+                                                    <input type="text" onkeyup="updateTemp({{$index}}, 'debit')" id="debit-{{$index}}" value="{{ $coa_debit['amount']}}" name="debit[]" class="form-control text-right format-quantity-alt">
                                                 @else
-                                                    <input type="text" onkeyup="updateTemp({{$index}}, 'debit')" id="debit-{{$index}}" name="debit[]"class="form-control text-right format-quantity" value={{ $position == 'debit' ? $total : 0 }}>
+                                                    <input type="text" onkeyup="updateTemp({{$index}}, 'debit')" id="debit-{{$index}}" name="debit[]"class="form-control text-right format-quantity-alt" value={{ $position == 'debit' ? $total : 0 }}>
                                                 @endif
                                             </td>
                                             <td>
                                                 @if($coa_credit)
-                                                    <input type="text" onkeyup="updateTemp({{$index}}, 'credit')" id="credit-{{$index}}" value="{{$coa_credit['amount']}}" name="credit[]" class="form-control text-right format-quantity">
+                                                    <input type="text" onkeyup="updateTemp({{$index}}, 'credit')" id="credit-{{$index}}" value="{{$coa_credit['amount']}}" name="credit[]" class="form-control text-right format-quantity-alt">
                                                 @else
-                                                    <input type="text" onkeyup="updateTemp({{$index}}, 'credit')" id="credit-{{$index}}" value="{{ $position == 'credit' ? $total : 0 }}" name="credit[]" class="form-control text-right format-quantity">
+                                                    <input type="text" onkeyup="updateTemp({{$index}}, 'credit')" id="credit-{{$index}}" value="{{ $position == 'credit' ? $total : 0 }}" name="credit[]" class="form-control text-right format-quantity-alt">
                                                 @endif
                                                 
                                             </td>
