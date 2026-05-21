@@ -19,7 +19,7 @@
                         </select>
                     </td>
                     <td><input type="text" name="notes[]" value="{{$details[$i]['notes']}}" class="form-control" ></td>
-                    <td><input type="text" name="amount[]" id="amount-{{$i}}" onkeyup="calculate()" class="form-control text-right format-quantity" value="{{$details[$i]['amount']}}" /></td>
+                    <td><input type="text" name="amount[]" id="amount-{{$i}}" onkeyup="calculate()" class="form-control text-right format-quantity-alt" value="{{$details[$i]['amount']}}" /></td>
                 </tr>
             @endfor
         </tbody>

@@ -91,7 +91,7 @@
                                             </td>
                                             <td><strong id="coa-name-{{$index}}">{{$coa->account}}</strong></td>
                                             <td>
-                                                <input type="text" onkeyup="reCalculate()" id="row-amount-{{$index}}" value="{{ $amount ? : $value_of_account }}" name="amount[]" @if($coa->has_subledger) '' : readonly @endif class="form-control text-right format-quantity">
+                                                <input type="text" onkeyup="reCalculate()" id="row-amount-{{$index}}" value="{{ $amount ? : $value_of_account }}" name="amount[]" @if($coa->has_subledger) '' : readonly @endif class="form-control text-right format-quantity-alt">
                                             </td>
                                             
                                         </tr>
