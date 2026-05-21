@@ -119,8 +119,8 @@
                                     <tfoot>
                                         <tr>
                                             <td></td>
-                                            <td align="right"><input type="text" readonly name="foot_debit" id="foot_debit" class="form-control format-quantity text-right" /></td>
-                                            <td align="right"><input type="text" readonly name="foot_credit" id="foot_credit" class="form-control format-quantity text-right"/></td>
+                                            <td align="right"><input type="text" readonly name="foot_debit" id="foot_debit" class="form-control format-quantity-alt text-right" /></td>
+                                            <td align="right"><input type="text" readonly name="foot_credit" id="foot_credit" class="form-control format-quantity-alt text-right"/></td>
                                         </tr>
                                     </tfoot>
                                 </table>
