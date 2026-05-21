@@ -103,7 +103,7 @@
                                     <tfoot>
                                         <tr>
                                             <td colspan="2"></td>
-                                            <td align="right"><input type="text" readonly name="foot_amount" id="foot_amount" class="form-control format-quantity text-right" /></td>
+                                            <td align="right"><input type="text" readonly name="foot_amount" id="foot_amount" class="form-control format-quantity-alt text-right" /></td>
                                         </tr>
                                     </tfoot>
                                 </table>
