@@ -101,6 +101,7 @@
                                                     <th>ITEM</th>
                                                     <th>AVAILABLE INVOICE</th>
                                                     <th>INVOICE</th>
+                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -150,6 +151,25 @@ if($counter >= $page * 50) { break; }
                                                             <input type="hidden" name="original_amount_invoice[]"
                                                                    value="{{$invoice->total}}"/>
                                                         </td>
+                                                        <td>
+                                                            <select name="invoice_allocation_id[]" class="selectize" style="width: 150px;" data-placeholder="Choose one..">
+                                                                <?php
+                                                                $invoice_allocation_id = 1;
+                                                                if ($invoice->items->count() > 0) {
+                                                                    $invoice_allocation_id = $invoice->items->first()->allocation_id;
+                                                                    foreach($invoice->items as $invoice_item) {
+                                                                        if ($invoice_item->allocation_id != $invoice_allocation_id) {
+                                                                            $invoice_allocation_id = 1;
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                }
+                                                                ?>
+                                                                @foreach($list_allocation as $allocation)
+                                                                    <option value="{{$allocation->id}}" @if($invoice_allocation_id == $allocation->id) selected @endif>{{$allocation->name}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                                 </tbody>
@@ -170,6 +190,7 @@ if($counter >= $page * 50) { break; }
                                                     <th>ITEM</th>
                                                     <th>AVAILABLE MEMO JOURNAL</th>
                                                     <th>MEMO JOURNAL</th>
+                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -214,6 +235,13 @@ if($counter >= $page * 50) { break; }
                                                                     <input type="hidden" name="original_amount_memo_journal_detail[]"
                                                                             value="{{$detailTotal}}"/>
                                                                 </td>
+                                                                <td>
+                                                                    <select name="memo_journal_detail_allocation_id[]" class="selectize" style="width: 150px;" data-placeholder="Choose one..">
+                                                                        @foreach($list_allocation as $allocation)
+                                                                            <option value="{{$allocation->id}}" @if($allocation->id == 1) selected @endif>{{$allocation->name}}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </td>
                                                             </tr>
                                                         @endif
                                                     @endforeach
@@ -235,6 +263,7 @@ if($counter >= $page * 50) { break; }
                                                     <th>NOTES</th>
                                                     <th>AVAILABLE AMOUNT</th>
                                                     <th>CUTOFF</th>
+                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -274,6 +303,13 @@ if($counter >= $page * 50) { break; }
                                                             <input type="hidden" name="original_amount_cutoff[]"
                                                                    value="{{$cut_off_receivable->amount}}"/>
                                                         </td>
+                                                        <td>
+                                                            <select name="cutoff_allocation_id[]" class="selectize" style="width: 150px;" data-placeholder="Choose one..">
+                                                                @foreach($list_allocation as $allocation)
+                                                                    <option value="{{$allocation->id}}" @if($allocation->id == 1) selected @endif>{{$allocation->name}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                                 </tbody>
@@ -293,6 +329,7 @@ if($counter >= $page * 50) { break; }
                                                     <th>NOTES</th>
                                                     <th>AVAILABLE DOWNPAYMENT</th>
                                                     <th>DOWNPAYMENT</th>
+                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -335,6 +372,13 @@ if($counter >= $page * 50) { break; }
                                                             <input type="hidden" name="original_amount_downpayment[]"
                                                                    value="{{$downpayment->amount}}"/>
                                                         </td>
+                                                        <td>
+                                                            <select name="downpayment_allocation_id[]" class="selectize" style="width: 150px;" data-placeholder="Choose one..">
+                                                                @foreach($list_allocation as $allocation)
+                                                                    <option value="{{$allocation->id}}" @if($allocation->id == 1) selected @endif>{{$allocation->name}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                                 </tbody>
@@ -355,6 +399,7 @@ if($counter >= $page * 50) { break; }
                                                     <th>ITEM</th>
                                                     <th>AVAILABLE RETUR</th>
                                                     <th>RETUR</th>
+                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -395,6 +440,13 @@ if($counter >= $page * 50) { break; }
                                                             <input type="hidden" name="original_amount_retur[]"
                                                                    value="{{$retur->total}}"/>
                                                         </td>
+                                                        <td>
+                                                            <select name="retur_allocation_id[]" class="selectize" style="width: 150px;" data-placeholder="Choose one..">
+                                                                @foreach($list_allocation as $allocation)
+                                                                    <option value="{{$allocation->id}}" @if($allocation->id == 1) selected @endif>{{$allocation->name}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                                 </tbody>
@@ -410,9 +462,9 @@ if($counter >= $page * 50) { break; }
                                                 <tr>
                                                     <th></th>
                                                     <th>ACCOUNT</th>
-                                                    <th>ALLOCATION</th>
                                                     <th>NOTES</th>
                                                     <th>AMOUNT</th>
+                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody class="manipulate-row">
@@ -517,13 +569,13 @@ if($counter >= $page * 50) { break; }
                  + '<option value="{{$coa->id}}">{{$coa->account}}</option>'
                 @endforeach
                 + '</select>',
+                '<input type="text" name="other_notes[]" class="form-control" value="" />',
+                '<input type="text" id="total-' + counter + '" name="total[]" class="form-control format-price-alt row-total calculate" value="0" />',
                 '<select id="allocation-id-' + counter + '" name="allocation_id[]" class="selectize" style="width: 100%;" data-placeholder="Choose one..">'
                 @foreach($list_allocation as $allocation)
                 + '<option value="{{$allocation->id}}">{{$allocation->name}}</option>'
                 @endforeach
-                + '</select>',
-                '<input type="text" name="other_notes[]" class="form-control" value="" />',
-                '<input type="text" id="total-' + counter + '" name="total[]" class="form-control format-price-alt row-total calculate" value="0" />'
+                + '</select>'
             ]).draw(false);
 
             initSelectize('#item-id-' + counter);

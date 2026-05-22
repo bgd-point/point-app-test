@@ -79,6 +79,7 @@
                                             <th>Account</th>
                                             <th>Notes</th>
                                             <th class="text-right">Amount</th>
+                                            <th>Allocation</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -101,17 +102,20 @@
                                                     <input type="hidden" name="reference_id[]" value="{{ $payment_reference_detail->reference_id }}">
                                                     <input type="hidden" name="reference_type[]" value="{{ $payment_reference_detail->reference_type }}">
                                                 </td>
+                                                <td>
+                                                    {{$payment_reference_detail->allocation->name}}
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td></td>
-                                            <td></td>
+                                            <td colspan="2" class="text-right">Total</td>
                                             <td class="text-right">
                                                 {{ number_format_price($payment_reference->total) }}
                                                 <input readonly type="hidden" id="total" name="total" class="form-control text-right" value="{{ number_format_price($payment_reference->total) }}" />
                                             </td>
+                                            <td></td>
                                         </tr>
                                     </tfoot>
                                 </table>
