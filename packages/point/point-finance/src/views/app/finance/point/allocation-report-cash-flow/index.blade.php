@@ -10,7 +10,7 @@
 
         <div class="panel panel-default">
             <div class="panel-body">
-                <form action="{{ url('finance/point/allocation-report-cash-flow') }}" method="get" class="form-horizontal">
+                <form action="{{ url('finance/point/allocation-report') }}" method="get" class="form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-6">
                             <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">

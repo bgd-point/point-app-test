@@ -68,7 +68,6 @@
                                         <th>DATE</th>
                                         <th>FORM NUMBER</th>
                                         <th>NOTES</th>
-                                        <th>ALLOCATION</th>
                                         <th class="text-right">TOTAL</th>
                                     </tr>
                                     </thead>
@@ -95,13 +94,11 @@
                                                        value="{{$available_invoice[$i]}}"/>
                                                 <input type="hidden" name="invoice_reference_id[]" value="{{$invoice->id}}">
                                                 <input type="hidden" name="invoice_reference_type[]" value="{{get_class($invoice)}}">
-                                                <input type="hidden" name="invoice_allocation_id[]" value="{{$invoice_allocation_id[$i]}}">
                                             </td>
                                             <td>
                                                 <a href="{{ url('sales/point/indirect/invoice/'.$invoice->id) }}">{{ $invoice->formulir->form_number}}</a>
                                             </td>
                                             <td>{{$invoice_notes[$i]}}</td>
-                                            <td>{{ \Point\Framework\Models\Master\Allocation::find($invoice_allocation_id[$i])->name }}</td>
                                             <td class="text-right">{{ number_format_quantity($amount_invoice[$i]) }}</td>
                                         </tr>
                                     @endforeach
@@ -126,13 +123,11 @@
                                                        value="{{$available_cutoff[$i]}}"/>
                                                 <input type="hidden" name="cutoff_reference_id[]" value="{{$cut_off->id}}">
                                                 <input type="hidden" name="cutoff_reference_type[]" value="{{get_class($cut_off)}}">
-                                                <input type="hidden" name="cutoff_allocation_id[]" value="{{$cutoff_allocation_id[$i]}}">
                                             </td>
                                             <td>
                                                 <a href="{{ url('accounting/point/cut-off/receivable/'.$cut_off->id)  }}">{{ $cut_off->cutoffReceivable->formulir->form_number}}</a>
                                             </td>
                                             <td>{{ $cut_off->notes }}</td>
-                                            <td>{{ \Point\Framework\Models\Master\Allocation::find($cutoff_allocation_id[$i])->name }}</td>
                                             <td class="text-right">{{ number_format_quantity($amount_cutoff[$i]) }}</td>
                                         </tr>
                                     @endforeach
@@ -159,13 +154,11 @@
                                                        value="{{$available_downpayment[$i]}}"/>
                                                 <input type="hidden" name="downpayment_reference_id[]" value="{{$downpayment->id}}">
                                                 <input type="hidden" name="downpayment_reference_type[]" value="{{get_class($downpayment)}}">
-                                                <input type="hidden" name="downpayment_allocation_id[]" value="{{$downpayment_allocation_id[$i]}}">
                                             </td>
                                             <td>
                                                 <a href="{{ url('sales/point/indirect/downpayment/'.$downpayment->id) }}">{{ $downpayment->formulir->form_number}}</a>
                                             </td>
                                             <td>{{ $downpayment->formulir->notes }}</td>
-                                            <td>{{ \Point\Framework\Models\Master\Allocation::find($downpayment_allocation_id[$i])->name }}</td>
                                             <td class="text-right">{{ number_format_quantity($amount_downpayment[$i]*-1) }}</td>
                                         </tr>
                                         <?php $i++;?>
@@ -192,18 +185,16 @@
                                                        value="{{$available_retur[$i]}}"/>
                                                 <input type="hidden" name="retur_reference_id[]" value="{{$retur->id}}">
                                                 <input type="hidden" name="retur_reference_type[]" value="{{get_class($retur)}}">
-                                                <input type="hidden" name="retur_allocation_id[]" value="{{$retur_allocation_id[$i]}}">
                                             </td>
                                             <td>
                                                 <a href="{{ url('sales/point/indirect/retur/'.$retur->id) }}">{{ $retur->formulir->form_number}}</a>
                                             </td>
                                             <td>{{ $retur->formulir->notes }}</td>
-                                            <td>{{ \Point\Framework\Models\Master\Allocation::find($retur_allocation_id[$i])->name }}</td>
                                             <td class="text-right">{{ number_format_quantity($amount_retur[$i]*-1) }}</td>
                                         </tr>
                                     @endforeach
                                     <tr>
-                                        <td colspan="5"><h4><b>Others</b></h4></td>
+                                        <td colspan="4"><h4><b>Others</b></h4></td>
                                     </tr>
                                     @for($i=0;$i < count($coa_id); $i++)
                                         <?php $total_payment += $total[$i];?>
@@ -215,7 +206,7 @@
                                                 <input type="hidden" name="allocation_id[]" value="{{$allocation_id[$i]}}"/>
                                                 <input type="hidden" name="coa_amount[]" value="{{$total[$i]}}"/>
                                             </td>
-                                            <td>{{ \Point\Framework\Models\Master\Allocation::find($allocation_id[$i])->name }}</td>
+
                                             <td>{{$other_notes[$i]}}</td>
                                             <td class="text-right">{{number_format_quantity($total[$i])}}</td>
                                         </tr>
@@ -223,7 +214,7 @@
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <td colspan="4" class="text-right"><h4><b>TOTAL</b></h4></td>
+                                        <td colspan="3" class="text-right"><h4><b>TOTAL</b></h4></td>
                                         <td class="text-right">{{number_format_quantity($total_payment)}}</td>
                                     </tr>
                                     </tfoot>

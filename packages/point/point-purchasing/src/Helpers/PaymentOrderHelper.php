@@ -62,8 +62,7 @@ class PaymentOrderHelper
         $references_notes,
         $references_detail_id,
         $references_detail_type,
-        $references_amount_edit = [],
-        $references_allocation_id = []
+        $references_amount_edit = []
     ) {
         $payment_order = new PaymentOrder;
         $payment_order->formulir_id = $formulir->id;
@@ -87,7 +86,6 @@ class PaymentOrderHelper
             $payment_order_detail->detail_notes = $references_notes[$i];
             $payment_order_detail->amount = $references_amount[$i];
             $payment_order_detail->coa_id = $references_account[$i];
-            $payment_order_detail->allocation_id = $references_allocation_id[$i];
             $payment_order_detail->form_reference_id = $reference->formulir_id;
             $payment_order_detail->reference_id = $references_detail_id[$i];
             $payment_order_detail->reference_type = $references_detail_type[$i];

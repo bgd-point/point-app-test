@@ -57,21 +57,4 @@ class AllocationHelper
         
         return $list_allocation_report;
     }
-    public static function getIdByName($name)
-    {
-        if (!$name) {
-            return 1; // Default to 'Without Allocation' or similar if 1 is the convention
-        }
-
-        $allocation = \Point\Framework\Models\Master\Allocation::where('name', $name)->first();
-        if (!$allocation) {
-            $allocation = new \Point\Framework\Models\Master\Allocation;
-            $allocation->name = $name;
-            $allocation->created_by = \Auth::user() ? \Auth::user()->id : 1;
-            $allocation->updated_by = \Auth::user() ? \Auth::user()->id : 1;
-            $allocation->save();
-        }
-
-        return $allocation->id;
-    }
 }

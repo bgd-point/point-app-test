@@ -93,7 +93,6 @@
                                                     <th>ITEM</th>
                                                     <th>AVAILABLE INVOICE</th>
                                                     <th>INVOICE</th>
-                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -106,14 +105,8 @@
                                                             get_class($payment_order),
                                                             $payment_order->id);
                                                     $refer_to_amount = 0;
-                                                    $allocation_id = 1;
                                                     if ($refer_to) {
                                                         $refer_to_amount = $refer_to->amount;
-                                                        $allocation_id = $refer_to->allocation_id;
-                                                    } else {
-                                                        if ($invoice->items->first()) {
-                                                            $allocation_id = $invoice->items->first()->allocation_id;
-                                                        }
                                                     }
                                                     ?>
                                                     <tr>
@@ -153,13 +146,6 @@
                                                             <input type="hidden" name="invoice_amount_edit[]"
                                                                    value="{{$invoice_remaining + $refer_to_amount}}"/>
                                                         </td>
-                                                        <td>
-                                                            <select name="invoice_allocation_id[]" class="selectize" style="width: 150px;" data-placeholder="Choose one..">
-                                                                @foreach($list_allocation as $allocation)
-                                                                    <option value="{{$allocation->id}}" @if($allocation->id == $allocation_id) selected @endif>{{$allocation->name}}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </td>
                                                     </tr>
                                                 @endforeach
                                                 </tbody>
@@ -179,7 +165,6 @@
                                                     <th>NOTES</th>
                                                     <th>AVAILABLE AMOUNT</th>
                                                     <th>CUTOFF</th>
-                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -229,13 +214,6 @@
                                                             <input type="hidden" name="cutoff_amount_edit[]"
                                                                    value="{{$cut_off_payable_remaining + $refer_to_amount}}"/>
                                                         </td>
-                                                        <td>
-                                                            <select name="cutoff_allocation_id[]" class="selectize" style="width: 150px;" data-placeholder="Choose one..">
-                                                                @foreach($list_allocation as $allocation)
-                                                                    <option value="{{$allocation->id}}" @if($allocation->id == ($refer_to ? $refer_to->allocation_id : 1)) selected @endif>{{$allocation->name}}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </td>
                                                     </tr>
                                                 @endforeach
                                                 </tbody>
@@ -255,7 +233,6 @@
                                                     <th>NOTES</th>
                                                     <th>AVAILABLE DOWNPAYMENT</th>
                                                     <th>DOWNPAYMENT</th>
-                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -302,13 +279,6 @@
                                                             <input type="hidden" name="downpayment_amount_edit[]"
                                                                    value="{{$downpayment_remaining + $refer_to_amount}}"/>
                                                         </td>
-                                                        <td>
-                                                            <select name="downpayment_allocation_id[]" class="selectize" style="width: 150px;" data-placeholder="Choose one..">
-                                                                @foreach($list_allocation as $allocation)
-                                                                    <option value="{{$allocation->id}}" @if($allocation->id == ($refer_to ? $refer_to->allocation_id : 1)) selected @endif>{{$allocation->name}}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </td>
                                                     </tr>
                                                 @endforeach
                                                 </tbody>
@@ -329,7 +299,6 @@
                                                     <th>NOTES</th>
                                                     <th>AVAILABLE CASH ADVANCE</th>
                                                     <th>CASH ADVANCE</th>
-                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -378,13 +347,6 @@
                                                             <input type="hidden" name="cash_advance_amount_edit[]"
                                                                    value="{{$cash_advance_remaining + $refer_to_amount}}"/>
                                                         </td>
-                                                        <td>
-                                                            <select name="cash_advance_allocation_id[]" class="selectize" style="width: 150px;" data-placeholder="Choose one..">
-                                                                @foreach($list_allocation as $allocation)
-                                                                    <option value="{{$allocation->id}}" @if($allocation->id == ($refer_to ? $refer_to->allocation_id : 1)) selected @endif>{{$allocation->name}}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </td>
                                                     </tr>
                                                 @endforeach
                                                 </tbody>
@@ -405,7 +367,6 @@
                                                     <th>ITEM</th>
                                                     <th>AVAILABLE RETUR</th>
                                                     <th>RETUR</th>
-                                                    <th>ALLOCATION</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -457,13 +418,6 @@
                                                                    value="{{$retur->total}}"/>
                                                             <input type="hidden" name="retur_amount_edit[]"
                                                                    value="{{$retur_remaining + $refer_to_amount}}"/>
-                                                        </td>
-                                                        <td>
-                                                            <select name="retur_allocation_id[]" class="selectize" style="width: 150px;" data-placeholder="Choose one..">
-                                                                @foreach($list_allocation as $allocation)
-                                                                    <option value="{{$allocation->id}}" @if($allocation->id == ($refer_to ? $refer_to->allocation_id : ($retur->items->first() ? $retur->items->first()->allocation_id : 1))) selected @endif>{{$allocation->name}}</option>
-                                                                @endforeach
-                                                            </select>
                                                         </td>
                                                     </tr>
                                                 @endforeach
