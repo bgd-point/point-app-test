@@ -23,6 +23,11 @@ class PaymentCollectionDetail extends Model
         return $this->belongsTo('\Point\Framework\Models\Formulir', 'form_reference_id');
     }
 
+    public function allocation()
+    {
+        return $this->belongsTo('\Point\Framework\Models\Master\Allocation', 'allocation_id');
+    }
+
     public function scopeJoinPaymentCollection($q)
     {
         $q->join('point_sales_service_payment_collection', 'point_sales_service_payment_collection.id', '=', 'point_sales_service_payment_collection_id');

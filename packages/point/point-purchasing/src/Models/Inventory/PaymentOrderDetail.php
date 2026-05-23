@@ -27,6 +27,11 @@ class PaymentOrderDetail extends Model
         return $this->belongsTo('\Point\Framework\Models\Formulir', 'form_reference_id');
     }
 
+    public function allocation()
+    {
+        return $this->belongsTo('\Point\Framework\Models\Master\Allocation', 'allocation_id');
+    }
+
     public function scopeJoinFormulir($q)
     {
         $q->join('formulir', 'formulir.id', '=', 'point_purchasing_payment_order.formulir_id');

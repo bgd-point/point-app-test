@@ -439,6 +439,7 @@ class PaymentHelper
             $journal->form_reference_id = $payment_detail->form_reference_id;
             $journal->subledger_id = $payment_detail->subledger_id;
             $journal->subledger_type = $payment_detail->subledger_type;
+            $journal->allocation_id = $payment_detail->allocation_id;
             $journal->save([
                 'reference_id' => $payment_detail->reference_id,
                 'reference_type' => $payment_detail->reference_type

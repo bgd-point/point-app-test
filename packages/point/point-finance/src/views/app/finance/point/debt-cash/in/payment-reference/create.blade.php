@@ -82,6 +82,7 @@
                                         <tr>
                                             <th>Account</th>
                                             <th>Notes</th>
+                                            <th>Allocation</th>
                                             <th class="text-right">Amount</th>
                                         </tr>
                                     </thead>
@@ -95,6 +96,9 @@
                                                 <td>
                                                     {{$payment_reference_detail->notes_detail}}
                                                     <input type="hidden" name="notes_detail[]" value="{{ $payment_reference_detail->notes_detail }}">
+                                                </td>
+                                                <td>
+                                                    {{$payment_reference_detail->allocation->name}}
                                                 </td>
                                                 <td class="text-right">
                                                     {{number_format_quantity($payment_reference_detail->amount)}}
@@ -110,6 +114,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
+                                            <td></td>
                                             <td></td>
                                             <td></td>
                                             <td class="text-right">

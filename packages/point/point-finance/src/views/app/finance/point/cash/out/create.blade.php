@@ -79,6 +79,7 @@
                                             <th>Account</th>
                                             <th>Notes</th>
                                             <th class="text-right">Amount</th>
+                                            <th>Allocation</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -101,6 +102,9 @@
                                                     <input type="hidden" name="reference_id[]" value="{{ $payment_reference_detail->reference_id }}">
                                                     <input type="hidden" name="reference_type[]" value="{{ $payment_reference_detail->reference_type }}">
                                                 </td>
+                                                <td>
+                                                    {{$payment_reference_detail->allocation->name}}
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -112,6 +116,7 @@
                                                     {{ number_format_accounting($payment_reference->cashAdvance->remaining_amount * -1) }}
                                                     <input readonly type="hidden" id="cash_advance_id" name="cash_advance_id" class="form-control text-right" value="{{ number_format_price($payment_reference->cash_advance_id) }}" />
                                                 </td>
+                                                <td></td>
                                             </tr>
                                         @endif
                                         <tr>
@@ -120,6 +125,7 @@
                                                 {{ number_format_price($payment_reference->total) }}
                                                 <input readonly type="hidden" id="total" name="total" class="form-control text-right" value="{{ number_format_price($payment_reference->total) }}" />
                                             </td>
+                                            <td></td>
                                         </tr>
                                     </tfoot>
                                 </table>

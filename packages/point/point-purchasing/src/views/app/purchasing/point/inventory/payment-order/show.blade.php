@@ -92,48 +92,48 @@
                                                 <th>DATE</th>
                                                 <th>FORM NUMBER</th>
                                                 <th>NOTES</th>
+                                                <th>ALLOCATION</th>
                                                 <th class="text-right">TOTAL</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach(\Point\Framework\Helpers\ReferHelper::getRefers(get_class($payment_order), $payment_order->id) as $refer)
+                                            @foreach($payment_order->details as $payment_order_detail)
                                                 <?php
-                                                $payment_order_detail = \Point\PointPurchasing\Models\Inventory\PaymentOrderDetail::find($refer->to_id);
-                                                $reference_type = $refer->by_type;
-                                                $reference = $reference_type::find($refer->by_id);
-                                                if (get_class($reference) == get_class(new Point\PointAccounting\Models\CutOffPayableDetail())) {
+                                                $reference_type = $payment_order_detail->reference_type;
+                                                $reference = $reference_type::find($payment_order_detail->reference_id);
+                                                if ($reference && get_class($reference) == get_class(new Point\PointAccounting\Models\CutOffPayableDetail())) {
                                                     $reference->formulir = $reference->cutoffPayable->formulir;
                                                 }
                                                 ?>
                                                 <tr>
                                                     <td>
-                                                        {{ date_format_view($reference->formulir->form_date) }}
+                                                        {{ $reference ? date_format_view($reference->formulir->form_date) : '' }}
                                                     </td>
-                                                    <td>{{ $reference->formulir->form_number }}</td>
+                                                    <td>{{ $reference ? $reference->formulir->form_number : '' }}</td>
                                                     <td>{{ $payment_order_detail->detail_notes }}</td>
+                                                    <td>{{ $payment_order_detail->allocation->name }}</td>
                                                     <td class="text-right">{{ number_format_quantity($payment_order_detail->amount) }}</td>
                                                 </tr>
                                             @endforeach
 
                                             <tr>
-                                                <td colspan="4"><h4><b>Others</b></h4></td>
+                                                <td colspan="5"><h4><b>Others</b></h4></td>
                                             </tr>
                                             @foreach($payment_order->others as $payment_order_other)
 
                                                 <tr>
                                                     <td colspan="2">
-                                                        {{$payment_order_other->coa->account}} <br/>
-                                                        <b>ALLOCATION :</b> {{$payment_order_other->allocation->name}}
+                                                        {{$payment_order_other->coa->account}}
                                                     </td>
-
                                                     <td>{{$payment_order_other->other_notes}}</td>
+                                                    <td>{{$payment_order_other->allocation->name}}</td>
                                                     <td class="text-right">{{number_format_quantity($payment_order_other->amount)}}</td>
                                                 </tr>
                                             @endforeach
                                             </tbody>
                                             <tfoot>
                                             <tr>
-                                                <td colspan="3" class="text-right"><h4><b>TOTAL</b></h4></td>
+                                                <td colspan="4" class="text-right"><h4><b>TOTAL</b></h4></td>
                                                 <td class="text-right">{{number_format_quantity($payment_order->total_payment)}}</td>
                                             </tr>
                                             </tfoot>

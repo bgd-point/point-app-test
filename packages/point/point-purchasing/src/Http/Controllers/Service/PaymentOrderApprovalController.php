@@ -161,7 +161,7 @@ class PaymentOrderApprovalController extends Controller
             $payment_reference_detail = new PaymentReferenceDetail;
             $payment_reference_detail->point_finance_payment_reference_id = $payment_reference->id;
             $payment_reference_detail->coa_id = $payment_order_detail->coa_id;
-            $payment_reference_detail->allocation_id = 1;
+            $payment_reference_detail->allocation_id = $payment_order_detail->allocation_id;
             $payment_reference_detail->notes_detail = $payment_order_detail->detail_notes;
             $payment_reference_detail->amount = $payment_order_detail->amount;
             $payment_reference_detail->form_reference_id = $payment_order_detail->form_reference_id;

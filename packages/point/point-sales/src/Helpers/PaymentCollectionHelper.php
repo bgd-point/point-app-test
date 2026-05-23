@@ -58,7 +58,8 @@ class PaymentCollectionHelper
         $references_notes,
         $references_detail_id,
         $references_detail_type,
-        $references_amount_edit = []
+        $references_amount_edit = [],
+        $references_allocation_id = []
     ) {
         $payment_collection = new PaymentCollection;
         $payment_collection->formulir_id = $formulir->id;
@@ -91,6 +92,7 @@ class PaymentCollectionHelper
             $payment_collection_detail->detail_notes = $references_notes[$i];
             $payment_collection_detail->amount = $references_amount[$i];
             $payment_collection_detail->coa_id = $references_account[$i];
+            $payment_collection_detail->allocation_id = $references_allocation_id[$i];
             $payment_collection_detail->form_reference_id = $reference->formulir_id;
             $payment_collection_detail->reference_id = $references_detail_id[$i];
             $payment_collection_detail->reference_type = $references_detail_type[$i];
