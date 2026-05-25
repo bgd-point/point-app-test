@@ -52,7 +52,7 @@ class MigrateTenant extends Command
 
             $this->info('Creating migration table in tenant database "'.$databaseName.'"...');
 
-            $this->call('migrate');
+            $this->call('migrate', ['--force' => true]);
         }
     }
 
