@@ -41,8 +41,13 @@ class RecalculateAll extends Command
     {
         $this->comment('handle inventory all');
 
-        $items = Item::where('id',90)->get();
-        // $items = Item::all();
+        Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+            ->where('inventory.quantity', 0)
+            ->where('formulir.formulirable_type', '!=', 'Point\PointInventory\Models\StockOpname\StockOpname')
+            ->delete();
+
+        // $items = Item::where('id',90)->get();
+        $items = Item::all();
         $inventories = Inventory::all();
         $warehouses = Warehouse::all();
         
