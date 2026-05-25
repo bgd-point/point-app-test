@@ -12,24 +12,30 @@ class AddAllocationIdToPaymentDetails2 extends Migration
      */
     public function up()
     {
-        Schema::table('point_purchasing_payment_order_detail', function (Blueprint $table) {
-            $table->integer('allocation_id')->unsigned()->default(1);
-            $table->foreign('allocation_id', 'pppod_allocation_id_foreign')->references('id')->on('allocation')->onUpdate('restrict')->onDelete('restrict');
-        });
-        Schema::table('point_purchasing_service_payment_order_detail', function (Blueprint $table) {
-            $table->integer('allocation_id')->unsigned()->default(1);
-            $table->foreign('allocation_id', 'ppspod_allocation_id_foreign')->references('id')->on('allocation')->onUpdate('restrict')->onDelete('restrict');
-        });
-
-        Schema::table('point_sales_payment_collection_detail', function (Blueprint $table) {
-            $table->integer('allocation_id')->unsigned()->default(1);
-            $table->foreign('allocation_id', 'pspcd_allocation_id_foreign')->references('id')->on('allocation')->onUpdate('restrict')->onDelete('restrict');
-        });
-
-        Schema::table('point_sales_service_payment_collection_detail', function (Blueprint $table) {
-            $table->integer('allocation_id')->unsigned()->default(1);
-            $table->foreign('allocation_id', 'psspcd_allocation_id_foreign')->references('id')->on('allocation')->onUpdate('restrict')->onDelete('restrict');
-        });
+        if (!Schema::hasColumn('point_purchasing_payment_order_detail', 'allocation_id')) {
+            Schema::table('point_purchasing_payment_order_detail', function (Blueprint $table) {
+                $table->integer('allocation_id')->unsigned()->default(1)->after('coa_id');
+                $table->foreign('allocation_id', 'pppod_allocation_id_foreign')->references('id')->on('allocation')->onUpdate('restrict')->onDelete('restrict');
+            });
+        }
+        if (!Schema::hasColumn('point_purchasing_service_payment_order_detail', 'allocation_id')) {
+            Schema::table('point_purchasing_service_payment_order_detail', function (Blueprint $table) {
+                $table->integer('allocation_id')->unsigned()->default(1)->after('coa_id');
+                $table->foreign('allocation_id', 'ppspod_allocation_id_foreign')->references('id')->on('allocation')->onUpdate('restrict')->onDelete('restrict');
+            });
+        }
+        if (!Schema::hasColumn('point_sales_payment_collection_detail', 'allocation_id')) {
+            Schema::table('point_sales_payment_collection_detail', function (Blueprint $table) {
+                $table->integer('allocation_id')->unsigned()->default(1)->after('coa_id');
+                $table->foreign('allocation_id', 'pspcd_allocation_id_foreign')->references('id')->on('allocation')->onUpdate('restrict')->onDelete('restrict');
+            });
+        }
+        if (!Schema::hasColumn('point_sales_service_payment_collection_detail', 'allocation_id')) {
+            Schema::table('point_sales_service_payment_collection_detail', function (Blueprint $table) {
+                $table->integer('allocation_id')->unsigned()->default(1)->after('coa_id');
+                $table->foreign('allocation_id', 'psspcd_allocation_id_foreign')->references('id')->on('allocation')->onUpdate('restrict')->onDelete('restrict');
+            });
+        }
     }
 
     /**
