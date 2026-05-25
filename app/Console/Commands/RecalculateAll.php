@@ -41,7 +41,8 @@ class RecalculateAll extends Command
     {
         $this->comment('handle inventory all');
 
-        $items = Item::all();
+        $items = Item::where('id', 90)->get();
+        // $items = Item::all();
         $inventories = Inventory::all();
         $warehouses = Warehouse::all();
         
