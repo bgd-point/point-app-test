@@ -68,10 +68,10 @@ class RecalculateAll extends Command
                     }
                 }
                 if ($l_inventory->quantity > 0) {
-                    \Log::info($l_inventory->formulir->formulirable_type);
+                    $this->comment($l_inventory->formulir->formulirable_type);
                     if ($l_inventory->formulir->formulirable_type === 'Point\PointInventory\Models\StockOpname\StockOpname' 
                         || $l_inventory->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
-                        \Log::info('Stock Correction / Stock Opname');
+                        $this->comment('Stock Correction / Stock Opname');
                         if ($prevTotalQty == 0) {
                             $l_inventory->price = 0;
                         } else {
