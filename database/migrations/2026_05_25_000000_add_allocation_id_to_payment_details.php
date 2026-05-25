@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddAllocationIdToPaymentDetails2 extends Migration
+class AddAllocationIdToPaymentDetails extends Migration
 {
     /**
      * Run the migrations.
