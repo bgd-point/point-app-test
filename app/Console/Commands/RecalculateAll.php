@@ -41,7 +41,8 @@ class RecalculateAll extends Command
     {
         $this->comment('handle inventory all');
 
-        $items = Item::all();
+        $items = Item::where('id',90)->get();
+        // $items = Item::all();
         $inventories = Inventory::all();
         $warehouses = Warehouse::all();
         
@@ -67,8 +68,10 @@ class RecalculateAll extends Command
                     }
                 }
                 if ($l_inventory->quantity > 0) {
+                    \Log::info($l_inventory->formulir->formulirable_type);
                     if ($l_inventory->formulir->formulirable_type === StockCorrection::class 
                         || $l_inventory->formulir->formulirable_type === StockOpanme::class) {
+                        \Log::info('Stock Correction / Stock Opname');
                         if ($prevTotalQty == 0) {
                             $l_inventory->price = 0;
                         } else {
