@@ -75,7 +75,7 @@ class RecalculateAll extends Command
             $k = 0;
             foreach ($warehouses as $warehouse) {
                 $k++;
-                $list_inventory = Inventory::where('item_id', '=', $inventory->item_id)
+                $list_inventory = Inventory::where('item_id', '=', $item->id)
                     ->where('warehouse_id', $warehouse->id)
                     ->orderBy('form_date', 'asc')
                     ->orderBy('formulir_id', 'asc')
