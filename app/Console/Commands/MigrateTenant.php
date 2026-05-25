@@ -49,12 +49,11 @@ class MigrateTenant extends Command
             \Config::set('database.connections.'.$connectionName.'.database', $databaseName);
             \DB::reconnect($connectionName);
             \DB::setDefaultConnection($connectionName);
-
-            $this->info('Creating migration table in tenant database "'.$databaseName.'"...');
-
+            
             \DB::table('migrations')->where('migration', '2026_04_28_000000_add_allocation_id_to_payment_details')->delete();
             \DB::table('migrations')->where('migration', '2026_04_29_000000_add_allocation_id_to_payment_details2')->delete();
-
+            
+            $this->info('Creating migration table in tenant database "'.$databaseName.'"...');
             $this->call('migrate', ['--force' => true]);
         }
     }
