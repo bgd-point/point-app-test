@@ -67,7 +67,8 @@ class RecalculateAll extends Command
                     }
                 }
                 if ($l_inventory->quantity > 0) {
-                    if ($l_inventory->formulir->formulirable_type === StockCorrection::class || $l_inventory->formulir->formulirable_type === StockOpanme::class) {
+                    if ($l_inventory->formulir->formulirable_type === StockCorrection::class 
+                        || $l_inventory->formulir->formulirable_type === StockOpanme::class) {
                         if ($prevTotalQty == 0) {
                             $l_inventory->price = 0;
                         } else {
