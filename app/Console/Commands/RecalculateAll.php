@@ -65,7 +65,16 @@ class RecalculateAll extends Command
                     } else {
                         $l_inventory->price = $prevTotalVal / $prevTotalQty;
                     }
-                } 
+                }
+                if ($l_inventory->quantity > 0) {
+                    if ($l_inventory->formulir->formulirable_type === StockCorrection::class || $l_inventory->formulir->formulirable_type === StockOpanme::class) {
+                        if ($prevTotalQty == 0) {
+                            $l_inventory->price = 0;
+                        } else {
+                            $l_inventory->price = $prevTotalVal / $prevTotalQty;
+                        }
+                    }
+                }
                 $l_inventory->total_quantity_all = $prevTotalQty + $l_inventory->quantity;
                 $l_inventory->total_value_all = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
                 if (!$l_inventory->total_quantity_all || $l_inventory->total_quantity_all == 0) {
