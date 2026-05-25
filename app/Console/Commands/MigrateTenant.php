@@ -52,6 +52,9 @@ class MigrateTenant extends Command
 
             $this->info('Creating migration table in tenant database "'.$databaseName.'"...');
 
+            \DB::table('migrations')->where('migration', '2026_04_28_000000_add_allocation_id_to_payment_details')->delete();
+            \DB::table('migrations')->where('migration', '2026_04_29_000000_add_allocation_id_to_payment_details2')->delete();
+
             $this->call('migrate', ['--force' => true]);
         }
     }
