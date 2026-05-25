@@ -24,10 +24,10 @@ class AddAllocationIdToPaymentDetails extends Migration
             $table->integer('allocation_id')->unsigned()->default(1)->after('coa_id');
             $table->foreign('allocation_id', 'pspcd_allocation_id_foreign')->references('id')->on('allocation')->onUpdate('restrict')->onDelete('restrict');
         });
-        // Schema::table('point_sales_service_payment_collection_detail', function (Blueprint $table) {
-        //     $table->integer('allocation_id')->unsigned()->default(1)->after('coa_id');
-        //     $table->foreign('allocation_id', 'psspcd_allocation_id_foreign')->references('id')->on('allocation')->onUpdate('restrict')->onDelete('restrict');
-        // });
+        Schema::table('point_sales_service_payment_collection_detail', function (Blueprint $table) {
+            $table->integer('allocation_id')->unsigned()->default(1)->after('coa_id');
+            $table->foreign('allocation_id', 'psspcd_allocation_id_foreign')->references('id')->on('allocation')->onUpdate('restrict')->onDelete('restrict');
+        });
     }
 
     /**
