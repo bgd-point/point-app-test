@@ -165,7 +165,7 @@ class InvoiceHelper
             $price = $invoice_detail->price;
             if ($total_per_row == 0 || $invoice_detail->quantity == 0) {
                 $inventory->price = 0;
-            } {
+            } else {
                 \Log::info($inventory->item_id . ' - ' . $total_per_row . ' - ' . $invoice_detail->quantity . ' - ' . $invoice_detail->converter);
                 $inventory->price = $total_per_row / $invoice_detail->quantity / $invoice_detail->converter;
             }
