@@ -117,7 +117,7 @@ class PaymentCollectionController extends Controller
     {
         $view = view('point-sales::app.sales.point.sales.payment-collection.create-step-2');
         $view->person = Person::find($person_id);
-        $view->list_invoice = Invoice::joinFormulir()->joinPerson()->notArchived()->availableToCreatePaymentCollection($person_id)->selectOriginal()->orderBy('formulir.id', 'asc')->get();
+        $view->list_invoice = Invoice::joinFormulir()->joinPerson()->notArchived()->availableToCreatePaymentCollection($person_id)->selectOriginal()->orderBy('formulir.id', 'asc')->limit(30)->get();
         $view->list_memo_journal = MemoJournal::joinFormulir()->notArchived()->open()
             ->approvalApproved()
             ->selectOriginal()
