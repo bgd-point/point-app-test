@@ -163,7 +163,11 @@ class InvoiceHelper
             $inventory->quantity = $invoice_detail->quantity * $invoice_detail->converter;
 
             $price = $invoice_detail->price;
-            $inventory->price = $total_per_row / $invoice_detail->quantity / $invoice_detail->converter;
+            if ($total_per_row == 0 || $invoice_detail->quantity == 0) {
+                $inventory->price = 0;
+            } {
+                $inventory->price = $total_per_row / $invoice_detail->quantity / $invoice_detail->converter;
+            }
             $inventory->form_date = date('Y-m-d H:i:s');
             $inventory->warehouse_id = $warehouse_id;
 
