@@ -171,7 +171,7 @@
                                                 </tbody>
                                             </table>
                                             <div class="text-center">
-                                                {!! $list_invoice->links() !!}
+                                                {!! $list_invoice->render() !!}
                                             </div>
                                         </div>
                                     </div>
