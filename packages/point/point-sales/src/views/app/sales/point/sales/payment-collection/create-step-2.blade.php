@@ -108,10 +108,6 @@
 <?php $counter = 0;?>
                                                 @foreach($list_invoice as $invoice)
                                                     <?php
-$counter++;
-$page = app('request')->input('page') ?? 1;
-if($counter < ($page - 1) * 50) {continue;}
-if($counter >= $page * 50) { break; }
                                                     $invoice_remaining = \Point\Framework\Helpers\ReferHelper::remaining(get_class($invoice), $invoice->id, $invoice->total);
                                                     if (! $invoice_remaining > 0) {
                                                         continue;
@@ -174,7 +170,9 @@ if($counter >= $page * 50) { break; }
                                                 @endforeach
                                                 </tbody>
                                             </table>
-                                            
+                                            <div class="text-center">
+                                                {!! $list_invoice->links() !!}
+                                            </div>
                                         </div>
                                     </div>
 
