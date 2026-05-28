@@ -175,7 +175,7 @@ if($counter >= $page * 50) { break; }
                                                 </tbody>
                                             </table>
                                             <div class="text-center">
-                                                {!! $list_invoice->links() !!}
+                                                <!-- {!! $list_invoice->links() !!} -->
                                             </div>
                                         </div>
                                     </div>
