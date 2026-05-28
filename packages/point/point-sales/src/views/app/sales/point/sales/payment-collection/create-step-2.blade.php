@@ -170,6 +170,9 @@
                                                 @endforeach
                                                 </tbody>
                                             </table>
+                                            <div class="text-center">
+                                                {!! $list_invoice->links() !!}
+                                            </div>
                                         </div>
                                     </div>
 
