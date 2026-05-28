@@ -174,9 +174,7 @@ if($counter >= $page * 50) { break; }
                                                 @endforeach
                                                 </tbody>
                                             </table>
-                                            <div class="text-center">
-                                                <!-- {!! $list_invoice->links() !!} -->
-                                            </div>
+                                            
                                         </div>
                                     </div>
 
