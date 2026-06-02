@@ -41,8 +41,8 @@ class RecalculateAll extends Command
     {
         $this->comment('handle inventory all');
 
-        $items = Item::where('id',102)->get();
-        // $items = Item::all();
+        // $items = Item::where('id',102)->get();
+        $items = Item::all();
         
         $i = 0;
         foreach ($items as $item) {
