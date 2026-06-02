@@ -569,7 +569,7 @@ class FormulirHelper
 
         $isExist = Formulir::where('form_date', '=', $form_date)
             // created_at between now and 1 minute ago, to prevent duplicate form number when user click submit button more than once
-            ->where('created_at', '>=', \Carbon::now()->subMinute())
+            // ->where('created_at', '>=', \Carbon::now()->subMinute())
             ->where('created_by', '=', $request['user']->id)
             ->get()
             ->count();
