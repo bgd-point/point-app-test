@@ -393,16 +393,19 @@ class InventoryHelper
             ->first();
 
         if ($last) {
+            // JIKA PER WAREHOUSE ADA, MAKA PERHITUNGAN PER WAREHOUSE
             $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
             $this->inventory->total_quantity_all = $lastVal->total_quantity_all + $this->inventory->quantity;
             $this->inventory->total_value = $lastVal->total_value + ($this->inventory->quantity * $this->inventory->price);
             $this->inventory->total_value_all = $lastVal->total_value_all + ($this->inventory->quantity * $this->inventory->price);
         } else if ($lastVal) {
+            // JIKA PER WAREHOUSE TIDAK ADA, MAKA PERHITUNGAN PER ALL WAREHOUSE
             $this->inventory->total_quantity = $this->inventory->quantity;
             $this->inventory->total_quantity_all = $lastVal->total_quantity_all + $this->inventory->quantity;
             $this->inventory->total_value = $lastVal->total_value + ($this->inventory->quantity * $this->inventory->price);
             $this->inventory->total_value_all = $lastVal->total_value_all + ($this->inventory->quantity * $this->inventory->price);
         } else {
+            // JIKA PER WAREHOUSE DAN PER ITEM TIDAK ADA, MAKA PERHITUNGAN PER ITEM
             $this->inventory->total_quantity = $this->inventory->quantity;
             $this->inventory->total_value = $this->inventory->quantity * $this->inventory->price;
             $this->inventory->total_quantity_all = $this->inventory->quantity;
@@ -415,6 +418,9 @@ class InventoryHelper
         } else {
             $this->inventory->cogs = $this->inventory->total_value_all / $this->inventory->total_quantity_all;
         }
+
+        // FIX REMAINING VALUE
+        $this->inventory->total_value = $this->inventory->total_quantity * $this->inventory->cogs;
     }
 
     private function updateCogsOut()
