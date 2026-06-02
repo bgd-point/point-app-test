@@ -96,8 +96,33 @@ class RecalculateAllVal extends Command
                 $prevTotalVal = $l_inventory->total_value_all;
             }
 
+
+            $k = 0;
+            foreach ($warehouses as $warehouse) {
+                $k++;
+                $list_inventory = Inventory::where('item_id', '=', $item->id)
+                    ->where('warehouse_id', $warehouse->id)
+                    ->orderBy('form_date', 'asc')
+                    ->orderBy('formulir_id', 'asc')
+                    ->get();
+
+                $prevTotalQty = 0;
+                $prevTotalVal = 0;
+
+                $j = 0;
+                foreach($list_inventory as $index => $l_inventory) {
+                    $j++;
+                    $this->comment('I' . count($inventories) . ' = ' . $i . ' | W' . count($warehouses) . ' = ' . $k . ' | J' . count($list_inventory) . ' = ' . $j);
+                    $l_inventory->total_quantity = $prevTotalQty + $l_inventory->quantity;
+                    $l_inventory->total_value = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
+                    $l_inventory->save();
+
+                    $prevTotalQty = $l_inventory->total_quantity;
+                    $prevTotalVal = $l_inventory->total_value;
+                }
+            }
+
             \DB::commit();
         }
-        
     }
 }
