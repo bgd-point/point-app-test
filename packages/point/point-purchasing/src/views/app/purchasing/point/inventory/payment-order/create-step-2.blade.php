@@ -263,7 +263,7 @@
                                                             <input type="text"
                                                                    id="total-downpayment-{{$downpayment->formulir_id}}"
                                                                    name="amount_downpayment[]"
-                                                                   class="form-control format-price row-total"
+                                                                   class="form-control format-price row-amount"
                                                                    onkeyup="updateDownpayment()"
                                                                    value="{{$downpayment_remaining}}"/>
                                                             <input type="hidden" name="available_downpayment[]"
