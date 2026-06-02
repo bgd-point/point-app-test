@@ -35,7 +35,7 @@ class Kernel extends ConsoleKernel
         Commands\Reopname::class,
         Commands\ReHppBBL::class,
         Commands\RecalculateAll::class,
-        Commands\RecalculateAllval::class,
+        Commands\RecalculateAllVal::class,
         Commands\RecalculateBBL::class,
         Commands\RecalculateJournalHpp::class,
         Commands\RecalculateTest::class,
