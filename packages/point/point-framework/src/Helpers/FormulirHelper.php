@@ -578,7 +578,6 @@ class FormulirHelper
                 ->where('created_by', '=', $request['user']->id)
                 ->get();
 
-            dd($form);
             throw new PointException('RESTRICTED ACCESS, FORM NUMBER ALREADY EXIST');
         }
 
