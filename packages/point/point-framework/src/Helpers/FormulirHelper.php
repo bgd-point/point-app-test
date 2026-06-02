@@ -567,6 +567,14 @@ class FormulirHelper
         $form_date = date_format_db($request['form_date'], array_key_exists('time', $request) ? $request['time'] : 'original');
         $form_number = FormulirHelper::number($formulir_number_code, $form_date);
 
+        $isExist = Formulir::where('form_date', '=', $form_date)
+            ->where('created_by', '=', $request['user']->id)
+            ->get()
+            ->count();
+        if ($isExist) {
+            throw new PointException('RESTRICTED ACCESS, FORM NUMBER ALREADY EXIST');
+        }
+
         $formulir = new Formulir;
         $formulir->form_date = $form_date;
         $formulir->form_number = $form_number['form_number'];
