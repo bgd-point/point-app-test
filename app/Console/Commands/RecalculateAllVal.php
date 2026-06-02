@@ -16,14 +16,14 @@ use Point\PointInventory\Models\TransferItem\TransferItem;
 use Point\PointSales\Models\Sales\Retur;
 use Point\Framework\Models\Master\Warehouse;
 
-class RecalculateAll extends Command
+class RecalculateAllVal extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'dev:recalculate:all';
+    protected $signature = 'dev:recalculate:allval';
 
     /**
      * The console command description.
@@ -46,8 +46,7 @@ class RecalculateAll extends Command
             ->where('formulir.formulirable_type', '!=', 'Point\PointInventory\Models\StockOpname\StockOpname')
             ->delete();
 
-        $items = Item::where('id',102)->get();
-        // $items = Item::all();
+        $items = Item::all();
         $inventories = Inventory::all();
         $warehouses = Warehouse::all();
         
@@ -95,31 +94,6 @@ class RecalculateAll extends Command
 
                 $prevTotalQty = $l_inventory->total_quantity_all;
                 $prevTotalVal = $l_inventory->total_value_all;
-            }
-
-            $k = 0;
-            foreach ($warehouses as $warehouse) {
-                $k++;
-                $list_inventory = Inventory::where('item_id', '=', $item->id)
-                    ->where('warehouse_id', $warehouse->id)
-                    ->orderBy('form_date', 'asc')
-                    ->orderBy('formulir_id', 'asc')
-                    ->get();
-
-                $prevTotalQty = 0;
-                $prevTotalVal = 0;
-
-                $j = 0;
-                foreach($list_inventory as $index => $l_inventory) {
-                    $j++;
-                    $this->comment('I' . count($inventories) . ' = ' . $i . ' | W' . count($warehouses) . ' = ' . $k . ' | J' . count($list_inventory) . ' = ' . $j);
-                    $l_inventory->total_quantity = $prevTotalQty + $l_inventory->quantity;
-                    $l_inventory->total_value = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
-                    $l_inventory->save();
-
-                    $prevTotalQty = $l_inventory->total_quantity;
-                    $prevTotalVal = $l_inventory->total_value;
-                }
             }
 
             \DB::commit();
