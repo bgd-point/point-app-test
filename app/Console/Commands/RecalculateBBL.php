@@ -52,11 +52,11 @@ class RecalculateBBL extends Command
             ->where('inventory.quantity', 0)
             ->where('formulir.formulirable_type', '!=', 'Point\PointInventory\Models\StockOpname\StockOpname')
             ->delete();
-        
 
-        $inventories = Inventory::select('item_id', 'warehouse_id')
-            ->groupBy('item_id', 'warehouse_id')
-            ->get();
+            $inventories = Inventory::select('item_id', 'warehouse_id')
+                ->where('item_id', 880)
+                ->groupBy('item_id', 'warehouse_id')
+                ->get();
 
         foreach ($inventories as $inventory) {
             \DB::beginTransaction();

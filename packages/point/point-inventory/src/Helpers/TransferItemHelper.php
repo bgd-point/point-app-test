@@ -84,6 +84,18 @@ class TransferItemHelper
             
             $inventory_helper = new InventoryHelper($inventory);
             $inventory_helper->out();
+
+            // $inventory = new Inventory;
+            // $inventory->form_date = date('Y-m-d H:i:s');
+            // $inventory->formulir_id = $transfer_item->formulir_id;
+            // // Warehouse temporary
+            // $inventory->warehouse_id = $transfer_item->warehouse_sender_id;
+            // $inventory->item_id = $transfer_item_detail->item_id;
+            // $inventory->quantity = $transfer_item_detail->qty_send;
+            // $inventory->price = $transfer_item_detail->cogs;
+            
+            // $inventory_helper = new InventoryHelper($inventory);
+            // $inventory_helper->in();
         }
     }
 
