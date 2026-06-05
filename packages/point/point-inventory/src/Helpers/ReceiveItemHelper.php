@@ -40,6 +40,22 @@ class ReceiveItemHelper
                 $inventory_helper = new InventoryHelper($inventory);
                 $inventory_helper->in();
             }
+
+            $warehouseInTransit = Warehouse::where('name', 'In Transit')->first();
+
+            if ($warehouseInTransit) {
+                $inventory = new Inventory;
+                $inventory->form_date = date('Y-m-d H:i:s');
+                $inventory->formulir_id = $receive_item->formulir_id;
+                $inventory->warehouse_id = $warehouseInTransit->id;
+                $inventory->item_id = $transfer_item_detail->item_id;
+                $inventory->price = number_format_db($price[$i]);
+                $inventory->quantity = number_format_db($quantity[$i]);
+                if ($quantity > 0) {
+                    $inventory_helper = new InventoryHelper($inventory);
+                    $inventory_helper->out();
+                }
+            }
         }
 
         FormulirHelper::close($receive_item->formulir_id);
