@@ -196,9 +196,7 @@
                                                     @if($cut_off_inventory)
                                                         <?php $hide = false;?>
                                                         @if($cut_off_account_detail)
-                                                            @if(number_format_db($amount_inventory) != number_format_db($cut_off_account_detail->debit - $cut_off_account_detail->credit))
-                                                                <?php echo number_format_db($amount_inventory); ?>
-                                                                <?php echo number_format_db($cut_off_account_detail->debit - $cut_off_account_detail->credit); ?>
+                                                            @if(number_format_db(round($amount_inventory, 2)) != number_format_db(round($cut_off_account_detail->debit - $cut_off_account_detail->credit, 2)))
                                                                 <?php echo $mark_warning; ?>
                                                             @else
                                                                 <?php echo $space; ?>
