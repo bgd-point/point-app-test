@@ -196,7 +196,7 @@
                                                     @if($cut_off_inventory)
                                                         <?php $hide = false;?>
                                                         @if($cut_off_account_detail)
-                                                            @if(number_format_db($amount_inventory) != number_format_db($cut_off_account_detail->debit - $cut_off_account_detail->credit))
+                                                            @if(number_format_db($amount_inventory) != number_format_db($cut_off_account_detail->$position))
                                                                 <?php echo $mark_warning; ?>
                                                             @else
                                                                 <?php echo $space; ?>
@@ -214,7 +214,7 @@
                                                     @elseif($cut_off_payable)
                                                         <?php $hide = false; ?>
                                                         @if($cut_off_account_detail)
-                                                            @if(number_format_db($amount_payable) != number_format_db($cut_off_account_detail->debit - $cut_off_account_detail->credit))
+                                                            @if(number_format_db($amount_payable) != number_format_db($cut_off_account_detail->credit - $cut_off_account_detail->debit))
                                                                 <?php echo $mark_warning; ?>
                                                             @else
                                                                 <?php echo $space; ?>
