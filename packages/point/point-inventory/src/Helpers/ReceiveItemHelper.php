@@ -4,6 +4,7 @@ namespace Point\PointInventory\Helpers;
 
 use Point\Framework\Helpers\JournalHelper;
 use Point\Core\Helpers\DateHelper;
+use Point\Framework\Models\Master\Warehouse;
 use Point\Framework\Models\Journal;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Helpers\FormulirHelper;

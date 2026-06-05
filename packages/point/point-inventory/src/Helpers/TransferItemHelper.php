@@ -8,6 +8,7 @@ use Point\Framework\Models\Inventory;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Models\Master\Item;
+use Point\Framework\Models\Master\Warehouse;
 use Point\PointInventory\Models\TransferItem\TransferItem;
 use Point\PointInventory\Models\TransferItem\TransferItemDetail;
 
