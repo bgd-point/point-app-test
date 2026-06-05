@@ -196,7 +196,7 @@
                                                     @if($cut_off_inventory)
                                                         <?php $hide = false;?>
                                                         @if($cut_off_account_detail)
-                                                            @if(number_format_db($amount_inventory) != number_format_db($cut_off_account_detail->$position))
+                                                            @if(number_format_db($amount_inventory) != number_format_db($cut_off_account_detail->debit - $cut_off_account_detail->credit))
                                                                 <?php echo $mark_warning; ?>
                                                             @else
                                                                 <?php echo $space; ?>
@@ -214,7 +214,7 @@
                                                     @elseif($cut_off_payable)
                                                         <?php $hide = false; ?>
                                                         @if($cut_off_account_detail)
-                                                            @if(number_format_db($amount_payable) != number_format_db($cut_off_account_detail->$position))
+                                                            @if(number_format_db($amount_payable) != number_format_db($cut_off_account_detail->debit - $cut_off_account_detail->credit))
                                                                 <?php echo $mark_warning; ?>
                                                             @else
                                                                 <?php echo $space; ?>
@@ -231,9 +231,7 @@
                                                     @elseif($cut_off_receivable)
                                                         <?php $hide = false;?>
                                                         @if($cut_off_account_detail)
-                                                            @if(number_format_db($amount_receivable) != number_format_db($cut_off_account_detail->$position))
-                                                                <?php echo number_format_db($amount_receivable); ?>
-                                                                <?php echo number_format_db($cut_off_account_detail->$position); ?>
+                                                            @if(number_format_db($amount_receivable) != number_format_db($cut_off_account_detail->debit - $cut_off_account_detail->credit))
                                                                 <?php echo $mark_warning; ?>
                                                             @else
                                                                 <?php echo $space; ?>
@@ -249,7 +247,7 @@
                                                         <a href="javascript:void(0)" class="btn btn-primary {{$hide ? 'hide' : ''}}" onclick="openDetail({{$cut_off_receivable->cut_off_receivable_id}}, {{$coa->id}}, '{{$url}}', {{$i}})"><i class="fa fa-eye"></i></a>
                                                     @elseif($cut_off_fixed_assets)
                                                         @if($cut_off_account_detail)
-                                                            @if(number_format_db($amount_fixed_assets) != number_format_db($cut_off_account_detail->$position))
+                                                            @if(number_format_db($amount_fixed_assets) != number_format_db($cut_off_account_detail->debit - $cut_off_account_detail->credit))
                                                                 <?php echo $mark_warning; ?>
                                                             @else
                                                                 <?php echo $space; ?>
