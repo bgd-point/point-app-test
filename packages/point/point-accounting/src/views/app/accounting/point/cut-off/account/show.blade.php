@@ -232,6 +232,8 @@
                                                         <?php $hide = false;?>
                                                         @if($cut_off_account_detail)
                                                             @if(number_format_db($amount_receivable) != number_format_db($cut_off_account_detail->$position))
+                                                                <?php echo number_format_db($amount_receivable); ?>
+                                                                <?php echo number_format_db($cut_off_account_detail->$position); ?>
                                                                 <?php echo $mark_warning; ?>
                                                             @else
                                                                 <?php echo $space; ?>
