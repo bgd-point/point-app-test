@@ -87,7 +87,7 @@ class CutOffHelper
                 $position = JournalHelper::position($cut_off_account_detail->coa_id);
                 $cut_off_amount = $cut_off_account_detail->$position;
                 if (trim($cut_off_amount) != trim($amount)) {
-                    dd('e: inventory = ' . $cut_off_account_detail->coa_id);
+                    dd('e: inventory = ' . $cut_off_account_detail->coa_id . ' ' . trim($cut_off_amount) . ' ' . trim($amount));
                     return false;
                 }
             }
