@@ -86,7 +86,7 @@
                                             </td>
                                             <td>
                                                 <div class="input-group">
-                                                    <input type="text" name="quantity_transfer[]" class="form-control format-quantity text-right" value="0" />
+                                                    <input type="text" name="quantity_transfer[]" class="form-control format-quantity text-right" value="{{$transfer_item_detail->qty_send }}" readonly />
                                                     <span id="unit-id2-{{$counter}}" class="input-group-addon">{{ $transfer_item_detail->unit }}</span>
                                                 </div>
                                             </td>
