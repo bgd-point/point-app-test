@@ -86,8 +86,8 @@ class CutOffHelper
                 $amount = CutOffInventory::getSubledgerAmount($cut_off_account->formulir->form_date, $cut_off_account_detail->coa_id);
                 $position = JournalHelper::position($cut_off_account_detail->coa_id);
                 $cut_off_amount = $cut_off_account_detail->$position;
-                if (trim($cut_off_amount) != trim($amount)) {
-                    dd('e: inventory = ' . $cut_off_account_detail->coa_id . ' ' . trim($cut_off_amount) . ' ' . trim($amount));
+                if (trim(round($cut_off_amount, 2)) != trim(round($amount, 2))) {
+                    dd('e: inventory = ' . $cut_off_account_detail->coa_id . ' ' . trim(round($cut_off_amount, 2)) . ' ' . trim(round($amount, 2)));
                     return false;
                 }
             }
