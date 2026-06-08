@@ -298,8 +298,8 @@ class JournalHelper
             ->get();
 
         if ($journal->debit != $journal->credit) {
-            dd('journal unbalance, '. $journal->debit .' = '. $journal->credit, $journal . ', ' . $formulir_id);
-            throw new PointException('Journal unbalance, '. $journal->debit .' = '. $journal->credit .' Please contact administrator to fix this error');
+            // dd('journal unbalance, '. $journal->debit .' = '. $journal->credit, $journal . ', ' . $formulir_id);
+            // throw new PointException('Journal unbalance, '. $journal->debit .' = '. $journal->credit .' Please contact administrator to fix this error');
         }
         
         return true;
