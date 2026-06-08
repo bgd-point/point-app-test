@@ -297,7 +297,7 @@ class JournalHelper
             ->selectRaw('coa.coa_number, coa.name, sum(debit) as debit, sum(credit) as credit, count(coa_id) as counter')
             ->get();
 
-        if ($journal->debit != $journal->credit) {
+        if (round($journal->debit, 2) != round($journal->credit, 2)) {
             dd('journal unbalance, '. $journal->debit .' = '. $journal->credit, $journal . ', ' . $formulir_id);
             throw new PointException('Journal unbalance, '. $journal->debit .' = '. $journal->credit .' Please contact administrator to fix this error');
         }
