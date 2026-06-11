@@ -1660,8 +1660,12 @@ class Recalculate5 extends Command
 
                 $prevTotalQty = 0;
                 $prevTotalVal = 0;
-                
+                $i=0;
                 foreach($list_inventory as $index => $l_inventory) {
+                    if ($i == 0) {
+                        $i++;
+                        continue;
+                    }
                     if ($l_inventory->quantity < 0) {
                         if ($prevTotalQty == 0) {
                             $l_inventory->price = 0;
