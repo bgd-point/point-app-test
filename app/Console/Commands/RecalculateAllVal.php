@@ -46,7 +46,8 @@ class RecalculateAllVal extends Command
             ->where('formulir.formulirable_type', '!=', 'Point\PointInventory\Models\StockOpname\StockOpname')
             ->delete();
 
-        $items = Item::all();
+        $items = Item::where('item_id', 102)->get();
+        // $items = Item::all();
         $inventories = Inventory::all();
         $warehouses = Warehouse::all();
         
