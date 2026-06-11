@@ -1664,6 +1664,8 @@ class Recalculate5 extends Command
                 foreach($list_inventory as $index => $l_inventory) {
                     if ($i == 0) {
                         $i++;
+                        $prevTotalQty = $l_inventory->total_quantity_all;
+                        $prevTotalVal = $l_inventory->total_value_all;
                         continue;
                     }
                     if ($l_inventory->quantity < 0) {
