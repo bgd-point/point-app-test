@@ -1644,8 +1644,12 @@ class Recalculate5 extends Command
 
                 if ($inventory) {
                     $inventory->total_value_all = $value;
-                    $inventory->cogs = $inventory->total_value_all / $inventory->total_quantity_all;
-                    $inventory->save();
+                    if ($inventory->total_quantity_all == 0) {
+                        $inventory->cogs = 0;
+                    } else {
+                        $inventory->cogs = $inventory->total_value_all / $inventory->total_quantity_all;
+                        $inventory->save();
+                    }
                 }
             }
         }
