@@ -1637,7 +1637,7 @@ class Recalculate5 extends Command
 
             if ($item) {
                 $inventory = Inventory::where('item_id', '=', $item->id)
-                    ->orderBy('form_date', '<', '2026-05-05')
+                    ->where('form_date', '<', '2026-05-05')
                     ->orderBy('form_date', 'desc')
                     ->orderBy('formulir_id', 'desc')
                     ->first();
