@@ -1722,5 +1722,5 @@ foreach ($data as $row) {
 
     //         \DB::commit();
     //     }
-    // }
+    }
 }
