@@ -1661,38 +1661,38 @@ class Recalculate5 extends Command
                 $prevTotalQty = 0;
                 $prevTotalVal = 0;
                 
-                // foreach($list_inventory as $index => $l_inventory) {
-                //     if ($l_inventory->quantity < 0) {
-                //         if ($prevTotalQty == 0) {
-                //             $l_inventory->price = 0;
-                //         } else {
-                //             $l_inventory->price = $prevTotalVal / $prevTotalQty;
-                //         }
-                //     }
-                //     if ($l_inventory->quantity > 0) {
-                //         $this->comment($l_inventory->formulir->formulirable_type);
-                //         if ($l_inventory->formulir->formulirable_type === 'Point\PointInventory\Models\StockOpname\StockOpname' 
-                //             || $l_inventory->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
-                //             $this->comment('Stock Correction / Stock Opname');
-                //             if ($prevTotalQty == 0) {
-                //                 $l_inventory->price = 0;
-                //             } else {
-                //                 $l_inventory->price = $prevTotalVal / $prevTotalQty;
-                //             }
-                //         }
-                //     }
-                //     // $l_inventory->total_quantity_all = $prevTotalQty + $l_inventory->quantity;
-                //     $l_inventory->total_value_all = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
-                //     if (!$l_inventory->total_quantity_all || $l_inventory->total_quantity_all == 0) {
-                //         $l_inventory->cogs = 0;
-                //     } else {
-                //         $l_inventory->cogs = $l_inventory->total_value_all / $l_inventory->total_quantity_all;
-                //     }
-                //     $l_inventory->save();
+                foreach($list_inventory as $index => $l_inventory) {
+                    if ($l_inventory->quantity < 0) {
+                        if ($prevTotalQty == 0) {
+                            $l_inventory->price = 0;
+                        } else {
+                            $l_inventory->price = $prevTotalVal / $prevTotalQty;
+                        }
+                    }
+                    if ($l_inventory->quantity > 0) {
+                        $this->comment($l_inventory->formulir->formulirable_type);
+                        if ($l_inventory->formulir->formulirable_type === 'Point\PointInventory\Models\StockOpname\StockOpname' 
+                            || $l_inventory->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
+                            $this->comment('Stock Correction / Stock Opname');
+                            if ($prevTotalQty == 0) {
+                                $l_inventory->price = 0;
+                            } else {
+                                $l_inventory->price = $prevTotalVal / $prevTotalQty;
+                            }
+                        }
+                    }
+                    // $l_inventory->total_quantity_all = $prevTotalQty + $l_inventory->quantity;
+                    $l_inventory->total_value_all = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
+                    if (!$l_inventory->total_quantity_all || $l_inventory->total_quantity_all == 0) {
+                        $l_inventory->cogs = 0;
+                    } else {
+                        $l_inventory->cogs = $l_inventory->total_value_all / $l_inventory->total_quantity_all;
+                    }
+                    $l_inventory->save();
 
-                //     $prevTotalQty = $l_inventory->total_quantity_all;
-                //     $prevTotalVal = $l_inventory->total_value_all;
-                // }
+                    $prevTotalQty = $l_inventory->total_quantity_all;
+                    $prevTotalVal = $l_inventory->total_value_all;
+                }
 
                 // $list_inventory = Inventory::where('item_id', '=', $item->id)
                 //     ->where('form_date', '>=', $inventory->form_date)
