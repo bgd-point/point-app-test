@@ -1660,7 +1660,7 @@ class Recalculate5 extends Command
 
                 $prevTotalQty = 0;
                 $prevTotalVal = 0;
-                $this->comment('I' . count($items) . ' = ' . $i);
+                
                 foreach($list_inventory as $index => $l_inventory) {
                     if ($l_inventory->quantity < 0) {
                         if ($prevTotalQty == 0) {
@@ -1700,7 +1700,6 @@ class Recalculate5 extends Command
                     ->orderBy('formulir_id', 'asc')
                     ->get();
 
-                $this->comment('I' . count($items) . ' = ' . $i);
                 foreach($list_inventory as $index => $l_inventory) {
                     $l_inventory->total_value = $l_inventory->total_quantity * $l_inventory->cogs;
                     $l_inventory->save();
