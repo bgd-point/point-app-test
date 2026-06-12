@@ -87,6 +87,19 @@ class Recalculate7 extends Command
                         }
                         $j->save();
                     }
+                    
+                    // update IU journal
+                    if ($journal->formulir->formulirable_type === 'Point\PointInventory\Models\InventoryUsage\InventoryUsage') {
+                        $j = Journal::where('id', '=', $journal->id + 1)->first();
+
+                        if ($j->debit > 0) {
+                            $j->debit = abs($l_inventory->price * $l_inventory->quantity);
+                        }
+                        if ($j->credit > 0) {
+                            $j->credit = abs($l_inventory->price * $l_inventory->quantity);
+                        }
+                        $j->save();
+                    }
                 }
 
                 $prevTotalQty = $l_inventory->total_quantity_all;
