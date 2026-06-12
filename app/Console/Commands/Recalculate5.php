@@ -1709,6 +1709,21 @@ class Recalculate5 extends Command
                             $journal->credit = $l_inventory->price * $l_inventory->quantity;
                         }
                         $journal->save();
+
+                        if ($journal->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
+                            $js = Journal::where('form_journal_id', '=', $journal->form_journal_id)->get();
+
+                            foreach ($js as $j) {
+                                if ($j->debit > 0) {
+                                    $j->debit = $l_inventory->price * $l_inventory->quantity;
+                                }
+                                if ($j->credit > 0) {
+                                    $j->credit = $l_inventory->price * $l_inventory->quantity;
+                                }
+                                $j->save();
+                            }
+                        }
+
                         echo 'Update journal ' . $journal->form_journal_id . ' => ' . $journal->debit . ' / ' . $journal->credit . PHP_EOL;
                     }
 
