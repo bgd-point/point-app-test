@@ -44,6 +44,14 @@ class Recalculate6 extends Command
 
         $items = Item::all();
 
+        $inventory = Inventory::where('id', '=', 1768)->first();
+        $inventory->price = 200900;
+        $inventory->save();
+        
+        $inventory = Inventory::where('id', '=', 6966)->first();
+        $inventory->price = 27477477.48;
+        $inventory->save();
+
         foreach ($items as $item) {
             $inventory = Inventory::where('item_id', '=', $item->id)
                 ->where('form_date', '<', '2026-05-05')
