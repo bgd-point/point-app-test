@@ -126,7 +126,7 @@ class Recalculate7 extends Command
                             $jp->coa_id = $cost_of_sales_account;
                             $jp->description = 'invoice indirect sales "' . $inventory->formulir->form_number.'"';
                             $jp->debit = $j->credit;
-                            $jp->form_journal_id = $j->formulir_id;
+                            $jp->form_journal_id = $j->form_journal_id;
                             $jp->form_reference_id;
                             $jp->subledger_id;
                             $jp->subledger_type;
