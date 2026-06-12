@@ -1700,16 +1700,16 @@ class Recalculate5 extends Command
                     $prevTotalVal = $l_inventory->total_value_all;
                 }
 
-                // $list_inventory = Inventory::where('item_id', '=', $item->id)
-                //     ->where('form_date', '>=', $inventory->form_date)
-                //     ->orderBy('form_date', 'asc')
-                //     ->orderBy('formulir_id', 'asc')
-                //     ->get();
+                $list_inventory = Inventory::where('item_id', '=', $item->id)
+                    ->where('form_date', '>=', $inventory->form_date)
+                    ->orderBy('form_date', 'asc')
+                    ->orderBy('formulir_id', 'asc')
+                    ->get();
 
-                // foreach($list_inventory as $index => $l_inventory) {
-                //     $l_inventory->total_value = $l_inventory->total_quantity * $l_inventory->cogs;
-                //     $l_inventory->save();
-                // }
+                foreach($list_inventory as $index => $l_inventory) {
+                    $l_inventory->total_value = $l_inventory->total_quantity * $l_inventory->cogs;
+                    $l_inventory->save();
+                }
             }
         }
     }
