@@ -150,7 +150,7 @@ class Recalculate7 extends Command
                         if ($sum > 0) {
                             $jp->debit = $sum;
                         } else if ($sum < 0) {
-                            $jp->credit = $sum;
+                            $jp->credit = abs($sum);
                         }
                         $jp->form_journal_id = $journal->form_journal_id;
                         $jp->form_reference_id;
