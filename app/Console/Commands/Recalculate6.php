@@ -48,7 +48,7 @@ class Recalculate6 extends Command
         $inventory->price = 200900;
         $inventory->save();
         
-        $inventory = Inventory::where('id', '=', 6966)->first();
+        $inventory = Inventory::where('id', '=', 2027)->first();
         $inventory->price = 27477477.48;
         $inventory->save();
 
