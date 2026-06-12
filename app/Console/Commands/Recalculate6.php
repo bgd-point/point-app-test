@@ -114,7 +114,7 @@ class Recalculate6 extends Command
                     if (!$l_inventory->total_quantity_all || $l_inventory->total_quantity_all == 0) {
                         // $l_inventory->cogs = 0;
                     } else {
-                        $l_inventory->cogs = $l_inventory->total_value_all / $l_inventory->total_quantity_all;
+                        // $l_inventory->cogs = $l_inventory->total_value_all / $l_inventory->total_quantity_all;
                     }
                     $l_inventory->save();
 
