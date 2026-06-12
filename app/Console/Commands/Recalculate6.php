@@ -118,8 +118,8 @@ class Recalculate6 extends Command
                     }
                     $l_inventory->save();
 
-                    $prevTotalVal += ($l_inventory->quantity * $l_inventory->price);
-                    $prevTotalQty += $l_inventory->quantity;
+                    // $prevTotalVal += ($l_inventory->quantity * $l_inventory->price);
+                    // $prevTotalQty += $l_inventory->quantity;
                 }
             }
         }
