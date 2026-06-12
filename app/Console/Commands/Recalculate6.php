@@ -51,7 +51,7 @@ class Recalculate6 extends Command
                     ->orderBy('form_date', 'desc')
                     ->orderBy('formulir_id', 'desc')
                     ->first();
-                if (!inventory) {
+                if (!$inventory) {
                     continue;
                 }
 
