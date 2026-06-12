@@ -8,6 +8,7 @@ use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
+use Point\Framework\Models\Journal;
 use Point\Framework\Models\Master\Allocation;
 use Point\PointInventory\Models\StockCorrection\StockCorrection;
 use Point\PointInventory\Models\StockOpname\StockOpname;
