@@ -67,25 +67,23 @@ class Recalculate7 extends Command
                     ->get();
 
                 foreach ($journals as $journal) {
-                    $this->comment('$journal A' . $journal->id . ' ' . $journal->debit . ' ' . $journal->credit);
                     if ($journal->debit > 0) {
-                        $journal->debit = $l_inventory->price * $l_inventory->quantity;
+                        $journal->debit = abs($l_inventory->price * $l_inventory->quantity);
                     }
                     if ($journal->credit > 0) {
-                        $journal->credit = $l_inventory->price * $l_inventory->quantity;
+                        $journal->credit = abs($l_inventory->price * $l_inventory->quantity);
                     }
                     $journal->save();
-                    $this->comment('$journal B' . $journal->id . ' ' . $journal->debit . ' ' . $journal->credit);
 
                     // update stock correction journal
                     if ($journal->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
                         $j = Journal::where('id', '=', $journal->id + 1)->first();
 
                         if ($j->debit > 0) {
-                            $j->debit = $l_inventory->price * $l_inventory->quantity;
+                            $j->debit = abs($l_inventory->price * $l_inventory->quantity);
                         }
                         if ($j->credit > 0) {
-                            $j->credit = $l_inventory->price * $l_inventory->quantity;
+                            $j->credit = abs($l_inventory->price * $l_inventory->quantity);
                         }
                         $j->save();
                     }
