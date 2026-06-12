@@ -95,8 +95,10 @@ class Recalculate6 extends Command
                             $this->comment('Found inventory with price > 0 : ' . $is->id . ' => ' . $is->price);
                             // echo 'Found inventory with price > 0 : ' . $is->id . ' => ' . $is->price . "\n";
                             if ($is) {
+                                $this->comment('a');
                                 $l_inventory->price = $is->cogs;
                             } else {    
+                                $this->comment('b');
                                 $l_inventory->price = 0;
                             }
                             $this->comment('Found inventory with price > 0 : ' . $is->id . ' => ' . $is->price . ' | ' . $l_inventory->price);
