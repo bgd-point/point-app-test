@@ -1697,12 +1697,18 @@ class Recalculate5 extends Command
                     }
                     // $l_inventory->save();
 
-                    $journals = Journal::where('form_journal_id', '=', $l_inventory->formulir_id)->get();
+                    $journals = Journal::where('form_journal_id', '=', $l_inventory->formulir_id)
+                        ->where('subledger_id', '=', $item->id)
+                        ->get();
 
                     foreach ($journals as $journal) {
-                        // $journal->debit = $l_inventory->total_value_all;
-                        // $journal->credit = $l_inventory->total_value_all;
-                        // $journal->save();
+                        if ($journal->debit > 0) {
+                            $journal->debit = $l_inventory->total_value_all;
+                        }
+                        if ($journal->credit > 0) {
+                            $journal->credit = $l_inventory->total_value_all;
+                        }
+                        $journal->save();
                         echo 'Update journal ' . $journal->form_journal_id . ' => ' . $journal->debit . ' / ' . $journal->credit . PHP_EOL;
                     }
 
