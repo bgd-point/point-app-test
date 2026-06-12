@@ -1659,6 +1659,8 @@ class Recalculate5 extends Command
                     ->orderBy('formulir_id', 'asc')
                     ->get();
 
+                // ==== 
+
                 $prevTotalQty = 0;
                 $prevTotalVal = 0;
                 $i=0;
@@ -1671,7 +1673,16 @@ class Recalculate5 extends Command
                     }
                     if ($l_inventory->quantity < 0) {
                         if ($prevTotalQty == 0) {
-                            $l_inventory->price = 0;
+                            $is = Inventory::where('formulir_id', '=', $l_inventory->formulir_id)
+                                ->where('item_id', '=', $item->id)
+                                ->where('total_quantity_all', '>', 0)
+                                ->orderBy('form_date', 'desc')
+                                ->first();
+                            if ($is) {
+                                $l_inventory->price = $is->cogs;
+                            } else {    
+                                $l_inventory->price = 0;
+                            }
                         } else {
                             $l_inventory->price = $prevTotalVal / $prevTotalQty;
                         }
@@ -1687,11 +1698,11 @@ class Recalculate5 extends Command
                                     ->where('total_quantity_all', '>', 0)
                                     ->orderBy('form_date', 'desc')
                                     ->first();
-                                    if ($is) {
-                                        $l_inventory->price = $is->cogs;
-                                    } else {    
-                                        $l_inventory->price = 0;
-                                    }
+                                if ($is) {
+                                    $l_inventory->price = $is->cogs;
+                                } else {    
+                                    $l_inventory->price = 0;
+                                }
                             } else {
                                 $l_inventory->price = $prevTotalVal / $prevTotalQty;
                             }
