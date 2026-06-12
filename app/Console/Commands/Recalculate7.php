@@ -74,19 +74,19 @@ class Recalculate7 extends Command
                     }
                     $journal->save();
 
-                    if ($journal->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
-                        $js = Journal::where('form_journal_id', '=', $journal->form_journal_id)->get();
+                    // if ($journal->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
+                    //     $js = Journal::where('form_journal_id', '=', $journal->form_journal_id)->get();
 
-                        foreach ($js as $j) {
-                            if ($j->debit > 0) {
-                                $j->debit = $l_inventory->price * $l_inventory->quantity;
-                            }
-                            if ($j->credit > 0) {
-                                $j->credit = $l_inventory->price * $l_inventory->quantity;
-                            }
-                            $j->save();
-                        }
-                    }
+                    //     foreach ($js as $j) {
+                    //         if ($j->debit > 0) {
+                    //             $j->debit = $l_inventory->price * $l_inventory->quantity;
+                    //         }
+                    //         if ($j->credit > 0) {
+                    //             $j->credit = $l_inventory->price * $l_inventory->quantity;
+                    //         }
+                    //         $j->save();
+                    //     }
+                    // }
                 }
 
                 $prevTotalQty = $l_inventory->total_quantity_all;
