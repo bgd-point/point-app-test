@@ -133,6 +133,28 @@ class Recalculate7 extends Command
                             $jp->save();
                         }
                     }
+
+                    if ($journal->formulir->formulirable_type === 'Point\PointManufacture\Models\OutputProcess') {
+                        $jDebit = Journal::where('form_journal_id', $journal->form_journal_id)->where('debit', '>', 0)->sum('debit');
+                        $jCredit = Journal::where('form_journal_id', $journal->form_journal_id)->where('credit', '>', 0)->sum('credit');
+
+                        $sum = $jDebit - $jCredit;
+
+                        $jp = new Journal;
+                        $jp->form_date = $journal->form_date;
+                        $jp->coa_id = 509;
+                        $jp->description = 'selisih sediaan manufacture';
+                        if ($sum > 0) {
+                            $jp->credit = $sum;
+                        } else if ($sum < 0) {
+                            $jp->debit = $sum;
+                        }
+                        $jp->form_journal_id = $journal->form_journal_id;
+                        $jp->form_reference_id;
+                        $jp->subledger_id;
+                        $jp->subledger_type;
+                        $jp->save();
+                    }
                 }
 
                 $prevTotalQty = $l_inventory->total_quantity_all;
