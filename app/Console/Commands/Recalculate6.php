@@ -88,6 +88,7 @@ class Recalculate6 extends Command
                         if ($prevTotalQty == 0) {
                             $is = Inventory::where('item_id', '=', $item->id)
                                 ->where('price', '>', 0)
+                                ->where('form_date', '<', $l_inventory->form_date)
                                 ->orderBy('form_date', 'desc')
                                 ->first();
 
