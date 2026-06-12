@@ -1659,8 +1659,6 @@ class Recalculate5 extends Command
                     ->orderBy('formulir_id', 'asc')
                     ->get();
 
-                // ==== 
-
                 $prevTotalQty = 0;
                 $prevTotalVal = 0;
                 $i=0;
@@ -1673,16 +1671,7 @@ class Recalculate5 extends Command
                     }
                     if ($l_inventory->quantity < 0) {
                         if ($prevTotalQty == 0) {
-                            $is = Inventory::where('formulir_id', '=', $l_inventory->formulir_id)
-                                ->where('item_id', '=', $item->id)
-                                ->where('total_quantity_all', '>', 0)
-                                ->orderBy('form_date', 'desc')
-                                ->first();
-                            if ($is) {
-                                $l_inventory->price = $is->cogs;
-                            } else {    
-                                $l_inventory->price = 0;
-                            }
+                            $l_inventory->price = 0;
                         } else {
                             $l_inventory->price = $prevTotalVal / $prevTotalQty;
                         }
@@ -1694,9 +1683,13 @@ class Recalculate5 extends Command
                             // $this->comment('Stock Correction / Stock Opname');
                             if ($prevTotalQty == 0) {
                                 $is = Inventory::where('item_id', '=', $item->id)
-                                    ->where('cogs', '>', 0)
+                                    ->where('price', '>', 0)
                                     ->orderBy('form_date', 'desc')
                                     ->first();
+
+                                if ($item->id === 608) {
+                                    $this->comment('Found inventory with price > 0 : ' . $is->id . ' => ' . $is->price);
+                                }
                                 if ($is) {
                                     $l_inventory->price = $is->cogs;
                                 } else {    
