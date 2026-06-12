@@ -1634,7 +1634,7 @@ class Recalculate5 extends Command
         foreach ($data as $row) {
             $item = Item::where('code', $row['code'])->first();
             $value = str_replace(',', '', $row['value']);
-            echo $row['code'] . ' => ' . $row['value'] . PHP_EOL;
+            // echo $row['code'] . ' => ' . $row['value'] . PHP_EOL;
 
             if ($item) {
                 $inventory = Inventory::where('item_id', '=', $item->id)
@@ -1680,7 +1680,7 @@ class Recalculate5 extends Command
                         $this->comment($l_inventory->formulir->formulirable_type);
                         if ($l_inventory->formulir->formulirable_type === 'Point\PointInventory\Models\StockOpname\StockOpname' 
                             || $l_inventory->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
-                            $this->comment('Stock Correction / Stock Opname');
+                            // $this->comment('Stock Correction / Stock Opname');
                             if ($prevTotalQty == 0) {
                                 $l_inventory->price = 0;
                             } else {
@@ -1695,7 +1695,7 @@ class Recalculate5 extends Command
                     } else {
                         $l_inventory->cogs = $l_inventory->total_value_all / $l_inventory->total_quantity_all;
                     }
-                    $l_inventory->save();
+                    // $l_inventory->save();
 
                     $journals = Journal::where('form_journal_id', '=', $l_inventory->formulir_id)->get();
 
@@ -1718,7 +1718,7 @@ class Recalculate5 extends Command
 
                 foreach($list_inventory as $index => $l_inventory) {
                     $l_inventory->total_value = $l_inventory->total_quantity * $l_inventory->cogs;
-                    $l_inventory->save();
+                    // $l_inventory->save();
                 }
             }
         }
