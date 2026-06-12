@@ -100,6 +100,19 @@ class Recalculate7 extends Command
                         }
                         $j->save();
                     }
+
+                    // update Purchase journal
+                    if ($journal->formulir->formulirable_type === 'Point\PointPurchasing\Models\Inventory\Invoice') {
+                        if ($journal->form_journal_id === 3293) {
+                            // TODO: should fix inventory table using this value
+                            Journal::where('id', 5814)->update(['debit' => 200900.00]);
+                        }
+
+                        if ($journal->form_journal_id === 3973) {
+                            Journal::where('id', 6966)->update(['debit' => 27477477.48]);
+                            Journal::where('id', 6969)->delete();
+                        }
+                    }
                 }
 
                 $prevTotalQty = $l_inventory->total_quantity_all;
