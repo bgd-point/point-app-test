@@ -20,18 +20,18 @@ class Journal extends Model
     public function correctPositionJournal()
     {
         if ($this->debit < 0) {
-            echo 'debit less than 0, convert to credit';
+            echo 'debit less than 0, convert to credit' . PHP_EOL;
             $this->credit += $this->debit * -1;
             $this->debit = 0;
         } elseif ($this->debit > 0) {
-            echo 'debit more than 0, convert to debit';
+            echo 'debit more than 0, convert to debit' . PHP_EOL;
             $this->credit = 0;
         } elseif ($this->credit < 0) {
-            echo 'credit less than 0, convert to debit';
+            echo 'credit less than 0, convert to debit' . PHP_EOL;
             $this->debit += $this->credit * -1;
             $this->credit = 0;
         } elseif ($this->credit > 0) {
-            echo 'credit more than 0, convert to credit';
+            echo 'credit more than 0, convert to credit' . PHP_EOL;
             $this->debit = 0;
         }
     }
