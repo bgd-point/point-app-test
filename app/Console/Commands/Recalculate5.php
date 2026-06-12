@@ -1695,7 +1695,7 @@ class Recalculate5 extends Command
                     } else {
                         $l_inventory->cogs = $l_inventory->total_value_all / $l_inventory->total_quantity_all;
                     }
-                    // $l_inventory->save();
+                    $l_inventory->save();
 
                     $journals = Journal::where('form_journal_id', '=', $l_inventory->formulir_id)
                         ->where('subledger_id', '=', $item->id)
@@ -1739,7 +1739,7 @@ class Recalculate5 extends Command
 
                 foreach($list_inventory as $index => $l_inventory) {
                     $l_inventory->total_value = $l_inventory->total_quantity * $l_inventory->cogs;
-                    // $l_inventory->save();
+                    $l_inventory->save();
                 }
             }
         }
