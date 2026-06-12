@@ -1703,7 +1703,7 @@ class Recalculate5 extends Command
                         // $journal->debit = $l_inventory->total_value_all;
                         // $journal->credit = $l_inventory->total_value_all;
                         // $journal->save();
-                        echo 'Update journal ' . $journal->formulir_id . ' => ' . $journal->debit . ' / ' . $journal->credit . PHP_EOL;
+                        echo 'Update journal ' . $journal->form_journal_id . ' => ' . $journal->debit . ' / ' . $journal->credit . PHP_EOL;
                     }
 
                     $prevTotalQty = $l_inventory->total_quantity_all;
