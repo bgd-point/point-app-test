@@ -103,8 +103,52 @@ class Recalculate6 extends Command
                         $l_inventory->cogs = $l_inventory->total_value_all / $l_inventory->total_quantity_all;
                     }
                     $l_inventory->save();
-                }
-            }
+
+                //     $journals = Journal::where('form_journal_id', '=', $l_inventory->formulir_id)
+                //         ->where('subledger_id', '=', $item->id)
+                //         ->get();
+
+                //     foreach ($journals as $journal) {
+                //         if ($journal->debit > 0) {
+                //             $journal->debit = $l_inventory->price * $l_inventory->quantity;
+                //         }
+                //         if ($journal->credit > 0) {
+                //             $journal->credit = $l_inventory->price * $l_inventory->quantity;
+                //         }
+                //         $journal->save();
+
+                //         if ($journal->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
+                //             $js = Journal::where('form_journal_id', '=', $journal->form_journal_id)->get();
+
+                //             foreach ($js as $j) {
+                //                 if ($j->debit > 0) {
+                //                     $j->debit = $l_inventory->price * $l_inventory->quantity;
+                //                 }
+                //                 if ($j->credit > 0) {
+                //                     $j->credit = $l_inventory->price * $l_inventory->quantity;
+                //                 }
+                //                 $j->save();
+                //             }
+                //         }
+
+                //         echo 'Update journal ' . $journal->form_journal_id . ' => ' . $journal->debit . ' / ' . $journal->credit . PHP_EOL;
+                //     }
+
+                //     $prevTotalQty = $l_inventory->total_quantity_all;
+                //     $prevTotalVal = $l_inventory->total_value_all;
+                // }
+
+                // $list_inventory = Inventory::where('item_id', '=', $item->id)
+                //     ->where('form_date', '>=', $inventory->form_date)
+                //     ->orderBy('form_date', 'asc')
+                //     ->orderBy('formulir_id', 'asc')
+                //     ->get();
+
+                // foreach($list_inventory as $index => $l_inventory) {
+                //     $l_inventory->total_value = $l_inventory->total_quantity * $l_inventory->cogs;
+                //     $l_inventory->save();
+                // }
+            // }
         }
     }
 }
