@@ -1703,10 +1703,10 @@ class Recalculate5 extends Command
 
                     foreach ($journals as $journal) {
                         if ($journal->debit > 0) {
-                            $journal->debit = $l_inventory->total_value_all;
+                            $journal->debit = $l_inventory->price * $l_inventory->quantity;
                         }
                         if ($journal->credit > 0) {
-                            $journal->credit = $l_inventory->total_value_all;
+                            $journal->credit = $l_inventory->price * $l_inventory->quantity;
                         }
                         $journal->save();
                         echo 'Update journal ' . $journal->form_journal_id . ' => ' . $journal->debit . ' / ' . $journal->credit . PHP_EOL;
