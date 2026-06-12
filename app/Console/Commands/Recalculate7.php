@@ -115,8 +115,8 @@ class Recalculate7 extends Command
                     }
 
                     if ($journal->formulir->formulirable_type === 'Point\PointSales\Models\Sales\Invoice') {
-                        $jCogs = Journal::where('coa_id', 385)->first();
-                        $js = Journal::where('coa_id', 169)->get();
+                        $jCogs = Journal::where('form_journal_id', $journal->form_journal_id)->where('coa_id', 385)->first();
+                        $js = Journal::where('form_journal_id', $journal->form_journal_id)->where('coa_id', 169)->get();
 
                         $sum = 0;
                         foreach ($js as $j) {
@@ -126,7 +126,6 @@ class Recalculate7 extends Command
                         $jCogs->debit = $sum;
                         $jCogs->save();
                     }
-
                 }
 
                 $prevTotalQty = $l_inventory->total_quantity_all;
