@@ -135,10 +135,13 @@ class Recalculate7 extends Command
                     }
 
                     if ($journal->formulir->formulirable_type === 'Point\PointManufacture\Models\OutputProcess') {
+                        Journal::where('form_journal_id', $journal->form_journal_id)->where('coa_id', 509)->delete();
                         $jDebit = Journal::where('form_journal_id', $journal->form_journal_id)->where('debit', '>', 0)->sum('debit');
                         $jCredit = Journal::where('form_journal_id', $journal->form_journal_id)->where('credit', '>', 0)->sum('credit');
 
                         $sum = $jDebit - $jCredit;
+
+                        $this->comment('Output Process ' . $journal->formulir->form_number . ' => ' . $jDebit . ' - ' . $jCredit . ' = ' . $sum);
 
                         $jp = new Journal;
                         $jp->form_date = $journal->form_date;
