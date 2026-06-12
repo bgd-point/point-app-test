@@ -92,16 +92,17 @@ class Recalculate6 extends Command
                                 ->orderBy('form_date', 'desc')
                                 ->first();
 
+                            $this->comment('Found inventory with price > 0 : ' . $is->id . ' => ' . $is->price);
                             // echo 'Found inventory with price > 0 : ' . $is->id . ' => ' . $is->price . "\n";
                             if ($is) {
                                 $l_inventory->price = $is->cogs;
                             } else {    
                                 $l_inventory->price = 0;
                             }
+                            $this->comment('Found inventory with price > 0 : ' . $is->id . ' => ' . $is->price . ' | ' . $l_inventory->price);
                         } else {
                             $l_inventory->price = $prevTotalVal / $prevTotalQty;
                         }
-                        $l_inventory->save();
                     }
                 }
                 
