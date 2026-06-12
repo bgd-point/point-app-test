@@ -116,7 +116,7 @@ class Recalculate6 extends Command
                     // } else {
                     //     $l_inventory->cogs = $l_inventory->total_value_all / $l_inventory->total_quantity_all;
                     // }
-                    // $l_inventory->save();
+                    $l_inventory->save();
                 }
             }
         }
