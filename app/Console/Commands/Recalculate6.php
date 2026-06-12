@@ -46,6 +46,12 @@ class Recalculate6 extends Command
 
         foreach ($items as $item) {
             if ($item) {
+                $inventory = Inventory::where('item_id', '=', $item->id)
+                    ->where('form_date', '<', '2026-05-05')
+                    ->orderBy('form_date', 'desc')
+                    ->orderBy('formulir_id', 'desc')
+                    ->first();
+                    
                 $list_inventory = Inventory::where('item_id', '=', $item->id)
                     ->where('form_date', '>=', $inventory->form_date)
                     ->orderBy('form_date', 'asc')
