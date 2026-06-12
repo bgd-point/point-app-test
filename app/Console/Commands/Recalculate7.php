@@ -148,9 +148,9 @@ class Recalculate7 extends Command
                         $jp->coa_id = 509;
                         $jp->description = 'selisih sediaan manufacture';
                         if ($sum > 0) {
-                            $jp->credit = $sum;
-                        } else if ($sum < 0) {
                             $jp->debit = $sum;
+                        } else if ($sum < 0) {
+                            $jp->credit = $sum;
                         }
                         $jp->form_journal_id = $journal->form_journal_id;
                         $jp->form_reference_id;
