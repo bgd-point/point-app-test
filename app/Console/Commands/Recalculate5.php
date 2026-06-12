@@ -1682,25 +1682,13 @@ class Recalculate5 extends Command
                             || $l_inventory->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
                             // $this->comment('Stock Correction / Stock Opname');
                             if ($prevTotalQty == 0) {
-                                $is = Inventory::where('item_id', '=', $item->id)
-                                    ->where('price', '>', 0)
-                                    ->orderBy('form_date', 'desc')
-                                    ->first();
-
-                                if ($item->id === 608) {
-                                    $this->comment('Found inventory with price > 0 : ' . $is->id . ' => ' . $is->price);
-                                }
-                                if ($is) {
-                                    $l_inventory->price = $is->cogs;
-                                } else {    
-                                    $l_inventory->price = 0;
-                                }
+                                $l_inventory->price = 0;
                             } else {
                                 $l_inventory->price = $prevTotalVal / $prevTotalQty;
                             }
                         }
                     }
-                    // $l_inventory->total_quantity_all = $prevTotalQty + $l_inventory->quantity;
+                    
                     $l_inventory->total_value_all = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
                     if (!$l_inventory->total_quantity_all || $l_inventory->total_quantity_all == 0) {
                         $l_inventory->cogs = 0;
@@ -1708,36 +1696,6 @@ class Recalculate5 extends Command
                         $l_inventory->cogs = $l_inventory->total_value_all / $l_inventory->total_quantity_all;
                     }
                     $l_inventory->save();
-
-                    $journals = Journal::where('form_journal_id', '=', $l_inventory->formulir_id)
-                        ->where('subledger_id', '=', $item->id)
-                        ->get();
-
-                    foreach ($journals as $journal) {
-                        if ($journal->debit > 0) {
-                            $journal->debit = $l_inventory->price * $l_inventory->quantity;
-                        }
-                        if ($journal->credit > 0) {
-                            $journal->credit = $l_inventory->price * $l_inventory->quantity;
-                        }
-                        $journal->save();
-
-                        if ($journal->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
-                            $js = Journal::where('form_journal_id', '=', $journal->form_journal_id)->get();
-
-                            foreach ($js as $j) {
-                                if ($j->debit > 0) {
-                                    $j->debit = $l_inventory->price * $l_inventory->quantity;
-                                }
-                                if ($j->credit > 0) {
-                                    $j->credit = $l_inventory->price * $l_inventory->quantity;
-                                }
-                                $j->save();
-                            }
-                        }
-
-                        echo 'Update journal ' . $journal->form_journal_id . ' => ' . $journal->debit . ' / ' . $journal->credit . PHP_EOL;
-                    }
 
                     $prevTotalQty = $l_inventory->total_quantity_all;
                     $prevTotalVal = $l_inventory->total_value_all;
