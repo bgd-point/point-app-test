@@ -1693,9 +1693,8 @@ class Recalculate5 extends Command
                             || $l_inventory->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
                             // $this->comment('Stock Correction / Stock Opname');
                             if ($prevTotalQty == 0) {
-                                $is = Inventory::where('formulir_id', '=', $l_inventory->formulir_id)
-                                    ->where('item_id', '=', $item->id)
-                                    ->where('total_quantity_all', '>', 0)
+                                $is = Inventory::where('item_id', '=', $item->id)
+                                    ->where('cogs', '>', 0)
                                     ->orderBy('form_date', 'desc')
                                     ->first();
                                 if ($is) {
