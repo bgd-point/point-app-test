@@ -116,7 +116,7 @@ class Recalculate7 extends Command
 
                     if ($journal->formulir->formulirable_type === 'Point\PointSales\Models\Sales\Invoice') {
                         $jCogs = Journal::where('form_journal_id', $journal->form_journal_id)->where('coa_id', 385)->first();
-                        $js = Journal::where('form_journal_id', $journal->form_journal_id)->where('description', 'like', '%invoice "')->get();
+                        $js = Journal::where('form_journal_id', $journal->form_journal_id)->where('description', 'like', 'invoice "%')->get();
 
                         $sum = 0;
                         foreach ($js as $j) {
