@@ -1708,6 +1708,9 @@ class Recalculate5 extends Command
                         if ($journal->credit > 0) {
                             $journal->credit = $l_inventory->price * $l_inventory->quantity;
                         }
+                        if ($journal->debit > 0 && $journal->credit == 0) {
+                            echo '============== ' . $journal->form_journal_id;
+                        }
                         $journal->save();
 
                         if ($journal->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
