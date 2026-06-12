@@ -109,14 +109,14 @@ class Recalculate6 extends Command
                             }
                         }
                     }
-                    // $l_inventory->total_quantity_all = $prevTotalQty + $l_inventory->quantity;
-                    $l_inventory->total_value_all = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
-                    if (!$l_inventory->total_quantity_all || $l_inventory->total_quantity_all == 0) {
-                        $l_inventory->cogs = 0;
-                    } else {
-                        $l_inventory->cogs = $l_inventory->total_value_all / $l_inventory->total_quantity_all;
-                    }
-                    $l_inventory->save();
+                    
+                    // $l_inventory->total_value_all = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
+                    // if (!$l_inventory->total_quantity_all || $l_inventory->total_quantity_all == 0) {
+                    //     $l_inventory->cogs = 0;
+                    // } else {
+                    //     $l_inventory->cogs = $l_inventory->total_value_all / $l_inventory->total_quantity_all;
+                    // }
+                    // $l_inventory->save();
                 }
             }
         }
