@@ -101,6 +101,7 @@ class Recalculate6 extends Command
                         } else {
                             $l_inventory->price = $prevTotalVal / $prevTotalQty;
                         }
+                        $l_inventory->save();
                     }
                 }
                 
