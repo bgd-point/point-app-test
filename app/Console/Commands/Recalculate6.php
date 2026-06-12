@@ -46,22 +46,6 @@ class Recalculate6 extends Command
 
         foreach ($items as $item) {
             if ($item) {
-                $inventory = Inventory::where('item_id', '=', $item->id)
-                    ->where('form_date', '<', '2026-05-05')
-                    ->orderBy('form_date', 'desc')
-                    ->orderBy('formulir_id', 'desc')
-                    ->first();
-
-                if ($inventory) {
-                    $inventory->total_value_all = $value;
-                    if ($inventory->total_quantity_all == 0) {
-                        $inventory->cogs = 0;
-                    } else {
-                        $inventory->cogs = $inventory->total_value_all / $inventory->total_quantity_all;
-                        $inventory->save();
-                    }
-                }
-
                 $list_inventory = Inventory::where('item_id', '=', $item->id)
                     ->where('form_date', '>=', $inventory->form_date)
                     ->orderBy('form_date', 'asc')
@@ -78,6 +62,7 @@ class Recalculate6 extends Command
                         $prevTotalVal = $l_inventory->total_value_all;
                         continue;
                     }
+
                     if ($l_inventory->quantity < 0) {
                         if ($prevTotalQty == 0) {
                             $l_inventory->price = 0;
@@ -85,6 +70,7 @@ class Recalculate6 extends Command
                             $l_inventory->price = $prevTotalVal / $prevTotalQty;
                         }
                     }
+
                     if ($l_inventory->quantity > 0) {
                         $this->comment($l_inventory->formulir->formulirable_type);
                         if ($l_inventory->formulir->formulirable_type === 'Point\PointInventory\Models\StockOpname\StockOpname' 
@@ -118,50 +104,50 @@ class Recalculate6 extends Command
                     }
                     $l_inventory->save();
 
-                    $journals = Journal::where('form_journal_id', '=', $l_inventory->formulir_id)
-                        ->where('subledger_id', '=', $item->id)
-                        ->get();
+                //     $journals = Journal::where('form_journal_id', '=', $l_inventory->formulir_id)
+                //         ->where('subledger_id', '=', $item->id)
+                //         ->get();
 
-                    foreach ($journals as $journal) {
-                        if ($journal->debit > 0) {
-                            $journal->debit = $l_inventory->price * $l_inventory->quantity;
-                        }
-                        if ($journal->credit > 0) {
-                            $journal->credit = $l_inventory->price * $l_inventory->quantity;
-                        }
-                        $journal->save();
+                //     foreach ($journals as $journal) {
+                //         if ($journal->debit > 0) {
+                //             $journal->debit = $l_inventory->price * $l_inventory->quantity;
+                //         }
+                //         if ($journal->credit > 0) {
+                //             $journal->credit = $l_inventory->price * $l_inventory->quantity;
+                //         }
+                //         $journal->save();
 
-                        if ($journal->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
-                            $js = Journal::where('form_journal_id', '=', $journal->form_journal_id)->get();
+                //         if ($journal->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
+                //             $js = Journal::where('form_journal_id', '=', $journal->form_journal_id)->get();
 
-                            foreach ($js as $j) {
-                                if ($j->debit > 0) {
-                                    $j->debit = $l_inventory->price * $l_inventory->quantity;
-                                }
-                                if ($j->credit > 0) {
-                                    $j->credit = $l_inventory->price * $l_inventory->quantity;
-                                }
-                                $j->save();
-                            }
-                        }
+                //             foreach ($js as $j) {
+                //                 if ($j->debit > 0) {
+                //                     $j->debit = $l_inventory->price * $l_inventory->quantity;
+                //                 }
+                //                 if ($j->credit > 0) {
+                //                     $j->credit = $l_inventory->price * $l_inventory->quantity;
+                //                 }
+                //                 $j->save();
+                //             }
+                //         }
 
-                        echo 'Update journal ' . $journal->form_journal_id . ' => ' . $journal->debit . ' / ' . $journal->credit . PHP_EOL;
-                    }
+                //         echo 'Update journal ' . $journal->form_journal_id . ' => ' . $journal->debit . ' / ' . $journal->credit . PHP_EOL;
+                //     }
 
-                    $prevTotalQty = $l_inventory->total_quantity_all;
-                    $prevTotalVal = $l_inventory->total_value_all;
-                }
+                //     $prevTotalQty = $l_inventory->total_quantity_all;
+                //     $prevTotalVal = $l_inventory->total_value_all;
+                // }
 
-                $list_inventory = Inventory::where('item_id', '=', $item->id)
-                    ->where('form_date', '>=', $inventory->form_date)
-                    ->orderBy('form_date', 'asc')
-                    ->orderBy('formulir_id', 'asc')
-                    ->get();
+                // $list_inventory = Inventory::where('item_id', '=', $item->id)
+                //     ->where('form_date', '>=', $inventory->form_date)
+                //     ->orderBy('form_date', 'asc')
+                //     ->orderBy('formulir_id', 'asc')
+                //     ->get();
 
-                foreach($list_inventory as $index => $l_inventory) {
-                    $l_inventory->total_value = $l_inventory->total_quantity * $l_inventory->cogs;
-                    $l_inventory->save();
-                }
+                // foreach($list_inventory as $index => $l_inventory) {
+                //     $l_inventory->total_value = $l_inventory->total_quantity * $l_inventory->cogs;
+                //     $l_inventory->save();
+                // }
             }
         }
     }
