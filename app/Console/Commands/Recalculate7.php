@@ -113,6 +113,20 @@ class Recalculate7 extends Command
                             Journal::where('id', 6969)->delete();
                         }
                     }
+
+                    if ($journal->formulir->formulirable_type === 'Point\PointSales\Models\Sales\Invoice') {
+                        $jCogs = Journal::where('coa_id', 385)->first();
+                        $js = Journal::where('coa_id', 169)->get();
+
+                        $sum = 0;
+                        foreach ($js as $j) {
+                            $sum += $j->credit;
+                        }
+
+                        $jCogs->debit = $sum;
+                        $jCogs->save();
+                    }
+
                 }
 
                 $prevTotalQty = $l_inventory->total_quantity_all;
