@@ -92,7 +92,7 @@ class Recalculate6 extends Command
                                 ->orderBy('form_date', 'desc')
                                 ->first();
 
-                            echo 'Found inventory with price > 0 : ' . $is->id . ' => ' . $is->price . "\n";
+                            // echo 'Found inventory with price > 0 : ' . $is->id . ' => ' . $is->price . "\n";
                             if ($is) {
                                 $l_inventory->price = $is->cogs;
                             } else {    
