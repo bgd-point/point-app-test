@@ -187,7 +187,7 @@ class Journal extends Model
         //     return null;
         // }
 
-        // $this->correctPositionJournal();
+        $this->correctPositionJournal();
         $this->insertSubledgerMutation($options);
         return parent::save();
     }
