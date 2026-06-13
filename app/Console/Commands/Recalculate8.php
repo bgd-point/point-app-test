@@ -61,7 +61,7 @@ class Recalculate8 extends Command
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->get();
-            dd($list_inventory);
+            dd($item->name, $inventory->form_date, $list_inventory->count());
             foreach($list_inventory as $index => $l_inventory) {
                 $this->comment('inventory id = ' . $l_inventory->formulir->form_number);
                 $journals = Journal::where('form_journal_id', '=', $l_inventory->formulir_id)
