@@ -56,7 +56,7 @@ class Recalculate8 extends Command
                 continue;
             }
             $list_inventory = Inventory::where('item_id', '=', $item->id)
-                // ->where('form_date', '>=', $inventory->form_date)
+                ->where('form_date', '>=', $inventory->form_date)
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->get();
