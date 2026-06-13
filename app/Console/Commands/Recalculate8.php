@@ -63,6 +63,7 @@ class Recalculate8 extends Command
                 ->get();
 
             foreach($list_inventory as $index => $l_inventory) {
+                $this->comment('inventory id = ' . $l_inventory->formulir->form_number);
                 $journals = Journal::where('form_journal_id', '=', $l_inventory->formulir_id)
                     ->where('subledger_id', '=', $item->id)
                     ->get();
