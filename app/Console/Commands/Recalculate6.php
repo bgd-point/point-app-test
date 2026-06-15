@@ -90,7 +90,8 @@ class Recalculate6 extends Command
                 if ($l_inventory->quantity > 0) {
                     $this->comment($l_inventory->formulir->formulirable_type);
                     if ($l_inventory->formulir->formulirable_type === 'Point\PointInventory\Models\StockOpname\StockOpname' 
-                        || $l_inventory->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection') {
+                        || $l_inventory->formulir->formulirable_type === 'Point\PointInventory\Models\StockCorrection\StockCorrection'
+                        || $l_inventory->formulir->formulirable_type === 'Point\PointInventory\Models\TransferItem\TransferItem') {
                         // $this->comment('Stock Correction / Stock Opname');
                         if ($prevTotalQty == 0) {
                             $is = Inventory::where('item_id', '=', $item->id)
