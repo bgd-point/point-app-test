@@ -136,23 +136,17 @@ class Recalculate7 extends Command
 
                     if ($journal->formulir->formulirable_type === 'Point\PointManufacture\Models\OutputProcess') {
                         Journal::where('form_journal_id', $journal->form_journal_id)->where('coa_id', 509)->delete();
-                        $jDebit = Journal::where('form_journal_id', $journal->form_journal_id)->where('debit', '>', 0)->sum('debit');
+                        $jDebit = Journal::where('form_journal_id', $journal->form_journal_id)->where('debit', '>', 0)->first();
                         $jCredit = Journal::where('form_journal_id', $journal->form_journal_id)->where('credit', '>', 0)->sum('credit');
 
-                        $sum = $jDebit - $jCredit;
+                        $jDebit->credit = $jCredit;
+                        $jDebit->save();
 
-                        $this->comment('Output Process ' . $journal->formulir->form_number . ' => ' . $jDebit . ' - ' . $jCredit . ' = ' . $sum);
+                        $l_inventory->price = $jCredit;
+                        $l_inventory->total_value_all = $prevTotalVal + ($l_inventory->price * $l_inventory->quantity);
+                        $l_inventory->save();
 
-                        $jp = new Journal;
-                        $jp->form_date = $journal->form_date;
-                        $jp->coa_id = 509;
-                        $jp->description = 'selisih sediaan manufacture';
-                        $jp->credit = $sum;
-                        $jp->form_journal_id = $journal->form_journal_id;
-                        $jp->form_reference_id;
-                        $jp->subledger_id;
-                        $jp->subledger_type;
-                        $jp->save();
+                        $this->comment('Output Process ' . $journal->formulir->form_number);
                     }
                 }
 
