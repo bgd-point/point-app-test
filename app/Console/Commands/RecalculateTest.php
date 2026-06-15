@@ -93,7 +93,7 @@ class RecalculateTest extends Command
                 $totalQty += (float) $product->quantity;
             }
 
-            $this->comment('value: ' . $value  . ' / total qty: ' . $totalQty);
+            echo 'value: ' . $value  . ' / total qty: ' . $totalQty . "\n";
 
             if ($totalQty == 0) {
                 // \Log::info('zero: ' . $output->id .' / '. $value . ' \ ' . $totalQty);
