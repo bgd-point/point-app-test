@@ -146,7 +146,7 @@ class Recalculate7 extends Command
                         $l_inventory->total_value_all = $prevTotalVal + ($l_inventory->price * $l_inventory->quantity);
                         $l_inventory->save();
 
-                        $this->comment('Output Process ' . $journal->formulir->form_number);
+                        $this->comment('Output Process ' . $journal->formulir->form_number . ' - ' . $l_inventory->price);
                     }
                 }
 
