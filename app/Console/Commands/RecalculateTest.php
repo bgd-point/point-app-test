@@ -77,6 +77,7 @@ class RecalculateTest extends Command
         $outputs = OutputProcess::join('formulir', 'point_manufacture_output.formulir_id', '=', 'formulir.id')
             ->where('formulir.approval_status', 1)
             ->where('formulir.form_status', 1)
+            ->where('formulir.form_number, OUTPUT/0007/VI/26')
             ->select('point_manufacture_output.*')
             ->get();
 
@@ -91,6 +92,8 @@ class RecalculateTest extends Command
             foreach ($output->product as $product) {
                 $totalQty += (float) $product->quantity;
             }
+
+            $this->comment('value: ' . $value  . ' / total qty: ' . $totalQty);
 
             if ($totalQty == 0) {
                 // \Log::info('zero: ' . $output->id .' / '. $value . ' \ ' . $totalQty);
