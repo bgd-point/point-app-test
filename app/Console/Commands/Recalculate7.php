@@ -142,7 +142,7 @@ class Recalculate7 extends Command
                         $jDebit->debit = $jCredit;
                         $jDebit->save();
 
-                        $l_inventory->price = $jCredit;
+                        $l_inventory->price = $jCredit / $l_inventory->quantity;
                         $l_inventory->total_value_all = $prevTotalVal + ($l_inventory->price * $l_inventory->quantity);
                         $l_inventory->save();
 
