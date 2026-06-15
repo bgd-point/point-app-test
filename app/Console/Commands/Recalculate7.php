@@ -139,10 +139,12 @@ class Recalculate7 extends Command
                         $jDebit = Journal::where('form_journal_id', $journal->form_journal_id)->where('debit', '>', 0)->first();
                         $jCredit = Journal::where('form_journal_id', $journal->form_journal_id)->where('credit', '>', 0)->sum('credit');
 
-                        $jDebit->debit = $jCredit;
+                        $price = $jCredit / $l_inventory->quantity;
+
+                        $jDebit->debit = ($l_inventory->price * $l_inventory->quantity);
                         $jDebit->save();
 
-                        $l_inventory->price = $jCredit / $l_inventory->quantity;
+                        $l_inventory->price = $price;
                         $l_inventory->total_value_all = $prevTotalVal + ($l_inventory->price * $l_inventory->quantity);
                         $l_inventory->save();
 
