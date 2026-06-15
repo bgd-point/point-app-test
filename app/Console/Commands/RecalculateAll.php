@@ -57,6 +57,7 @@ class RecalculateAll extends Command
             $this->comment('I' . count($items) . ' = ' . $i);
             foreach($list_inventory as $index => $l_inventory) {
                 $l_inventory->total_value = $l_inventory->total_quantity * $l_inventory->cogs;
+                $l_inventory->recalculate = 0;
                 $l_inventory->save();
             }
             \DB::commit();
