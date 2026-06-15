@@ -139,7 +139,7 @@ class Recalculate7 extends Command
                         $jDebit = Journal::where('form_journal_id', $journal->form_journal_id)->where('debit', '>', 0)->first();
                         $jCredit = Journal::where('form_journal_id', $journal->form_journal_id)->where('credit', '>', 0)->sum('credit');
 
-                        $jDebit->credit = $jCredit;
+                        $jDebit->debit = $jCredit;
                         $jDebit->save();
 
                         $l_inventory->price = $jCredit;
