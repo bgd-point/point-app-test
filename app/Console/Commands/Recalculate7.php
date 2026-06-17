@@ -66,7 +66,7 @@ class Recalculate7 extends Command
                 $journals = Journal::where('form_journal_id', '=', $l_inventory->formulir_id)
                     ->where('subledger_id', '=', $item->id)
                     ->get();
-
+                echo $l_inventory->formulir->form_number . ' = ' . $l_inventory->price . ' / ' . $l_inventory->quantity . ' / ' . $l_inventory->total_value . "\n";
                 foreach ($journals as $journal) {
                     if ($journal->debit > 0) {
                         $journal->debit = abs($l_inventory->price * $l_inventory->quantity);
