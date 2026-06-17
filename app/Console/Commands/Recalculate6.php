@@ -69,7 +69,8 @@ class Recalculate6 extends Command
                 ->orderBy('formulir_id', 'asc')
                 ->get();
 
-            echo ('test', $list_inventory);
+            echo ('$list_inventory');
+            echo ($list_inventory);
             
             $prevTotalQty = 0;
             $prevTotalVal = 0;
