@@ -42,7 +42,7 @@ class Recalculate6 extends Command
     {
         $this->comment('handle inventory all');
 
-        $items = Item::all();
+        $items = Item::where('id', 1546)->get();
 
         $inventory = Inventory::where('id', '=', 1768)->first();
         $inventory->price = 200900;
