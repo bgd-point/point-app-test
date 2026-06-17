@@ -93,7 +93,7 @@ class RecalculateTest extends Command
                 $totalQty += (float) $product->quantity;
             }
 
-            echo 'value: ' . $value  . ' / total qty: ' . $totalQty . "\n";
+            echo $output->formulir->form_number . ' = value: ' . $value  . ' / total qty: ' . $totalQty . "\n";
 
             if ($totalQty == 0) {
                 // \Log::info('zero: ' . $output->id .' / '. $value . ' \ ' . $totalQty);
