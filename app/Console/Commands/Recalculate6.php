@@ -72,6 +72,7 @@ class Recalculate6 extends Command
             $prevTotalVal = 0;
             $i=0;
             foreach($list_inventory as $index => $l_inventory) {
+                console.log('inventory id = ' . $l_inventory->id . ' | ' . $prevTotalQty . ' | ' . $prevTotalVal);
                 if ($i == 0) {
                     $i++;
                     $prevTotalQty = $l_inventory->total_quantity_all;
@@ -80,6 +81,7 @@ class Recalculate6 extends Command
                 }
 
                 if ($l_inventory->quantity < 0) {
+                    console.log('here');
                     if ($prevTotalQty == 0) {
                         $l_inventory->price = 0;
                     } else {
