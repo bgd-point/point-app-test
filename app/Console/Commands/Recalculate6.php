@@ -52,7 +52,7 @@ class Recalculate6 extends Command
         $inventory->price = 27477477.48;
         $inventory->save();
 
-        console.log($items);
+        echo ($items);
         foreach ($items as $item) {
             $inventory = Inventory::where('item_id', '=', $item->id)
                 ->where('form_date', '<', '2026-05-05')
@@ -69,13 +69,13 @@ class Recalculate6 extends Command
                 ->orderBy('formulir_id', 'asc')
                 ->get();
 
-            console.log('test', $list_inventory);
+            echo ('test', $list_inventory);
             
             $prevTotalQty = 0;
             $prevTotalVal = 0;
             $i=0;
             foreach($list_inventory as $index => $l_inventory) {
-                console.log('inventory id = ' . $l_inventory->id . ' | ' . $prevTotalQty . ' | ' . $prevTotalVal);
+                echo ('inventory id = ' . $l_inventory->id . ' | ' . $prevTotalQty . ' | ' . $prevTotalVal);
                 if ($i == 0) {
                     $i++;
                     $prevTotalQty = $l_inventory->total_quantity_all;
@@ -84,7 +84,7 @@ class Recalculate6 extends Command
                 }
 
                 if ($l_inventory->quantity < 0) {
-                    console.log('here');
+                    echo ('here');
                     if ($prevTotalQty == 0) {
                         $l_inventory->price = 0;
                     } else {
