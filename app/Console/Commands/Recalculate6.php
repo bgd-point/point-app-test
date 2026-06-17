@@ -60,16 +60,17 @@ class Recalculate6 extends Command
                 ->orderBy('formulir_id', 'desc')
                 ->first();
             if (!$inventory) {
-                continue;
-            }
-            
-            $inventory = Inventory::where('item_id', '=', $item->id)
+                $inventory = Inventory::where('item_id', '=', $item->id)
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->first();
-            if (!$inventory) {
-                continue;
+                if (!$inventory) {
+                    echo 'c2' .PHP_EOL;
+                    continue;
+                }
             }
+            
+            
 
             $list_inventory = Inventory::where('item_id', '=', $item->id)
                 ->where('form_date', '>=', $inventory->form_date)
