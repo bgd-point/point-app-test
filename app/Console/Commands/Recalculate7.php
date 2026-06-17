@@ -43,8 +43,8 @@ class Recalculate7 extends Command
     {
         $this->comment('handle inventory all');
 
-        $items = Item::where('id', 678)->get();
-        // $items = Item::all();
+        // $items = Item::where('id', 678)->get();
+        $items = Item::all();
 
         foreach ($items as $item) {
             $inventory = Inventory::where('item_id', '=', $item->id)
@@ -62,7 +62,7 @@ class Recalculate7 extends Command
                 ->orderBy('formulir_id', 'asc')
                 ->get();
 
-                $prevTotalQty=0;
+            $prevTotalQty = 0;
             $prevTotalVal = 0;
 
             foreach($list_inventory as $index => $l_inventory) {
