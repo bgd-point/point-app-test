@@ -62,6 +62,9 @@ class Recalculate7 extends Command
                 ->orderBy('formulir_id', 'asc')
                 ->get();
 
+                $prevTotalQty=0;
+            $prevTotalVal = 0;
+
             foreach($list_inventory as $index => $l_inventory) {
                 $journals = Journal::where('form_journal_id', '=', $l_inventory->formulir_id)
                     ->where('subledger_id', '=', $item->id)
