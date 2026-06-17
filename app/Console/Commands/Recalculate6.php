@@ -52,6 +52,7 @@ class Recalculate6 extends Command
         $inventory->price = 27477477.48;
         $inventory->save();
 
+        console.log($items);
         foreach ($items as $item) {
             $inventory = Inventory::where('item_id', '=', $item->id)
                 ->where('form_date', '<', '2026-05-05')
