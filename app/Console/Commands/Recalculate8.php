@@ -43,8 +43,8 @@ class Recalculate8 extends Command
     {
         $this->comment('handle inventory all');
 
-        $items = Item::where('id', 741)->get();
-        // $items = Item::all();
+        // $items = Item::where('id', 741)->get();
+        $items = Item::all();
 
         foreach ($items as $item) {
             $inventory = Inventory::where('item_id', '=', $item->id)
@@ -60,7 +60,7 @@ class Recalculate8 extends Command
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->get();
-            dd($item->id, $inventory->form_date, $list_inventory->count());
+            
             foreach($list_inventory as $index => $l_inventory) {
                 $this->comment('inventory id = ' . $l_inventory->formulir->form_number);
                 $journals = Journal::where('form_journal_id', '=', $l_inventory->formulir_id)
