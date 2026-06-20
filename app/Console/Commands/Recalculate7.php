@@ -118,24 +118,24 @@ class Recalculate7 extends Command
                         // }
                     }
 
-                    if ($journal->formulir->formulirable_type === 'Point\PointSales\Models\Sales\Invoice') {
-                        $jCogs = Journal::where('form_journal_id', $journal->form_journal_id)->where('coa_id', 385)->delete();
-                        $js = Journal::where('form_journal_id', $journal->form_journal_id)->where('description', 'like', 'invoice "%')->get();
+                    // if ($journal->formulir->formulirable_type === 'Point\PointSales\Models\Sales\Invoice') {
+                    //     $jCogs = Journal::where('form_journal_id', $journal->form_journal_id)->where('coa_id', 385)->delete();
+                    //     $js = Journal::where('form_journal_id', $journal->form_journal_id)->where('description', 'like', 'invoice "%')->get();
 
-                        foreach ($js as $j) {
-                            $cost_of_sales_account = JournalHelper::getAccount('point sales indirect', 'cost of sales');
-                            $jp = new Journal;
-                            $jp->form_date = $j->form_date;
-                            $jp->coa_id = $cost_of_sales_account;
-                            $jp->description = 'invoice indirect sales "' . $inventory->formulir->form_number.'"';
-                            $jp->debit = $j->credit;
-                            $jp->form_journal_id = $j->form_journal_id;
-                            $jp->form_reference_id;
-                            $jp->subledger_id;
-                            $jp->subledger_type;
-                            $jp->save();
-                        }
-                    }
+                    //     foreach ($js as $j) {
+                    //         $cost_of_sales_account = JournalHelper::getAccount('point sales indirect', 'cost of sales');
+                    //         $jp = new Journal;
+                    //         $jp->form_date = $j->form_date;
+                    //         $jp->coa_id = $cost_of_sales_account;
+                    //         $jp->description = 'invoice indirect sales "' . $inventory->formulir->form_number.'"';
+                    //         $jp->debit = $j->credit;
+                    //         $jp->form_journal_id = $j->form_journal_id;
+                    //         $jp->form_reference_id;
+                    //         $jp->subledger_id;
+                    //         $jp->subledger_type;
+                    //         $jp->save();
+                    //     }
+                    // }
 
                     if ($journal->formulir->formulirable_type === 'Point\PointManufacture\Models\OutputProcess') {
                         Journal::where('form_journal_id', $journal->form_journal_id)->where('coa_id', 509)->delete();
