@@ -32,13 +32,15 @@ class ReceiveItemHelper
 
             $warehouseInTransit = Warehouse::where('name', 'In Transit')->first();
 
+            $cogs = InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $transfer_item_detail->item_id, 1);
+
             if ($warehouseInTransit) {
                 $inventory = new Inventory;
                 $inventory->form_date = date('Y-m-d H:i:s');
                 $inventory->formulir_id = $receive_item->formulir_id;
                 $inventory->warehouse_id = $warehouseInTransit->id;
                 $inventory->item_id = $transfer_item_detail->item_id;
-                $inventory->price = InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $transfer_item_detail->item_id, 1);
+                $inventory->price = $cogs;
                 $inventory->quantity = number_format_db($quantity[$i]);
                 if ($quantity > 0) {
                     $inventory_helper = new InventoryHelper($inventory);
@@ -46,17 +48,42 @@ class ReceiveItemHelper
                 }
             }
 
+            $in_transit_account = JournalHelper::getAccount('point inventory transfer item', 'inventory in transit');
+            $journal = new Journal();
+            $journal->form_date = date('Y-m-d H:i:s');
+            $journal->coa_id = $in_transit_account;
+            $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
+            $journal->debit = 0;
+            $journal->credit = $cogs * $transfer_item_detail->qty_received;
+            $journal->form_journal_id = $transfer_item->formulir_id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $transfer_item_detail->item_id;
+            $journal->subledger_type = get_class($transfer_item_detail->item);
+            $journal->save();
+
             $inventory = new Inventory;
             $inventory->form_date = date('Y-m-d H:i:s');
             $inventory->formulir_id = $receive_item->formulir_id;
             $inventory->warehouse_id = $receive_item->warehouse_receiver_id;
             $inventory->item_id = $transfer_item_detail->item_id;
-            $inventory->price = InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $transfer_item_detail->item_id, 1);
+            $inventory->price = $cogs;
             $inventory->quantity = number_format_db($quantity[$i]);
             if ($quantity > 0) {
                 $inventory_helper = new InventoryHelper($inventory);
                 $inventory_helper->in();
             }
+
+            $journal = new Journal();
+            $journal->form_date = date('Y-m-d H:i:s');
+            $journal->coa_id = $transfer_item_detail->item->account_asset_id;
+            $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
+            $journal->debit = $cogs * $transfer_item_detail->qty_received;
+            $journal->credit = 0;
+            $journal->form_journal_id = $transfer_item->formulir_id;
+            $journal->form_reference_id;
+            $journal->subledger_id = $transfer_item_detail->item_id;
+            $journal->subledger_type = get_class($transfer_item_detail->item);
+            $journal->save();
 
         }
 
