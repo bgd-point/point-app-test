@@ -111,6 +111,7 @@ class TransferItemApprovalController extends Controller
         DB::beginTransaction();
         foreach ($array_formulir_id as $id) {
             $transfer_item = TransferItem::where('formulir_id', $id)->first();
+            TransferItemHelper::approve($transfer_item);
             FormulirHelper::approve($transfer_item->formulir, $approval_message, 'approval.point.purchasing.requisition', $token);
             timeline_publish('approve', $transfer_item->formulir->form_number . ' approved', $transfer_item->formulir->approval_to);
         }
