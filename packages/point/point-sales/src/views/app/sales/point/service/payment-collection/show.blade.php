@@ -89,7 +89,6 @@
                                             $payment_collection_detail = \Point\PointSales\Models\Service\PaymentCollectionDetail::find($refer->to_id);
                                             $reference_type = $refer->by_type;
                                             $reference = $reference_type::find($refer->by_id);
-                                            dd($refer);
                                             ?>
                                             <tr>
                                                 <td>
