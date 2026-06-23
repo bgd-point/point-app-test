@@ -13,7 +13,7 @@ use Point\PointInventory\Models\TransferItem\TransferItemDetail;
 
 class ReceiveItemHelper
 {
-    public static function create($receive_item)
+    public static function create($transfer_item)
     {
         $date = app('request')->input('form_date');
         $form_date = DateHelper::formatDB($date, app('request')->input('time'));
@@ -22,11 +22,11 @@ class ReceiveItemHelper
         $quantity = app('request')->input('quantity_transfer');
         $price = app('request')->input('cogs');
 
-        $receive_item->received_date = $form_date;
-        $receive_item->save();
+        $transfer_item->received_date = $form_date;
+        $transfer_item->save();
 
         for ($i=0; $i < count($item); $i++) {
-            $transfer_item_detail = TransferItemDetail::where('transfer_item_id', $receive_item->id)->where('item_id', $item[$i])->first();
+            $transfer_item_detail = TransferItemDetail::where('transfer_item_id', $transfer_item->id)->where('item_id', $item[$i])->first();
             $transfer_item_detail->qty_received = number_format_db($quantity[$i]);
             $transfer_item_detail->save();
 
@@ -37,7 +37,7 @@ class ReceiveItemHelper
             if ($warehouseInTransit) {
                 $inventory = new Inventory;
                 $inventory->form_date = date('Y-m-d H:i:s');
-                $inventory->formulir_id = $receive_item->formulir_id;
+                $inventory->formulir_id = $transfer_item->formulir_id;
                 $inventory->warehouse_id = $warehouseInTransit->id;
                 $inventory->item_id = $transfer_item_detail->item_id;
                 $inventory->price = $cogs;
@@ -63,8 +63,8 @@ class ReceiveItemHelper
 
             $inventory = new Inventory;
             $inventory->form_date = date('Y-m-d H:i:s');
-            $inventory->formulir_id = $receive_item->formulir_id;
-            $inventory->warehouse_id = $receive_item->warehouse_receiver_id;
+            $inventory->formulir_id = $transfer_item->formulir_id;
+            $inventory->warehouse_id = $transfer_item->warehouse_receiver_id;
             $inventory->item_id = $transfer_item_detail->item_id;
             $inventory->price = $cogs;
             $inventory->quantity = number_format_db($quantity[$i]);
@@ -87,7 +87,7 @@ class ReceiveItemHelper
 
         }
 
-        FormulirHelper::close($receive_item->formulir_id);
+        FormulirHelper::close($transfer_item->formulir_id);
     }
 
     public static function updateJournal($transfer_item)
