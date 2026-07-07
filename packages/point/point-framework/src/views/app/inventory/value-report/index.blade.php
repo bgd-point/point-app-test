@@ -79,8 +79,6 @@
                                 <th colspan="2">Stock In <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
                                 <th colspan="2">Stock Out <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
                             @endif
-                            <th colspan="2">Stock In <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
-                            <th colspan="2">Stock Out <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
                             <th colspan="3">Closing Stock <br/> <span style="font-size:12px"> ({{date_format_view($date_to)}})</th>
                         </tr>
                         <tr>
