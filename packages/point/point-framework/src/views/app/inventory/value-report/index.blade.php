@@ -75,6 +75,10 @@
                             <th>Item Name</th>
                             <th>Unit</th>
                             <th colspan="2">Opening Stock <br/> <span style="font-size:12px">({{date_format_view($date_from)}})</span></th>
+                            @if(!$search_warehouse)
+                                <th colspan="2">Stock In <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
+                                <th colspan="2">Stock Out <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
+                            @endif
                             <th colspan="2">Stock In <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
                             <th colspan="2">Stock Out <br/> <span style="font-size:12px"> ({{date_format_view($date_from)}}) - ({{date_format_view($date_to)}})</th>
                             <th colspan="3">Closing Stock <br/> <span style="font-size:12px"> ({{date_format_view($date_to)}})</th>
@@ -87,10 +91,12 @@
                             <th></th>
                             <th style="text-align: center">QTY</th>
                             <th style="text-align: center">VALUE</th>
+                            @if(!$search_warehouse)
                             <th style="text-align: center">QTY</th>
                             <th style="text-align: center">VALUE</th>
                             <th style="text-align: center">QTY</th>
                             <th style="text-align: center">VALUE</th>
+                            @endif
                             <th style="text-align: center">QTY</th>
                             <th style="text-align: center">VALUE</th>
                             <th style="text-align: center">LAST BUY PRICE</th>
@@ -236,10 +242,12 @@
                                 <td>{{ $item->item->defaultUnit($item->item->id)->name }}</td>
                                 <td style="text-align: right">{{number_format_quantity($opening_stock)}}</td>
                                 <td style="text-align: right">{{number_format_quantity($opening_value)}}</td>
+                                @if(!$search_warehouse)
                                 <td style="text-align: right">{{number_format_quantity($stock_in)}}</td>
                                 <td style="text-align: right">{{number_format_quantity($value_in)}}</td>
                                 <td style="text-align: right">{{number_format_quantity($stock_out)}}</td>
                                 <td style="text-align: right">{{number_format_quantity($value_out)}}</td>
+                                @endif
                                 <td style="text-align: right">{{number_format_quantity($closing_stock)}}</td>
                                 <td style="text-align: right">{{number_format_quantity($closing_value)}}</td>
                                 <td style="text-align: right">{{number_format_quantity($price)}}</td>
