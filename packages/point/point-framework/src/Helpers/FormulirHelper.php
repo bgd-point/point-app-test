@@ -568,8 +568,8 @@ class FormulirHelper
         $form_number = FormulirHelper::number($formulir_number_code, $form_date);
 
         $isExist = Formulir::where('form_date', '=', $form_date)
-             // created_at between now and 30 seconds ago, to prevent duplicate form number when user clicks submit multiple times
-            ->where('created_at', '>=', \Carbon::now()->subSeconds(30))
+             // created_at between now and 10 seconds ago, to prevent duplicate form number when user clicks submit multiple times
+            ->where('created_at', '>=', \Carbon::now()->subSeconds(10))
             ->where('created_by', '=', $request['user']->id)
             ->get()
             ->count();
