@@ -17,7 +17,7 @@ use Point\PointInventory\Models\TransferItem\TransferItem;
 use Point\PointSales\Models\Sales\Retur;
 use Point\Framework\Models\Master\Warehouse;
 
-class Recalculate5 extends Command
+class Recalculate5kb extends Command
 {
     /**
      * The name and signature of the console command.
