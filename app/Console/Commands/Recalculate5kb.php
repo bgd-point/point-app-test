@@ -24,7 +24,7 @@ class Recalculate5 extends Command
      *
      * @var string
      */
-    protected $signature = 'dev:recalculate:5';
+    protected $signature = 'dev:recalculate:5kb';
 
     /**
      * The console command description.
