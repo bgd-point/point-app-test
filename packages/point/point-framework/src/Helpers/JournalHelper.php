@@ -133,8 +133,11 @@ class JournalHelper
         return static::journalValue($journal);
     }
 
-    public static function categoryValue($coa_category_id, $date_from, $date_to)
+    public static function categoryValue($coa_category_id, $date_to)
     {
+        // DATE FROM SHOULD BE SET TO BEGINNING OF TIME IN $date_to YEAR
+        $date_form = date('Y-01-01', strtotime($date_to));
+
         // RETAINED EARNING
         if ($coa_category_id == 13) {
             $coa_from_category = Coa::where('coa_category_id', '=', 14)

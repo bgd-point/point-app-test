@@ -13,8 +13,6 @@
                     <div class="form-group">
                         <div class="col-sm-6">
                             <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
-                                <input type="text" name="date_from" id="date-from" class="form-control date input-datepicker" placeholder="From"  value="{{\Input::get('date_from') ? \Input::get('date_from') : date(date_format_get(), strtotime($date_from))}}">
-                                <span class="input-group-addon"><i class="fa fa-chevron-right"></i></span>
                                 <input type="text" name="date_to" id="date-to" class="form-control date input-datepicker" placeholder="To" value="{{\Input::get('date_to') ? \Input::get('date_to') : date(date_format_get(), strtotime($date_to))}}">
                             </div>
                         </div>
