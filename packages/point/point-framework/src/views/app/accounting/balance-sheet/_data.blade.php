@@ -13,7 +13,7 @@
     <?php $current_group_category = 0;?>
     @foreach($coa_asset->category as $category)
         <?php
-            $value = \JournalHelper::categoryValue($category->id, $date_from, $date_to);
+            $value = \JournalHelper::categoryValue($category->id, $date_to);
             $total_asset += $value;
         ?>
 
@@ -49,7 +49,7 @@
     </tr>
     @foreach($coa_liability->category as $category)
         <?php
-            $value = \JournalHelper::categoryValue($category->id, $date_from, $date_to);
+            $value = \JournalHelper::categoryValue($category->id, $date_to);
             $total_liability += $value;
         ?>
 
@@ -72,7 +72,7 @@
     </tr>
     @foreach($coa_equity->category as $category)
         <?php
-            $value = \JournalHelper::categoryValue($category->id, $date_from, $date_to);
+            $value = \JournalHelper::categoryValue($category->id, $date_to);
             $total_equity += $value;
         ?>
 
