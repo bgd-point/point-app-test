@@ -136,7 +136,7 @@ class JournalHelper
     public static function categoryValue($coa_category_id, $date_to)
     {
         // DATE FROM SHOULD BE SET TO BEGINNING OF TIME IN $date_to YEAR
-        $date_form = date('Y-01-01', strtotime($date_to));
+        $date_from = date('Y-01-01', strtotime($date_to));
 
         // RETAINED EARNING
         if ($coa_category_id == 13) {
@@ -246,7 +246,7 @@ class JournalHelper
     public function groupCategoryValue($coa_group_category_id, $date_to)
     {
         // DATE FROM SHOULD BE SET TO BEGINNING OF TIME IN $date_to YEAR
-        $date_form = date('Y-01-01', strtotime($date_to));
+        $date_from = date('Y-01-01', strtotime($date_to));
 
         $coa_from_group_category = Coa::join('coa_category', 'coa_category.id', '=', 'coa.coa_category_id')
             ->join('coa_group_category', 'coa_category.coa_group_category_id', '=', 'coa_group_category.id')
