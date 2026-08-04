@@ -243,15 +243,17 @@ class JournalHelper
         return static::journalValue($journal);
     }
 
-    public function groupCategoryValue($coa_group_category_id, $date_from, $date_to)
+    public function groupCategoryValue($coa_group_category_id, $date_to)
     {
+        // DATE FROM SHOULD BE SET TO BEGINNING OF TIME IN $date_to YEAR
+        $date_form = date('Y-01-01', strtotime($date_to));
+
         $coa_from_group_category = Coa::join('coa_category', 'coa_category.id', '=', 'coa.coa_category_id')
             ->join('coa_group_category', 'coa_category.coa_group_category_id', '=', 'coa_group_category.id')
             ->where('coa_group_category_id', '=', $coa_group_category_id)
             ->lists('coa.id');
 
         $journal = Journal::whereIn('coa_id', $coa_from_group_category)
-            ->where('form_date', '>=', $date_from)
             ->where('form_date', '<=', $date_to)
             ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
             ->first();
