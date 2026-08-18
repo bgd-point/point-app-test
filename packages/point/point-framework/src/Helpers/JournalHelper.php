@@ -148,13 +148,20 @@ class JournalHelper
                 ->orWhere('coa_category_id', '=', 17)
                 ->orWhere('coa_category_id', '=', 18)
                 ->lists('coa.id');
+            
+            $coa_from_x = Coa::where('coa_category_id', '=', 12)->lists('coa.id');
 
             $journal = Journal::whereIn('coa_id', $coa_from_category)
                 ->where('form_date', '<', $date_from)
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
                 ->first();
 
-            return static::journalValue($journal);
+            $journal_x = Journal::whereIn('coa_id', $coa_from_x)
+                ->where('form_date', '<', $date_from)
+                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+                ->first();
+
+            return static::journalValue($journal) + static::journalValue($journal_x);
         }
         // RETAINED EARNING
         else if ($coa_category_id == 13) {
@@ -183,7 +190,13 @@ class JournalHelper
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
                 ->first();
 
-            return static::journalValue($journal_open) + static::journalValue($journal);
+            $coa_from_x = Coa::where('coa_category_id', '=', 13)->lists('coa.id');
+            $journal_x = Journal::whereIn('coa_id', $coa_from_x)
+                ->where('form_date', '<', $date_from)
+                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+                ->first();
+
+            return static::journalValue($journal_open) + static::journalValue($journal) + static::journalValue($journal_x);
         } else {
             $coa_from_category = Coa::where('coa_category_id', '=', $coa_category_id)->lists('coa.id');
 
