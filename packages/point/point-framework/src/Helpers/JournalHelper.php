@@ -138,8 +138,33 @@ class JournalHelper
         // DATE FROM SHOULD BE SET TO BEGINNING OF TIME IN $date_to YEAR
         $date_from = date('Y-01-01', strtotime($date_to));
 
+        // CURRENT EARNING (PROFIT LOSS)
+        if ($coa_category_id == 12) {
+            // + COA CATEGORY 12 = CURRENT EARNING 
+            // + COA CATEGORY 13 = RETAINED EARNING 
+            $coa_from_category = Coa::where('coa_category_id', '=', 14)
+                ->orWhere('coa_category_id', '=', 15)
+                ->orWhere('coa_category_id', '=', 16)
+                ->orWhere('coa_category_id', '=', 17)
+                ->orWhere('coa_category_id', '=', 18)
+                ->lists('coa.id');
+
+            $journal = Journal::whereIn('coa_id', $coa_from_category)
+                ->where('form_date', '<', $date_from)
+                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+                ->first();
+
+            return static::journalValue($journal);
+        }
         // RETAINED EARNING
-        if ($coa_category_id == 13) {
+        else if ($coa_category_id == 13) {
+            // COA CATEGORY 
+            // 14 = REVENUE, 
+            // 15 = COST OF GOODS SOLD, 
+            // 16 = EXPENSE, 
+            // 17 = OTHER INCOME, 
+            // 18 = OTHER EXPENSE
+            // + COA CATEGORY 13 = RETAINED EARNING (FILTER BASED ON DATE FROM AND DATE TO)
             $coa_from_category = Coa::where('coa_category_id', '=', 14)
                 ->orWhere('coa_category_id', '=', 15)
                 ->orWhere('coa_category_id', '=', 16)
