@@ -168,7 +168,7 @@ class JournalHelper
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
                 ->first();
 
-            return static::journalValue($journal);
+            return static::journalValue($journal) + static::journalValue($journal_x);
         }
         // RETAINED EARNING
         else if ($coa_category_id == 13) {
