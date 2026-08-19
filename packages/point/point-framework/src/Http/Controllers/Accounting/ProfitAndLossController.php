@@ -39,13 +39,11 @@ class ProfitAndLossController extends Controller
         $view->total_month = $total_month;
         $view->list_coa_revenue = Coa::join('coa_category', 'coa_category.id', '=', 'coa.coa_category_id')
             ->where('coa_category.coa_position_id', '=', 4)
-            ->active()
             ->orderBy('coa.coa_number')
             ->select('coa.*')
             ->get();
         $view->list_coa_expense = Coa::join('coa_category', 'coa_category.id', '=', 'coa.coa_category_id')
             ->where('coa_category.coa_position_id', '=', 5)
-            ->active()
             ->orderBy('coa.coa_number')
             ->select('coa.*')
             ->get();
