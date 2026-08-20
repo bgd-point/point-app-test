@@ -22,10 +22,17 @@ class BalanceSheetController extends Controller
         $month_to = request('month_to', $default_date->month);
         $year_to = request('year_to', $default_date->year);
 
-        if ($month_to == date('n') && $year_to == date('Y')) {
-            gritter_error('cannot select current month and year');
+        $current_year = date('Y');
+        $current_month = date('n');
+
+        if (
+            $year_to > $current_year ||
+            ($year_to == $current_year && $month_to >= $current_month)
+        ) {
+            gritter_error('cannot select current or future month and year');
+
             return back()->withErrors([
-                'date_to' => 'The selected month and year cannot be the current month and year.',
+                'date_to' => 'The selected month and year cannot be the current month or a future month.',
             ]);
         }
 
@@ -70,12 +77,20 @@ class BalanceSheetController extends Controller
             )
             : date('Y-m-t 23:59:59');
 
-        $month_to = request('month_to');
-        $year_to = request('year_to');
+        $month_to = request('month_to', $default_date->month);
+        $year_to = request('year_to', $default_date->year);
 
-        if ($month_to == date('n') && $year_to == date('Y')) {
+        $current_year = date('Y');
+        $current_month = date('n');
+
+        if (
+            $year_to > $current_year ||
+            ($year_to == $current_year && $month_to >= $current_month)
+        ) {
+            gritter_error('cannot select current or future month and year');
+
             return back()->withErrors([
-                'date_to' => 'The selected month and year cannot be the current month and year.',
+                'date_to' => 'The selected month and year cannot be the current month or a future month.',
             ]);
         }
 
