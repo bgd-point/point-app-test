@@ -13,9 +13,12 @@
                     <div class="form-group">
                         <div class="col-sm-2">
                             <select name="month_to" data-placeholder="Choose one.." class="selectize-standard">
-                                @for($i=1;$i<=12;$i++)
-                                    <option value="{{$i}}" @if(app('request')->input('month_to') == $i) selected @endif>{{$month[$i-1]}}</option>
-                                @endfor
+                            @for($i = 1; $i <= 12; $i++)
+                                <option value="{{ $i }}"
+                                    @if(request('month_to', now()->subMonth()->month) == $i) selected @endif>
+                                    {{ $month[$i - 1] }}
+                                </option>
+                            @endfor
                             </select>
                         </div>
                         <div class="col-sm-2">
@@ -45,9 +48,13 @@
 @section('scripts')
 <script type="text/javascript">
     function exportExcel() {
-        var date_from = $("#date-from").val();
-        var date_to = $("#date-to").val();
-        var url = '{{url()}}/accounting/balance-sheet/export/?date_from='+date_from+'&date_to='+date_to;
+        var month_to = $('select[name="month_to"]').val();
+        var year_to = $('select[name="year_to"]').val();
+
+        var url = '{{ url() }}/accounting/balance-sheet/export/?month_to='
+            + month_to
+            + '&year_to='
+            + year_to;
         location.href = url;
     }
 
