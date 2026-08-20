@@ -41,7 +41,7 @@ class BalanceSheetController extends Controller
     {
         $file_name = 'Balance Sheet '.auth()->user()->id . '' . date('Y-m-d_His');
         $date_from = '2000-01-01 00:00:00';
-        $date_to = $view->date_to = (app('request')->input('month_to') && app('request')->input('year_to'))
+        $date_to = (app('request')->input('month_to') && app('request')->input('year_to'))
             ? date(
                 'Y-m-t 23:59:59',
                 strtotime(
