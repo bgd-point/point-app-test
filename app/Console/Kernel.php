@@ -51,6 +51,7 @@ class Kernel extends ConsoleKernel
         Commands\RecalculateInput::class,
         Commands\RecalculateOutput::class,
         // Commands\Recalculate::class,
+        Commands\RecalculateJournalHppKb::class,
         Commands\RejournalIO::class,
         // Commands\Reinvoice::class,
         Commands\InventoryCheck::class,

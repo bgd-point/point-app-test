@@ -24,7 +24,7 @@ use Point\Framework\Models\Journal;
  * through inventory records chronologically and updating the rolling
  * total quantity, total value, and average cost (cogs).
  */
-class RecalculateJournalHpp extends Command
+class RecalculateJournalHppKb extends Command
 {
     /**
      * The name and signature of the console command.
