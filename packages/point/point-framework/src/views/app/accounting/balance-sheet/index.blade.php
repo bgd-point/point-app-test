@@ -15,7 +15,7 @@
                             <select name="month_to" data-placeholder="Choose one.." class="selectize-standard">
                             @for($i = 1; $i <= 12; $i++)
                                 <option value="{{ $i }}"
-                                    @if(request('month_to', now()->subMonth()->month) == $i) selected @endif>
+                                    @if(request('month_to', \Carbon::now()->subMonth()->month) == $i) selected @endif>
                                     {{ $month[$i - 1] }}
                                 </option>
                             @endfor
