@@ -11,9 +11,21 @@
             <div class="panel-body">
                 <form action="{{ url('#') }}" method="get" class="form-horizontal">
                     <div class="form-group">
-                        <div class="col-sm-6">
-                            <div class="input-group input-daterange" data-date-format="{{date_format_masking()}}">
-                                <input type="text" name="date_to" id="date-to" class="form-control date input-datepicker" placeholder="To" value="{{\Input::get('date_to') ? \Input::get('date_to') : date(date_format_get(), strtotime($date_to))}}">
+                         <div class="col-sm-12">
+                            <label class="col-md-3 control-label">From</label>
+                            <div class="col-sm-2">
+                                <select name="month_to" data-placeholder="Choose one.." class="selectize-standard">
+                                    @for($i=1;$i<=12;$i++)
+                                        <option value="{{$i}}" @if(app('request')->input('month_to') == $i) selected @endif>{{$month[$i-1]}}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <select name="year_to" data-placeholder="Choose one.." class="selectize-standard">
+                                    @for($i = date('Y'); $i >= date('Y') - 4; $i--)
+                                        <option value="{{ $i }}" @if(app('request')->input('year_to') == $i) selected @endif>{{ $i }}</option>
+                                    @endfor
+                                </select>
                             </div>
                         </div>
                         <div class="col-sm-6">

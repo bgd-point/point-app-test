@@ -25,7 +25,14 @@ class BalanceSheetController extends Controller
         $view->total_liability = 0;
         $view->total_equity = 0;
         $view->date_from = $date_from;
-        $view->date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : $date_to;
+        $view->date_to = (app('request')->input('month_to') && app('request')->input('year_to'))
+            ? date(
+                'Y-m-t 23:59:59',
+                strtotime(
+                    app('request')->input('year_to') . '-' . app('request')->input('month_to') . '-01'
+                )
+            )
+            : date('Y-m-t 23:59:59');
         return $view;
     }
 
@@ -33,7 +40,14 @@ class BalanceSheetController extends Controller
     {
         $file_name = 'Balance Sheet '.auth()->user()->id . '' . date('Y-m-d_His');
         $date_from = '2000-01-01 00:00:00';
-        $date_to = \Input::get('date_to') ? date_format_db(\Input::get('date_to'), 'end') : date('Y-m-d 23:59:59');
+        $date_to = $view->date_to = (app('request')->input('month_to') && app('request')->input('year_to'))
+            ? date(
+                'Y-m-t 23:59:59',
+                strtotime(
+                    app('request')->input('year_to') . '-' . app('request')->input('month_to') . '-01'
+                )
+            )
+            : date('Y-m-t 23:59:59');
         \Excel::create($file_name, function ($excel) use ($date_from, $date_to) {
             $excel->sheet('Balance Sheet', function ($sheet) use ($date_from, $date_to) {
                 $data = array(
