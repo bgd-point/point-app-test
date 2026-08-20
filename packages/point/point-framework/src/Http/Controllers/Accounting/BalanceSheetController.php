@@ -34,7 +34,6 @@ class BalanceSheetController extends Controller
                 )
             )
             : date('Y-m-t 23:59:59');
-            dd($view->date_to);
         return $view;
     }
 
