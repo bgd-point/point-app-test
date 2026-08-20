@@ -3036,13 +3036,15 @@ class Recalculate5kb extends Command
                     ->first();
 
                 if ($inventory) {
-                    $inventory->total_value_all = $value;
-                    if ($inventory->total_quantity_all == 0) {
-                        $inventory->cogs = 0;
-                    } else {
-                        $inventory->cogs = $inventory->total_value_all / $inventory->total_quantity_all;
-                        $inventory->save();
-                    }
+                    $inventory->cogs = $value;
+                    $inventory->total_value_all = $value * $inventory->total_quantity_all;
+                    // if ($inventory->total_quantity_all == 0) {
+                    //     $inventory->cogs = 0;
+                    // } else {
+                    //     $inventory->cogs = $inventory->total_value_all / $inventory->total_quantity_all;
+                    //     $inventory->save();
+                    // }
+                    $inventory->save();
                 }
 
                 if (!$inventory) {
