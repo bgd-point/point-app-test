@@ -15,7 +15,6 @@ class BalanceSheetController extends Controller
      */
     public function index()
     {
-        dd('index reached');
         $date_from = '2000-01-01 00:00:00';
         $date_to = date('Y-m-d 23:59:59');
         $view = view('framework::app.accounting.balance-sheet.index');
@@ -35,6 +34,7 @@ class BalanceSheetController extends Controller
                 )
             )
             : date('Y-m-t 23:59:59');
+            dd($view->date_to);
         return $view;
     }
 
