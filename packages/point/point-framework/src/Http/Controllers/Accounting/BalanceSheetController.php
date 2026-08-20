@@ -25,6 +25,7 @@ class BalanceSheetController extends Controller
         $view->total_liability = 0;
         $view->total_equity = 0;
         $view->date_from = $date_from;
+        $view->month = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
         $view->date_to = (app('request')->input('month_to') && app('request')->input('year_to'))
             ? date(
                 'Y-m-t 23:59:59',
