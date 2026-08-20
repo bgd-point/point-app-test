@@ -3045,6 +3045,11 @@ class Recalculate5kb extends Command
                     }
                 }
 
+                if (!$inventory) {
+                  $this->comment('Inventory not found for item code: ' . $row['code']);
+                  continue;
+                }
+
                 $list_inventory = Inventory::where('item_id', '=', $item->id)
                     ->where('form_date', '>=', $inventory->form_date)
                     ->orderBy('form_date', 'asc')
