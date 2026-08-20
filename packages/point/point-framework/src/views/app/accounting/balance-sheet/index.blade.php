@@ -26,7 +26,7 @@
                             </select>
                         </div>
                         <div class="col-sm-6">
-                            <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
+                            <button onclick="this.disabled = false;" type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
                             <a class="btn btn-effect-ripple btn-effect-ripple btn-info" onclick="exportExcel()"> Export to excel</a>
                         </div>
                     </div>
