@@ -17,7 +17,7 @@ class BalanceSheetController extends Controller
     {
         $date_from = '2000-01-01 00:00:00';
 
-        $default_date = now()->subMonth();
+        $default_date = \Carbon::now()->subMonth();
 
         $month_to = request('month_to', $default_date->month);
         $year_to = request('year_to', $default_date->year);
