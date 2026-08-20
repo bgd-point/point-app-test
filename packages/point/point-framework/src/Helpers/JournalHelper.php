@@ -135,6 +135,7 @@ class JournalHelper
 
     public static function categoryValue($coa_category_id, $date_to)
     {
+        dd($date_to);
         // DATE FROM SHOULD BE SET TO BEGINNING OF TIME IN $date_to YEAR
         $date_from = date('Y-01-01', strtotime($date_to));
 
