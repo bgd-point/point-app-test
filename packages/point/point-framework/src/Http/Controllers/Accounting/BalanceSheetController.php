@@ -23,6 +23,7 @@ class BalanceSheetController extends Controller
         $year_to = request('year_to', $default_date->year);
 
         if ($month_to == date('n') && $year_to == date('Y')) {
+            gritter_error('cannot select current month and year');
             return back()->withErrors([
                 'date_to' => 'The selected month and year cannot be the current month and year.',
             ]);
