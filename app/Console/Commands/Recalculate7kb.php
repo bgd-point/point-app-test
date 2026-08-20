@@ -47,7 +47,7 @@ class Recalculate7kb extends Command
 
         foreach ($items as $item) {
             $inventory = Inventory::where('item_id', '=', $item->id)
-                ->where('form_date', '>=', '2026-07-01')
+                ->where('form_date', '>=', '2026-08-01')
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->first();

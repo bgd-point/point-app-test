@@ -3030,7 +3030,7 @@ class Recalculate5kb extends Command
 
             if ($item) {
                 $inventory = Inventory::where('item_id', '=', $item->id)
-                    ->where('form_date', '<', '2026-07-01')
+                    ->where('form_date', '<', '2026-08-01')
                     ->orderBy('form_date', 'desc')
                     ->orderBy('formulir_id', 'desc')
                     ->first();
