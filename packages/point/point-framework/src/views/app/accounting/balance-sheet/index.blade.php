@@ -9,7 +9,7 @@
 
         <div class="panel panel-default">
             <div class="panel-body">
-                <form action="{{ url('#') }}" method="get" class="form-horizontal">
+                <form action="{{ url('#' . rand(0, 999999)) }}" method="get" class="form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-2">
                             <select name="month_to" data-placeholder="Choose one.." class="selectize-standard">
@@ -26,7 +26,7 @@
                             </select>
                         </div>
                         <div class="col-sm-6">
-                            <button onclick="this.disabled = false;" type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
+                            <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
                             <a class="btn btn-effect-ripple btn-effect-ripple btn-info" onclick="exportExcel()"> Export to excel</a>
                         </div>
                     </div>
