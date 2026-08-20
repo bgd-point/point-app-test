@@ -17,6 +17,16 @@ class BalanceSheetController extends Controller
     {
         $date_from = '2000-01-01 00:00:00';
         $date_to = date('Y-m-d 23:59:59');
+
+        $month_to = request('month_to');
+        $year_to = request('year_to');
+
+        if ($month_to == date('n') && $year_to == date('Y')) {
+            return back()->withErrors([
+                'date_to' => 'The selected month and year cannot be the current month and year.',
+            ]);
+        }
+
         $view = view('framework::app.accounting.balance-sheet.index');
         $view->coa_asset = CoaPosition::find(1);
         $view->coa_liability = CoaPosition::find(2);
@@ -49,6 +59,16 @@ class BalanceSheetController extends Controller
                 )
             )
             : date('Y-m-t 23:59:59');
+
+        $month_to = request('month_to');
+        $year_to = request('year_to');
+
+        if ($month_to == date('n') && $year_to == date('Y')) {
+            return back()->withErrors([
+                'date_to' => 'The selected month and year cannot be the current month and year.',
+            ]);
+        }
+        
         \Excel::create($file_name, function ($excel) use ($date_from, $date_to) {
             $excel->sheet('Balance Sheet', function ($sheet) use ($date_from, $date_to) {
                 $data = array(
