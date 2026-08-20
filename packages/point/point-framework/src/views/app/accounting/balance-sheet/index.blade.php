@@ -9,7 +9,7 @@
 
         <div class="panel panel-default">
             <div class="panel-body">
-                <form action="{{ url('&x=' . rand(0, 999999)) }}" method="get" class="form-horizontal">
+                <form action="{{ request()->url() }}?x={{ rand(0, 999999) }}" method="get" class="form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-2">
                             <select name="month_to" data-placeholder="Choose one.." class="selectize-standard">
