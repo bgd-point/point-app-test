@@ -47,6 +47,7 @@ class Kernel extends ConsoleKernel
         Commands\RecalculateJournalHpp::class,
         Commands\RecalculateTest::class,
         Commands\RecalculateTransaction::class,
+        Commands\RecalculateCutoff::class,
         Commands\RecalculateDate::class,
         Commands\RecalculateInput::class,
         Commands\RecalculateOutput::class,
