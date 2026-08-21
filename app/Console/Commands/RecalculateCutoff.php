@@ -14,7 +14,7 @@ use Point\Framework\Helpers\InventoryHelper;
 use Point\PointInventory\Models\StockCorrection\StockCorrection;
 use Point\PointInventory\Models\StockCorrection\StockCorrectionItem;
 
-class Recalculate5kb extends Command
+class RecalculateCutoff extends Command
 {
     /**
      * The name and signature of the console command.
