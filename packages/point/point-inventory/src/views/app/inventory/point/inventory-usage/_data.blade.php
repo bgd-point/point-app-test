@@ -1,33 +1,30 @@
 <table class="table table-striped table-bordered">
-    <thead></thead>
+    <thead>
+        <tr>
+            <th>form_number</th>
+            <th>form_date</th>
+            <th>warehouse</th>
+            <th>code</th>
+            <th>name</th>
+            <th>quantity_usage</th>
+            <th>unit</th>
+            <th>status_form</th>
+        </tr>
+    </thead>
     <tbody>
         @foreach($list_inventory_usage as $inventoryusage)
-        <tr>
-            <td>{{ date_format_view($inventoryusage->formulir->form_date) }}</td>
-            <td><a href="{{ url('inventory/point/inventory-usage/'.$inventoryusage->id) }}">{{ $inventoryusage->formulir->form_number}}</a></td>
-            <td>{{ $inventoryusage->warehouse->codeName}}</td>
-            <td>
-                @include('framework::app.include._approval_status_label', ['approval_status' => $inventoryusage->formulir->approval_status])
-                @include('framework::app.include._form_status_label', ['form_status' => $inventoryusage->formulir->form_status])
-            </td>
-        </tr>
-
-        <tr>
-            <th></th>
-            <th>ITEM</th>
-            <th>STOCK BEFORE USAGE</th>
-            <th>QUANTITY USAGE</th>
-        </tr>
-
         @foreach($inventoryusage->listInventoryUsage as $usage_item)
-            <tr>
-                <td></td>
-                <td>{{$usage_item->item->name}}</td>
-                <td>{{number_format_quantity($usage_item->stock_in_database)}} {{$usage_item->unit}}</td>
-                <td>{{number_format_quantity($usage_item->quantity_usage)}} {{$usage_item->unit}}</td>
-            </tr>
+        <tr>
+            <td>{{ $inventoryusage->formulir->form_number}}</td>
+            <td>{{ date_format_view($inventoryusage->formulir->form_date) }}</td>
+            <td>{{ $inventoryusage->warehouse->name}}</td>
+            <td>{{$usage_item->item->code}}</td>
+            <td>{{$usage_item->item->name}}</td>
+            <td>{{number_format_quantity($usage_item->quantity_usage)}}</td>
+            <td>{{$usage_item->unit}}</td>
+            <td>{{ $inventoryusage->formulir->approval_status }}, {{ $inventoryusage->formulir->form_status }}</td>
+        </tr>
         @endforeach
-        
         @endforeach
     </tbody>
 </table>
