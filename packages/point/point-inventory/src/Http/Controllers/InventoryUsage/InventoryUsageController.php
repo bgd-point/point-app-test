@@ -184,4 +184,41 @@ class InventoryUsageController extends Controller
         $pdf = \PDF::loadView('point-inventory::emails.inventory.point.external.inventory-usage', $data)->setPaper('a4', request()->get('database_name') == 'p_kbretail' ? 'potrait' : 'landscape');
         return $pdf->stream($inventory_usage->formulir->form_number.'.pdf');
     }
+
+    public function export()
+    {
+        $file_name = 'IU '.auth()->user()->id . '' . date('Y-m-d_His');
+        
+        $list_inventory_usage = InventoryUsage::joinFormulir()
+            ->joinWarehouse()
+            ->notArchived()
+            ->selectOriginal();
+
+        $list_inventory_usage = InventoryUsageHelper::searchList(
+            $list_inventory_usage,
+            app('request')->input('order_by'),
+            app('request')->input('order_type'),
+            app('request')->input('status'),
+            app('request')->input('date_from'),
+            app('request')->input('date_to'),
+            app('request')->input('search')
+        );
+
+        \Excel::create($file_name, function ($excel) use ($date_from, $date_to) {
+            $excel->sheet('Balance Sheet', function ($sheet) use ($date_from, $date_to) {
+                $data = array(
+                    'coa_asset' => CoaPosition::find(1),
+                    'coa_liability' => CoaPosition::find(2),
+                    'coa_equity' => CoaPosition::find(3),
+                    'total_asset' => 0,
+                    'total_liability' => 0,
+                    'total_equity' => 0,
+                    'date_to' => $date_to,
+                    'date_from' => $date_from
+                 );
+                
+                $sheet->loadView('framework::app.inventory.inventory-usage._data', $data);
+            });
+        })->export('xls');
+    }
 }

@@ -35,6 +35,7 @@
                         <input type="hidden" name="order_by" value="{{\Input::get('order_by') ? \Input::get('order_by') : 'form_date'}}">
                         <input type="hidden" name="order_type" value="{{\Input::get('order_type') ? \Input::get('order_type') : 'desc'}}">
                         <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
+                        <a class="btn btn-effect-ripple btn-effect-ripple btn-info" onclick="exportExcel()"> Export to excel</a>
                     </div>
                 </div>
             </form>
@@ -103,6 +104,13 @@ function selectData(order_by, order_type) {
     var search = $("#search").val();
     var url = '{{url()}}/inventory/point/inventory-usage/?order_by='+order_by+'&order_type='+order_type+'&status='+status+'&date_from='+date_from+'&date_to='+date_to+'&search='+search;
     location.href = url;
+}
+
+function exportExcel() {
+    var month_to = $('select[name="month_to"]').val();
+    var year_to = $('select[name="year_to"]').val();
+
+    var url = '{{ url() }}/inventory/point/inventory-usage/export/?order_by='+order_by+'&order_type='+order_type+'&status='+status+'&date_from='+date_from+'&date_to='+date_to+'&search='+search;
 }
 </script>
 @stop
