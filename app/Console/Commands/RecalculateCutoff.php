@@ -1782,8 +1782,14 @@ class RecalculateCutoff extends Command
                         return $inventory['item_id'].$inventory['warehouse_id'];
                     });
 
-                
                 foreach ($inventories as $inventory) {
+                    $last = Inventory::where('item_id', '=', $inventory->item_id)
+                        ->where('form_date', '<', '2026-08-01 00:00:00')
+                        ->where('warehouse_id', '=', $inventory->warehouse_id)
+                        ->orderBy('form_date', 'desc')
+                        ->orderBy('id', 'desc')
+                        ->first();
+                        
                     // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
                     $form_date = '2026-08-01 00:00:00';
                     $form_number = FormulirHelper::number('point-inventory-stock-correction', $form_date);
@@ -1810,8 +1816,8 @@ class RecalculateCutoff extends Command
                     $stock_correction_item = new StockCorrectionItem;
                     $stock_correction_item->point_inventory_stock_correction_id = $stock_correction->id;
                     $stock_correction_item->item_id = $item->id;
-                    $stock_correction_item->stock_in_database = $inventory->total_quantity;
-                    $stock_correction_item->quantity_correction = $inventory->total_quantity * -1;
+                    $stock_correction_item->stock_in_database = $last->total_quantity;
+                    $stock_correction_item->quantity_correction = $last->total_quantity * -1;
                     $stock_correction_item->correction_notes = 'Cutoff Stock 2026-08-01';
                     $unit = $stock_correction_item->item->unit()->first();
                     $stock_correction_item->unit = $unit->name;
@@ -1826,7 +1832,7 @@ class RecalculateCutoff extends Command
                     $inventory->warehouse_id = $stock_correction->warehouse_id;
                     $inventory->item_id = $stock_correction_item->item_id;
                     $inventory->quantity = $stock_correction_item->quantity_correction;
-                    $inventory->price = $inventory->cogs ?? 0;
+                    $inventory->price = $last->cogs ?? 0;
                     
                     if ($inventory->quantity < 0) {
                         $inventory->quantity *= -1;
