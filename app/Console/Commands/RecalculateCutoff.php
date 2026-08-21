@@ -1834,7 +1834,7 @@ class RecalculateCutoff extends Command
                     $stock_correction_item->save();
 
                     $inventory = new Inventory;
-                    $inventory->form_date = date('Y-m-d H:i:s');
+                    $inventory->form_date = '2026-08-01 00:00:00';
                     $inventory->formulir_id = $stock_correction->formulir_id;
                     $inventory->warehouse_id = $stock_correction->warehouse_id;
                     $inventory->item_id = $stock_correction_item->item_id;
