@@ -21,11 +21,11 @@ class InventoryUsageHelper
             $list_inventory_usage = $list_inventory_usage->where('formulir.form_status', '=', $status ?: 0);
         }
         
-        if ($order_by) {
-            $list_inventory_usage = $list_inventory_usage->orderBy($order_by, $order_type);
-        } else {
-            $list_inventory_usage = $list_inventory_usage->orderByStandard();
-        }
+        // if ($order_by) {
+        //     $list_inventory_usage = $list_inventory_usage->orderBy($order_by, $order_type);
+        // } else {
+        //     $list_inventory_usage = $list_inventory_usage->orderByStandard();
+        // }
 
         if ($date_from) {
             $list_inventory_usage = $list_inventory_usage->where('form_date', '>=', date_format_db($date_from, 'start'));
