@@ -1790,6 +1790,11 @@ class RecalculateCutoff extends Command
                     } else {
                         $this->comment('Last inventory for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id . ': quantity = ' . $last->total_quantity . ', cogs = ' . $last->cogs);
                     }
+
+                    if ($last->total_quantity == 0) {
+                        $this->comment('No inventory quantity for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
+                        continue;
+                    }
                         
                     // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
                     $form_date = '2026-08-01 00:00:00';
@@ -1875,6 +1880,11 @@ class RecalculateCutoff extends Command
                         continue;
                     } else {
                         $this->comment('Last inventory for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id . ': quantity = ' . $last->total_quantity . ', cogs = ' . $last->cogs);
+                    }
+
+                    if ($last->total_quantity == 0) {
+                        $this->comment('No inventory quantity for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
+                        continue;
                     }
                         
                     // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
