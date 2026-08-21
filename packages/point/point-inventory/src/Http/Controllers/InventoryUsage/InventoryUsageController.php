@@ -210,7 +210,7 @@ class InventoryUsageController extends Controller
                     'list_inventory_usage' => $list_inventory_usage->get(),
                  );
                 
-                $sheet->loadView('framework::app.inventory.inventory-usage._data', $data);
+                $sheet->loadView('framework::app.inventory.point.inventory-usage._data', $data);
             });
         })->export('xls');
     }
