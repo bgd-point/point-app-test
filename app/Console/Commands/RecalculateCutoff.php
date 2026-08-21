@@ -1734,10 +1734,6 @@ class RecalculateCutoff extends Command
     "value": 85000
   },
   {
-    "code": "001-63",
-    "value": 9000
-  },
-  {
     "code": "001-212",
     "value": 2420
   },
@@ -1761,10 +1757,6 @@ class RecalculateCutoff extends Command
     "code": "001-594",
     "value": 37700
   },
-  {
-    "code": "001-619",
-    "value": 44474
-  }
 ]';
 
         $data = json_decode($json, true);
