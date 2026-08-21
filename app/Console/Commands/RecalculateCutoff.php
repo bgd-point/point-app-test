@@ -1795,7 +1795,7 @@ class RecalculateCutoff extends Command
                         $this->comment('No inventory found for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
                         continue;
                     } else {
-                        $ths->comment('Last inventory for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id . ': quantity = ' . $last->total_quantity . ', cogs = ' . $last->cogs);
+                        $this->comment('Last inventory for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id . ': quantity = ' . $last->total_quantity . ', cogs = ' . $last->cogs);
                     }
                         
                     // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
