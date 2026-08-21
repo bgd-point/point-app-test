@@ -106,7 +106,7 @@ function selectData(order_by, order_type) {
     location.href = url;
 }
 
-function exportExcel() {
+function exportExcel(order_by, order_type) {
     var status = $("#status option:selected").val();
     var date_from = $("#date-from").val();
     var date_to = $("#date-to").val();
