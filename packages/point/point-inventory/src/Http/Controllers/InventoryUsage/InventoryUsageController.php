@@ -204,17 +204,10 @@ class InventoryUsageController extends Controller
             app('request')->input('search')
         );
 
-        \Excel::create($file_name, function ($excel) use ($date_from, $date_to) {
-            $excel->sheet('Balance Sheet', function ($sheet) use ($date_from, $date_to) {
+        \Excel::create($file_name, function ($excel) use ($list_inventory_usage) {
+            $excel->sheet('Inventory Usage', function ($sheet) use ($list_inventory_usage) {
                 $data = array(
-                    'coa_asset' => CoaPosition::find(1),
-                    'coa_liability' => CoaPosition::find(2),
-                    'coa_equity' => CoaPosition::find(3),
-                    'total_asset' => 0,
-                    'total_liability' => 0,
-                    'total_equity' => 0,
-                    'date_to' => $date_to,
-                    'date_from' => $date_from
+                    'list_inventory_usage' => $list_inventory_usage->get(),
                  );
                 
                 $sheet->loadView('framework::app.inventory.inventory-usage._data', $data);
