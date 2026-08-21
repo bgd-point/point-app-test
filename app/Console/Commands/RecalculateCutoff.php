@@ -1808,7 +1808,7 @@ class RecalculateCutoff extends Command
                     $stock_correction_item->point_inventory_stock_correction_id = $stock_correction->id;
                     $stock_correction_item->item_id = $item->id;
                     $stock_correction_item->stock_in_database = $inventory->total_quantity;
-                    $stock_correction_item->quantity_correction = $inventory->total_quantity;
+                    $stock_correction_item->quantity_correction = $inventory->total_quantity * -1;
                     $stock_correction_item->correction_notes = 'Cutoff Stock 2026-08-01';
                     $unit = $stock_correction_item->item->unit()->first();
                     $stock_correction_item->unit = $unit->name;
@@ -1820,7 +1820,7 @@ class RecalculateCutoff extends Command
                     $inventory->formulir_id = $stock_correction->formulir_id;
                     $inventory->warehouse_id = $stock_correction->warehouse_id;
                     $inventory->item_id = $stock_correction_item->item_id;
-                    $inventory->quantity = $stock_correction_item->quantity_correction * -1;
+                    $inventory->quantity = $stock_correction_item->quantity_correction;
                     $inventory->price = $inventory->cogs ?? 0;
                     
                     if ($inventory->quantity < 0) {
