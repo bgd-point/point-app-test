@@ -1777,6 +1777,7 @@ class RecalculateCutoff extends Command
             if ($item) {
                 $inventories = Inventory::orderBy('form_date', 'desc')
                     ->orderBy('id', 'desc')
+                    ->where('item_id', '=', $item->id)
                     ->get()
                     ->unique(function ($inventory) {
                         return $inventory['item_id'].$inventory['warehouse_id'];
@@ -1790,7 +1791,7 @@ class RecalculateCutoff extends Command
                         ->orderBy('form_date', 'desc')
                         ->orderBy('id', 'desc')
                         ->first();
-$this->comment($inventory);
+
                     if (!$last) {
                         $this->comment('No inventory found for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
                         continue;
