@@ -17,6 +17,7 @@ Route::group(['prefix' => 'inventory/point', 'namespace' => 'Point\PointInventor
         Route::get('inventory-usage/get-item', 'InventoryUsageController@_getItemHasAvailableStock');
         Route::get('inventory-usage/quantity', 'InventoryUsageController@_quantity');
         Route::get('inventory-usage/{id}/archived', 'InventoryUsageController@archived');
+        Route::get('inventory-usage/export', 'InventoryUsageController@exportExcel');
         Route::resource('inventory-usage', 'InventoryUsageController');
     });
 });
