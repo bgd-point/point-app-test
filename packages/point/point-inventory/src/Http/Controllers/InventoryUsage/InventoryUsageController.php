@@ -196,8 +196,8 @@ class InventoryUsageController extends Controller
 
         $list_inventory_usage = InventoryUsageHelper::searchList(
             $list_inventory_usage,
-            app('request')->input('order_by'),
-            app('request')->input('order_type'),
+            app('request')->input('order_by') ?? '',
+            app('request')->input('order_type') ?? '',
             app('request')->input('status'),
             app('request')->input('date_from'),
             app('request')->input('date_to'),
