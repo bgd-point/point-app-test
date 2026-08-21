@@ -111,7 +111,7 @@ function exportExcel(order_by, order_type) {
     var date_from = $("#date-from").val();
     var date_to = $("#date-to").val();
     var search = $("#search").val();
-    var url = '{{ url() }}/inventory/point/inventory-usage/export/?order_by='+order_by+'&order_type='+order_type+'&status='+status+'&date_from='+date_from+'&date_to='+date_to+'&search='+search;
+    var url = '{{ url() }}/inventory/point/inventory-usage/export?order_by='+order_by+'&order_type='+order_type+'&status='+status+'&date_from='+date_from+'&date_to='+date_to+'&search='+search;
     location.href = url;
 }
 </script>
