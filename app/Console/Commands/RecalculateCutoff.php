@@ -1789,6 +1789,11 @@ class RecalculateCutoff extends Command
                         ->orderBy('form_date', 'desc')
                         ->orderBy('id', 'desc')
                         ->first();
+
+                    if (!$last) {
+                        $this->comment('No inventory found for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
+                        continue;
+                    }
                         
                     // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
                     $form_date = '2026-08-01 00:00:00';
