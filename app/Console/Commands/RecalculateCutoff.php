@@ -5,20 +5,14 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Point\Framework\Models\Master\Item;
+use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
-use Point\Framework\Models\Master\Allocation;
-use Point\Framework\Models\Inventory;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\PointInventory\Models\StockCorrection\StockCorrection;
 use Point\PointInventory\Models\StockCorrection\StockCorrectionItem;
-use Point\PointInventory\Models\StockOpname\StockOpname;
-use Point\PointInventory\Models\StockOpname\StockOpnameItem;
-use Point\PointInventory\Models\TransferItem\TransferItem;
-use Point\PointSales\Models\Sales\Retur;
-use Point\Framework\Models\Master\Warehouse;
 
 class Recalculate5kb extends Command
 {
