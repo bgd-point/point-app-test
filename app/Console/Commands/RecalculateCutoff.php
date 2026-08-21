@@ -1774,7 +1774,7 @@ class RecalculateCutoff extends Command
             echo $row['code'] . ' => ' . $row['value'] . PHP_EOL;
             
             if ($item) {
-                $inventories = Inventory::orderBy('form_date', 'asc')
+                $inventories = Inventory::orderBy('form_date', 'desc')
                     ->get()
                     ->unique(function ($inventory) {
                         return $inventory['item_id'].$inventory['warehouse_id'];
