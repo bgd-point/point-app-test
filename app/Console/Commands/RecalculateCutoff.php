@@ -1790,7 +1790,7 @@ class RecalculateCutoff extends Command
                         ->orderBy('form_date', 'desc')
                         ->orderBy('id', 'desc')
                         ->first();
-
+$this->comment($inventory);
                     if (!$last) {
                         $this->comment('No inventory found for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
                         continue;
