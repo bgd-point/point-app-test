@@ -23,7 +23,7 @@
             <td>{{number_format_quantity($usage_item->quantity_usage)}}</td>
             <td>{{$usage_item->unit}}</td>
             <td>
-                @include('framework::app.include._approval_status_label', ['approval_status' => $inventoryusage->formulir->approval_status])
+                @include('framework::app.include._approval_status_label', ['approval_status' => $inventoryusage->formulir->approval_status]),
                 @include('framework::app.include._form_status_label', ['form_status' => $inventoryusage->formulir->form_status])
             </td>
         </tr>
