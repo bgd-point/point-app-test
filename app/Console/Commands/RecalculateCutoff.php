@@ -1756,7 +1756,7 @@ class RecalculateCutoff extends Command
   {
     "code": "001-594",
     "value": 37700
-  },
+  }
 ]';
 
         $data = json_decode($json, true);
