@@ -1821,7 +1821,7 @@ class RecalculateCutoff extends Command
                     $inventory->warehouse_id = $stock_correction->warehouse_id;
                     $inventory->item_id = $stock_correction_item->item_id;
                     $inventory->quantity = $stock_correction_item->quantity_correction;
-                    $inventory->price = $inventory->cogs;
+                    $inventory->price = $inventory->cogs ?? 0;
                     
                     if ($inventory->quantity < 0) {
                         $inventory->quantity *= -1;
