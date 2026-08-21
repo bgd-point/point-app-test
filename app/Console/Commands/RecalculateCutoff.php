@@ -1776,11 +1776,13 @@ class RecalculateCutoff extends Command
             
             if ($item) {
                 $inventories = Inventory::orderBy('form_date', 'desc')
+                    ->orderBy('id', 'desc')
                     ->get()
                     ->unique(function ($inventory) {
                         return $inventory['item_id'].$inventory['warehouse_id'];
                     });
 
+                
                 foreach ($inventories as $inventory) {
                     // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
                     $form_date = '2026-08-01 00:00:00';
