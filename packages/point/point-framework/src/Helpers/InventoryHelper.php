@@ -377,6 +377,28 @@ class InventoryHelper
         $this->inventory->save();
     }
 
+    public function out0()
+    {
+        // doesn't allow minus quantity to use this method
+        if ($this->inventory->quantity < 0) {
+            throw new PointException('Inventory error, please contact our support');
+        }
+
+        // setup quantity to minus in database
+        $this->inventory->quantity *= -1;
+
+        // update cogs
+        $this->updateCogsOut();
+
+        // mark recalculate if any inventory added before another inventory
+        $this->markRecalculate();
+
+        // save inventory
+        $this->inventory->total_value = 0;
+        $this->inventory->total_value_all = 0;
+        $this->inventory->save();
+    }
+
     private function updateCogsIn()
     {
         $last = Inventory::where('item_id', '=', $this->inventory->item_id)
