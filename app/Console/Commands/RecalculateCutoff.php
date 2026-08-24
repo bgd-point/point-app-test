@@ -1783,7 +1783,7 @@ class RecalculateCutoff extends Command
                         ->where('form_date', '<', '2026-08-01 00:00:00')
                         ->where('warehouse_id', '=', $inventory->warehouse_id)
                         ->orderBy('form_date', 'desc')
-                        ->orderBy('id', 'desc')
+                        ->orderBy('formulir_id', 'desc')
                         ->first();
 
                     if (!$last) {
@@ -1874,7 +1874,7 @@ class RecalculateCutoff extends Command
                         ->where('form_date', '<', '2026-08-01 00:00:00')
                         ->where('warehouse_id', '=', $inventory->warehouse_id)
                         ->orderBy('form_date', 'desc')
-                        ->orderBy('id', 'desc')
+                        ->orderBy('formulir_id', 'desc')
                         ->first();
 
                     if (!$last) {
