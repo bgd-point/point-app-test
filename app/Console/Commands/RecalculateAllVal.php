@@ -62,7 +62,7 @@ class RecalculateAllVal extends Command
                 ->orderBy('formulir_id', 'asc')
                 ->get();
 
-            $last = Inventory::where('item_id', '=', $inventory->item_id)
+            $last = Inventory::where('item_id', '=', $item->id)
                 ->where('form_date', '<=', '2026-08-01 00:00:01')
                 ->orderBy('form_date', 'desc')
                 ->orderBy('formulir_id', 'desc')
