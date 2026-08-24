@@ -41,8 +41,8 @@ class RecalculateAll extends Command
     {
         $this->comment('handle inventory all');
 
-        // $items = Item::where('id',102)->get();
-        $items = Item::all();
+        $items = Item::where('id',851)->get();
+        // $items = Item::all();
         
         $i = 0;
         foreach ($items as $item) {
@@ -54,6 +54,8 @@ class RecalculateAll extends Command
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->get();
+
+            $this->comment($list_inventory);
 
             $this->comment('I' . count($items) . ' = ' . $i);
             foreach($list_inventory as $index => $l_inventory) {
