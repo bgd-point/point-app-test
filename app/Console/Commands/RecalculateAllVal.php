@@ -41,10 +41,10 @@ class RecalculateAllVal extends Command
     {
         $this->comment('handle inventory all');
 
-        Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
-            ->where('inventory.quantity', 0)
-            ->where('formulir.formulirable_type', '!=', 'Point\PointInventory\Models\StockOpname\StockOpname')
-            ->delete();
+        // Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+        //     ->where('inventory.quantity', 0)
+        //     ->where('formulir.formulirable_type', '!=', 'Point\PointInventory\Models\StockOpname\StockOpname')
+        //     ->delete();
 
         // $items = Item::where('id', 102)->get();
         $items = Item::all();
@@ -57,12 +57,25 @@ class RecalculateAllVal extends Command
             $i++;
             
             $list_inventory = Inventory::where('item_id', '=', $item->id)
+                ->where('form_date', '>', '2026-08-01 00:00:01')
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->get();
 
-            $prevTotalQty = 0;
-            $prevTotalVal = 0;
+            $last = Inventory::where('item_id', '=', $inventory->item_id)
+                ->where('form_date', '<=', '2026-08-01 00:00:01')
+                ->orderBy('form_date', 'desc')
+                ->orderBy('formulir_id', 'desc')
+                ->first();
+
+            if ($last) {
+                $prevTotalQty = $last->total_quantity_all;
+                $prevTotalVal = $last->total_value_all;
+            } else {
+                $prevTotalQty = 0;
+                $prevTotalVal = 0;
+            }
+
             $this->comment('I' . count($items) . ' = ' . $i);
             foreach($list_inventory as $index => $l_inventory) {
                 if ($l_inventory->quantity < 0) {
@@ -98,30 +111,30 @@ class RecalculateAllVal extends Command
             }
 
 
-            $k = 0;
-            foreach ($warehouses as $warehouse) {
-                $k++;
-                $list_inventory = Inventory::where('item_id', '=', $item->id)
-                    ->where('warehouse_id', $warehouse->id)
-                    ->orderBy('form_date', 'asc')
-                    ->orderBy('formulir_id', 'asc')
-                    ->get();
+            // $k = 0;
+            // foreach ($warehouses as $warehouse) {
+            //     $k++;
+            //     $list_inventory = Inventory::where('item_id', '=', $item->id)
+            //         ->where('warehouse_id', $warehouse->id)
+            //         ->orderBy('form_date', 'asc')
+            //         ->orderBy('formulir_id', 'asc')
+            //         ->get();
 
-                $prevTotalQty = 0;
-                $prevTotalVal = 0;
+            //     $prevTotalQty = 0;
+            //     $prevTotalVal = 0;
 
-                $j = 0;
-                foreach($list_inventory as $index => $l_inventory) {
-                    $j++;
-                    $this->comment('I' . count($inventories) . ' = ' . $i . ' | W' . count($warehouses) . ' = ' . $k . ' | J' . count($list_inventory) . ' = ' . $j);
-                    $l_inventory->total_quantity = $prevTotalQty + $l_inventory->quantity;
-                    $l_inventory->total_value = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
-                    $l_inventory->save();
+            //     $j = 0;
+            //     foreach($list_inventory as $index => $l_inventory) {
+            //         $j++;
+            //         $this->comment('I' . count($inventories) . ' = ' . $i . ' | W' . count($warehouses) . ' = ' . $k . ' | J' . count($list_inventory) . ' = ' . $j);
+            //         $l_inventory->total_quantity = $prevTotalQty + $l_inventory->quantity;
+            //         $l_inventory->total_value = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
+            //         $l_inventory->save();
 
-                    $prevTotalQty = $l_inventory->total_quantity;
-                    $prevTotalVal = $l_inventory->total_value;
-                }
-            }
+            //         $prevTotalQty = $l_inventory->total_quantity;
+            //         $prevTotalVal = $l_inventory->total_value;
+            //     }
+            // }
 
             \DB::commit();
         }
