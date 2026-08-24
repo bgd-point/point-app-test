@@ -41,8 +41,8 @@ class RecalculateAll extends Command
     {
         $this->comment('handle inventory all');
 
-        $items = Item::where('id',851)->get();
-        // $items = Item::all();
+        // $items = Item::where('id',851)->get();
+        $items = Item::all();
         
         $i = 0;
         foreach ($items as $item) {
@@ -50,7 +50,7 @@ class RecalculateAll extends Command
             $i++;
             
             $list_inventory = Inventory::where('item_id', '=', $item->id)
-                ->where('form_date', '>', '2026-08-01 00:00:01')
+                ->where('form_date', '>=', '2026-08-01 00:00:01')
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->get();
@@ -61,9 +61,6 @@ class RecalculateAll extends Command
             foreach($list_inventory as $index => $l_inventory) {
                 $l_inventory->total_value = $l_inventory->total_quantity * $l_inventory->cogs;
                 $l_inventory->recalculate = 0;
-                if ($item->id == 851) {
-                    $this->comment($l_inventory);
-                }
                 $l_inventory->save();
             }
             \DB::commit();
