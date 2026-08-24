@@ -388,7 +388,7 @@ class InventoryHelper
         $this->inventory->quantity *= -1;
 
         // update cogs
-        $this->updateCogsOut();
+        $this->updateCogsOut0();
 
         // mark recalculate if any inventory added before another inventory
         $this->markRecalculate();
@@ -486,6 +486,56 @@ class InventoryHelper
             $this->inventory->total_quantity_all = $this->inventory->quantity;
             $this->inventory->total_value = $this->inventory->quantity * $cogsVal;
             $this->inventory->total_value_all = $this->inventory->quantity * $cogsVal;
+        }
+
+        if (!$last || (float) $last->total_quantity < abs($this->inventory->quantity)) {
+            throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE (' . $last->total_quantity .'<' . $this->inventory->quantity . ')');
+        }
+
+        $this->inventory->cogs = $cogsVal;
+    }
+    
+    private function updateCogsOut0()
+    {
+        $last = Inventory::where('item_id', '=', $this->inventory->item_id)
+            ->where('form_date', '<=', $this->inventory->form_date)
+            ->where('warehouse_id', '=', $this->inventory->warehouse_id)
+            ->orderBy('form_date', 'desc')
+            ->orderBy('formulir_id', 'desc')
+            ->first();
+        
+        $lastAll = Inventory::where('item_id', '=', $this->inventory->item_id)
+            ->where('form_date', '<=', $this->inventory->form_date)
+            ->orderBy('form_date', 'desc')
+            ->orderBy('formulir_id', 'desc')
+            ->first();
+
+        $cogs = Inventory::where('item_id', '=', $this->inventory->item_id)
+            ->where('form_date', '<=', $this->inventory->form_date)
+            ->orderBy('form_date', 'desc')
+            ->orderBy('formulir_id', 'desc')
+            ->first();
+
+        $cogsVal = 0;
+        if ($cogs) {
+            $cogsVal = $cogs->cogs;
+        }
+
+        if ($last) {
+            $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
+            $this->inventory->total_quantity_all = $lastAll->total_quantity_all + $this->inventory->quantity;
+            $this->inventory->total_value = 0;
+            $this->inventory->total_value_all = 0;
+        } else if ($lastAll) {
+            $this->inventory->total_quantity = $this->inventory->quantity;
+            $this->inventory->total_quantity_all = $lastAll->total_quantity_all + $this->inventory->quantity;
+            $this->inventory->total_value = 0;
+            $this->inventory->total_value_all = 0;
+        } else {
+            $this->inventory->total_quantity = $this->inventory->quantity;
+            $this->inventory->total_quantity_all = $this->inventory->quantity;
+            $this->inventory->total_value = 0;
+            $this->inventory->total_value_all = 0;
         }
 
         if (!$last || (float) $last->total_quantity < abs($this->inventory->quantity)) {
