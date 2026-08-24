@@ -1768,7 +1768,7 @@ class RecalculateCutoff extends Command
             
             if ($item) {
                 $inventories = Inventory::orderBy('form_date', 'desc')
-                    ->orderBy('id', 'desc')
+                    ->orderBy('formulir_id', 'desc')
                     ->where('item_id', '=', $item->id)
                     ->get()
                     ->unique(function ($inventory) {
@@ -1859,7 +1859,7 @@ class RecalculateCutoff extends Command
             
             if ($item) {
                 $inventories = Inventory::orderBy('form_date', 'desc')
-                    ->orderBy('id', 'desc')
+                    ->orderBy('formulir_id', 'desc')
                     ->where('item_id', '=', $item->id)
                     ->get()
                     ->unique(function ($inventory) {
