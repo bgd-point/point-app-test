@@ -59,9 +59,9 @@ class RecalculateAll extends Command
             foreach($list_inventory as $index => $l_inventory) {
                 $l_inventory->total_value = $l_inventory->total_quantity * $l_inventory->cogs;
                 $l_inventory->recalculate = 0;
-                if ($l_inventory->item_id == 851) {
-                    $this->comment($l_inventory);
-                }
+                // if ($l_inventory->item_id == 851) {
+                //     }
+                $this->comment($l_inventory);
                 $l_inventory->save();
             }
             \DB::commit();
