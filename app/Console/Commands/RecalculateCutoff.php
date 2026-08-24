@@ -1788,7 +1788,6 @@ class RecalculateCutoff extends Command
                     
                     $lastVal = Inventory::where('item_id', '=', $inventory->item_id)
                         ->where('form_date', '<', '2026-08-01 00:00:00')
-                        ->where('warehouse_id', '=', $inventory->warehouse_id)
                         ->orderBy('form_date', 'desc')
                         ->orderBy('formulir_id', 'desc')
                         ->first();
