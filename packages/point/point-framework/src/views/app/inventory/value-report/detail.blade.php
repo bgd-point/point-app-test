@@ -72,9 +72,9 @@
                             <td style="text-align:right"></td>
                             <td style="text-align:right"></td>
                             <td style="text-align:right"></td>
-                            <td style="text-align:right">{{number_format_quantity($cogs)}}</td>
-                            <td style="text-align:right">{{number_format_quantity($total_quantity)}}</td>
-                            <td style="text-align:right">{{number_format_quantity($total_value)}}</td>
+                            <td style="text-align:right">{{number_format_quantity($cogs, 4)}}</td>
+                            <td style="text-align:right">{{number_format_quantity($total_quantity, 4)}}</td>
+                            <td style="text-align:right">{{number_format_quantity($total_value, 4)}}</td>
                         </tr>
                         @foreach($list_inventory as $inventory)
                             <?php $total_quantity += $inventory->quantity ?>
