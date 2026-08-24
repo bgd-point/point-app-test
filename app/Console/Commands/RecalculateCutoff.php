@@ -1780,14 +1780,105 @@ class RecalculateCutoff extends Command
                 $this->comment('Processing item ' . $item->code . ' with COGS ' . $value . ' and total inventories: ' . count($inventories));
                 foreach ($inventories as $inventory) {
                     $last = Inventory::where('item_id', '=', $inventory->item_id)
-                        ->where('form_date', '<', '2026-08-01 00:00:00')
+                        ->where('form_date', '<', '2026-07-31 23:59:59')
                         ->where('warehouse_id', '=', $inventory->warehouse_id)
                         ->orderBy('form_date', 'desc')
                         ->orderBy('formulir_id', 'desc')
                         ->first();
                     
                     $lastVal = Inventory::where('item_id', '=', $inventory->item_id)
-                        ->where('form_date', '<', '2026-08-01 00:00:00')
+                        ->where('form_date', '<', '2026-07-31 23:59:59')
+                        ->orderBy('form_date', 'desc')
+                        ->orderBy('formulir_id', 'desc')
+                        ->first();
+
+                    if (!$last) {
+                        $this->comment('No inventory found for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
+                        continue;
+                    } else {
+                        $this->comment('Last inventory for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id . ': quantity = ' . $last->total_quantity . ', cogs = ' . $last->cogs);
+                    }
+
+                    if ($last->total_quantity == 0) {
+                        $this->comment('No inventory quantity for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
+                        continue;
+                    }
+                        
+                    // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
+                    $form_date = '2026-07-31 23:59:59';
+                    $form_number = FormulirHelper::number('point-inventory-stock-correction', $form_date);
+
+                    $formulir = new Formulir;
+                    $formulir->form_date = $form_date;
+                    $formulir->form_number = $form_number['form_number'];
+                    $formulir->form_raw_number = $form_number['raw'];
+                    $formulir->notes = 'Cutoff Stock 2026-07-31';
+                    $formulir->approval_to = 1;
+                    $formulir->approval_status = 1;
+                    $formulir->approval_message = '';
+                    $formulir->created_by = 1;
+                    $formulir->updated_by = 1;
+                    if (!$formulir->save()) {
+                        gritter_error('create has been failed', false);
+                    }
+
+                    $stock_correction = new StockCorrection;
+                    $stock_correction->formulir_id = $formulir->id;
+                    $stock_correction->warehouse_id = $inventory->warehouse_id;
+                    $stock_correction->save();
+                    
+                    $stock_correction_item = new StockCorrectionItem;
+                    $stock_correction_item->point_inventory_stock_correction_id = $stock_correction->id;
+                    $stock_correction_item->item_id = $item->id;
+                    $stock_correction_item->stock_in_database = $last->total_quantity;
+                    $stock_correction_item->quantity_correction = $last->total_quantity * -1;
+                    $stock_correction_item->correction_notes = 'Cutoff Stock 2026-07-31';
+                    $unit = $stock_correction_item->item->unit()->first();
+                    $stock_correction_item->unit = $unit->name;
+                    $stock_correction_item->converter = $unit->converter;
+                    $stock_correction_item->save();
+
+                    $inventory = new Inventory;
+                    $inventory->form_date = '2026-07-31 23:59:59';
+                    $inventory->formulir_id = $stock_correction->formulir_id;
+                    $inventory->warehouse_id = $stock_correction->warehouse_id;
+                    $inventory->item_id = $stock_correction_item->item_id;
+                    $inventory->quantity = $stock_correction_item->quantity_correction;
+                    $inventory->price = $lastVal->cogs ?? 0;
+                    
+                    if ($inventory->quantity < 0) {
+                        $inventory->quantity *= -1;
+                        $inventory_helper = new InventoryHelper($inventory);
+                        $inventory_helper->out0();
+                    } else {
+                        $inventory_helper = new InventoryHelper($inventory);
+                        $inventory_helper->in();
+                    }
+
+                    StockCorrectionHelper::updateJournal($stock_correction);
+                }
+            }
+        }
+
+        foreach ($data as $row) {
+            $item = Item::where('code', $row['code'])->first();
+            $value = str_replace(',', '', $row['value']); // COGS
+            echo $row['code'] . ' => ' . $row['value'] . PHP_EOL;
+            
+            if ($item) {
+                $inventories = Inventory::orderBy('form_date', 'desc')
+                    ->orderBy('formulir_id', 'desc')
+                    ->where('item_id', '=', $item->id)
+                    ->get()
+                    ->unique(function ($inventory) {
+                        return $inventory['item_id'].$inventory['warehouse_id'];
+                    });
+
+                $this->comment('Processing item ' . $item->code . ' with COGS ' . $value . ' and total inventories: ' . count($inventories));
+                foreach ($inventories as $inventory) {
+                    $last = Inventory::where('item_id', '=', $inventory->item_id)
+                        ->where('form_date', '<', '2026-07-31 23:59:59')
+                        ->where('warehouse_id', '=', $inventory->warehouse_id)
                         ->orderBy('form_date', 'desc')
                         ->orderBy('formulir_id', 'desc')
                         ->first();
@@ -1831,97 +1922,6 @@ class RecalculateCutoff extends Command
                     $stock_correction_item->point_inventory_stock_correction_id = $stock_correction->id;
                     $stock_correction_item->item_id = $item->id;
                     $stock_correction_item->stock_in_database = $last->total_quantity;
-                    $stock_correction_item->quantity_correction = $last->total_quantity * -1;
-                    $stock_correction_item->correction_notes = 'Cutoff Stock 2026-08-01';
-                    $unit = $stock_correction_item->item->unit()->first();
-                    $stock_correction_item->unit = $unit->name;
-                    $stock_correction_item->converter = $unit->converter;
-                    $stock_correction_item->save();
-
-                    $inventory = new Inventory;
-                    $inventory->form_date = '2026-08-01 00:00:00';
-                    $inventory->formulir_id = $stock_correction->formulir_id;
-                    $inventory->warehouse_id = $stock_correction->warehouse_id;
-                    $inventory->item_id = $stock_correction_item->item_id;
-                    $inventory->quantity = $stock_correction_item->quantity_correction;
-                    $inventory->price = $lastVal->cogs ?? 0;
-                    
-                    if ($inventory->quantity < 0) {
-                        $inventory->quantity *= -1;
-                        $inventory_helper = new InventoryHelper($inventory);
-                        $inventory_helper->out0();
-                    } else {
-                        $inventory_helper = new InventoryHelper($inventory);
-                        $inventory_helper->in();
-                    }
-
-                    StockCorrectionHelper::updateJournal($stock_correction);
-                }
-            }
-        }
-
-        foreach ($data as $row) {
-            $item = Item::where('code', $row['code'])->first();
-            $value = str_replace(',', '', $row['value']); // COGS
-            echo $row['code'] . ' => ' . $row['value'] . PHP_EOL;
-            
-            if ($item) {
-                $inventories = Inventory::orderBy('form_date', 'desc')
-                    ->orderBy('formulir_id', 'desc')
-                    ->where('item_id', '=', $item->id)
-                    ->get()
-                    ->unique(function ($inventory) {
-                        return $inventory['item_id'].$inventory['warehouse_id'];
-                    });
-
-                $this->comment('Processing item ' . $item->code . ' with COGS ' . $value . ' and total inventories: ' . count($inventories));
-                foreach ($inventories as $inventory) {
-                    $last = Inventory::where('item_id', '=', $inventory->item_id)
-                        ->where('form_date', '<', '2026-08-01 00:00:00')
-                        ->where('warehouse_id', '=', $inventory->warehouse_id)
-                        ->orderBy('form_date', 'desc')
-                        ->orderBy('formulir_id', 'desc')
-                        ->first();
-
-                    if (!$last) {
-                        $this->comment('No inventory found for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
-                        continue;
-                    } else {
-                        $this->comment('Last inventory for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id . ': quantity = ' . $last->total_quantity . ', cogs = ' . $last->cogs);
-                    }
-
-                    if ($last->total_quantity == 0) {
-                        $this->comment('No inventory quantity for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
-                        continue;
-                    }
-                        
-                    // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
-                    $form_date = '2026-08-01 00:00:01';
-                    $form_number = FormulirHelper::number('point-inventory-stock-correction', $form_date);
-
-                    $formulir = new Formulir;
-                    $formulir->form_date = $form_date;
-                    $formulir->form_number = $form_number['form_number'];
-                    $formulir->form_raw_number = $form_number['raw'];
-                    $formulir->notes = 'Cutoff Stock 2026-08-01';
-                    $formulir->approval_to = 1;
-                    $formulir->approval_status = 1;
-                    $formulir->approval_message = '';
-                    $formulir->created_by = 1;
-                    $formulir->updated_by = 1;
-                    if (!$formulir->save()) {
-                        gritter_error('create has been failed', false);
-                    }
-
-                    $stock_correction = new StockCorrection;
-                    $stock_correction->formulir_id = $formulir->id;
-                    $stock_correction->warehouse_id = $inventory->warehouse_id;
-                    $stock_correction->save();
-                    
-                    $stock_correction_item = new StockCorrectionItem;
-                    $stock_correction_item->point_inventory_stock_correction_id = $stock_correction->id;
-                    $stock_correction_item->item_id = $item->id;
-                    $stock_correction_item->stock_in_database = $last->total_quantity;
                     $stock_correction_item->quantity_correction = $last->total_quantity;
                     $stock_correction_item->correction_notes = 'Cutoff Stock 2026-08-01';
                     $unit = $stock_correction_item->item->unit()->first();
@@ -1930,7 +1930,7 @@ class RecalculateCutoff extends Command
                     $stock_correction_item->save();
 
                     $inventory = new Inventory;
-                    $inventory->form_date = '2026-08-01 00:00:01';
+                    $inventory->form_date = '2026-08-01 00:00:00';
                     $inventory->formulir_id = $stock_correction->formulir_id;
                     $inventory->warehouse_id = $stock_correction->warehouse_id;
                     $inventory->item_id = $stock_correction_item->item_id;

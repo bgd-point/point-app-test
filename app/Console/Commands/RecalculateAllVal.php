@@ -57,13 +57,13 @@ class RecalculateAllVal extends Command
             $i++;
             
             $list_inventory = Inventory::where('item_id', '=', $item->id)
-                ->where('form_date', '>', '2026-08-01 00:00:01')
+                ->where('form_date', '>', '2026-08-01 00:00:00')
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->get();
 
             $last = Inventory::where('item_id', '=', $item->id)
-                ->where('form_date', '<=', '2026-08-01 00:00:01')
+                ->where('form_date', '<=', '2026-08-01 00:00:00')
                 ->orderBy('form_date', 'desc')
                 ->orderBy('formulir_id', 'desc')
                 ->first();
