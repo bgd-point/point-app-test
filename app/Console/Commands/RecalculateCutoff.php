@@ -1761,6 +1761,8 @@ class RecalculateCutoff extends Command
 
         $data = json_decode($json, true);
 
+        \DB::beginTransaction();
+
         foreach ($data as $row) {
             $item = Item::where('code', $row['code'])->first();
             $value = str_replace(',', '', $row['value']); // COGS
@@ -1943,5 +1945,7 @@ class RecalculateCutoff extends Command
                 }
             }
         }
+
+        \DB::commit();
     }
 }
