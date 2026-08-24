@@ -1785,6 +1785,13 @@ class RecalculateCutoff extends Command
                         ->orderBy('form_date', 'desc')
                         ->orderBy('formulir_id', 'desc')
                         ->first();
+                    
+                    $lastVal = Inventory::where('item_id', '=', $inventory->item_id)
+                        ->where('form_date', '<', '2026-08-01 00:00:00')
+                        ->where('warehouse_id', '=', $inventory->warehouse_id)
+                        ->orderBy('form_date', 'desc')
+                        ->orderBy('formulir_id', 'desc')
+                        ->first();
 
                     if (!$last) {
                         $this->comment('No inventory found for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
@@ -1838,7 +1845,7 @@ class RecalculateCutoff extends Command
                     $inventory->warehouse_id = $stock_correction->warehouse_id;
                     $inventory->item_id = $stock_correction_item->item_id;
                     $inventory->quantity = $stock_correction_item->quantity_correction;
-                    $inventory->price = $last->cogs ?? 0;
+                    $inventory->price = $lastVal->cogs ?? 0;
                     
                     if ($inventory->quantity < 0) {
                         $inventory->quantity *= -1;
