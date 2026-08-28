@@ -945,6 +945,8 @@ class RecalculateCutoffBMP extends Command
 
                     $formulir = new Formulir;
                     $formulir->form_date = $form_date;
+                    $formulir->created_at = $form_date;
+                    $formulir->updated_at = $form_date;
                     $formulir->form_number = $form_number['form_number'];
                     $formulir->form_raw_number = $form_number['raw'];
                     $formulir->notes = 'Cutoff Stock 2026-07-31';
@@ -959,6 +961,8 @@ class RecalculateCutoffBMP extends Command
 
                     $stock_correction = new StockCorrection;
                     $stock_correction->formulir_id = $formulir->id;
+                    $stock_correction->created_at = $form_date;
+                    $stock_correction->updated_at = $form_date;
                     $stock_correction->warehouse_id = $inventory->warehouse_id;
                     $stock_correction->save();
                     
@@ -1037,6 +1041,8 @@ class RecalculateCutoffBMP extends Command
 
                     $formulir = new Formulir;
                     $formulir->form_date = $form_date;
+                    $formulir->created_at = $form_date;
+                    $formulir->updated_at = $form_date;
                     $formulir->form_number = $form_number['form_number'];
                     $formulir->form_raw_number = $form_number['raw'];
                     $formulir->notes = 'Cutoff Stock 2026-07-01';
@@ -1051,6 +1057,8 @@ class RecalculateCutoffBMP extends Command
 
                     $stock_correction = new StockCorrection;
                     $stock_correction->formulir_id = $formulir->id;
+                    $stock_correction->created_at = $form_date;
+                    $stock_correction->updated_at = $form_date;
                     $stock_correction->warehouse_id = $inventory->warehouse_id;
                     $stock_correction->save();
                     

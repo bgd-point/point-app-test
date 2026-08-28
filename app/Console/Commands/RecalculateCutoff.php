@@ -1813,6 +1813,8 @@ class RecalculateCutoff extends Command
 
                     $formulir = new Formulir;
                     $formulir->form_date = $form_date;
+                    $formulir->created_at = $form_date;
+                    $formulir->updated_at = $form_date;
                     $formulir->form_number = $form_number['form_number'];
                     $formulir->form_raw_number = $form_number['raw'];
                     $formulir->notes = 'Cutoff Stock 2026-07-31';
@@ -1905,6 +1907,8 @@ class RecalculateCutoff extends Command
 
                     $formulir = new Formulir;
                     $formulir->form_date = $form_date;
+                    $formulir->created_at = $form_date;
+                    $formulir->updated_at = $form_date;
                     $formulir->form_number = $form_number['form_number'];
                     $formulir->form_raw_number = $form_number['raw'];
                     $formulir->notes = 'Cutoff Stock 2026-08-01';
