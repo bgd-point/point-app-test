@@ -356,7 +356,7 @@ class RecalculateJournalHpp extends Command
         $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
             ->join('formulir', 'formulir.id', '=', 'journal.form_journal_id')
             ->where('formulir.formulirable_type', '=', 'Point\PointSales\Models\Sales\Retur')
-            ->where('inventory.form_date', '>', '2026-08-01 00:00:00')
+            ->where('formulir.form_date', '>', '2026-08-01 00:00:00')
             ->select('journal.*')
             ->groupBy('form_journal_id')
             ->get();
