@@ -1860,7 +1860,58 @@ class RecalculateCutoff extends Command
                         $inventory_helper->in();
                     }
 
-                    StockCorrectionHelper::updateJournal($stock_correction);
+                    $debit = 0;
+                    $credit = 0;
+
+                    // JOURNAL #1 of #2 - Invetory
+                    foreach ($stock_correction->items as $stock_correction_item) {
+                        $position = JournalHelper::position($stock_correction_item->item->account_asset_id);
+
+                        $cost_of_sales = InventoryHelper::getCostOfSales($form_date, $stock_correction_item->item_id, $stock_correction->warehouse_id);
+                        $cost_of_sales = $cost_of_sales * $stock_correction_item->quantity_correction;
+
+                        $journal = new Journal();
+                        $journal->form_date = $form_date;
+                        $journal->coa_id = $stock_correction_item->item->account_asset_id;
+                        $journal->description = $stock_correction_item->correction_notes;
+                        $journal->$position = $cost_of_sales;
+                        $journal->form_journal_id = $stock_correction->formulir_id;
+                        $journal->form_reference_id;
+                        $journal->subledger_id = $stock_correction_item->item_id;
+                        $journal->subledger_type = get_class($stock_correction_item->item);
+                        $journal->save();
+
+                        if ($position == 'debit') {
+                            $debit += $stock_correction_item->amount;
+                        } else {
+                            $credit += $stock_correction_item->amount;
+                        }
+
+                        // JOURNAL #2 of #2 - Inventory Differences
+                        $inventory_differences_account = JournalHelper::getAccount('point inventory stock correction', 'inventory differences');
+
+                        $position = JournalHelper::position($inventory_differences_account);
+                        $journal = new Journal();
+                        $journal->form_date = $form_date;
+                        $journal->coa_id = $inventory_differences_account;
+                        $journal->description = $stock_correction_item->correction_notes;
+                        $journal->$position = $cost_of_sales * -1;
+                        $journal->form_journal_id = $stock_correction->formulir_id;
+                        $journal->form_reference_id;
+                        $journal->subledger_id;
+                        $journal->subledger_type;
+                        $journal->save();
+
+                        if ($position == 'debit') {
+                            $debit += $stock_correction_item->total;
+                        } else {
+                            $credit += $stock_correction_item->total;
+                        }
+
+                        if ($debit != $credit) {
+                            throw new PointException('Unbalance Journal');
+                        }
+                    }
                 }
             }
         }
@@ -1955,7 +2006,58 @@ class RecalculateCutoff extends Command
                         $inventory_helper->in();
                     }
 
-                    StockCorrectionHelper::updateJournal($stock_correction);
+                    $debit = 0;
+                    $credit = 0;
+
+                    // JOURNAL #1 of #2 - Invetory
+                    foreach ($stock_correction->items as $stock_correction_item) {
+                        $position = JournalHelper::position($stock_correction_item->item->account_asset_id);
+
+                        $cost_of_sales = InventoryHelper::getCostOfSales($form_date, $stock_correction_item->item_id, $stock_correction->warehouse_id);
+                        $cost_of_sales = $cost_of_sales * $stock_correction_item->quantity_correction;
+
+                        $journal = new Journal();
+                        $journal->form_date = $form_date;
+                        $journal->coa_id = $stock_correction_item->item->account_asset_id;
+                        $journal->description = $stock_correction_item->correction_notes;
+                        $journal->$position = $cost_of_sales;
+                        $journal->form_journal_id = $stock_correction->formulir_id;
+                        $journal->form_reference_id;
+                        $journal->subledger_id = $stock_correction_item->item_id;
+                        $journal->subledger_type = get_class($stock_correction_item->item);
+                        $journal->save();
+
+                        if ($position == 'debit') {
+                            $debit += $stock_correction_item->amount;
+                        } else {
+                            $credit += $stock_correction_item->amount;
+                        }
+
+                        // JOURNAL #2 of #2 - Inventory Differences
+                        $inventory_differences_account = JournalHelper::getAccount('point inventory stock correction', 'inventory differences');
+
+                        $position = JournalHelper::position($inventory_differences_account);
+                        $journal = new Journal();
+                        $journal->form_date = $form_date;
+                        $journal->coa_id = $inventory_differences_account;
+                        $journal->description = $stock_correction_item->correction_notes;
+                        $journal->$position = $cost_of_sales * -1;
+                        $journal->form_journal_id = $stock_correction->formulir_id;
+                        $journal->form_reference_id;
+                        $journal->subledger_id;
+                        $journal->subledger_type;
+                        $journal->save();
+
+                        if ($position == 'debit') {
+                            $debit += $stock_correction_item->total;
+                        } else {
+                            $credit += $stock_correction_item->total;
+                        }
+
+                        if ($debit != $credit) {
+                            throw new PointException('Unbalance Journal');
+                        }
+                    }
                 }
             }
         }
