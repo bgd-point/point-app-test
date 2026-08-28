@@ -327,7 +327,7 @@ class RecalculateCutoff extends Command
   },
   {
     "code": "001-619",
-    "value": 31292
+    "value": 41178.5
   },
   {
     "code": "001-716",
@@ -1771,6 +1771,7 @@ class RecalculateCutoff extends Command
             if ($item) {
                 $inventories = Inventory::orderBy('form_date', 'desc')
                     ->orderBy('formulir_id', 'desc')
+                    ->orderBy('id', 'desc')
                     ->where('item_id', '=', $item->id)
                     ->get()
                     ->unique(function ($inventory) {
@@ -1784,12 +1785,14 @@ class RecalculateCutoff extends Command
                         ->where('warehouse_id', '=', $inventory->warehouse_id)
                         ->orderBy('form_date', 'desc')
                         ->orderBy('formulir_id', 'desc')
+                        ->orderBy('id', 'desc')
                         ->first();
                     
                     $lastVal = Inventory::where('item_id', '=', $inventory->item_id)
                         ->where('form_date', '<', '2026-07-31 23:59:59')
                         ->orderBy('form_date', 'desc')
                         ->orderBy('formulir_id', 'desc')
+                        ->orderBy('id', 'desc')
                         ->first();
 
                     if (!$last) {
@@ -1881,6 +1884,7 @@ class RecalculateCutoff extends Command
                         ->where('warehouse_id', '=', $inventory->warehouse_id)
                         ->orderBy('form_date', 'desc')
                         ->orderBy('formulir_id', 'desc')
+                        ->orderBy('id', 'desc')
                         ->first();
 
                     if (!$last) {

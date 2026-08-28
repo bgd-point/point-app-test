@@ -496,10 +496,6 @@ class Recalculate5kb extends Command
     "value": 16750
   },
   {
-    "code": "001-619",
-    "value": 31292
-  },
-  {
     "code": "001-716",
     "value": 10327
   },
@@ -3017,7 +3013,7 @@ class Recalculate5kb extends Command
   },
   {
     "code": "001-619",
-    "value": 44474
+    "value": 41178.5
   }
 ]';
 
