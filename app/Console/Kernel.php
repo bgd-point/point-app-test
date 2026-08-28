@@ -48,6 +48,7 @@ class Kernel extends ConsoleKernel
         Commands\RecalculateTest::class,
         Commands\RecalculateTransaction::class,
         Commands\RecalculateCutoff::class,
+        Commands\RecalculateCutoffBMP::class,
         Commands\RecalculateDate::class,
         Commands\RecalculateInput::class,
         Commands\RecalculateOutput::class,

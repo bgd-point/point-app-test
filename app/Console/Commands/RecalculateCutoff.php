@@ -1291,7 +1291,7 @@ class RecalculateCutoff extends Command
   },
   {
     "code": "001-323",
-    "value": 87.67
+    "value": 87.6653
   },
   {
     "code": "001-255",
