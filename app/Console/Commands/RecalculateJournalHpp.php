@@ -65,7 +65,7 @@ class RecalculateJournalHpp extends Command
         // INVOICE
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.formulirable_type', '=', 'Point\PointSales\Models\Sales\Invoice')
-            ->where('form_date', '>', '2026-08-01 00:00:00')
+            ->where('inventory.form_date', '>', '2026-08-01 00:00:00')
             ->select('inventory.*')
             ->get();
 
@@ -136,7 +136,7 @@ class RecalculateJournalHpp extends Command
         // TI
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.formulirable_type', '=', 'Point\PointInventory\Models\TransferItem\TransferItem')
-            ->where('form_date', '>', '2026-08-01 00:00:00')
+            ->where('inventory.form_date', '>', '2026-08-01 00:00:00')
             ->select('inventory.*')
             ->get();
 
@@ -168,7 +168,7 @@ class RecalculateJournalHpp extends Command
         // INPUT MANUFACTURE
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.formulirable_type', '=', 'Point\PointManufacture\Models\InputProcess')
-            ->where('form_date', '>', '2026-08-01 00:00:00')
+            ->where('inventory.form_date', '>', '2026-08-01 00:00:00')
             ->select('inventory.*')
             ->get();
 
@@ -200,7 +200,7 @@ class RecalculateJournalHpp extends Command
         // SC
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.formulirable_type', '=', 'Point\PointInventory\Models\StockCorrection\StockCorrection')
-            ->where('form_date', '>', '2026-08-01 00:00:00')
+            ->where('inventory.form_date', '>', '2026-08-01 00:00:00')
             ->select('inventory.*')
             ->get();
 
@@ -248,7 +248,7 @@ class RecalculateJournalHpp extends Command
         // IU
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.formulirable_type', '=', 'Point\PointInventory\Models\InventoryUsage\InventoryUsage')
-            ->where('form_date', '>', '2026-08-01 00:00:00')
+            ->where('inventory.form_date', '>', '2026-08-01 00:00:00')
             ->select('inventory.*')
             ->get();
 
@@ -356,7 +356,7 @@ class RecalculateJournalHpp extends Command
         $journals = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
             ->join('formulir', 'formulir.id', '=', 'journal.form_journal_id')
             ->where('formulir.formulirable_type', '=', 'Point\PointSales\Models\Sales\Retur')
-            ->where('form_date', '>', '2026-08-01 00:00:00')
+            ->where('inventory.form_date', '>', '2026-08-01 00:00:00')
             ->select('journal.*')
             ->groupBy('form_journal_id')
             ->get();
