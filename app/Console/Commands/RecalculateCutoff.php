@@ -2014,7 +2014,8 @@ class RecalculateCutoff extends Command
                     foreach ($stock_correction->items as $stock_correction_item) {
                         $position = JournalHelper::position($stock_correction_item->item->account_asset_id);
 
-                        $cost_of_sales = InventoryHelper::getCostOfSales($form_date, $stock_correction_item->item_id, $stock_correction->warehouse_id);
+                        // $cost_of_sales = InventoryHelper::getCostOfSales($form_date, $stock_correction_item->item_id, $stock_correction->warehouse_id);
+                        $cost_of_sales = $value ?? 0;
                         $cost_of_sales = $cost_of_sales * $stock_correction_item->quantity_correction;
 
                         $journal = new Journal();
