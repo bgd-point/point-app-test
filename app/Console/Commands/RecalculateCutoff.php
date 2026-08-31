@@ -712,7 +712,7 @@ class RecalculateCutoff extends Command
   },
   {
     "code": "B008 - N",
-    "value": 55045.45
+    "value": 55045.4545
   },
   {
     "code": "B015",
@@ -1032,7 +1032,7 @@ class RecalculateCutoff extends Command
   },
   {
     "code": "001-622",
-    "value": 304.56
+    "value": 304.5644
   },
   {
     "code": "001-624",
