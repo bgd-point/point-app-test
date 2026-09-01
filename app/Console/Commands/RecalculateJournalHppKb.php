@@ -75,7 +75,7 @@ class RecalculateJournalHppKb extends Command
         // INVOICE
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.formulirable_type', '=', 'Point\PointSales\Models\Sales\Invoice')
-            ->where('form_date', '>=', '2026-08-01 00:00:00')
+            ->where('inventory.form_date', '>=', '2026-08-01 00:00:00')
             ->select('inventory.*')
             ->get();
 
@@ -146,7 +146,7 @@ class RecalculateJournalHppKb extends Command
         // TI
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.formulirable_type', '=', 'Point\PointInventory\Models\TransferItem\TransferItem')
-            ->where('form_date', '>=', '2026-08-01 00:00:00')
+            ->where('inventory.form_date', '>=', '2026-08-01 00:00:00')
             ->select('inventory.*')
             ->get();
 
@@ -178,7 +178,7 @@ class RecalculateJournalHppKb extends Command
         // INPUT MANUFACTURE
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.formulirable_type', '=', 'Point\PointManufacture\Models\InputProcess')
-            ->where('form_date', '>=', '2026-08-01 00:00:00')
+            ->where('inventory.form_date', '>=', '2026-08-01 00:00:00')
             ->select('inventory.*')
             ->get();
 
@@ -210,7 +210,7 @@ class RecalculateJournalHppKb extends Command
         // SC
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.formulirable_type', '=', 'Point\PointInventory\Models\StockCorrection\StockCorrection')
-            ->where('form_date', '>=', '2026-08-01 00:00:00')
+            ->where('inventory.form_date', '>=', '2026-08-01 00:00:00')
             ->select('inventory.*')
             ->get();
 
@@ -258,7 +258,7 @@ class RecalculateJournalHppKb extends Command
         // IU
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.formulirable_type', '=', 'Point\PointInventory\Models\InventoryUsage\InventoryUsage')
-            ->where('form_date', '>=', '2026-08-01 00:00:00')
+            ->where('inventory.form_date', '>=', '2026-08-01 00:00:00')
             ->select('inventory.*')
             ->get();
 
