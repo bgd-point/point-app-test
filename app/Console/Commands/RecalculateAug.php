@@ -80,6 +80,9 @@ class RecalculateAug extends Command
                     ->get();
 
                 foreach ($list_inventory as $inv) {
+                    if ($item_id === 737) {
+                        $this->$_COOKIEcomment('item_id = ' . $item_id . ' | warehouse_id = ' . $warehouse_id . ' | inventory_id = ' . $inv->form_date . ' | total_quantity = ' . $inv->total_quantity . ' | id = ' . $inv->id);
+                    }
                     $inv->total_quantity = $inv->quantity + $last->total_quantity;
                     $inv->save();
                 }
