@@ -77,6 +77,7 @@ class RecalculateAug extends Command
                 }
 
                 $list_inventory = Inventory::where('item_id', '=', $item_id)
+                    ->where('warehouse_id', '=', $warehouse_id)
                     ->where('form_date', '>=', $inventory->form_date)
                     ->orderBy('form_date', 'asc')
                     ->orderBy('formulir_id', 'asc')
