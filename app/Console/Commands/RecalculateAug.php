@@ -51,7 +51,7 @@ class RecalculateAug extends Command
         $this->comment('Found ' . count($inventories) . ' unique item_id and warehouse_id combinations');
 
         foreach ($inventories as $inventory) {
-            $this->comment('Processing item_id: ' . $inventory->item_id . ', warehouse_id: ' . $inventory->warehouse_id);
+            // $this->comment('Processing item_id: ' . $inventory->item_id . ', warehouse_id: ' . $inventory->warehouse_id);
             $item_id = $inventory->item_id;
             $warehouse_id = $inventory->warehouse_id;
 
@@ -82,6 +82,8 @@ class RecalculateAug extends Command
                     ->orderBy('form_date', 'asc')
                     ->orderBy('formulir_id', 'asc')
                     ->get();
+
+                $this->comment('Found ' . count($list_inventory) . ' inventory records for item_id: ' . $item_id . ', warehouse_id: ' . $warehouse_id);
 
                 foreach ($list_inventory as $inv) {
                     $this->comment('item_id = ' . $item_id . ' | warehouse_id = ' . $warehouse_id . ' | inventory_id = ' . $inv->form_date . ' | total_quantity = ' . $inv->total_quantity . ' | id = ' . $inv->id);
