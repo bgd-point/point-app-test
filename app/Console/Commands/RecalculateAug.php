@@ -48,7 +48,10 @@ class RecalculateAug extends Command
                 return $inventory['item_id'].$inventory['warehouse_id'];
             });
 
+        $this->comment('Found ' . count($inventories) . ' unique item_id and warehouse_id combinations');
+
         foreach ($inventories as $inventory) {
+            $this->comment('Processing item_id: ' . $inventory->item_id . ', warehouse_id: ' . $inventory->warehouse_id);
             $item_id = $inventory->item_id;
             $warehouse_id = $inventory->warehouse_id;
 
