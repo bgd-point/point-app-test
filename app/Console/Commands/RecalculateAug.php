@@ -79,14 +79,18 @@ class RecalculateAug extends Command
 
             $list_inventory = Inventory::where('item_id', '=', $item_id)
                 ->where('warehouse_id', '=', $warehouse_id)
-                ->where('form_date', '>=', $inventory->form_date)
+                ->where('form_date', '>=', $last->form_date)
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
+                ->orderBy('id', 'asc')
                 ->get();
 
             $this->comment('Found ' . count($list_inventory) . ' inventory records for item_id: ' . $item_id . ', warehouse_id: ' . $warehouse_id);
 
-            foreach ($list_inventory as $inv) {
+            foreach ($list_inventory as $index => $inv) {
+                if ($index === 0 {
+                    continue;
+                }
                 $this->comment('item_id = ' . $item_id . ' | warehouse_id = ' . $warehouse_id . ' | inventory_id = ' . $inv->form_date . ' | total_quantity = ' . $inv->total_quantity . ' | id = ' . $inv->id);
                 $inv->total_quantity = $inv->quantity + $last->total_quantity;
                 $inv->save();
@@ -123,13 +127,16 @@ class RecalculateAug extends Command
             }
 
             $list_inventory = Inventory::where('item_id', '=', $item_id)
-                ->where('form_date', '>=', $inventory->form_date)
+                ->where('form_date', '>=', $last->form_date)
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
                 ->orderBy('id', 'asc')
                 ->get();
 
             foreach ($list_inventory as $inv) {
+                if ($index === 0 {
+                    continue;
+                }
                 $inv->total_quantity_all = $inv->quantity + $last->total_quantity_all;
                 $inv->save();
             }
