@@ -53,25 +53,26 @@ class Recalculate6 extends Command
         // $inventory->price = 27477477.48;
         // $inventory->save();
 
-        echo ($items);
+        // echo ($items);
         foreach ($items as $item) {
             $inventory = Inventory::where('item_id', '=', $item->id)
-                ->where('form_date', '<', '2026-06-05')
+                // ->where('form_date', '<', '2026-06-05')
+                ->where('form_date', '<', '2026-08-01')
                 ->orderBy('form_date', 'desc')
                 ->orderBy('formulir_id', 'desc')
+                ->orderBy('id', 'desc')
                 ->first();
             if (!$inventory) {
                 $inventory = Inventory::where('item_id', '=', $item->id)
                 ->orderBy('form_date', 'asc')
                 ->orderBy('formulir_id', 'asc')
+                ->orderBy('id', 'asc')
                 ->first();
                 if (!$inventory) {
-                    echo 'c2' .PHP_EOL;
+                    echo 'continue' .PHP_EOL;
                     continue;
                 }
             }
-            
-            
 
             $list_inventory = Inventory::where('item_id', '=', $item->id)
                 ->where('form_date', '>=', $inventory->form_date)
@@ -79,8 +80,8 @@ class Recalculate6 extends Command
                 ->orderBy('formulir_id', 'asc')
                 ->get();
 
-            echo ('$list_inventory');
-            echo ($list_inventory);
+            // echo ('$list_inventory');
+            // echo ($list_inventory);
             
             $prevTotalQty = 0;
             $prevTotalVal = 0;
@@ -97,9 +98,9 @@ class Recalculate6 extends Command
                 if ($l_inventory->quantity < 0) {
                     echo ('here');
                     if ($prevTotalQty == 0) {
-                        $l_inventory->price = 0;
+                        // $l_inventory->price = 0;
                     } else {
-                        $l_inventory->price = $prevTotalVal / $prevTotalQty;
+                        // $l_inventory->price = $prevTotalVal / $prevTotalQty;
                     }
                 }
 
@@ -120,14 +121,14 @@ class Recalculate6 extends Command
                             // echo 'Found inventory with price > 0 : ' . $is->id . ' => ' . $is->price . "\n";
                             if ($is) {
                                 $this->comment('a');
-                                $l_inventory->price = $is->cogs;
+                                // $l_inventory->price = $is->cogs;
                             } else {    
                                 $this->comment('b');
-                                $l_inventory->price = 0;
+                                // $l_inventory->price = 0;
                             }
                             $this->comment('Found inventory with price > 0 : ' . $is->id . ' => ' . $is->price . ' | ' . $l_inventory->price);
                         } else {
-                            $l_inventory->price = $prevTotalVal / $prevTotalQty;
+                            // $l_inventory->price = $prevTotalVal / $prevTotalQty;
                         }
                     }
                 }
@@ -135,14 +136,14 @@ class Recalculate6 extends Command
                 $l_inventory->total_quantity_all = $prevTotalQty + $l_inventory->quantity;
                 $l_inventory->total_value_all = $prevTotalVal + ($l_inventory->quantity * $l_inventory->price);
                 if (!$l_inventory->total_quantity_all || $l_inventory->total_quantity_all == 0) {
-                    $l_inventory->cogs = 0;
+                    // $l_inventory->cogs = 0;
                 } else {
-                    $l_inventory->cogs = $l_inventory->total_value_all / $l_inventory->total_quantity_all;
+                    // $l_inventory->cogs = $l_inventory->total_value_all / $l_inventory->total_quantity_all;
                 }
                 $l_inventory->save();
 
                 $prevTotalQty = $l_inventory->total_quantity_all;
-                $prevTotalVal = $l_inventory->total_value_all;
+                // $prevTotalVal = $l_inventory->total_value_all;
             }
         }
     }
