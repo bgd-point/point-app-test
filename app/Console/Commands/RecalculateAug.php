@@ -87,12 +87,15 @@ class RecalculateAug extends Command
 
             $this->comment('Found ' . count($list_inventory) . ' inventory records for item_id: ' . $item_id . ', warehouse_id: ' . $warehouse_id);
 
+            $acc = $last->total_quantity ?? 0;
+
             foreach ($list_inventory as $index => $inv) {
                 if ($index === 0) {
                     continue;
                 }
+                $acc += $inv->quantity;
                 $this->comment('item_id = ' . $item_id . ' | warehouse_id = ' . $warehouse_id . ' | inventory_id = ' . $inv->form_date . ' | total_quantity = ' . $inv->total_quantity . ' | id = ' . $inv->id);
-                $inv->total_quantity = $inv->quantity + $last->total_quantity;
+                $inv->total_quantity = $acc;
                 $inv->save();
             }
         }
@@ -133,11 +136,13 @@ class RecalculateAug extends Command
                 ->orderBy('id', 'asc')
                 ->get();
 
+            $acc = $lastAll->total_quantity_all ?? 0;
             foreach ($list_inventory as $index => $inv) {
                 if ($index === 0) {
                     continue;
                 }
-                $inv->total_quantity_all = $inv->quantity + $last->total_quantity_all;
+                $acc += $inv->quantity;
+                $inv->total_quantity_all = $acc;
                 $inv->save();
             }
         }
