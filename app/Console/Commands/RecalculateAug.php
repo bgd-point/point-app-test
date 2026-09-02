@@ -72,7 +72,7 @@ class RecalculateAug extends Command
                     ->first();
 
                 if (!$last) {
-                    echo 'continue' .PHP_EOL;
+                    $this->comment('No inventory records found for item_id: ' . $item_id . ', warehouse_id: ' . $warehouse_id);
                     continue;
                 }
 
