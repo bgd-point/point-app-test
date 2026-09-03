@@ -96,6 +96,7 @@ class RecalculateAug extends Command
                 $acc += $inv->quantity;
                 $this->comment('item_id = ' . $item_id . ' | warehouse_id = ' . $warehouse_id . ' | inventory_id = ' . $inv->form_date . ' | total_quantity = ' . $inv->total_quantity . ' | id = ' . $inv->id);
                 $inv->total_quantity = $acc;
+                $inv->total_value = $inv->total_quantity * $inv->cogs;
                 $inv->save();
             }
         }
@@ -143,6 +144,7 @@ class RecalculateAug extends Command
                 }
                 $acc += $inv->quantity;
                 $inv->total_quantity_all = $acc;
+                $inv->total_value_all = $inv->total_quantity_all * $inv->cogs;
                 $inv->save();
             }
         }
