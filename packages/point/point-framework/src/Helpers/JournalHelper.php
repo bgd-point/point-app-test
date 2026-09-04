@@ -117,6 +117,11 @@ class JournalHelper
         }
     }
 
+    public static function journalValue2($journal)
+    {
+        return $journal->credit - $journal->debit;
+    }
+
     public static function groupValue($coa_group_id, $date_from, $date_to)
     {
         $coa_from_group = CoaGroup::where('coa_id', '=', $coa_group_id)->list('coa.id');
@@ -170,10 +175,10 @@ class JournalHelper
 
             \Log::info('journal: ' . $journal->debit . ' - ' . $journal->credit . ' | ' . $date_from . ' - ' . $date_to . ' | ' . $coa_from_category);
             \Log::info('journal x: ' . $journal_x->debit . ' - ' . $journal_x->credit . ' | ' . $date_from . ' - ' . $date_to . ' | ' . $coa_from_x);
-            \Log::info('value: ' . static::journalValue($journal) . ' + ' . static::journalValue($journal_x));
-            \Log::info('value: ' . static::journalValue($journal) + static::journalValue($journal_x));
+            \Log::info('value: ' . static::journalValue2($journal) . ' + ' . static::journalValue2($journal_x));
+            \Log::info('value: ' . static::journalValue2($journal) + static::journalValue2($journal_x));
 
-            return static::journalValue($journal) + static::journalValue($journal_x);
+            return static::journalValue2($journal) + static::journalValue2($journal_x);
         }
         // RETAINED EARNING
         else if ($coa_category_id == 13) {
@@ -201,7 +206,7 @@ class JournalHelper
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit')
                 ->first();
 
-            return static::journalValue($journal) + static::journalValue($journal_x);
+            return static::journalValue2($journal) + static::journalValue2($journal_x);
         } else {
             $coa_from_category = Coa::where('coa_category_id', '=', $coa_category_id)->lists('coa.id');
 
