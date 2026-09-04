@@ -159,14 +159,17 @@ class JournalHelper
             $journal = Journal::whereIn('coa_id', $coa_from_category)
                 ->where('form_date', '>=', $date_from)
                 ->where('form_date', '<=', $date_to)
-                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+                ->selectRaw('sum(debit) as debit, sum(credit) as credit')
                 ->first();
 
             $journal_x = Journal::whereIn('coa_id', $coa_from_x)
                 ->where('form_date', '>=', $date_from)
                 ->where('form_date', '<=', $date_to)
-                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+                ->selectRaw('sum(debit) as debit, sum(credit) as credit')
                 ->first();
+
+            \Log::info('current earning: ' . static::journalValue($journal));
+            \Log::info('current earning x: ' . static::journalValue($journal_x));
 
             return static::journalValue($journal) + static::journalValue($journal_x);
         }
@@ -189,14 +192,17 @@ class JournalHelper
 
             $journal = Journal::whereIn('coa_id', $coa_from_category)
                 ->where('form_date', '<', $date_from)
-                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+                ->selectRaw('sum(debit) as debit, sum(credit) as credit')
                 ->first();
 
             $coa_from_x = Coa::where('coa_category_id', '=', 13)->lists('coa.id');
             $journal_x = Journal::whereIn('coa_id', $coa_from_x)
                 ->where('form_date', '<', $date_from)
-                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+                ->selectRaw('sum(debit) as debit, sum(credit) as credit')
                 ->first();
+
+            \Log::info('retained earning: ' . static::journalValue($journal));
+            \Log::info('retained earning x: ' . static::journalValue($journal_x));
 
             return static::journalValue($journal) + static::journalValue($journal_x);
         } else {
