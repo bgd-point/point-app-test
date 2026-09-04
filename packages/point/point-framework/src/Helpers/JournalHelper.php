@@ -168,9 +168,6 @@ class JournalHelper
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit')
                 ->first();
 
-            \Log::info('current earning: ' . json_encode(static::journalValue($journal)));
-            \Log::info('current earning x: ' . json_encode(static::journalValue($journal_x)));
-
             return static::journalValue($journal) + static::journalValue($journal_x);
         }
         // RETAINED EARNING
@@ -188,8 +185,6 @@ class JournalHelper
                 ->orWhere('coa_category_id', '=', 17)
                 ->orWhere('coa_category_id', '=', 18)
                 ->lists('coa.id');
-
-
             $journal = Journal::whereIn('coa_id', $coa_from_category)
                 ->where('form_date', '<', $date_from)
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit')
@@ -200,9 +195,6 @@ class JournalHelper
                 ->where('form_date', '<', $date_from)
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit')
                 ->first();
-
-            \Log::info('retained earning: ' . json_encode(static::journalValue($journal)));
-            \Log::info('retained earning x: ' . json_encode(static::journalValue($journal_x)));
 
             return static::journalValue($journal) + static::journalValue($journal_x);
         } else {
