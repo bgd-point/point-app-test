@@ -168,8 +168,8 @@ class JournalHelper
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit')
                 ->first();
 
-            \Log::info('current earning: ' . static::journalValue($journal));
-            \Log::info('current earning x: ' . static::journalValue($journal_x));
+            \Log::info('current earning: ' . json_encode(static::journalValue($journal)));
+            \Log::info('current earning x: ' . json_encode(static::journalValue($journal_x)));
 
             return static::journalValue($journal) + static::journalValue($journal_x);
         }
@@ -201,8 +201,8 @@ class JournalHelper
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit')
                 ->first();
 
-            \Log::info('retained earning: ' . static::journalValue($journal));
-            \Log::info('retained earning x: ' . static::journalValue($journal_x));
+            \Log::info('retained earning: ' . json_encode(static::journalValue($journal)));
+            \Log::info('retained earning x: ' . json_encode(static::journalValue($journal_x)));
 
             return static::journalValue($journal) + static::journalValue($journal_x);
         } else {
