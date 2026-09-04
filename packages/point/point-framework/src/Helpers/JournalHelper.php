@@ -168,6 +168,9 @@ class JournalHelper
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit')
                 ->first();
 
+            \Log::info('journal: ' . $journal->debit . ' - ' . $journal->credit . ' | ' . $date_from . ' - ' . $date_to . ' | ' . $coa_from_category);
+            \Log::info('journal x: ' . $journal_x->debit . ' - ' . $journal_x->credit);
+
             return static::journalValue($journal) + static::journalValue($journal_x);
         }
         // RETAINED EARNING
