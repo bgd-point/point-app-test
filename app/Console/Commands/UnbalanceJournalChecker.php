@@ -29,7 +29,7 @@ class UnbalanceJournalChecker extends Command
     public function handle()
     {
         $journals = Journal::groupBy('form_journal_id');
-        foreach ($journals->where('form_date', '>=', '2026-07-01')->get() as $journal) {
+        foreach ($journals->where('form_date', '>=', '2026-05-01')->get() as $journal) {
             $debit = Journal::where('form_journal_id', $journal->form_journal_id)->sum('debit');
             $credit = Journal::where('form_journal_id', $journal->form_journal_id)->sum('credit');
 
@@ -37,22 +37,5 @@ class UnbalanceJournalChecker extends Command
                 $this->comment($journal->form_journal_id . '. ' . $journal->formulir->form_number . ' ' . $debit . ' != ' . $credit . ' | ' . ($debit - $credit));
             }
         }
-
-        // $this->comment('second attempt');
-
-        // $journals = Journal::select(
-        //     'form_journal_id',
-        //     \DB::raw('SUM(debit) as total_debit'),
-        //     \DB::raw('SUM(credit) as total_credit')
-        // )
-        // ->groupBy('form_journal_id')
-        // ->havingRaw('ABS(SUM(debit) - SUM(credit)) > 0.01')
-        // ->get();
-
-        // foreach ($journals as $journal) {
-        //     $this->comment(
-        //         "{$journal->form_journal_id} | Debit: {$journal->total_debit} | Credit: {$journal->total_credit}"
-        //     );
-        // }
     }
 }
