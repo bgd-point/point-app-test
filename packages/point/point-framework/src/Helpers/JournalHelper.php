@@ -193,13 +193,11 @@ class JournalHelper
                 ->orWhere('coa_category_id', '=', 18)
                 ->lists('coa.id');
             $journal = Journal::whereIn('coa_id', $coa_from_category)
-                ->where('form_date', '<', $date_from)
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit')
                 ->first();
 
             $coa_from_x = Coa::where('coa_category_id', '=', 13)->lists('coa.id');
             $journal_x = Journal::whereIn('coa_id', $coa_from_x)
-                ->where('form_date', '<', $date_from)
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit')
                 ->first();
 
