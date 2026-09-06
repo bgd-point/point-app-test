@@ -210,7 +210,7 @@ class JournalHelper
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
                 ->first();
 
-            return static::journalValue($journal_open) + static::journalValue($journal) + static::journalValue($journal_x);
+            return static::journalValue($journal_open) + static::journalValue($journal_x);
         } else if ($coa_category_id == 1300) {
                $coa_from_category = Coa::where('coa_category_id', '=', 14)
                 ->orWhere('coa_category_id', '=', 15)
