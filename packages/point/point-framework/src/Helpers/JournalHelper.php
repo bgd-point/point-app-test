@@ -178,7 +178,7 @@ class JournalHelper
             return static::journalValue2($journal) + static::journalValue2($journal_x);
         }
         // RETAINED EARNING
-        else if ($coa_category_id == 130000) {
+        else if ($coa_category_id == 13) {
             // COA CATEGORY 
             // 14 = REVENUE, 
             // 15 = COST OF GOODS SOLD, 
@@ -192,19 +192,26 @@ class JournalHelper
                 ->orWhere('coa_category_id', '=', 17)
                 ->orWhere('coa_category_id', '=', 18)
                 ->lists('coa.id');
-            $journal = Journal::whereIn('coa_id', $coa_from_category)
+
+            $journal_open = Journal::whereIn('coa_id', $coa_from_category)
                 ->where('form_date', '<', $date_from)
-                ->selectRaw('sum(debit) as debit, sum(credit) as credit')
+                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+                ->first();
+
+            $journal = Journal::whereIn('coa_id', $coa_from_category)
+                ->where('form_date', '>=', $date_from)
+                ->where('form_date', '<=', $date_to)
+                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
                 ->first();
 
             $coa_from_x = Coa::where('coa_category_id', '=', 13)->lists('coa.id');
             $journal_x = Journal::whereIn('coa_id', $coa_from_x)
                 ->where('form_date', '<', $date_from)
-                ->selectRaw('sum(debit) as debit, sum(credit) as credit')
+                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
                 ->first();
 
-            return static::journalValue2($journal) + static::journalValue2($journal_x);
-        } else if ($coa_category_id == 13) {
+            return static::journalValue($journal_open) + static::journalValue($journal) + static::journalValue($journal_x);
+        } else if ($coa_category_id == 1300) {
                $coa_from_category = Coa::where('coa_category_id', '=', 14)
                 ->orWhere('coa_category_id', '=', 15)
                 ->orWhere('coa_category_id', '=', 16)
