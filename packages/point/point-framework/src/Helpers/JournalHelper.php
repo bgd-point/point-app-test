@@ -178,7 +178,7 @@ class JournalHelper
             return static::journalValue2($journal) + static::journalValue2($journal_x);
         }
         // RETAINED EARNING
-        else if ($coa_category_id == 1300) {
+        else if ($coa_category_id == 13) {
             // COA CATEGORY 
             // 14 = REVENUE, 
             // 15 = COST OF GOODS SOLD, 
