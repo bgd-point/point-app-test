@@ -144,7 +144,7 @@ class JournalHelper
         $date_from = date('Y-01-01', strtotime($date_to));
 
         // CURRENT EARNING (PROFIT LOSS)
-        if ($coa_category_id == 0000) {
+        if ($coa_category_id == 1200) {
             // 14 = REVENUE, 
             // 15 = COST OF GOODS SOLD, 
             // 16 = EXPENSE, 
@@ -173,13 +173,12 @@ class JournalHelper
 
             \Log::info('journal: ' . $journal->debit . ' - ' . $journal->credit . ' | ' . $date_from . ' - ' . $date_to . ' | ' . $coa_from_category);
             \Log::info('journal x: ' . $journal_x->debit . ' - ' . $journal_x->credit . ' | ' . $date_from . ' - ' . $date_to . ' | ' . $coa_from_x);
-            \Log::info('value: ' . static::journalValue2($journal) . ' + ' . static::journalValue2($journal_x));
-            \Log::info('value: ' . static::journalValue2($journal) + static::journalValue2($journal_x));
+            \Log::info('value: ' . static::journalValue2($journal) . ' + ' . static::journalValue2($journal_x) . ' = ' . (static::journalValue2($journal) + static::journalValue2($journal_x)));
 
             return static::journalValue2($journal) + static::journalValue2($journal_x);
         }
         // RETAINED EARNING
-        else if ($coa_category_id == 13) {
+        else if ($coa_category_id == 1300) {
             // COA CATEGORY 
             // 14 = REVENUE, 
             // 15 = COST OF GOODS SOLD, 
@@ -218,6 +217,9 @@ class JournalHelper
                 ->where('form_date', '<=', $date_to)
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
                 ->first();
+
+            \Log::info($coa_category_id . ' = journal open: ' . $journal_open->debit . ' - ' . $journal_open->credit . ' | ' . $date_from . ' - ' . $date_to);
+            \Log::info($coa_category_id . ' = journal: ' . $journal->debit . ' - ' . $journal->credit . ' | ' . $date_from . ' - ' . $date_to);
 
             return static::journalValue($journal_open) + static::journalValue($journal);
         }
