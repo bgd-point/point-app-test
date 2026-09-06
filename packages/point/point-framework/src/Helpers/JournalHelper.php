@@ -144,7 +144,7 @@ class JournalHelper
         $date_from = date('Y-01-01', strtotime($date_to));
 
         // CURRENT EARNING (PROFIT LOSS)
-        if ($coa_category_id == 1200) {
+        if ($coa_category_id == 12) {
             // 14 = REVENUE, 
             // 15 = COST OF GOODS SOLD, 
             // 16 = EXPENSE, 
