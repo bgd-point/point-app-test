@@ -158,13 +158,22 @@ class JournalHelper
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
                 ->first();
 
+            $add = static::journalValue($journal_open);
+        } else if ($coa_category_id == 12) {
+               $coa_from_category = Coa::where('coa_category_id', '=', 14)
+                ->orWhere('coa_category_id', '=', 15)
+                ->orWhere('coa_category_id', '=', 16)
+                ->orWhere('coa_category_id', '=', 17)
+                ->orWhere('coa_category_id', '=', 18)
+                ->lists('coa.id');
+
             $journal = Journal::whereIn('coa_id', $coa_from_category)
                 ->where('form_date', '>=', $date_from)
                 ->where('form_date', '<=', $date_to)
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
                 ->first();
 
-            $add = static::journalValue($journal_open) + static::journalValue($journal);
+            $add = static::journalValue($journal);
         } 
 
         $coa_from_category = Coa::where('coa_category_id', '=', $coa_category_id)->lists('coa.id');
