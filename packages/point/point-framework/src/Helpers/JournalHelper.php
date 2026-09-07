@@ -143,78 +143,9 @@ class JournalHelper
         // DATE FROM SHOULD BE SET TO BEGINNING OF TIME IN $date_to YEAR
         $date_from = date('Y-01-01', strtotime($date_to));
 
-        // CURRENT EARNING (PROFIT LOSS)
-        if ($coa_category_id == 12) {
-            // 14 = REVENUE, 
-            // 15 = COST OF GOODS SOLD, 
-            // 16 = EXPENSE, 
-            // 17 = OTHER INCOME, 
-            // 18 = OTHER EXPENSE
-            // + COA CATEGORY 12 = CURRENT EARNING 
-            
-            $coa_from_category = Coa::where('coa_category_id', '=', 14)
-                ->orWhere('coa_category_id', '=', 15)
-                ->orWhere('coa_category_id', '=', 16)
-                ->orWhere('coa_category_id', '=', 17)
-                ->orWhere('coa_category_id', '=', 18)
-                ->lists('coa.id');
+        $add = 0;
 
-            $journal_open = Journal::whereIn('coa_id', $coa_from_category)
-                ->where('form_date', '<', $date_from)
-                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
-                ->first();
-
-            $journal = Journal::whereIn('coa_id', $coa_from_category)
-                ->where('form_date', '>=', $date_from)
-                ->where('form_date', '<=', $date_to)
-                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
-                ->first();
-
-            $coa_from_x = Coa::where('coa_category_id', '=', 12)->lists('coa.id');
-            $journal_x = Journal::whereIn('coa_id', $coa_from_x)
-                ->where('form_date', '>=', $date_from)
-                ->where('form_date', '<=', $date_to)
-                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
-                ->first();
-
-
-            return static::journalValue($journal_open) + static::journalValue($journal) + static::journalValue($journal_x);
-        }
-        // RETAINED EARNING
-        else if ($coa_category_id == 13) {
-            // COA CATEGORY 
-            // 14 = REVENUE, 
-            // 15 = COST OF GOODS SOLD, 
-            // 16 = EXPENSE, 
-            // 17 = OTHER INCOME, 
-            // 18 = OTHER EXPENSE
-            // + COA CATEGORY 13 = RETAINED EARNING (FILTER BASED ON DATE FROM AND DATE TO)
-            $coa_from_category = Coa::where('coa_category_id', '=', 14)
-                ->orWhere('coa_category_id', '=', 15)
-                ->orWhere('coa_category_id', '=', 16)
-                ->orWhere('coa_category_id', '=', 17)
-                ->orWhere('coa_category_id', '=', 18)
-                ->lists('coa.id');
-
-            $journal_open = Journal::whereIn('coa_id', $coa_from_category)
-                ->where('form_date', '<', $date_from)
-                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
-                ->first();
-
-            $journal = Journal::whereIn('coa_id', $coa_from_category)
-                ->where('form_date', '>=', $date_from)
-                ->where('form_date', '<=', $date_to)
-                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
-                ->first();
-
-            $coa_from_x = Coa::where('coa_category_id', '=', 13)->lists('coa.id');
-            $journal_x = Journal::whereIn('coa_id', $coa_from_x)
-                ->where('form_date', '<', $date_from)
-                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
-                ->first();
-
-            return static::journalValue($journal_open) + static::journalValue($journal_x);
-        } else if ($coa_category_id == 1300) {
+        if ($coa_category_id == 13) {
                $coa_from_category = Coa::where('coa_category_id', '=', 14)
                 ->orWhere('coa_category_id', '=', 15)
                 ->orWhere('coa_category_id', '=', 16)
@@ -233,26 +164,23 @@ class JournalHelper
                 ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
                 ->first();
 
-            return static::journalValue($journal_open) + static::journalValue($journal);
-        } else {
-            $coa_from_category = Coa::where('coa_category_id', '=', $coa_category_id)->lists('coa.id');
+            $add = static::journalValue($journal_open) + static::journalValue($journal);
+        } 
 
-            $journal_open = Journal::whereIn('coa_id', $coa_from_category)
-                ->where('form_date', '<', $date_from)
-                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
-                ->first();
+        $coa_from_category = Coa::where('coa_category_id', '=', $coa_category_id)->lists('coa.id');
 
-            $journal = Journal::whereIn('coa_id', $coa_from_category)
-                ->where('form_date', '>=', $date_from)
-                ->where('form_date', '<=', $date_to)
-                ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
-                ->first();
+        $journal_open = Journal::whereIn('coa_id', $coa_from_category)
+            ->where('form_date', '<', $date_from)
+            ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+            ->first();
 
-            \Log::info($coa_category_id . ' = journal open: ' . $journal_open->debit . ' - ' . $journal_open->credit . ' | ' . $date_from . ' - ' . $date_to);
-            \Log::info($coa_category_id . ' = journal: ' . $journal->debit . ' - ' . $journal->credit . ' | ' . $date_from . ' - ' . $date_to);
+        $journal = Journal::whereIn('coa_id', $coa_from_category)
+            ->where('form_date', '>=', $date_from)
+            ->where('form_date', '<=', $date_to)
+            ->selectRaw('sum(debit) as debit, sum(credit) as credit, coa_id')
+            ->first();
 
-            return static::journalValue($journal_open) + static::journalValue($journal);
-        }
+        return static::journalValue($journal_open) + static::journalValue($journal) + $add;
     }
 
     public static function positionValue($coa_position_id, $date_from, $date_to)
