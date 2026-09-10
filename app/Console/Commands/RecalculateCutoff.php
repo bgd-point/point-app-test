@@ -1866,7 +1866,7 @@ class RecalculateCutoff extends Command
                     if ($inventory->quantity < 0) {
                         $inventory->quantity *= -1;
                         $inventory_helper = new InventoryHelper($inventory);
-                        $inventory_helper->out0();
+                        $inventory_helper->out();
                     } else {
                         $inventory_helper = new InventoryHelper($inventory);
                         $inventory_helper->in();
