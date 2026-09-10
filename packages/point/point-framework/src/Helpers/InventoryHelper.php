@@ -473,7 +473,7 @@ class InventoryHelper
 
         $cogsVal = 0;
         if ($cogs) {
-            $cogsVal = $cogs->price;
+            $cogsVal = $this->inventory->price;
         }
 
         if ($last) {
