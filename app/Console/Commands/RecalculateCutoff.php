@@ -1804,14 +1804,14 @@ class RecalculateCutoff extends Command
                         ->first();
 
                     if (!$last) {
-                        $this->comment('No inventory found for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
+                        // $this->comment('No inventory found for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
                         continue;
                     } else {
-                        $this->comment('Last inventory for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id . ': quantity = ' . $last->total_quantity . ', cogs = ' . $last->cogs);
+                        // $this->comment('Last inventory for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id . ': quantity = ' . $last->total_quantity . ', cogs = ' . $last->cogs);
                     }
 
                     if ($last->total_quantity == 0) {
-                        $this->comment('No inventory quantity for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
+                        // $this->comment('No inventory quantity for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
                         continue;
                     }
                         
@@ -1956,14 +1956,14 @@ class RecalculateCutoff extends Command
                         ->first();
 
                     if (!$last) {
-                        $this->comment('No inventory found for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
+                        // $this->comment('No inventory found for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
                         continue;
                     } else {
-                        $this->comment('Last inventory for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id . ': quantity = ' . $last->total_quantity . ', cogs = ' . $last->cogs);
+                        // $this->comment('Last inventory for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id . ': quantity = ' . $last->total_quantity . ', cogs = ' . $last->cogs);
                     }
 
                     if ($last->total_quantity == 0) {
-                        $this->comment('No inventory quantity for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
+                        // $this->comment('No inventory quantity for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
                         continue;
                     }
                         
