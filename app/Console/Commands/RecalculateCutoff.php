@@ -1855,7 +1855,13 @@ class RecalculateCutoff extends Command
                     $inventory->warehouse_id = $stock_correction->warehouse_id;
                     $inventory->item_id = $stock_correction_item->item_id;
                     $inventory->quantity = $stock_correction_item->quantity_correction;
-                    $inventory->price = $lastVal->cogs ?? 0;
+                    if ($lastVal->total_value_all == 0 || $lastVal->total_quantity_all == 0) {
+                        $inventory->price = 0;
+                        $inventory->cogs = 0;
+                    } else {
+                        $inventory->price = 0;
+                        $inventory->cogs = $lastVal->total_value_all / $lastVal->total_quantity_all;
+                    }
                     
                     if ($inventory->quantity < 0) {
                         $inventory->quantity *= -1;

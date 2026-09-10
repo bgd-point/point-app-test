@@ -517,17 +517,17 @@ class InventoryHelper
             ->orderBy('id', 'desc')
             ->first();
 
-        $cogs = Inventory::where('item_id', '=', $this->inventory->item_id)
-            ->where('form_date', '<=', $this->inventory->form_date)
-            ->orderBy('form_date', 'desc')
-            ->orderBy('formulir_id', 'desc')
-            ->orderBy('id', 'desc')
-            ->first();
+        // $cogs = Inventory::where('item_id', '=', $this->inventory->item_id)
+        //     ->where('form_date', '<=', $this->inventory->form_date)
+        //     ->orderBy('form_date', 'desc')
+        //     ->orderBy('formulir_id', 'desc')
+        //     ->orderBy('id', 'desc')
+        //     ->first();
 
-        $cogsVal = 0;
-        if ($cogs) {
-            $cogsVal = $cogs->cogs;
-        }
+        // $cogsVal = 0;
+        // if ($cogs) {
+        //     $cogsVal = $cogs->cogs;
+        // }
 
         if ($last) {
             $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
@@ -550,7 +550,7 @@ class InventoryHelper
             throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE (' . $last->total_quantity .'<' . $this->inventory->quantity . ')');
         }
 
-        $this->inventory->cogs = $cogsVal;
+        // $this->inventory->cogs = $cogsVal;
     }
 
     private function markRecalculate()
