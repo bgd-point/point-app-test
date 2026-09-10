@@ -1769,10 +1769,10 @@ class RecalculateCutoff extends Command
 
         \DB::beginTransaction();
 
-        if ($item->id === 322) {
-
+        
         foreach ($data as $row) {
             $item = Item::where('code', $row['code'])->first();
+            if ($item->id === 322) {
             $value = str_replace(',', '', $row['value']); // COGS
             echo $row['code'] . ' => ' . $row['value'] . PHP_EOL;
             
@@ -1926,10 +1926,13 @@ class RecalculateCutoff extends Command
                     }
                 }
             }
+
+            }
         }
 
         foreach ($data as $row) {
             $item = Item::where('code', $row['code'])->first();
+            if ($item->id === 322) {
             $value = str_replace(',', '', $row['value']); // COGS
             echo $row['code'] . ' => ' . $row['value'] . PHP_EOL;
             
@@ -2073,9 +2076,10 @@ class RecalculateCutoff extends Command
                     }
                 }
             }
+            }
         }
 
-        }
+        
 
         \DB::commit();
     }
