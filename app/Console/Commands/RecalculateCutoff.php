@@ -1769,15 +1769,14 @@ class RecalculateCutoff extends Command
 
         \DB::beginTransaction();
 
+        if ($item->id === 322) {
+
         foreach ($data as $row) {
             $item = Item::where('code', $row['code'])->first();
             $value = str_replace(',', '', $row['value']); // COGS
             echo $row['code'] . ' => ' . $row['value'] . PHP_EOL;
             
             if ($item) {
-                if ($item !== 322) {
-                  continue;
-                }
                 $inventories = Inventory::orderBy('form_date', 'desc')
                     ->orderBy('formulir_id', 'desc')
                     ->orderBy('id', 'desc')
@@ -2074,6 +2073,8 @@ class RecalculateCutoff extends Command
                     }
                 }
             }
+        }
+
         }
 
         \DB::commit();
