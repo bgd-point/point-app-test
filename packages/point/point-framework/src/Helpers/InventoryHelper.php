@@ -518,17 +518,17 @@ class InventoryHelper
             ->orderBy('id', 'desc')
             ->first();
 
-        // $cogs = Inventory::where('item_id', '=', $this->inventory->item_id)
-        //     ->where('form_date', '<=', $this->inventory->form_date)
-        //     ->orderBy('form_date', 'desc')
-        //     ->orderBy('formulir_id', 'desc')
-        //     ->orderBy('id', 'desc')
-        //     ->first();
+        $cogs = Inventory::where('item_id', '=', $this->inventory->item_id)
+            ->where('form_date', '<=', $this->inventory->form_date)
+            ->orderBy('form_date', 'desc')
+            ->orderBy('formulir_id', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
 
-        // $cogsVal = 0;
-        // if ($cogs) {
-        //     $cogsVal = $cogs->cogs;
-        // }
+        $cogsVal = 0;
+        if ($cogs) {
+            $cogsVal = round($this->inventory->price, 4);
+        }
 
         if ($last) {
             $this->inventory->total_quantity = $last->total_quantity + $this->inventory->quantity;
