@@ -402,7 +402,7 @@ class InventoryHelper
     private function updateCogsIn()
     {
         $last = Inventory::where('item_id', '=', $this->inventory->item_id)
-            ->where('form_date', '<', $this->inventory->form_date)
+            ->where('form_date', '<=', $this->inventory->form_date)
             ->where('warehouse_id', '=', $this->inventory->warehouse_id)
             ->orderBy('form_date', 'desc')
             ->orderBy('formulir_id', 'desc')
@@ -410,7 +410,7 @@ class InventoryHelper
             ->first();
         
         $lastVal = Inventory::where('item_id', '=', $this->inventory->item_id)
-            ->where('form_date', '<', $this->inventory->form_date)
+            ->where('form_date', '<=', $this->inventory->form_date)
             ->orderBy('form_date', 'desc')
             ->orderBy('formulir_id', 'desc')
             ->orderBy('id', 'desc') 
@@ -450,7 +450,7 @@ class InventoryHelper
     private function updateCogsOut()
     {
         $last = Inventory::where('item_id', '=', $this->inventory->item_id)
-            ->where('form_date', '<', $this->inventory->form_date)
+            ->where('form_date', '<=', $this->inventory->form_date)
             ->where('warehouse_id', '=', $this->inventory->warehouse_id)
             ->orderBy('form_date', 'desc')
             ->orderBy('formulir_id', 'desc')
@@ -458,14 +458,14 @@ class InventoryHelper
             ->first();
         
         $lastAll = Inventory::where('item_id', '=', $this->inventory->item_id)
-            ->where('form_date', '<', $this->inventory->form_date)
+            ->where('form_date', '<=', $this->inventory->form_date)
             ->orderBy('form_date', 'desc')
             ->orderBy('formulir_id', 'desc')
             ->orderBy('id', 'desc')
             ->first();
 
         $cogs = Inventory::where('item_id', '=', $this->inventory->item_id)
-            ->where('form_date', '<', $this->inventory->form_date)
+            ->where('form_date', '<=', $this->inventory->form_date)
             ->orderBy('form_date', 'desc')
             ->orderBy('formulir_id', 'desc')
             ->orderBy('id', 'desc')
