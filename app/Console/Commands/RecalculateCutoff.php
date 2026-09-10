@@ -1769,10 +1769,8 @@ class RecalculateCutoff extends Command
 
         \DB::beginTransaction();
 
-        
         foreach ($data as $row) {
             $item = Item::where('code', $row['code'])->first();
-            if ($item->id === 86) {
             $value = str_replace(',', '', $row['value']); // COGS
             echo $row['code'] . ' => ' . $row['value'] . PHP_EOL;
             
@@ -1789,7 +1787,7 @@ class RecalculateCutoff extends Command
                 $this->comment('Processing item ' . $item->code . ' with COGS ' . $value . ' and total inventories: ' . count($inventories));
                 foreach ($inventories as $inventory) {
                     $last = Inventory::where('item_id', '=', $inventory->item_id)
-                        ->where('form_date', '<', '2026-08-01 00:00:00')
+                        ->where('form_date', '<', '2026-07-31 00:00:00')
                         ->where('warehouse_id', '=', $inventory->warehouse_id)
                         ->orderBy('form_date', 'desc')
                         ->orderBy('formulir_id', 'desc')
@@ -1797,7 +1795,7 @@ class RecalculateCutoff extends Command
                         ->first();
                     
                     $lastVal = Inventory::where('item_id', '=', $inventory->item_id)
-                        ->where('form_date', '<', '2026-08-01 00:00:00')
+                        ->where('form_date', '<', '2026-07-31 00:00:00')
                         ->orderBy('form_date', 'desc')
                         ->orderBy('formulir_id', 'desc')
                         ->orderBy('id', 'desc')
@@ -1816,7 +1814,7 @@ class RecalculateCutoff extends Command
                     }
                         
                     // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
-                    $form_date = '2026-08-01 00:00:00';
+                    $form_date = '2026-07-31 00:00:00';
                     $form_number = FormulirHelper::number('point-inventory-stock-correction', $form_date);
 
                     $formulir = new Formulir;
@@ -1852,7 +1850,7 @@ class RecalculateCutoff extends Command
                     $stock_correction_item->save();
 
                     $inventory = new Inventory;
-                    $inventory->form_date = '2026-08-01 00:00:00';
+                    $inventory->form_date = '2026-07-31 00:00:00';
                     $inventory->formulir_id = $stock_correction->formulir_id;
                     $inventory->warehouse_id = $stock_correction->warehouse_id;
                     $inventory->item_id = $stock_correction_item->item_id;
@@ -1927,12 +1925,10 @@ class RecalculateCutoff extends Command
                 }
             }
 
-            }
         }
 
         foreach ($data as $row) {
             $item = Item::where('code', $row['code'])->first();
-            if ($item->id === 86) {
             $value = str_replace(',', '', $row['value']); // COGS
             echo $row['code'] . ' => ' . $row['value'] . PHP_EOL;
             
@@ -1948,7 +1944,7 @@ class RecalculateCutoff extends Command
                 $this->comment('Processing item ' . $item->code . ' with COGS ' . $value . ' and total inventories: ' . count($inventories));
                 foreach ($inventories as $inventory) {
                     $last = Inventory::where('item_id', '=', $inventory->item_id)
-                        ->where('form_date', '<', '2026-08-01 00:00:00')
+                        ->where('form_date', '<', '2026-07-31 00:00:00')
                         ->where('warehouse_id', '=', $inventory->warehouse_id)
                         ->orderBy('form_date', 'desc')
                         ->orderBy('formulir_id', 'desc')
@@ -1968,7 +1964,7 @@ class RecalculateCutoff extends Command
                     }
                         
                     // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
-                    $form_date = '2026-08-01 00:00:01';
+                    $form_date = '2026-08-01 00:00:00';
                     $form_number = FormulirHelper::number('point-inventory-stock-correction', $form_date);
 
                     $formulir = new Formulir;
@@ -2004,7 +2000,7 @@ class RecalculateCutoff extends Command
                     $stock_correction_item->save();
 
                     $inventory = new Inventory;
-                    $inventory->form_date = '2026-08-01 00:00:01';
+                    $inventory->form_date = '2026-08-01 00:00:00';
                     $inventory->formulir_id = $stock_correction->formulir_id;
                     $inventory->warehouse_id = $stock_correction->warehouse_id;
                     $inventory->item_id = $stock_correction_item->item_id;
@@ -2075,7 +2071,6 @@ class RecalculateCutoff extends Command
                         }
                     }
                 }
-            }
             }
         }
 
