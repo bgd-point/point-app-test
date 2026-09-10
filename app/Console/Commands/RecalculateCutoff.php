@@ -1775,6 +1775,9 @@ class RecalculateCutoff extends Command
             echo $row['code'] . ' => ' . $row['value'] . PHP_EOL;
             
             if ($item) {
+                if ($item !== 322) {
+                  continue;
+                }
                 $inventories = Inventory::orderBy('form_date', 'desc')
                     ->orderBy('formulir_id', 'desc')
                     ->orderBy('id', 'desc')
