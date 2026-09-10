@@ -422,6 +422,7 @@ class InventoryHelper
             $this->inventory->total_quantity_all = $lastVal->total_quantity_all + $this->inventory->quantity;
             $this->inventory->total_value = $lastVal->total_value + ($this->inventory->quantity * $this->inventory->price);
             $this->inventory->total_value_all = $lastVal->total_value_all + ($this->inventory->quantity * $this->inventory->price);
+            $this->comment('lastVal->total_value_all = ' . $lastVal->total_value_all . ' | lastVal->total_quantity_all = ' . $lastVal->total_quantity_all . ' | inventory->quantity = ' . $this->inventory->quantity . ' | inventory->price = ' . $this->inventory->price);
         } else if ($lastVal) {
             // JIKA PER WAREHOUSE TIDAK ADA, MAKA PERHITUNGAN PER ALL WAREHOUSE
             $this->inventory->total_quantity = $this->inventory->quantity;
