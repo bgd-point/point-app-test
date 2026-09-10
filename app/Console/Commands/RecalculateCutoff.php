@@ -1859,8 +1859,8 @@ class RecalculateCutoff extends Command
                         $inventory->price = 0;
                         $inventory->cogs = 0;
                     } else {
-                        $inventory->price = 0;
-                        $inventory->cogs = $lastVal->total_value_all / $lastVal->total_quantity_all;
+                        $inventory->price = $lastVal->total_value_all / $lastVal->total_quantity_all;
+                        $inventory->cogs = 0;
                     }
                     
                     if ($inventory->quantity < 0) {
