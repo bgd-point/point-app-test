@@ -34,6 +34,7 @@ class Kernel extends ConsoleKernel
         Commands\Reiu::class,
         Commands\Reopname::class,
         Commands\ReHppBBL::class,
+        Commands\Recutoff::class,
         Commands\RecalculateAll::class,
         Commands\Recalculate5::class,
         Commands\Recalculate5kb::class,
