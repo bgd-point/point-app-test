@@ -473,7 +473,7 @@ class InventoryHelper
 
         $cogsVal = 0;
         if ($cogs) {
-            $cogsVal = $cogs->cogs;
+            $cogsVal = $cogs->price;
         }
 
         if ($last) {
@@ -497,7 +497,7 @@ class InventoryHelper
             throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE (' . $last->total_quantity .'<' . $this->inventory->quantity . ')');
         }
 
-        $this->inventory->cogs = $cogsVal;
+        $this->inventory->cogs = $this->inventory->quantity * $cogsVal;
     }
     
     private function updateCogsOut0()
