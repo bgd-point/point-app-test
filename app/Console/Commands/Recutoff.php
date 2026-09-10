@@ -39,7 +39,7 @@ class Recutoff extends Command
 
         \DB::beginTransaction();
 
-        $cutoff_account_csv = [
+        $cutoff_account_csv = '[
  {
    "coa_code": 111.01,
    "coa_name": "Kas LAPANGAN PECATU",
@@ -1144,7 +1144,7 @@ class Recutoff extends Command
    "debit": null,
    "credit": 0
  }
-];
+]';
 
         $form_date = '2026-08-01 00:00:00';
 
