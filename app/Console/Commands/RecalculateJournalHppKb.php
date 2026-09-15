@@ -63,14 +63,14 @@ class RecalculateJournalHppKb extends Command
          * FIX INVENTORY COGS != JOURNAL
          */
         $coas = Coa::where('coa_category_id', 4)->get();
-        foreach($coas as $coa) {
-            Journal::where('form_date', '<', '2026-08-01 00:00:00')
-                ->where('coa_id', $coa->id)
-                ->delete();
-        }
-        Journal::where('form_date', '<', '2026-08-01 00:00:00')
-            ->where('coa_id', 45)
-            ->delete();
+        // foreach($coas as $coa) {
+        //     Journal::where('form_date', '<', '2026-08-01 00:00:00')
+        //         ->where('coa_id', $coa->id)
+        //         ->delete();
+        // }
+        // Journal::where('form_date', '<', '2026-08-01 00:00:00')
+        //     ->where('coa_id', 45)
+        //     ->delete();
 
         // INVOICE
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
