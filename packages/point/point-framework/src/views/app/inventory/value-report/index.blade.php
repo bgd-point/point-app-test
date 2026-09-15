@@ -49,9 +49,9 @@
                         </div>
                         <div class="col-sm-8">
                             <button type="submit" class="btn btn-effect-ripple btn-effect-ripple btn-primary"><i class="fa fa-search"></i> Search</button>
-                            @if(access_is_allowed_to_view('export.inventory.value.report'))
+                            <!-- @if(access_is_allowed_to_view('export.inventory.value.report')) -->
                                 <a class="btn btn-effect-ripple btn-effect-ripple btn-info button-export" id="btn-excel">Export to excel</a>
-                            @endif
+                            <!-- @endif -->
                         </div>
                     </div>
                 </form>
