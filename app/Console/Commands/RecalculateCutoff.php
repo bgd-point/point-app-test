@@ -1879,7 +1879,7 @@ class RecalculateCutoff extends Command
 
                         $cost_of_sales = InventoryHelper::getCostOfSales($form_date, $stock_correction_item->item_id, $stock_correction->warehouse_id);
                         $cost_of_sales = $cost_of_sales * $stock_correction_item->quantity_correction;
-
+                        $this->comment($form_date . ' : ' . $cost_of_sales . ' = ' . $stock_correction_item->quantity_correction . ' ( ' . $stock_correction_item->item_id . ' - ' . $stock_correction->warehouse_id . ' )');
                         $journal = new Journal();
                         $journal->form_date = $form_date;
                         $journal->coa_id = $stock_correction_item->item->account_asset_id;
