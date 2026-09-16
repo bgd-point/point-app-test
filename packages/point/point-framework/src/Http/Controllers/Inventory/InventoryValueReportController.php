@@ -99,7 +99,7 @@ class InventoryValueReportController extends Controller
      */
     public function export(Request $request)
     {
-        access_is_allowed('export.inventory.value.report');
+        // access_is_allowed('export.inventory.value.report');
         $storage = storage_path('app/'.$request->project->url.'/inventory-value-report/');
         $fileName = 'INVENTORY VALUE REPORT '.date('YmdHis');
         $cRequest = $request;
