@@ -41,8 +41,6 @@ class RecalculateMJ extends Command
     {
         $this->comment('handle inventory all');
 
-        $data = json_decode($json, true);
-
         \DB::beginTransaction();
 
         $coas = Coa::where('coa_category_id', 4)->get();
