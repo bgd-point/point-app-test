@@ -119,7 +119,7 @@ class RecalculateMJ extends Command
             $memo_journal_detail->debit = $correction->balance;
             $memo_journal_detail->credit = 0;
             $memo_journal_detail->form_journal_id = $formulir->id;
-            $memo_journal_detail->form_reference_id = $formulir->id;
+            $memo_journal_detail->form_reference_id = null;
             $memo_journal_detail->subledger_id = $correction->subledger_id;
             $memo_journal_detail->subledger_type = 'Point\Framework\Models\Master\Item';
             $memo_journal_detail->save();
