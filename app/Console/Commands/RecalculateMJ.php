@@ -69,7 +69,7 @@ class RecalculateMJ extends Command
             ->get();
 
             foreach ($journals as $journal) {
-              $this->comment($journal);
+              $this->comment($journal->coa_name . ' > ' . $journal->item_name . ' = ' . $journal->balance);
             }
         }
 
