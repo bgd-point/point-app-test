@@ -8,6 +8,7 @@ use Point\Framework\Models\Master\Item;
 use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
+use Point\Framework\Models\Master\Coa;
 use Point\Framework\Models\Journal;
 use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\InventoryHelper;
@@ -67,7 +68,7 @@ class RecalculateMJ extends Command
             ->orderBy('journal.subledger_id')
             ->get();
 
-            foreach ($journal) {
+            foreach ($journals as $journal) {
               $this->comment($journal);
             }
         }
