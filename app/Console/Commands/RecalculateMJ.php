@@ -80,7 +80,7 @@ class RecalculateMJ extends Command
           $formulir->updated_at = $form_date;
           $formulir->form_number = $form_number['form_number'];
           $formulir->form_raw_number = $form_number['raw'];
-          $formulir->notes = 'Koreksi Journal Sediaan ' . $correction->coa_name . ' 2026-07-31';
+          $formulir->notes = 'Koreksi Journal Sediaan ' . $coa->name . ' 2026-07-31';
           $formulir->approval_to = 1;
           $formulir->approval_status = 1;
           $formulir->approval_message = '';
