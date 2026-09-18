@@ -102,7 +102,7 @@ class RecalculateMJ extends Command
 
             $memo_journal_detail = new MemoJournalDetail;
             $memo_journal_detail->memo_journal_id = $memo_journal->id;
-            $memo_journal_detail->coa_id = $journal->coa_id;
+            $memo_journal_detail->coa_id = $correction->coa_id;
             $memo_journal_detail->description = 'Koreksi Journal Sediaan 2026-07-31';
             $memo_journal_detail->debit = 0;
             $memo_journal_detail->credit = $correction->balance;
