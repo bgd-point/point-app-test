@@ -80,7 +80,7 @@ class RecalculateMJ extends Command
           $formulir->updated_at = $form_date;
           $formulir->form_number = $form_number['form_number'];
           $formulir->form_raw_number = $form_number['raw'];
-          $formulir->notes = 'Koreksi Journal Sediaan 2026-07-31';
+          $formulir->notes = 'Koreksi Journal Sediaan ' . $correction->coa_name . ' 2026-07-31';
           $formulir->approval_to = 1;
           $formulir->approval_status = 1;
           $formulir->approval_message = '';
@@ -100,10 +100,11 @@ class RecalculateMJ extends Command
           foreach ($corrections as $correction) {
             $this->comment($correction->coa_name . ' > ' . $correction->item_name . ' = ' . $correction->balance);
 
+            // COA SEDIAAN
             $memo_journal_detail = new MemoJournalDetail;
             $memo_journal_detail->memo_journal_id = $memo_journal->id;
             $memo_journal_detail->coa_id = $correction->coa_id;
-            $memo_journal_detail->description = 'Koreksi Journal Sediaan 2026-07-31';
+            $memo_journal_detail->description = 'Koreksi Journal Sediaan ' . $correction->coa_name . ' 2026-07-31';
             $memo_journal_detail->debit = 0;
             $memo_journal_detail->credit = $correction->balance;
             $memo_journal_detail->form_journal_id = $formulir->id;
@@ -112,10 +113,11 @@ class RecalculateMJ extends Command
             $memo_journal_detail->subledger_type = 'Point\Framework\Models\Master\Item';
             $memo_journal_detail->save();
 
+            // COA SELISIH KOREKSI
             $memo_journal_detail = new MemoJournalDetail;
             $memo_journal_detail->memo_journal_id = $memo_journal->id;
             $memo_journal_detail->coa_id = 278;
-            $memo_journal_detail->description = 'Koreksi Journal Sediaan 2026-07-31';
+            $memo_journal_detail->description = 'Koreksi Journal Sediaan ' . $correction->coa_name . ' 2026-07-31';
             $memo_journal_detail->debit = $correction->balance;
             $memo_journal_detail->credit = 0;
             $memo_journal_detail->form_journal_id = $formulir->id;
