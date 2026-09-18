@@ -17,6 +17,7 @@ use Point\PointInventory\Models\StockCorrection\StockCorrection;
 use Point\PointInventory\Models\StockCorrection\StockCorrectionItem;
 use Point\PointInventory\Helpers\StockCorrectionHelper;
 use Point\PointAccounting\Models\MemoJournal;
+use Point\PointAccounting\Models\MemoJournalDetail;
 use Point\PointAccounting\Helpers\MemoJournalHelper;
 
 class RecalculateMJ extends Command
