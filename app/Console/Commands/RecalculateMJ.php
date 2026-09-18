@@ -90,7 +90,7 @@ class RecalculateMJ extends Command
           }
 
           $memo_journal = new MemoJournal;
-          $memo_journal->formulir_id = $formulir_id;
+          $memo_journal->formulir_id = $formulir->id;
           $memo_journal->debit = 0;
           $memo_journal->credit = 0;
           $memo_journal->save();
