@@ -49,7 +49,7 @@ class RecalculateMJ extends Command
         $coas = Coa::where('coa_category_id', 4)->get();
 
         foreach($coas as $coa) {
-          $journals = \DB::table('journal')
+          $corrections = \DB::table('journal')
             ->join('coa', 'coa.id', '=', 'journal.coa_id')
             ->join('item', 'item.id', '=', 'journal.subledger_id')
             ->select([
