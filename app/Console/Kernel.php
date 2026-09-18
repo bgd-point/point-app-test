@@ -41,6 +41,7 @@ class Kernel extends ConsoleKernel
         Commands\RecalculateAug::class,
         Commands\Recalculate6::class,
         Commands\Recalculate6kb::class,
+        Commands\RecalculateMJ::class,
         Commands\Recalculate7::class,
         Commands\Recalculate7kb::class,
         Commands\Recalculate8::class,
