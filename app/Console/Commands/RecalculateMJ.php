@@ -62,6 +62,7 @@ class RecalculateMJ extends Command
             ])
             ->where('journal.coa_id', $coa->id)
             ->where('journal.form_date', '<', '2026-08-01')
+            ->where('journal.subledger_type', '=', 'Point\\Framework\\Models\\Master\\Item')
             ->groupBy([
                 'journal.coa_id',
                 'coa.name',
