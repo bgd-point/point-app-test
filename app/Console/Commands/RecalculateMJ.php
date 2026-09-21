@@ -117,7 +117,7 @@ class RecalculateMJ extends Command
             // COA SELISIH KOREKSI
             $memo_journal_detail = new MemoJournalDetail;
             $memo_journal_detail->memo_journal_id = $memo_journal->id;
-            $memo_journal_detail->coa_id = 278;
+            $memo_journal_detail->coa_id = 50;
             $memo_journal_detail->description = 'Koreksi Journal Sediaan ' . $correction->coa_name . ' 2026-07-31';
             $memo_journal_detail->debit = $correction->balance;
             $memo_journal_detail->credit = 0;
