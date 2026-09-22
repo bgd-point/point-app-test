@@ -77,6 +77,7 @@ class RecalculateMJ extends Command
             ->where('coa_id', $coa->id)
             ->selectRaw('
                 coa_id,
+                coa_name,
                 subledger_id,
                 SUM(debit) - SUM(credit) AS balance
             ')
@@ -111,7 +112,7 @@ class RecalculateMJ extends Command
 
           $total = 0;
           foreach ($corrections as $correction) {
-            $this->comment($correction->coa_name . ' > ' . $correction->item_name . ' = ' . $correction->balance);
+            $this->comment($correction->coa_name . ' > ' . $correction->subledger_id . ' = ' . $correction->balance);
 
             // COA SEDIAAN
             $memo_journal_detail = new MemoJournalDetail;
@@ -122,8 +123,8 @@ class RecalculateMJ extends Command
             $memo_journal_detail->credit = $correction->balance;
             $memo_journal_detail->form_journal_id = $formulir->id;
             $memo_journal_detail->form_reference_id = null;
-            $memo_journal_detail->subledger_id = $correction->subledger_id;
-            $memo_journal_detail->subledger_type = 'Point\Framework\Models\Master\Item';
+            $memo_journal_detail->subledger_id = $correction->subledger_id ?? NULL;
+            $memo_journal_detail->subledger_type = $correction->subledger_id ? 'Point\Framework\Models\Master\Item' : NULL;
             $memo_journal_detail->save();
 
             // COA SELISIH KOREKSI
@@ -135,8 +136,8 @@ class RecalculateMJ extends Command
             $memo_journal_detail->credit = 0;
             $memo_journal_detail->form_journal_id = $formulir->id;
             $memo_journal_detail->form_reference_id = null;
-            $memo_journal_detail->subledger_id = $correction->subledger_id;
-            $memo_journal_detail->subledger_type = 'Point\Framework\Models\Master\Item';
+            $memo_journal_detail->subledger_id = $correction->subledger_id ?? NULL;
+            $memo_journal_detail->subledger_type = $correction->subledger_id ? 'Point\Framework\Models\Master\Item' : NULL;
             $memo_journal_detail->save();
 
             $total += $correction->balance;
