@@ -50,26 +50,38 @@ class RecalculateMJ extends Command
         $coas = Coa::where('coa_category_id', 4)->get();
 
         foreach($coas as $coa) {
-          $corrections = \DB::table('journal')
-            ->join('coa', 'coa.id', '=', 'journal.coa_id')
-            ->join('item', 'item.id', '=', 'journal.subledger_id')
-            ->select([
-                'journal.coa_id',
-                'coa.name as coa_name',
-                'journal.subledger_id',
-                'item.name as item_name',
-                \DB::raw('SUM(journal.debit - journal.credit) AS balance'),
-            ])
-            ->where('journal.coa_id', $coa->id)
-            ->where('journal.form_date', '<', '2026-08-01')
-            ->where('journal.subledger_type', '=', 'Point\\Framework\\Models\\Master\\Item')
-            ->groupBy([
-                'journal.coa_id',
-                'coa.name',
-                'journal.subledger_id',
-                'item.name',
-            ])
-            ->orderBy('journal.subledger_id')
+            
+        //   $corrections = \DB::table('journal')
+        //     ->join('coa', 'coa.id', '=', 'journal.coa_id')
+        //     ->join('item', 'item.id', '=', 'journal.subledger_id')
+        //     ->select([
+        //         'journal.coa_id',
+        //         'coa.name as coa_name',
+        //         'journal.subledger_id',
+        //         'item.name as item_name',
+        //         \DB::raw('SUM(journal.debit - journal.credit) AS balance'),
+        //     ])
+        //     ->where('journal.coa_id', $coa->id)
+        //     ->where('journal.form_date', '<', '2026-08-01')
+        //     ->where('journal.subledger_type', '=', 'Point\\Framework\\Models\\Master\\Item')
+        //     ->groupBy([
+        //         'journal.coa_id',
+        //         'coa.name',
+        //         'journal.subledger_id',
+        //         'item.name',
+        //     ])
+        //     ->orderBy('journal.subledger_id')
+        //     ->get();
+
+          $corrections = Journal::where('form_date', '<', '2026-08-01')
+            ->where('coa_id', $coa->id)
+            ->selectRaw('
+                coa_id,
+                subledger_id,
+                SUM(debit) - SUM(credit) AS balance
+            ')
+            ->groupBy('coa_id', 'subledger_id')
+            ->orderBy('subledger_id')
             ->get();
 
           $form_date = '2026-07-31 23:59:59';
