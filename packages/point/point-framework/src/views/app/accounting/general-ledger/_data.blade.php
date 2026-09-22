@@ -39,7 +39,9 @@
                 $name = '';
                 if ($classMaster != null && $classMaster != 'RejournalPurchasingAndExpeditionSeeder') {
                     $master = $classMaster::find($journal->subledger_id);
-                    $name = '['.$master->code . '] ' . $master->name;
+                    if ($master) {
+                        $name = '['.$master->code . '] ' . $master->name;
+                    }
                 }
             ?>
             <tr>
