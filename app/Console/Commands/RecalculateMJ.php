@@ -78,14 +78,19 @@ class RecalculateMJ extends Command
             ->where('journal.form_date', '<', '2026-08-01')
             ->where('journal.coa_id', $coa->id)
             ->selectRaw('
-                coa.id as coa_id,
-                coa.name as coa_name,
-                item.name as item_name,
+                coa.id AS coa_id,
+                coa.name AS coa_name,
+                item.name AS item_name,
                 journal.subledger_id,
                 SUM(journal.debit) - SUM(journal.credit) AS balance
             ')
-            ->groupBy('coa.id', 'subledger_id')
-            ->orderBy('subledger_id')
+            ->groupBy(
+                'coa.id',
+                'coa.name',
+                'journal.subledger_id',
+                'item.name'
+            )
+            ->orderBy('journal.subledger_id')
             ->get();
 
           $form_date = '2026-07-31 23:59:59';
