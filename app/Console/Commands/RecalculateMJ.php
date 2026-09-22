@@ -73,15 +73,18 @@ class RecalculateMJ extends Command
         //     ->orderBy('journal.subledger_id')
         //     ->get();
 
-          $corrections = Journal::where('form_date', '<', '2026-08-01')
-            ->where('coa_id', $coa->id)
+          $corrections = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
+            ->join('item', 'item.id', '=', 'journal.subledger_id')
+            ->where('journal.form_date', '<', '2026-08-01')
+            ->where('journal.coa_id', $coa->id)
             ->selectRaw('
-                coa_id,
-                coa_name,
-                subledger_id,
-                SUM(debit) - SUM(credit) AS balance
+                coa.id as coa_id,
+                coa.name as coa_name,
+                item.name as item_name,
+                journal.subledger_id,
+                SUM(journal.debit) - SUM(journal.credit) AS balance
             ')
-            ->groupBy('coa_id', 'subledger_id')
+            ->groupBy('coa.id', 'subledger_id')
             ->orderBy('subledger_id')
             ->get();
 
