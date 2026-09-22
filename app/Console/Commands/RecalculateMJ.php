@@ -74,7 +74,7 @@ class RecalculateMJ extends Command
         //     ->get();
 
           $corrections = Journal::join('coa', 'coa.id', '=', 'journal.coa_id')
-            ->join('item', 'item.id', '=', 'journal.subledger_id')
+            ->leftJoin('item', 'item.id', '=', 'journal.subledger_id')
             ->where('journal.form_date', '<', '2026-08-01')
             ->where('journal.coa_id', $coa->id)
             ->selectRaw('
