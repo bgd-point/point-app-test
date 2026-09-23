@@ -47,6 +47,7 @@ class Kernel extends ConsoleKernel
         Commands\Recalculate8::class,
         Commands\RecalculateAllVal::class,
         Commands\RecalculateBBL::class,
+        Commands\RecalculateQty::class,
         Commands\RecalculateJournalHpp::class,
         Commands\RecalculateTest::class,
         Commands\RecalculateTransaction::class,
