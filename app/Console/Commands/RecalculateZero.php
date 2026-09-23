@@ -20,6 +20,11 @@ class RecalculateZero extends Command
 {
     /**
      * The name and signature of the console command.
+     *
+     * temporarily change sc setting journal to selisih koreksi 
+     * table memo journal detail allow null to subledger id and type
+     * table memo journal detail and journal: debit & credit should become decimal 20,4
+     * php artisan dev:recalculate:cutoff && php artisan dev:recalculate:qty && php artisan dev:recalculate:zero && php artisan dev:recalculate:allval && php artisan dev:recalculate:all && php artisan dev:recalculate:jhppkb && php artisan dev:recalculate:mj
      * 
      * dev:recalculate:cutoff
      * dev:recalculate:qty
