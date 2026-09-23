@@ -22,6 +22,7 @@ class RecalculateZero extends Command
      * The name and signature of the console command.
      * 
      * dev:recalculate:cutoff
+     * dev:recalculate:qty
      * dev:recalculate:zero
      * dev:recalculate:allval
      * dev:recalculate:all
