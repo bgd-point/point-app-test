@@ -59,7 +59,7 @@ class RecalculateQty extends Command
         foreach ($inventories as $inventory) {
           $total += $inventory->quantity;
 
-          $inventory->quantity_all = $total;
+          $inventory->total_quantity_all = $total;
           $inventory->save();
         }
 
