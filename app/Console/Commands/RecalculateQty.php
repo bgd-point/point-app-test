@@ -46,8 +46,6 @@ class RecalculateQty extends Command
     {
         $this->comment('handle inventory all');
 
-        $data = json_decode($json, true);
-
         \DB::beginTransaction();
 
         $inventories = Inventory::where('item_id', 904)
