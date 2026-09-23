@@ -128,51 +128,51 @@ class RecalculateMJ extends Command
 
             // 1
             if ($correction->subledger_id === 86) {
-                $correction->balance = 27854765770.8788
+                $correction->balance = 27854765770.8788;
             }
             // 2
             if ($correction->subledger_id === 250) {
-                $correction->balance = -538141449716.762
+                $correction->balance = -538141449716.762;
             }
             // 3
             if ($correction->subledger_id === 347) {
-                $correction->balance = -16929409626.0452
+                $correction->balance = -16929409626.0452;
             }
             // 4
             if ($correction->subledger_id === 370) {
-                $correction->balance = -54186275474.4436
+                $correction->balance = -54186275474.4436;
             }
             // 5
             if ($correction->subledger_id === 390) {
-                $correction->balance = -49877179805.4726
+                $correction->balance = -49877179805.4726;
             }
             // 6
             if ($correction->subledger_id === 391) {
-                $correction->balance = -431660894971.262
+                $correction->balance = -431660894971.262;
             }
             // 7
             if ($correction->subledger_id === 399) {
-                $correction->balance = -12304058049.1472
+                $correction->balance = -12304058049.1472;
             }
             // 8
             if ($correction->subledger_id === 416) {
-                $correction->balance = -383138068082.629
+                $correction->balance = -383138068082.629;
             }
             // 9
             if ($correction->subledger_id === 448) {
-                $correction->balance = -145941577303.706
+                $correction->balance = -145941577303.706;
             }
             // 10
             if ($correction->subledger_id === 449) {
-                $correction->balance = -2733433589809.89
+                $correction->balance = -2733433589809.89;
             }
             // 11
             if ($correction->subledger_id === 481) {
-                $correction->balance = -113530669750.391
+                $correction->balance = -113530669750.391;
             }
             // 12
             if ($correction->subledger_id === 628) {
-                $correction->balance = 18821555657.1335
+                $correction->balance = 18821555657.1335;
             }
 
             // COA SEDIAAN
