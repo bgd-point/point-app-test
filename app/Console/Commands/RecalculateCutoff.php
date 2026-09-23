@@ -1774,14 +1774,10 @@ class RecalculateCutoff extends Command
         $dataByCode = collect($data)->pluck('value', 'code')->toArray();
 
         foreach ($items as $item) {
-          if ($item->code === '001-13') {
-            $this->comment('ITEM CODE: ' . var_export($item->code, true));
-            $this->comment('EXISTS: ' . var_export(array_key_exists($item->code, $dataByCode), true));
-            $this->comment('JSON CODES: ' . var_export(array_keys($dataByCode), true));
-
-            throw new PointException('Unbalance Journal');
-          }
           if (!array_key_exists($item->code, $dataByCode)) {
+            if ($item->code === '001-13') {
+              $this->comment($item);
+            }
             $inventories = Inventory::orderBy('form_date', 'desc')
               ->orderBy('formulir_id', 'desc')
               ->orderBy('id', 'desc')
