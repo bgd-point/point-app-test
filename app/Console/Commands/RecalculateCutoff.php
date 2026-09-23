@@ -1775,105 +1775,105 @@ class RecalculateCutoff extends Command
 
         foreach ($items as $item) {
           $this->comment($item->code);
-          if ($item->code === '001-13') {
-            $this->comment('ITEM CODE: ' . var_export($item->code, true));
-            $this->comment('EXISTS: ' . var_export(array_key_exists($item->code, $dataByCode), true));
-            $this->comment('JSON CODES: ' . var_export(array_keys($dataByCode), true));
+          // if ($item->code === '001-13') {
+          //   $this->comment('ITEM CODE: ' . var_export($item->code, true));
+          //   $this->comment('EXISTS: ' . var_export(array_key_exists($item->code, $dataByCode), true));
+          //   $this->comment('JSON CODES: ' . var_export(array_keys($dataByCode), true));
 
-            throw new PointException('Unbalance Journal');
-          }
-          if (!array_key_exists($item->code, $dataByCode)) {
-            $inventories = Inventory::orderBy('form_date', 'desc')
-              ->orderBy('formulir_id', 'desc')
-              ->orderBy('id', 'desc')
-              ->where('item_id', '=', $item->id)
-              ->get()
-              ->unique(function ($inventory) {
-                  return $inventory['item_id'].$inventory['warehouse_id'];
-              });
+          //   throw new PointException('Unbalance Journal');
+          // }
+          // if (!array_key_exists($item->code, $dataByCode)) {
+          //   $inventories = Inventory::orderBy('form_date', 'desc')
+          //     ->orderBy('formulir_id', 'desc')
+          //     ->orderBy('id', 'desc')
+          //     ->where('item_id', '=', $item->id)
+          //     ->get()
+          //     ->unique(function ($inventory) {
+          //         return $inventory['item_id'].$inventory['warehouse_id'];
+          //     });
 
-            foreach ($inventories as $inventory) {
-                $last = Inventory::where('item_id', '=', $inventory->item_id)
-                    ->where('form_date', '<', '2026-07-31 23:59:59')
-                    ->where('warehouse_id', '=', $inventory->warehouse_id)
-                    ->orderBy('form_date', 'desc')
-                    ->orderBy('formulir_id', 'desc')
-                    ->orderBy('id', 'desc')
-                    ->first();
+          //   foreach ($inventories as $inventory) {
+          //       $last = Inventory::where('item_id', '=', $inventory->item_id)
+          //           ->where('form_date', '<', '2026-07-31 23:59:59')
+          //           ->where('warehouse_id', '=', $inventory->warehouse_id)
+          //           ->orderBy('form_date', 'desc')
+          //           ->orderBy('formulir_id', 'desc')
+          //           ->orderBy('id', 'desc')
+          //           ->first();
                 
-                $lastVal = Inventory::where('item_id', '=', $inventory->item_id)
-                    ->where('form_date', '<', '2026-07-31 23:59:59')
-                    ->orderBy('form_date', 'desc')
-                    ->orderBy('formulir_id', 'desc')
-                    ->orderBy('id', 'desc')
-                    ->first();
+          //       $lastVal = Inventory::where('item_id', '=', $inventory->item_id)
+          //           ->where('form_date', '<', '2026-07-31 23:59:59')
+          //           ->orderBy('form_date', 'desc')
+          //           ->orderBy('formulir_id', 'desc')
+          //           ->orderBy('id', 'desc')
+          //           ->first();
 
-                if (!$last) {
-                    continue;
-                }
+          //       if (!$last) {
+          //           continue;
+          //       }
 
-                if ($last->total_quantity == 0) {
-                    continue;
-                }
+          //       if ($last->total_quantity == 0) {
+          //           continue;
+          //       }
                     
-                // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
-                $form_date = '2026-07-31 23:59:59';
-                $form_number = FormulirHelper::number('point-inventory-stock-correction', $form_date);
+          //       // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
+          //       $form_date = '2026-07-31 23:59:59';
+          //       $form_number = FormulirHelper::number('point-inventory-stock-correction', $form_date);
 
-                $formulir = new Formulir;
-                $formulir->form_date = $form_date;
-                $formulir->created_at = $form_date;
-                $formulir->updated_at = $form_date;
-                $formulir->form_number = $form_number['form_number'];
-                $formulir->form_raw_number = $form_number['raw'];
-                $formulir->notes = 'Cutoff Stock 2026-07-31';
-                $formulir->approval_to = 1;
-                $formulir->approval_status = 1;
-                $formulir->approval_message = '';
-                $formulir->created_by = 1;
-                $formulir->updated_by = 1;
-                if (!$formulir->save()) {
-                    gritter_error('create has been failed', false);
-                }
+          //       $formulir = new Formulir;
+          //       $formulir->form_date = $form_date;
+          //       $formulir->created_at = $form_date;
+          //       $formulir->updated_at = $form_date;
+          //       $formulir->form_number = $form_number['form_number'];
+          //       $formulir->form_raw_number = $form_number['raw'];
+          //       $formulir->notes = 'Cutoff Stock 2026-07-31';
+          //       $formulir->approval_to = 1;
+          //       $formulir->approval_status = 1;
+          //       $formulir->approval_message = '';
+          //       $formulir->created_by = 1;
+          //       $formulir->updated_by = 1;
+          //       if (!$formulir->save()) {
+          //           gritter_error('create has been failed', false);
+          //       }
 
-                $stock_correction = new StockCorrection;
-                $stock_correction->formulir_id = $formulir->id;
-                $stock_correction->warehouse_id = $inventory->warehouse_id;
-                $stock_correction->save();
+          //       $stock_correction = new StockCorrection;
+          //       $stock_correction->formulir_id = $formulir->id;
+          //       $stock_correction->warehouse_id = $inventory->warehouse_id;
+          //       $stock_correction->save();
                 
-                $stock_correction_item = new StockCorrectionItem;
-                $stock_correction_item->point_inventory_stock_correction_id = $stock_correction->id;
-                $stock_correction_item->item_id = $item->id;
-                $stock_correction_item->stock_in_database = $last->total_quantity;
-                $stock_correction_item->quantity_correction = $last->total_quantity * -1;
-                $stock_correction_item->correction_notes = 'Cutoff Stock 2026-07-31';
-                $unit = $stock_correction_item->item->unit()->first();
-                $stock_correction_item->unit = $unit->name;
-                $stock_correction_item->converter = $unit->converter;
-                $stock_correction_item->save();
+          //       $stock_correction_item = new StockCorrectionItem;
+          //       $stock_correction_item->point_inventory_stock_correction_id = $stock_correction->id;
+          //       $stock_correction_item->item_id = $item->id;
+          //       $stock_correction_item->stock_in_database = $last->total_quantity;
+          //       $stock_correction_item->quantity_correction = $last->total_quantity * -1;
+          //       $stock_correction_item->correction_notes = 'Cutoff Stock 2026-07-31';
+          //       $unit = $stock_correction_item->item->unit()->first();
+          //       $stock_correction_item->unit = $unit->name;
+          //       $stock_correction_item->converter = $unit->converter;
+          //       $stock_correction_item->save();
 
-                $inventory = new Inventory;
-                $inventory->form_date = '2026-07-31 23:59:59';
-                $inventory->formulir_id = $stock_correction->formulir_id;
-                $inventory->warehouse_id = $stock_correction->warehouse_id;
-                $inventory->item_id = $stock_correction_item->item_id;
-                $inventory->quantity = $stock_correction_item->quantity_correction;
-                if ($lastVal->total_value_all == 0 || $lastVal->total_quantity_all == 0) {
-                    $inventory->price = 0;
-                } else {
-                    $inventory->price = $lastVal->total_value_all / $lastVal->total_quantity_all;
-                }
+          //       $inventory = new Inventory;
+          //       $inventory->form_date = '2026-07-31 23:59:59';
+          //       $inventory->formulir_id = $stock_correction->formulir_id;
+          //       $inventory->warehouse_id = $stock_correction->warehouse_id;
+          //       $inventory->item_id = $stock_correction_item->item_id;
+          //       $inventory->quantity = $stock_correction_item->quantity_correction;
+          //       if ($lastVal->total_value_all == 0 || $lastVal->total_quantity_all == 0) {
+          //           $inventory->price = 0;
+          //       } else {
+          //           $inventory->price = $lastVal->total_value_all / $lastVal->total_quantity_all;
+          //       }
                 
-                if ($inventory->quantity < 0) {
-                    $inventory->quantity *= -1;
-                    $inventory_helper = new InventoryHelper($inventory);
-                    $inventory_helper->out0();
-                } else {
-                    $inventory_helper = new InventoryHelper($inventory);
-                    $inventory_helper->in();
-                }
-            }
-          }
+          //       if ($inventory->quantity < 0) {
+          //           $inventory->quantity *= -1;
+          //           $inventory_helper = new InventoryHelper($inventory);
+          //           $inventory_helper->out0();
+          //       } else {
+          //           $inventory_helper = new InventoryHelper($inventory);
+          //           $inventory_helper->in();
+          //       }
+          //   }
+          // }
         }
 
         // foreach ($data as $row) {
