@@ -1769,7 +1769,7 @@ class RecalculateCutoff extends Command
 
         \DB::beginTransaction();
 
-        $items = Inventory::groupBy('item_id')->get();
+        $items = Inventory::join('item', 'item.id', '=', 'inventory.item_id')->groupBy('item_id')->select('item.*')->get();
 
         $dataByCode = collect($data)->pluck('value', 'code')->toArray();
 
