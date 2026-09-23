@@ -1774,7 +1774,7 @@ class RecalculateCutoff extends Command
         $dataByCode = collect($data)->pluck('value', 'code')->toArray();
 
         foreach ($items as $item) {
-          if (!array_key_exists($item->code, $dataByCode)) {
+          if (!array_key_exists(trim($item->code), $dataByCode)) {
             $this->comment($item);
             $inventories = Inventory::orderBy('form_date', 'desc')
               ->orderBy('formulir_id', 'desc')
