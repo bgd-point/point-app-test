@@ -503,34 +503,27 @@ class InventoryHelper
     
     private function updateCogsOut0()
     {
-        $query = Inventory::where('item_id', $this->inventory->item_id)
+        $last = Inventory::where('item_id', '=', $this->inventory->item_id)
             ->where('form_date', '<=', $this->inventory->form_date)
-            ->where('warehouse_id', $this->inventory->warehouse_id);
-
-        if ($this->inventory->id !== null) {
-            $query->where('id', '!=', $this->inventory->id);
-        }
-
-        $last = $query
+            ->where('warehouse_id', '=', $this->inventory->warehouse_id)
             ->orderBy('form_date', 'desc')
             ->orderBy('formulir_id', 'desc')
             ->orderBy('id', 'desc')
             ->first();
         
-        $query = Inventory::where('item_id', $this->inventory->item_id)
-            ->where('form_date', '<=', $this->inventory->form_date);
-
-        if ($this->inventory->id !== null) {
-            $query->where('id', '!=', $this->inventory->id);
-        }
-
-        $lastAll = $query
+        $lastAll = Inventory::where('item_id', '=', $this->inventory->item_id)
+            ->where('form_date', '<=', $this->inventory->form_date)
             ->orderBy('form_date', 'desc')
             ->orderBy('formulir_id', 'desc')
             ->orderBy('id', 'desc')
             ->first();
 
-        $cogs = $lastAll;
+        $cogs = Inventory::where('item_id', '=', $this->inventory->item_id)
+            ->where('form_date', '<=', $this->inventory->form_date)
+            ->orderBy('form_date', 'desc')
+            ->orderBy('formulir_id', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
 
         $cogsVal = 0;
         if ($cogs) {
@@ -555,7 +548,7 @@ class InventoryHelper
         }
 
         if (!$last || (float) $last->total_quantity < abs($this->inventory->quantity)) {
-            throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE (' . $last .'<' . $this->inventory->quantity . ')');
+            // throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE (' . $last .'<' . $this->inventory->quantity . ')');
         }
 
         $this->inventory->cogs = 0;
