@@ -1774,7 +1774,7 @@ class RecalculateCutoff extends Command
         $dataByCode = collect($data)->pluck('value', 'code')->toArray();
 
         foreach ($items as $item) {
-          $this->comment($item->code);
+          $this->comment($item);
           // if ($item->code === '001-13') {
           //   $this->comment('ITEM CODE: ' . var_export($item->code, true));
           //   $this->comment('EXISTS: ' . var_export(array_key_exists($item->code, $dataByCode), true));
