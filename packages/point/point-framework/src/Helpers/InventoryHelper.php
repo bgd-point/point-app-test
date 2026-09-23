@@ -506,6 +506,7 @@ class InventoryHelper
         $last = Inventory::where('item_id', '=', $this->inventory->item_id)
             ->where('form_date', '<=', $this->inventory->form_date)
             ->where('warehouse_id', '=', $this->inventory->warehouse_id)
+            ->where('id', '!=', $this->inventory->id)
             ->orderBy('form_date', 'desc')
             ->orderBy('formulir_id', 'desc')
             ->orderBy('id', 'desc')
@@ -513,6 +514,7 @@ class InventoryHelper
         
         $lastAll = Inventory::where('item_id', '=', $this->inventory->item_id)
             ->where('form_date', '<=', $this->inventory->form_date)
+            ->where('id', '!=', $this->inventory->id)
             ->orderBy('form_date', 'desc')
             ->orderBy('formulir_id', 'desc')
             ->orderBy('id', 'desc')
@@ -520,6 +522,7 @@ class InventoryHelper
 
         $cogs = Inventory::where('item_id', '=', $this->inventory->item_id)
             ->where('form_date', '<=', $this->inventory->form_date)
+            ->where('id', '!=', $this->inventory->id)
             ->orderBy('form_date', 'desc')
             ->orderBy('formulir_id', 'desc')
             ->orderBy('id', 'desc')
