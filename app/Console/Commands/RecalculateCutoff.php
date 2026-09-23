@@ -1875,310 +1875,310 @@ class RecalculateCutoff extends Command
           }
         }
 
-        foreach ($data as $row) {
-            $item = Item::where('code', $row['code'])->first();
-            $value = str_replace(',', '', $row['value']); // COGS
-            echo $row['code'] . ' => ' . $row['value'] . PHP_EOL;
+        // foreach ($data as $row) {
+        //     $item = Item::where('code', $row['code'])->first();
+        //     $value = str_replace(',', '', $row['value']); // COGS
+        //     echo $row['code'] . ' => ' . $row['value'] . PHP_EOL;
             
-            if ($item) {
-                $inventories = Inventory::orderBy('form_date', 'desc')
-                    ->orderBy('formulir_id', 'desc')
-                    ->orderBy('id', 'desc')
-                    ->where('item_id', '=', $item->id)
-                    ->get()
-                    ->unique(function ($inventory) {
-                        return $inventory['item_id'].$inventory['warehouse_id'];
-                    });
+        //     if ($item) {
+        //         $inventories = Inventory::orderBy('form_date', 'desc')
+        //             ->orderBy('formulir_id', 'desc')
+        //             ->orderBy('id', 'desc')
+        //             ->where('item_id', '=', $item->id)
+        //             ->get()
+        //             ->unique(function ($inventory) {
+        //                 return $inventory['item_id'].$inventory['warehouse_id'];
+        //             });
 
-                $this->comment('Processing item ' . $item->code . ' with COGS ' . $value . ' and total inventories: ' . count($inventories));
-                foreach ($inventories as $inventory) {
-                    $last = Inventory::where('item_id', '=', $inventory->item_id)
-                        ->where('form_date', '<', '2026-07-31 23:59:59')
-                        ->where('warehouse_id', '=', $inventory->warehouse_id)
-                        ->orderBy('form_date', 'desc')
-                        ->orderBy('formulir_id', 'desc')
-                        ->orderBy('id', 'desc')
-                        ->first();
+        //         $this->comment('Processing item ' . $item->code . ' with COGS ' . $value . ' and total inventories: ' . count($inventories));
+        //         foreach ($inventories as $inventory) {
+        //             $last = Inventory::where('item_id', '=', $inventory->item_id)
+        //                 ->where('form_date', '<', '2026-07-31 23:59:59')
+        //                 ->where('warehouse_id', '=', $inventory->warehouse_id)
+        //                 ->orderBy('form_date', 'desc')
+        //                 ->orderBy('formulir_id', 'desc')
+        //                 ->orderBy('id', 'desc')
+        //                 ->first();
                     
-                    $lastVal = Inventory::where('item_id', '=', $inventory->item_id)
-                        ->where('form_date', '<', '2026-07-31 23:59:59')
-                        ->orderBy('form_date', 'desc')
-                        ->orderBy('formulir_id', 'desc')
-                        ->orderBy('id', 'desc')
-                        ->first();
+        //             $lastVal = Inventory::where('item_id', '=', $inventory->item_id)
+        //                 ->where('form_date', '<', '2026-07-31 23:59:59')
+        //                 ->orderBy('form_date', 'desc')
+        //                 ->orderBy('formulir_id', 'desc')
+        //                 ->orderBy('id', 'desc')
+        //                 ->first();
 
-                    if (!$last) {
-                        // $this->comment('No inventory found for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
-                        continue;
-                    } else {
-                        // $this->comment('Last inventory for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id . ': quantity = ' . $last->total_quantity . ', cogs = ' . $last->cogs);
-                    }
+        //             if (!$last) {
+        //                 // $this->comment('No inventory found for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
+        //                 continue;
+        //             } else {
+        //                 // $this->comment('Last inventory for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id . ': quantity = ' . $last->total_quantity . ', cogs = ' . $last->cogs);
+        //             }
 
-                    if ($last->total_quantity == 0) {
-                        // $this->comment('No inventory quantity for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
-                        continue;
-                    }
+        //             if ($last->total_quantity == 0) {
+        //                 // $this->comment('No inventory quantity for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
+        //                 continue;
+        //             }
                         
-                    // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
-                    $form_date = '2026-07-31 23:59:59';
-                    $form_number = FormulirHelper::number('point-inventory-stock-correction', $form_date);
+        //             // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
+        //             $form_date = '2026-07-31 23:59:59';
+        //             $form_number = FormulirHelper::number('point-inventory-stock-correction', $form_date);
 
-                    $formulir = new Formulir;
-                    $formulir->form_date = $form_date;
-                    $formulir->created_at = $form_date;
-                    $formulir->updated_at = $form_date;
-                    $formulir->form_number = $form_number['form_number'];
-                    $formulir->form_raw_number = $form_number['raw'];
-                    $formulir->notes = 'Cutoff Stock 2026-07-31';
-                    $formulir->approval_to = 1;
-                    $formulir->approval_status = 1;
-                    $formulir->approval_message = '';
-                    $formulir->created_by = 1;
-                    $formulir->updated_by = 1;
-                    if (!$formulir->save()) {
-                        gritter_error('create has been failed', false);
-                    }
+        //             $formulir = new Formulir;
+        //             $formulir->form_date = $form_date;
+        //             $formulir->created_at = $form_date;
+        //             $formulir->updated_at = $form_date;
+        //             $formulir->form_number = $form_number['form_number'];
+        //             $formulir->form_raw_number = $form_number['raw'];
+        //             $formulir->notes = 'Cutoff Stock 2026-07-31';
+        //             $formulir->approval_to = 1;
+        //             $formulir->approval_status = 1;
+        //             $formulir->approval_message = '';
+        //             $formulir->created_by = 1;
+        //             $formulir->updated_by = 1;
+        //             if (!$formulir->save()) {
+        //                 gritter_error('create has been failed', false);
+        //             }
 
-                    $stock_correction = new StockCorrection;
-                    $stock_correction->formulir_id = $formulir->id;
-                    $stock_correction->warehouse_id = $inventory->warehouse_id;
-                    $stock_correction->save();
+        //             $stock_correction = new StockCorrection;
+        //             $stock_correction->formulir_id = $formulir->id;
+        //             $stock_correction->warehouse_id = $inventory->warehouse_id;
+        //             $stock_correction->save();
                     
-                    $stock_correction_item = new StockCorrectionItem;
-                    $stock_correction_item->point_inventory_stock_correction_id = $stock_correction->id;
-                    $stock_correction_item->item_id = $item->id;
-                    $stock_correction_item->stock_in_database = $last->total_quantity;
-                    $stock_correction_item->quantity_correction = $last->total_quantity * -1;
-                    $stock_correction_item->correction_notes = 'Cutoff Stock 2026-07-31';
-                    $unit = $stock_correction_item->item->unit()->first();
-                    $stock_correction_item->unit = $unit->name;
-                    $stock_correction_item->converter = $unit->converter;
-                    $stock_correction_item->save();
+        //             $stock_correction_item = new StockCorrectionItem;
+        //             $stock_correction_item->point_inventory_stock_correction_id = $stock_correction->id;
+        //             $stock_correction_item->item_id = $item->id;
+        //             $stock_correction_item->stock_in_database = $last->total_quantity;
+        //             $stock_correction_item->quantity_correction = $last->total_quantity * -1;
+        //             $stock_correction_item->correction_notes = 'Cutoff Stock 2026-07-31';
+        //             $unit = $stock_correction_item->item->unit()->first();
+        //             $stock_correction_item->unit = $unit->name;
+        //             $stock_correction_item->converter = $unit->converter;
+        //             $stock_correction_item->save();
 
-                    $inventory = new Inventory;
-                    $inventory->form_date = '2026-07-31 23:59:59';
-                    $inventory->formulir_id = $stock_correction->formulir_id;
-                    $inventory->warehouse_id = $stock_correction->warehouse_id;
-                    $inventory->item_id = $stock_correction_item->item_id;
-                    $inventory->quantity = $stock_correction_item->quantity_correction;
-                    if ($lastVal->total_value_all == 0 || $lastVal->total_quantity_all == 0) {
-                        $inventory->price = 0;
-                    } else {
-                        $inventory->price = $lastVal->total_value_all / $lastVal->total_quantity_all;
-                    }
+        //             $inventory = new Inventory;
+        //             $inventory->form_date = '2026-07-31 23:59:59';
+        //             $inventory->formulir_id = $stock_correction->formulir_id;
+        //             $inventory->warehouse_id = $stock_correction->warehouse_id;
+        //             $inventory->item_id = $stock_correction_item->item_id;
+        //             $inventory->quantity = $stock_correction_item->quantity_correction;
+        //             if ($lastVal->total_value_all == 0 || $lastVal->total_quantity_all == 0) {
+        //                 $inventory->price = 0;
+        //             } else {
+        //                 $inventory->price = $lastVal->total_value_all / $lastVal->total_quantity_all;
+        //             }
                     
-                    if ($inventory->quantity < 0) {
-                        $inventory->quantity *= -1;
-                        $inventory_helper = new InventoryHelper($inventory);
-                        $inventory_helper->out0();
-                    } else {
-                        $inventory_helper = new InventoryHelper($inventory);
-                        $inventory_helper->in();
-                    }
+        //             if ($inventory->quantity < 0) {
+        //                 $inventory->quantity *= -1;
+        //                 $inventory_helper = new InventoryHelper($inventory);
+        //                 $inventory_helper->out0();
+        //             } else {
+        //                 $inventory_helper = new InventoryHelper($inventory);
+        //                 $inventory_helper->in();
+        //             }
 
-                    $debit = 0;
-                    $credit = 0;
+        //             $debit = 0;
+        //             $credit = 0;
 
-                    // JOURNAL #1 of #2 - Invetory
-                    foreach ($stock_correction->items as $stock_correction_item) {
-                        $position = JournalHelper::position($stock_correction_item->item->account_asset_id);
+        //             // JOURNAL #1 of #2 - Invetory
+        //             foreach ($stock_correction->items as $stock_correction_item) {
+        //                 $position = JournalHelper::position($stock_correction_item->item->account_asset_id);
 
-                        $cost_of_sales = InventoryHelper::getCostOfSales($form_date, $stock_correction_item->item_id, $stock_correction->warehouse_id);
-                        $cost_of_sales = $cost_of_sales * $stock_correction_item->quantity_correction;
-                        $this->comment($form_date . ' : ' . $cost_of_sales . ' = ' . $stock_correction_item->quantity_correction . ' ( ' . $stock_correction_item->item_id . ' - ' . $stock_correction->warehouse_id . ' )');
-                        $journal = new Journal();
-                        $journal->form_date = $form_date;
-                        $journal->coa_id = $stock_correction_item->item->account_asset_id;
-                        $journal->description = $stock_correction_item->correction_notes;
-                        $journal->$position = $cost_of_sales;
-                        $journal->form_journal_id = $stock_correction->formulir_id;
-                        $journal->form_reference_id;
-                        $journal->subledger_id = $stock_correction_item->item_id;
-                        $journal->subledger_type = get_class($stock_correction_item->item);
-                        $journal->save();
+        //                 $cost_of_sales = InventoryHelper::getCostOfSales($form_date, $stock_correction_item->item_id, $stock_correction->warehouse_id);
+        //                 $cost_of_sales = $cost_of_sales * $stock_correction_item->quantity_correction;
+        //                 $this->comment($form_date . ' : ' . $cost_of_sales . ' = ' . $stock_correction_item->quantity_correction . ' ( ' . $stock_correction_item->item_id . ' - ' . $stock_correction->warehouse_id . ' )');
+        //                 $journal = new Journal();
+        //                 $journal->form_date = $form_date;
+        //                 $journal->coa_id = $stock_correction_item->item->account_asset_id;
+        //                 $journal->description = $stock_correction_item->correction_notes;
+        //                 $journal->$position = $cost_of_sales;
+        //                 $journal->form_journal_id = $stock_correction->formulir_id;
+        //                 $journal->form_reference_id;
+        //                 $journal->subledger_id = $stock_correction_item->item_id;
+        //                 $journal->subledger_type = get_class($stock_correction_item->item);
+        //                 $journal->save();
 
-                        if ($position == 'debit') {
-                            $debit += $stock_correction_item->amount;
-                        } else {
-                            $credit += $stock_correction_item->amount;
-                        }
+        //                 if ($position == 'debit') {
+        //                     $debit += $stock_correction_item->amount;
+        //                 } else {
+        //                     $credit += $stock_correction_item->amount;
+        //                 }
 
-                        // JOURNAL #2 of #2 - Inventory Differences
-                        $inventory_differences_account = JournalHelper::getAccount('point inventory stock correction', 'inventory differences');
+        //                 // JOURNAL #2 of #2 - Inventory Differences
+        //                 $inventory_differences_account = JournalHelper::getAccount('point inventory stock correction', 'inventory differences');
 
-                        $position = JournalHelper::position($inventory_differences_account);
-                        $journal = new Journal();
-                        $journal->form_date = $form_date;
-                        $journal->coa_id = $inventory_differences_account;
-                        $journal->description = $stock_correction_item->correction_notes;
-                        $journal->$position = $cost_of_sales * -1;
-                        $journal->form_journal_id = $stock_correction->formulir_id;
-                        $journal->form_reference_id;
-                        $journal->subledger_id;
-                        $journal->subledger_type;
-                        $journal->save();
+        //                 $position = JournalHelper::position($inventory_differences_account);
+        //                 $journal = new Journal();
+        //                 $journal->form_date = $form_date;
+        //                 $journal->coa_id = $inventory_differences_account;
+        //                 $journal->description = $stock_correction_item->correction_notes;
+        //                 $journal->$position = $cost_of_sales * -1;
+        //                 $journal->form_journal_id = $stock_correction->formulir_id;
+        //                 $journal->form_reference_id;
+        //                 $journal->subledger_id;
+        //                 $journal->subledger_type;
+        //                 $journal->save();
 
-                        if ($position == 'debit') {
-                            $debit += $stock_correction_item->total;
-                        } else {
-                            $credit += $stock_correction_item->total;
-                        }
+        //                 if ($position == 'debit') {
+        //                     $debit += $stock_correction_item->total;
+        //                 } else {
+        //                     $credit += $stock_correction_item->total;
+        //                 }
 
-                        if ($debit != $credit) {
-                            throw new PointException('Unbalance Journal');
-                        }
-                    }
-                }
-            }
+        //                 if ($debit != $credit) {
+        //                     throw new PointException('Unbalance Journal');
+        //                 }
+        //             }
+        //         }
+        //     }
 
-        }
+        // }
 
-        foreach ($data as $row) {
-            $item = Item::where('code', $row['code'])->first();
-            $value = str_replace(',', '', $row['value']); // COGS
-            echo $row['code'] . ' => ' . $row['value'] . PHP_EOL;
+        // foreach ($data as $row) {
+        //     $item = Item::where('code', $row['code'])->first();
+        //     $value = str_replace(',', '', $row['value']); // COGS
+        //     echo $row['code'] . ' => ' . $row['value'] . PHP_EOL;
             
-            if ($item) {
-                $inventories = Inventory::orderBy('form_date', 'desc')
-                    ->orderBy('formulir_id', 'desc')
-                    ->where('item_id', '=', $item->id)
-                    ->get()
-                    ->unique(function ($inventory) {
-                        return $inventory['item_id'].$inventory['warehouse_id'];
-                    });
+        //     if ($item) {
+        //         $inventories = Inventory::orderBy('form_date', 'desc')
+        //             ->orderBy('formulir_id', 'desc')
+        //             ->where('item_id', '=', $item->id)
+        //             ->get()
+        //             ->unique(function ($inventory) {
+        //                 return $inventory['item_id'].$inventory['warehouse_id'];
+        //             });
 
-                $this->comment('Processing item ' . $item->code . ' with COGS ' . $value . ' and total inventories: ' . count($inventories));
-                foreach ($inventories as $inventory) {
-                    $last = Inventory::where('item_id', '=', $inventory->item_id)
-                        ->where('form_date', '<', '2026-07-31 23:59:59')
-                        ->where('warehouse_id', '=', $inventory->warehouse_id)
-                        ->orderBy('form_date', 'desc')
-                        ->orderBy('formulir_id', 'desc')
-                        ->orderBy('id', 'desc')
-                        ->first();
+        //         $this->comment('Processing item ' . $item->code . ' with COGS ' . $value . ' and total inventories: ' . count($inventories));
+        //         foreach ($inventories as $inventory) {
+        //             $last = Inventory::where('item_id', '=', $inventory->item_id)
+        //                 ->where('form_date', '<', '2026-07-31 23:59:59')
+        //                 ->where('warehouse_id', '=', $inventory->warehouse_id)
+        //                 ->orderBy('form_date', 'desc')
+        //                 ->orderBy('formulir_id', 'desc')
+        //                 ->orderBy('id', 'desc')
+        //                 ->first();
 
-                    if (!$last) {
-                        // $this->comment('No inventory found for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
-                        continue;
-                    } else {
-                        // $this->comment('Last inventory for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id . ': quantity = ' . $last->total_quantity . ', cogs = ' . $last->cogs);
-                    }
+        //             if (!$last) {
+        //                 // $this->comment('No inventory found for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
+        //                 continue;
+        //             } else {
+        //                 // $this->comment('Last inventory for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id . ': quantity = ' . $last->total_quantity . ', cogs = ' . $last->cogs);
+        //             }
 
-                    if ($last->total_quantity == 0) {
-                        // $this->comment('No inventory quantity for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
-                        continue;
-                    }
+        //             if ($last->total_quantity == 0) {
+        //                 // $this->comment('No inventory quantity for item ' . $item->code . ' in warehouse ' . $inventory->warehouse_id);
+        //                 continue;
+        //             }
                         
-                    // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
-                    $form_date = '2026-08-01 00:00:00';
-                    $form_number = FormulirHelper::number('point-inventory-stock-correction', $form_date);
+        //             // TODO: Delete all item from warehouse to, so cogs, total quantity, total value is reset to 0
+        //             $form_date = '2026-08-01 00:00:00';
+        //             $form_number = FormulirHelper::number('point-inventory-stock-correction', $form_date);
 
-                    $formulir = new Formulir;
-                    $formulir->form_date = $form_date;
-                    $formulir->created_at = $form_date;
-                    $formulir->updated_at = $form_date;
-                    $formulir->form_number = $form_number['form_number'];
-                    $formulir->form_raw_number = $form_number['raw'];
-                    $formulir->notes = 'Cutoff Stock 2026-08-01';
-                    $formulir->approval_to = 1;
-                    $formulir->approval_status = 1;
-                    $formulir->approval_message = '';
-                    $formulir->created_by = 1;
-                    $formulir->updated_by = 1;
-                    if (!$formulir->save()) {
-                        gritter_error('create has been failed', false);
-                    }
+        //             $formulir = new Formulir;
+        //             $formulir->form_date = $form_date;
+        //             $formulir->created_at = $form_date;
+        //             $formulir->updated_at = $form_date;
+        //             $formulir->form_number = $form_number['form_number'];
+        //             $formulir->form_raw_number = $form_number['raw'];
+        //             $formulir->notes = 'Cutoff Stock 2026-08-01';
+        //             $formulir->approval_to = 1;
+        //             $formulir->approval_status = 1;
+        //             $formulir->approval_message = '';
+        //             $formulir->created_by = 1;
+        //             $formulir->updated_by = 1;
+        //             if (!$formulir->save()) {
+        //                 gritter_error('create has been failed', false);
+        //             }
 
-                    $stock_correction = new StockCorrection;
-                    $stock_correction->formulir_id = $formulir->id;
-                    $stock_correction->warehouse_id = $inventory->warehouse_id;
-                    $stock_correction->save();
+        //             $stock_correction = new StockCorrection;
+        //             $stock_correction->formulir_id = $formulir->id;
+        //             $stock_correction->warehouse_id = $inventory->warehouse_id;
+        //             $stock_correction->save();
                     
-                    $stock_correction_item = new StockCorrectionItem;
-                    $stock_correction_item->point_inventory_stock_correction_id = $stock_correction->id;
-                    $stock_correction_item->item_id = $item->id;
-                    $stock_correction_item->stock_in_database = $last->total_quantity;
-                    $stock_correction_item->quantity_correction = $last->total_quantity;
-                    $stock_correction_item->correction_notes = 'Cutoff Stock 2026-08-01';
-                    $unit = $stock_correction_item->item->unit()->first();
-                    $stock_correction_item->unit = $unit->name;
-                    $stock_correction_item->converter = $unit->converter;
-                    $stock_correction_item->save();
+        //             $stock_correction_item = new StockCorrectionItem;
+        //             $stock_correction_item->point_inventory_stock_correction_id = $stock_correction->id;
+        //             $stock_correction_item->item_id = $item->id;
+        //             $stock_correction_item->stock_in_database = $last->total_quantity;
+        //             $stock_correction_item->quantity_correction = $last->total_quantity;
+        //             $stock_correction_item->correction_notes = 'Cutoff Stock 2026-08-01';
+        //             $unit = $stock_correction_item->item->unit()->first();
+        //             $stock_correction_item->unit = $unit->name;
+        //             $stock_correction_item->converter = $unit->converter;
+        //             $stock_correction_item->save();
 
-                    $inventory = new Inventory;
-                    $inventory->form_date = '2026-08-01 00:00:00';
-                    $inventory->formulir_id = $stock_correction->formulir_id;
-                    $inventory->warehouse_id = $stock_correction->warehouse_id;
-                    $inventory->item_id = $stock_correction_item->item_id;
-                    $inventory->quantity = $stock_correction_item->quantity_correction;
-                    $inventory->price = $value ?? 0;
-                    $inventory->cogs = $value ?? 0;
+        //             $inventory = new Inventory;
+        //             $inventory->form_date = '2026-08-01 00:00:00';
+        //             $inventory->formulir_id = $stock_correction->formulir_id;
+        //             $inventory->warehouse_id = $stock_correction->warehouse_id;
+        //             $inventory->item_id = $stock_correction_item->item_id;
+        //             $inventory->quantity = $stock_correction_item->quantity_correction;
+        //             $inventory->price = $value ?? 0;
+        //             $inventory->cogs = $value ?? 0;
                     
-                    if ($inventory->quantity < 0) {
-                        $inventory->quantity *= -1;
-                        $inventory_helper = new InventoryHelper($inventory);
-                        $inventory_helper->out();
-                    } else {
-                        $inventory_helper = new InventoryHelper($inventory);
-                        $inventory_helper->in();
-                    }
+        //             if ($inventory->quantity < 0) {
+        //                 $inventory->quantity *= -1;
+        //                 $inventory_helper = new InventoryHelper($inventory);
+        //                 $inventory_helper->out();
+        //             } else {
+        //                 $inventory_helper = new InventoryHelper($inventory);
+        //                 $inventory_helper->in();
+        //             }
 
-                    $debit = 0;
-                    $credit = 0;
+        //             $debit = 0;
+        //             $credit = 0;
 
-                    // JOURNAL #1 of #2 - Invetory
-                    foreach ($stock_correction->items as $stock_correction_item) {
-                        $position = JournalHelper::position($stock_correction_item->item->account_asset_id);
+        //             // JOURNAL #1 of #2 - Invetory
+        //             foreach ($stock_correction->items as $stock_correction_item) {
+        //                 $position = JournalHelper::position($stock_correction_item->item->account_asset_id);
 
-                        // $cost_of_sales = InventoryHelper::getCostOfSales($form_date, $stock_correction_item->item_id, $stock_correction->warehouse_id);
-                        $cost_of_sales = $value ?? 0;
-                        $cost_of_sales = $cost_of_sales * $stock_correction_item->quantity_correction;
+        //                 // $cost_of_sales = InventoryHelper::getCostOfSales($form_date, $stock_correction_item->item_id, $stock_correction->warehouse_id);
+        //                 $cost_of_sales = $value ?? 0;
+        //                 $cost_of_sales = $cost_of_sales * $stock_correction_item->quantity_correction;
 
-                        $journal = new Journal();
-                        $journal->form_date = $form_date;
-                        $journal->coa_id = $stock_correction_item->item->account_asset_id;
-                        $journal->description = $stock_correction_item->correction_notes;
-                        $journal->$position = $cost_of_sales;
-                        $journal->form_journal_id = $stock_correction->formulir_id;
-                        $journal->form_reference_id;
-                        $journal->subledger_id = $stock_correction_item->item_id;
-                        $journal->subledger_type = get_class($stock_correction_item->item);
-                        $journal->save();
+        //                 $journal = new Journal();
+        //                 $journal->form_date = $form_date;
+        //                 $journal->coa_id = $stock_correction_item->item->account_asset_id;
+        //                 $journal->description = $stock_correction_item->correction_notes;
+        //                 $journal->$position = $cost_of_sales;
+        //                 $journal->form_journal_id = $stock_correction->formulir_id;
+        //                 $journal->form_reference_id;
+        //                 $journal->subledger_id = $stock_correction_item->item_id;
+        //                 $journal->subledger_type = get_class($stock_correction_item->item);
+        //                 $journal->save();
 
-                        if ($position == 'debit') {
-                            $debit += $stock_correction_item->amount;
-                        } else {
-                            $credit += $stock_correction_item->amount;
-                        }
+        //                 if ($position == 'debit') {
+        //                     $debit += $stock_correction_item->amount;
+        //                 } else {
+        //                     $credit += $stock_correction_item->amount;
+        //                 }
 
-                        // JOURNAL #2 of #2 - Inventory Differences
-                        $inventory_differences_account = JournalHelper::getAccount('point inventory stock correction', 'inventory differences');
+        //                 // JOURNAL #2 of #2 - Inventory Differences
+        //                 $inventory_differences_account = JournalHelper::getAccount('point inventory stock correction', 'inventory differences');
 
-                        $position = JournalHelper::position($inventory_differences_account);
-                        $journal = new Journal();
-                        $journal->form_date = $form_date;
-                        $journal->coa_id = $inventory_differences_account;
-                        $journal->description = $stock_correction_item->correction_notes;
-                        $journal->$position = $cost_of_sales * -1;
-                        $journal->form_journal_id = $stock_correction->formulir_id;
-                        $journal->form_reference_id;
-                        $journal->subledger_id;
-                        $journal->subledger_type;
-                        $journal->save();
+        //                 $position = JournalHelper::position($inventory_differences_account);
+        //                 $journal = new Journal();
+        //                 $journal->form_date = $form_date;
+        //                 $journal->coa_id = $inventory_differences_account;
+        //                 $journal->description = $stock_correction_item->correction_notes;
+        //                 $journal->$position = $cost_of_sales * -1;
+        //                 $journal->form_journal_id = $stock_correction->formulir_id;
+        //                 $journal->form_reference_id;
+        //                 $journal->subledger_id;
+        //                 $journal->subledger_type;
+        //                 $journal->save();
 
-                        if ($position == 'debit') {
-                            $debit += $stock_correction_item->total;
-                        } else {
-                            $credit += $stock_correction_item->total;
-                        }
+        //                 if ($position == 'debit') {
+        //                     $debit += $stock_correction_item->total;
+        //                 } else {
+        //                     $credit += $stock_correction_item->total;
+        //                 }
 
-                        if ($debit != $credit) {
-                            throw new PointException('Unbalance Journal');
-                        }
-                    }
-                }
-            }
-        }
+        //                 if ($debit != $credit) {
+        //                     throw new PointException('Unbalance Journal');
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         
 
