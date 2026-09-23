@@ -93,8 +93,6 @@ class RecalculateMJ extends Command
             ->orderBy('journal.subledger_id')
             ->get();
 
-          
-
           $form_date = '2026-07-31 23:59:59';
           $form_number = FormulirHelper::number('point-accounting-memo-journal', $form_date);
 
@@ -125,6 +123,8 @@ class RecalculateMJ extends Command
             $this->comment($correction->coa_name . ' > ' . $correction->subledger_id . ' = ' . $correction->balance);
 
             $balance = (float) $correction->balance;
+
+            $this->comment($correction->subledger_id);
 
             // 1
             if ($correction->subledger_id === 86) {
