@@ -22,9 +22,11 @@ class RecalculateZero extends Command
      * The name and signature of the console command.
      * 
      * dev:recalculate:cutoff
+     * dev:recalculate:zero
      * dev:recalculate:allval
      * dev:recalculate:all
      * dev:recalculate:jhppkb
+     * dev:recalculate:mj
      *
      * @var string
      */
@@ -51,6 +53,7 @@ class RecalculateZero extends Command
         $inventories = Inventory::where('total_quantity_all', 0)->get();
 
         foreach ($inventories as $inventory) {
+          $inventory->cogs = 0;
           $inventory->total_value = 0;
           $inventory->total_value_all = 0;
           $inventory->save();
