@@ -120,11 +120,9 @@ class RecalculateMJ extends Command
 
           $total = 0;
           foreach ($corrections as $correction) {
-            $this->comment($correction->coa_name . ' > ' . $correction->subledger_id . ' = ' . $correction->balance);
+            // $this->comment($correction->coa_name . ' > ' . $correction->subledger_id . ' = ' . $correction->balance);
 
             $balance = (float) $correction->balance;
-
-            $this->comment($correction->subledger_id);
 
             // 1
             if ($correction->subledger_id === 86) {
@@ -174,6 +172,8 @@ class RecalculateMJ extends Command
             if ($correction->subledger_id === 628) {
                 $correction->balance = 18821555657.1335;
             }
+
+            $this->comment($correction->subledger_id . ' = ' . $correction->balance);
 
             // COA SEDIAAN
             $memo_journal_detail = new MemoJournalDetail;
