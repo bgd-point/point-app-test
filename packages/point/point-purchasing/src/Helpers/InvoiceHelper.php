@@ -201,8 +201,11 @@ class InvoiceHelper
             $dc->credit += round($dc2->credit, 4);
         }
 
+        $debit = round((float) $dc->debit, 4);
+        $credit = round((float) $dc->credit, 4);
+
         
-        if($dc->debit != $dc->credit) {
+        if(round((float) $dc->debit, 4) != round((float) $dc->credit, 4)) {
         \Log::info('DC');
         \Log::info($dc->debit .' x '. $dc->credit);
             $factor = pow(10, 4);
