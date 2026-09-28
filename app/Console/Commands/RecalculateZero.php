@@ -26,13 +26,13 @@ class RecalculateZero extends Command
      * table memo journal detail and journal: debit & credit should become decimal 20,4
      * php artisan dev:recalculate:cutoff && php artisan dev:recalculate:qty && php artisan dev:recalculate:zero && php artisan dev:recalculate:allval && php artisan dev:recalculate:all && php artisan dev:recalculate:jhppkb && php artisan dev:recalculate:mj
      * 
-     * dev:recalculate:cutoff
-     * dev:recalculate:qty
-     * dev:recalculate:zero
-     * dev:recalculate:allval
-     * dev:recalculate:all
-     * dev:recalculate:jhppkb
-     * dev:recalculate:mj
+     * dev:recalculate:cutoff => hitung ulang dari data cutoff mirna untuk 1 agustus 2026 menggunakan Stock Correction
+     * dev:recalculate:qty => fix qty data lama yang all tidak sesuai karena ada 2 item yang sama di 1 invoice
+     * dev:recalculate:zero => nol kan semua value yang quantity sudah 0
+     * dev:recalculate:allval => hitung ulang qty_all dan value_all untuk cogs (all warehouse)
+     * dev:recalculate:all => hitung ulang qty dan value per warehouse
+     * dev:recalculate:jhppkb => fix hpp per feature setelah hitung ulang
+     * dev:recalculate:mj => nol kan ledger per tanggal 31 july 2026 menggunakan Memo Journal
      *
      * @var string
      */
