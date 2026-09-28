@@ -202,7 +202,7 @@ class InvoiceHelper
         }
 
         
-        if($dc->debit !== $dc->credit) {
+        if($dc->debit != $dc->credit) {
         \Log::info('DC');
         \Log::info($dc->debit .' x '. $dc->credit);
             $factor = pow(10, 4);
