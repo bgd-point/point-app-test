@@ -331,6 +331,7 @@ class JournalHelper
             ->selectRaw('sum(debit) as debit, sum(credit) as credit, count(coa_id) as counter')
             ->first();
 
+        \Log::info('GET DIFF');
         \Log::info($journal);
 
         if ($journal->debit != $journal->credit) {
