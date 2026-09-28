@@ -332,7 +332,7 @@ class JournalHelper
             ->first();
 
         \Log::info('GET DIFF');
-        \Log::info($journal);
+        \Log::info($journal->debit . ' = ' . $journal->credit);
 
         if ($journal->debit != $journal->credit) {
             return $journal->credit - $journal->debit;

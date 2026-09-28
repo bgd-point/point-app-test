@@ -204,7 +204,7 @@ class InvoiceHelper
         
         if($dc->debit !== $dc->credit) {
         \Log::info('DC');
-        \Log::info($dc);
+        \Log::info($dc->debit .' x '. $dc->credit);
             $factor = pow(10, 4);
             
             $fdebit = floor($dc->debit * $factor) / $factor;
