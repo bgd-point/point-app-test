@@ -93,6 +93,7 @@ class InventoryHelper
             ->where('form_date', '<', $date_from)
             ->where('warehouse_id', '=', $warehouse_id)
             ->orderBy('form_date', 'desc')
+            ->orderBy('formulir_id', 'desc')
             ->orderBy('id', 'desc')
             ->first();
 
@@ -178,6 +179,7 @@ class InventoryHelper
         $inventory = Inventory::where('item_id', '=', $item_id)
             ->where('form_date', '<', $date_from)
             ->orderBy('form_date', 'desc')
+            ->orderBy('formulir_id', 'desc')
             ->orderBy('id', 'desc')
             ->first();
 
