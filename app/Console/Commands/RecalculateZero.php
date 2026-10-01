@@ -56,14 +56,21 @@ class RecalculateZero extends Command
 
         \DB::beginTransaction();
 
-        $inventories = Inventory::where('total_quantity_all', 0)->where('formulir_id', 243572)->get();
+        $inventories = Inventory::where('total_quantity_all', 0)->get();
 
         foreach ($inventories as $inventory) {
-            $this->comment($inventory->id .' '. $inventory->total_quantity_all .' '. $inventory->total_value_all);
-          $inventory->cogs = 0;
-          $inventory->total_value = 0;
-          $inventory->total_value_all = 0;
-          $inventory->save();
+            $inventory->cogs = 0;
+            $inventory->total_value = 0;
+            $inventory->total_value_all = 0;
+            $inventory->save();
+        }
+
+        $inventories = Inventory::where('total_quantity', 0)->get();
+
+        foreach ($inventories as $inventory) {
+            $inventory->cogs = 0;
+            $inventory->total_value = 0;
+            $inventory->save();
         }
 
         \DB::commit();
