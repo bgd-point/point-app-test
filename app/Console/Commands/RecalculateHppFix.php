@@ -177,52 +177,51 @@ class RecalculateHppFix extends Command
         // }
 
         // SC
-        // $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
-        //     ->where('formulir.formulirable_type', '=', 'Point\PointInventory\Models\StockCorrection\StockCorrection')
-        //     ->where('inventory.form_date', '>=', '2026-08-01 00:00:00')
-        //     ->select('inventory.*')
-        //     ->get();
+        $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+            ->where('formulir.formulirable_type', '=', 'Point\PointInventory\Models\StockCorrection\StockCorrection')
+            ->where('inventory.form_date', '>=', '2026-08-01 00:00:00')
+            ->select('inventory.*')
+            ->get();
 
-        // foreach($inventories as $inventory) {
-        //     $journals = Journal::where('form_journal_id', '=', $inventory->formulir_id)
-        //         ->where('journal.subledger_id', '=', $inventory->item_id)
-        //         ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
-        //         ->select('journal.*')
-        //         ->get();
+        foreach($inventories as $inventory) {
+            $journals = Journal::where('form_journal_id', '=', $inventory->formulir_id)
+                ->where('journal.subledger_id', '=', $inventory->item_id)
+                ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
+                ->select('journal.*')
+                ->get();
 
-        //     if (!count($journals)) {
-        //         $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
-        //         continue;
-        //     }
+            if (!count($journals)) {
+                $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
+                continue;
+            }
 
-        //     $iValue = round(abs($inventory->quantity * $inventory->price), 4);
+            $iValue = round(abs($inventory->quantity * $inventory->price), 4);
 
-        //     foreach ($journals as $journal) {
+            foreach ($journals as $journal) {
 
-        //         $nextId = $journal->id + 1;
-        //         $jHpp = Journal::where('coa_id', '=', 45)
-        //             ->where('id', '=', $nextId)
-        //             ->where('form_journal_id', '=', $journal->form_journal_id)
-        //             ->select('journal.*')
-        //             ->first();
+                $nextId = $journal->id + 1;
+                $jHpp = Journal::where('id', '=', $nextId)
+                    ->where('form_journal_id', '=', $journal->form_journal_id)
+                    ->select('journal.*')
+                    ->first();
 
-        //         if (!$jHpp) {
-        //             $this->comment("Missing pair for ID {$journal->id}, expected {$nextId}");
-        //             continue;
-        //         }
+                if (!$jHpp) {
+                    $this->comment("Missing pair for ID {$journal->id}, expected {$nextId}");
+                    continue;
+                }
 
-        //         $this->comment($journal->description . ' = ' . $journal->id);
-        //         if ($journal->debit > 0) {
-        //             $journal->debit = $iValue;
-        //             $jHpp->credit = $iValue;
-        //         } else {
-        //             $journal->credit = $iValue;
-        //             $jHpp->debit = $iValue;
-        //         }
-        //         $journal->save();
-        //         $jHpp->save();
-        //     }
-        // }
+                $this->comment($journal->description . ' = ' . $journal->id);
+                if ($inventory->quantity > 0) {
+                    $journal->debit = $iValue;
+                    $jHpp->credit = $iValue;
+                } else {
+                    $journal->credit = $iValue;
+                    $jHpp->debit = $iValue;
+                }
+                $journal->save();
+                $jHpp->save();
+            }
+        }
 
         // IU
         // $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
