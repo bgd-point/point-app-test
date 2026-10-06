@@ -80,6 +80,7 @@ class RecalculateHppFix extends Command
             ->get();
 
         foreach($inventories as $inventory) {
+            $this->comment('$inventory' . $inventory->id);
             // where('coa_id', '=', 45) => HPP
             $journal = Journal::where('coa_id', '!=', 45)
                 ->where('form_journal_id', '=', $inventory->formulir_id)
