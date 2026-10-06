@@ -106,8 +106,8 @@ class RecalculateHppFix extends Command
                 dd('asds');
             }
             
-            $journal->debit = $inventory->quantity * $inventory->price;
-            $journal->credit = 0;
+            $jHpp->debit = $inventory->quantity * $inventory->price;
+            $jHpp->credit = 0;
             
             $jHpp->save();
         }
