@@ -210,7 +210,7 @@ class RecalculateHppFix extends Command
                     continue;
                 }
 
-                $this->comment($journal->description . ' = ' . $journal->id);
+                $this->comment($journal->formulir->form_number . ' = ' . $journal->id);
                 if ($inventory->quantity > 0) {
                     $journal->debit = $iValue;
                     $jHpp->credit = $iValue;
