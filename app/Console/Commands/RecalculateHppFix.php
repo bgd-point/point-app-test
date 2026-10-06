@@ -88,11 +88,8 @@ class RecalculateHppFix extends Command
                 ->select('journal.*')
                 ->first();
 
-            if ($journal->debit == 0) {
-                $journal->credit = $inventory->quantity * $inventory->price;
-            } else {
-                $journal->debit = $inventory->quantity * $inventory->price;
-            }
+            $journal->debit = 0;
+            $journal->credit = $inventory->quantity * $inventory->price;
             
             $journal->save();
 
@@ -107,12 +104,9 @@ class RecalculateHppFix extends Command
                 $this->comment($journal->id);
                 dd('asds');
             }
-
-            if ($jHpp->debit == 0) {
-                $jHpp->credit = $inventory->quantity * $inventory->price;
-            } else {
-                $jHpp->debit = $inventory->quantity * $inventory->price;
-            }
+            
+            $journal->debit = $inventory->quantity * $inventory->price;
+            $journal->credit = 0;
             
             $jHpp->save();
         }
