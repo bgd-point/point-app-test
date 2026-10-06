@@ -179,7 +179,7 @@ class RecalculateHppFix extends Command
         // SC
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.formulirable_type', '=', 'Point\PointInventory\Models\StockCorrection\StockCorrection')
-            ->where('inventory.form_date', '>=', '2026-08-01 00:00:00')
+            ->where('inventory.form_date', '>=', '2026-07-01 00:00:00')
             ->select('inventory.*')
             ->get();
 
