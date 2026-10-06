@@ -213,10 +213,14 @@ class RecalculateHppFix extends Command
                 $this->comment($journal->formulir->form_number . ' = ' . $journal->id);
                 if ($inventory->quantity > 0) {
                     $journal->debit = $iValue;
+                    $journal->credit = 0;
+                    $jHpp->debit = 0;
                     $jHpp->credit = $iValue;
                 } else {
+                    $journal->debit = 0;
                     $journal->credit = $iValue;
                     $jHpp->debit = $iValue;
+                    $jHpp->credit = 0;
                 }
                 $journal->save();
                 $jHpp->save();
