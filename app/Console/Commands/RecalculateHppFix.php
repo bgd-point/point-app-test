@@ -148,7 +148,6 @@ class RecalculateHppFix extends Command
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
             ->where('formulir.formulirable_type', '=', 'Point\PointManufacture\Models\InputProcess')
             ->where('inventory.form_date', '>=', '2026-08-01 00:00:00')
-            ->where('inventory.form_date', '<=', '2026-08-05 00:00:00')
             ->select('inventory.*')
             ->get();
 
