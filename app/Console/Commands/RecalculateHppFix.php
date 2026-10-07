@@ -183,10 +183,12 @@ class RecalculateHppFix extends Command
                 ->select('journal.*')
                 ->get();
 
-            // if (!count($journals)) {
-            //     $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
-            //     continue;
-            // }
+            if (!count($journals)) {
+                $this->comment('Journal not found | item_id: ' . $inventory->item_id . ' | formulir_id: ' . $inventory->formulir_id);
+                continue;
+            } else {
+                $this->comment('Journal');
+            }
 
             $iValue = round(abs($inventory->quantity * $inventory->price), 4);
 
