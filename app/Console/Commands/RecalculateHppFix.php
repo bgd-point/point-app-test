@@ -145,36 +145,53 @@ class RecalculateHppFix extends Command
         // }
 
         // // INPUT MANUFACTURE
-        // $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
-        //     ->where('formulir.formulirable_type', '=', 'Point\PointManufacture\Models\InputProcess')
-        //     ->where('inventory.form_date', '>=', '2026-08-01 00:00:00')
-        //     ->select('inventory.*')
-        //     ->get();
+        $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
+            ->where('formulir.formulirable_type', '=', 'Point\PointManufacture\Models\InputProcess')
+            ->where('inventory.form_date', '>=', '2026-08-01 00:00:00')
+            ->select('inventory.*')
+            ->get();
 
-        // foreach($inventories as $inventory) {
-        //     $journals = Journal::where('form_journal_id', '=', $inventory->formulir_id)
-        //         ->where('journal.subledger_id', '=', $inventory->item_id)
-        //         ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
-        //         ->select('journal.*')
-        //         ->get();
+        foreach($inventories as $inventory) {
+            $journals = Journal::where('form_journal_id', '=', $inventory->formulir_id)
+                ->where('journal.subledger_id', '=', $inventory->item_id)
+                ->where('coa_id', '!=', 10)
+                ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
+                ->select('journal.*')
+                ->get();
 
-        //     if (!count($journals)) {
-        //         $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
-        //         continue;
-        //     }
+            if (!count($journals)) {
+                $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
+                continue;
+            }
 
-        //     $iValue = round(abs($inventory->quantity * $inventory->price), 4);
+            $iValue = round(abs($inventory->quantity * $inventory->price), 4);
 
-        //     foreach ($journals as $journal) {
-        //         $this->comment($journal->description);
-        //         if ($journal->debit > 0) {
-        //             $journal->debit = $iValue;
-        //         } else {
-        //             $journal->credit = $iValue;
-        //         }
-        //         $journal->save();
-        //     }
-        // }
+            foreach ($journals as $journal) {
+                $journal->debit = 0;
+                $journal->credit = $iValue;
+                $journal->save();
+            }
+
+            $journals = Journal::where('form_journal_id', '=', $inventory->formulir_id)
+                ->where('journal.subledger_id', '=', $inventory->item_id)
+                ->where('coa_id', '==', 10)
+                ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
+                ->select('journal.*')
+                ->get();
+
+            if (!count($journals)) {
+                $this->comment('Journal not found | inventory_id: ' . $inventory->id . ' | formulir_id: ' . $inventory->formulir_id);
+                continue;
+            }
+
+            $iValue = round(abs($inventory->quantity * $inventory->price), 4);
+
+            foreach ($journals as $journal) {
+                $journal->debit = $iValue;
+                $journal->credit = 0;
+                $journal->save();
+            }
+        }
 
         // SC
         $inventories = Inventory::join('formulir', 'formulir.id', '=', 'inventory.formulir_id')
