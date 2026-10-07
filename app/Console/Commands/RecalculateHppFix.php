@@ -155,7 +155,7 @@ class RecalculateHppFix extends Command
             $this->comment('' . $inventory->formulir->form_number);
             $journals = Journal::where('form_journal_id', '=', $inventory->formulir_id)
                 ->where('journal.subledger_id', '=', $inventory->item_id)
-                ->where('coa_id', '!=', 10)
+                ->where('journal.coa_id', '!=', 10)
                 ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
                 ->select('journal.*')
                 ->get();
@@ -175,7 +175,7 @@ class RecalculateHppFix extends Command
 
             $journals = Journal::where('form_journal_id', '=', $inventory->formulir_id)
                 ->where('journal.subledger_id', '=', $inventory->item_id)
-                ->where('coa_id', '==', 10)
+                ->where('journal.coa_id', '==', 10)
                 ->where('journal.subledger_type', '=', "Point\Framework\Models\Master\Item")
                 ->select('journal.*')
                 ->get();
