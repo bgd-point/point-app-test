@@ -42,7 +42,7 @@ class ReCutoffBMP extends Command
         $this->comment('recalculating bbf');
 
         try {
-          $filePath = 'cutoff_accounts.json';
+          $filePath = 'app/cutoff_accounts.json';
 
           if (!Storage::disk('local')->exists($filePath)) {
               throw new RuntimeException(
@@ -51,6 +51,8 @@ class ReCutoffBMP extends Command
           }
 
           $json = Storage::disk('local')->get($filePath);
+
+          \Log::info($json);
 
           $accounts = json_decode(
               $json,
