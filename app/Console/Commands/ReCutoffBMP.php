@@ -127,14 +127,10 @@ class ReCutoffBMP extends Command
       DB::commit();
 
       $this->info('BBF recalculation completed successfully.');
-
-      return self::SUCCESS;
     } catch (JsonException | RuntimeException $exception) {
       DB::rollBack();
 
       $this->error($exception->getMessage());
-
-      return self::FAILURE;
     } catch (\Throwable $exception) {
       DB::rollBack();
 
