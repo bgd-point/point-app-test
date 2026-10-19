@@ -16,21 +16,21 @@ use Point\PointInventory\Models\TransferItem\TransferItem;
 use RuntimeException;
 use JsonException;
 
-class ReCutoffBBF extends Command
+class ReCutoffBMP extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'dev:recutoff:bbf';
+    protected $signature = 'dev:recutoff:bmp';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'recalculate bbf';
+    protected $description = 'recalculate bmp';
 
     /**
      * Execute the console command.

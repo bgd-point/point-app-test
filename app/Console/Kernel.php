@@ -58,6 +58,7 @@ class Kernel extends ConsoleKernel
         Commands\RecalculateZero::class,
         Commands\RecalculateInput::class,
         Commands\RecalculateOutput::class,
+        Commands\ReCutoffBMP::class,
         // Commands\Recalculate::class,
         Commands\RecalculateJournalHppKb::class,
         Commands\RejournalIO::class,
