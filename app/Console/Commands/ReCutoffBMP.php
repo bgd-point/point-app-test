@@ -106,33 +106,27 @@ class ReCutoffBMP extends Command
       // $cutOffAccount->formulir_id = $formulir->id;
       // $cutOffAccount->save();
 
-      // foreach ($accounts as $account) {
-      //     foreach (['coa_code', 'debit', 'credit'] as $field) {
-      //         if (!array_key_exists($field, $account)) {
-      //             throw new RuntimeException(
-      //                 "Missing field '{$field}' in an account entry."
-      //             );
-      //         }
-      //     }
+      CutOffAccountDetail::where('cut_off_account_id', 8)->delete();
 
-      //     $coa = Coa::where(
-      //         'coa_code',
-      //         $account['coa_code']
-      //     )->first();
+      foreach ($accounts as $account) {
+          $coa = Coa::where(
+              'coa_number',
+              $account['coa_code']
+          )->first();
 
-      //     if (!$coa) {
-      //         throw new RuntimeException(
-      //             "COA not found: {$account['coa_code']}"
-      //         );
-      //     }
+          if (!$coa) {
+              throw new RuntimeException(
+                  "COA not found: {$account['coa_code']}"
+              );
+          }
 
-      //     $cutOffAccountDetail = new CutOffAccountDetail;
-      //     $cutOffAccountDetail->cut_off_account_id = $cutOffAccount->id;
-      //     $cutOffAccountDetail->coa_id = $coa->id;
-      //     $cutOffAccountDetail->debit = $account['debit'];
-      //     $cutOffAccountDetail->credit = $account['credit'];
-      //     $cutOffAccountDetail->save();
-      // }
+          $cutOffAccountDetail = new CutOffAccountDetail;
+          $cutOffAccountDetail->cut_off_account_id = 8;
+          $cutOffAccountDetail->coa_id = $coa->id;
+          $cutOffAccountDetail->debit = $account['debit'];
+          $cutOffAccountDetail->credit = $account['credit'];
+          $cutOffAccountDetail->save();
+      }
 
       DB::commit();
 
