@@ -85,8 +85,8 @@ class ReCutoffBMP extends Command
       );
 
       foreach ($accounts as $account) {
-        $coa = Coa::where('number', $account['coa_number'])->first();
-        $this->comment($account['coa_number'] . ' = ' . $coa->number);
+        $coa = Coa::where('number', $account['coa_code'])->first();
+        $this->comment($account['coa_code'] . ' = ' . $coa->number);
       }
 
       // $formulir = new Formulir;
@@ -115,7 +115,7 @@ class ReCutoffBMP extends Command
       //     }
 
       //     $coa = Coa::where(
-      //         'coa_number',
+      //         'coa_code',
       //         $account['coa_code']
       //     )->first();
 
@@ -170,7 +170,7 @@ class ReCutoffBMP extends Command
     // $cut_off_account->formulir_id = $formulir->id;
     // $cut_off_account->save();
 
-    // $coa = Coa::where('coa_number', $account['coa_code'])->first();
+    // $coa = Coa::where('coa_code', $account['coa_code'])->first();
 
     // foreach ($cutoff_account_csv as $account) {
     //   $cut_off_account_detail = new CutOffAccountDetail;
