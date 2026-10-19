@@ -85,7 +85,7 @@ class ReCutoffBMP extends Command
       );
 
       foreach ($accounts as $account) {
-        \Log::info($account['coa_name']);
+        $this->comment($account['coa_name']);
       }
 
       // $formulir = new Formulir;
