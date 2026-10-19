@@ -59,9 +59,10 @@ class ReCutoffBMP extends Command
           'Invalid JSON: ' . json_last_error_msg()
         );
       }
-      if (!is_array($accounts) || !array_is_list($accounts)) {
+   
+      if (!is_array($accounts) || empty($accounts)) {
         throw new RuntimeException(
-          'The JSON file must contain an array of accounts.'
+            'The JSON file must contain a non-empty array of accounts.'
         );
       }
 
