@@ -16,6 +16,10 @@ use Point\Framework\Models\Master\Allocation;
 use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\StockOpname\StockOpnameItem;
 use Point\PointInventory\Models\TransferItem\TransferItem;
+use Point\PointAccounting\Models\CutOffAccount;
+use Point\PointAccounting\Models\CutOffAccountDetail;
+use Point\PointAccounting\Models\CutOffInventoryDetail;
+use Point\PointAccounting\Models\CutOffPayableDetail;
 use RuntimeException;
 use JsonException;
 
