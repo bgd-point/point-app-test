@@ -85,7 +85,7 @@ class ReCutoffBMP extends Command
       );
 
       foreach ($accounts as $account) {
-        $coa = Coa::where('number', $account['coa_code'])->first();
+        $coa = Coa::where('coa_number', $account['coa_code'])->first();
         $this->comment($account['coa_code'] . ' = ' . $coa->number);
       }
 
