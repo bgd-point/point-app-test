@@ -44,6 +44,10 @@ class ReCutoffBMP extends Command
         try {
           $filePath = 'app/cutoff_accounts.json';
 
+          $json = Storage::disk('local')->get($filePath);
+
+          \Log::info($json);
+
           if (!Storage::disk('local')->exists($filePath)) {
               throw new RuntimeException(
                   "JSON file not found: {$filePath}"
