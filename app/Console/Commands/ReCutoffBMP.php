@@ -108,7 +108,7 @@ class ReCutoffBMP extends Command
       }
 
       // Cutoff - Inventories
-      CutOffInventoryDetail::where('cut_off_account_id', 44)->delete();
+      CutOffInventoryDetail::where('cut_off_inventory_id', 44)->delete();
       foreach ($accounts as $account) {
           $item = Item::where('code', $account['subledger_code'])->first();
           $warehouse = Warehouse::where('name', $account['warehouse_name'])->first();
