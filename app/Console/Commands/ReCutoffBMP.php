@@ -244,7 +244,7 @@ class ReCutoffBMP extends Command
         );
       }
 
-      CutOffPayableDetail::where('cut_off_receivable_id', 15)->delete();
+      CutOffPayableDetail::where('cut_off_payable_id', 15)->delete();
       foreach ($accounts as $account) {
 
           if ($account['subledger_code']) {
