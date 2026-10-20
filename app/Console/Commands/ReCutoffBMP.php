@@ -194,7 +194,7 @@ class ReCutoffBMP extends Command
           $person = Person::where('code', $account['subledger_code'])->first();
           if (!$person) {
               throw new RuntimeException(
-                  "Person not found: {$account['code']}"
+                  "Person not found: {$account['subledger_code']}"
               );
           }
           $coa = Coa::where('coa_number', $account['coa_number'])->first();
