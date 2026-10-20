@@ -153,7 +153,7 @@ class ReCutoffBMP extends Command
           $ci->warehouse_id = $warehouse->id;
           $ci->subledger_type = 'Point\Framework\Models\Master\Item';
           $ci->subledger_id = $item->id;
-          $ci->coa_id = $coa->id;
+          $ci->coa_id = $item->account_asset_id;
           $ci->stock_in_database = 0;
           $ci->stock = $account['quantity'];
           $ci->amount = $account['amount'];
