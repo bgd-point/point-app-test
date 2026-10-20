@@ -15,6 +15,7 @@ use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Models\Master\Allocation;
 use Point\Framework\Models\Master\Item;
+use Point\Framework\Models\Master\Person;
 use Point\Framework\Models\Master\Warehouse;
 use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\StockOpname\StockOpnameItem;
@@ -156,6 +157,58 @@ class ReCutoffBMP extends Command
           $ci->coa_id = $item->account_asset_id;
           $ci->stock_in_database = 0;
           $ci->stock = $account['quantity'];
+          $ci->amount = $account['amount'];
+          $ci->notes = isset($account['notes']) ? $account['notes'] : '';
+          $ci->save();
+      }
+
+
+      // Cutoff - Receivable
+
+      $filePath = 'cutoff_receivables.json';
+      
+      if (!Storage::disk('local')->exists($filePath)) {
+        throw new RuntimeException(
+          "JSON file not found: {$filePath}"
+        );
+      }
+
+      $json = Storage::disk('local')->get($filePath);
+
+      $accounts = json_decode($json, true);
+
+      if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new RuntimeException(
+          'Invalid JSON: ' . json_last_error_msg()
+        );
+      }
+   
+      if (!is_array($accounts) || empty($accounts)) {
+        throw new RuntimeException(
+            'The JSON file must contain a non-empty array of accounts.'
+        );
+      }
+
+      CutOffReceivableDetail::where('cut_off_receivable_id', 10)->delete();
+      foreach ($accounts as $account) {
+          $person = Person::where('code', $account['subledger_code'])->first();
+          if (!$person) {
+              throw new RuntimeException(
+                  "Person not found: {$account['code']}"
+              );
+          }
+          $coa = Coa::where('coa_number', $account['coa_number'])->first();
+          if (!$coa) {
+              throw new RuntimeException(
+                  "Warehouse not found: {$account['coa_number']}"
+              );
+          }
+
+          $ci = new CutOffReceivableDetail;
+          $ci->cut_off_receivable_id = 10;
+          $ci->coa_id = $item->account_asset_id;
+          $ci->subledger_type = 'Point\Framework\Models\Master\Person';
+          $ci->subledger_id = $person->id;
           $ci->amount = $account['amount'];
           $ci->notes = isset($account['notes']) ? $account['notes'] : '';
           $ci->save();
