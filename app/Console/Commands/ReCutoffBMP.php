@@ -79,11 +79,11 @@ class ReCutoffBMP extends Command
         );
       }
 
-      foreach ($accounts as $account) {
-        $this->comment($account['coa_code']);
-        $coa = Coa::where('coa_number', $account['coa_code'])->first();
-        $this->comment($account['coa_code'] . ' = ' . $coa->coa_number);
-      }
+      // foreach ($accounts as $account) {
+      //   $this->comment($account['coa_code']);
+      //   $coa = Coa::where('coa_number', $account['coa_code'])->first();
+      //   $this->comment($account['coa_code'] . ' = ' . $coa->coa_number);
+      // }
 
       // Cutoff - Accounts
       CutOffAccountDetail::where('cut_off_account_id', 8)->delete();
@@ -108,6 +108,31 @@ class ReCutoffBMP extends Command
       }
 
       // Cutoff - Inventories
+
+      $filePath = 'cutoff_inventories.json';
+      
+      if (!Storage::disk('local')->exists($filePath)) {
+        throw new RuntimeException(
+          "JSON file not found: {$filePath}"
+        );
+      }
+
+      $json = Storage::disk('local')->get($filePath);
+
+      $accounts = json_decode($json, true);
+
+      if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new RuntimeException(
+          'Invalid JSON: ' . json_last_error_msg()
+        );
+      }
+   
+      if (!is_array($accounts) || empty($accounts)) {
+        throw new RuntimeException(
+            'The JSON file must contain a non-empty array of accounts.'
+        );
+      }
+
       CutOffInventoryDetail::where('cut_off_inventory_id', 44)->delete();
       foreach ($accounts as $account) {
           $item = Item::where('code', $account['subledger_code'])->first();
