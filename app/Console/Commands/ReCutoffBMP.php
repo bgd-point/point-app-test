@@ -147,7 +147,7 @@ class ReCutoffBMP extends Command
           $ci->stock_in_database = 0;
           $ci->stock = $account['quantity'];
           $ci->amount = $account['amount'];
-          $ci->notes = isset($account['notes']) ? $account['notes'] : null;
+          $ci->notes = isset($account['notes']) ? $account['notes'] : '';
           $ci->save();
       }
 
