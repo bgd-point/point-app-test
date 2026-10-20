@@ -14,6 +14,8 @@ use Point\Framework\Helpers\FormulirHelper;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Models\Master\Allocation;
+use Point\Framework\Models\Master\Item;
+use Point\Framework\Models\Master\Warehouse;
 use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\StockOpname\StockOpnameItem;
 use Point\PointInventory\Models\TransferItem\TransferItem;
@@ -77,37 +79,14 @@ class ReCutoffBMP extends Command
         );
       }
 
-      $formDate = '2026-08-01 00:00:00';
-
-      $formNumber = FormulirHelper::number(
-        'point-accounting-cut-off-account',
-        $formDate
-      );
-
       foreach ($accounts as $account) {
         $this->comment($account['coa_code']);
         $coa = Coa::where('coa_number', $account['coa_code'])->first();
         $this->comment($account['coa_code'] . ' = ' . $coa->coa_number);
       }
 
-      // $formulir = new Formulir;
-      // $formulir->form_date = $formDate;
-      // $formulir->form_number = $formNumber['form_number'];
-      // $formulir->form_raw_number = $formNumber['raw'];
-      // $formulir->notes = '';
-      // $formulir->approval_to = 1;
-      // $formulir->approval_status = 0;
-      // $formulir->approval_message = '';
-      // $formulir->created_by = 1;
-      // $formulir->updated_by = 1;
-      // $formulir->save();
-
-      // $cutOffAccount = new CutOffAccount;
-      // $cutOffAccount->formulir_id = $formulir->id;
-      // $cutOffAccount->save();
-
+      // Cutoff - Accounts
       CutOffAccountDetail::where('cut_off_account_id', 8)->delete();
-
       foreach ($accounts as $account) {
           $coa = Coa::where(
               'coa_number',
@@ -126,6 +105,25 @@ class ReCutoffBMP extends Command
           $cutOffAccountDetail->debit = $account['debit'];
           $cutOffAccountDetail->credit = $account['credit'];
           $cutOffAccountDetail->save();
+      }
+
+      // Cutoff - Inventories
+      CutOffInventoryDetail::where('cut_off_account_id', 44)->delete();
+      foreach ($accounts as $account) {
+          $item = Item::where('code', $account['subledger_code'])->first();
+          $warehouse = Warehouse::where('name', $account['warehouse_name'])->first();
+
+          $ci = new CutOffInventoryDetail;
+          $ci->cut_off_inventory_id = 44;
+          $ci->warehouse_id = $warehouse->id;
+          $ci->subledger_type = 'Point\Framework\Models\Master\Item';
+          $ci->subledger_id = $item->id;
+          $ci->coa_id = $coa->id;
+          $ci->stock_in_database = 0;
+          $ci->stock = $account['quantity'];
+          $ci->amount = $account['amount'];
+          $ci->notes = $account['notes'];
+          $ci->save();
       }
 
       DB::commit();
