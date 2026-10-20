@@ -285,42 +285,5 @@ class ReCutoffBMP extends Command
 
       throw $exception;
     }
-
-    \DB::beginTransaction();
-
-    $cutoff_account_csv = '';
-
-    // $form_date = '2026-08-01 00:00:00';
-
-    // $form_number = FormulirHelper::number('point-accounting-cut-off-account', $form_date);
-
-    // $formulir = new Formulir;
-    // $formulir->form_date = $form_date;
-    // $formulir->form_number = $form_number['form_number'];
-    // $formulir->form_raw_number = $form_number['raw'];
-    // $formulir->notes = '';
-    // $formulir->approval_to = 1;
-    // $formulir->approval_status = 0;
-    // $formulir->approval_message = '';
-    // $formulir->created_by = 1;
-    // $formulir->updated_by = 1;
-    // $formulir->save();
-
-    // $cut_off_account = new CutOffAccount;
-    // $cut_off_account->formulir_id = $formulir->id;
-    // $cut_off_account->save();
-
-    // $coa = Coa::where('coa_code', $account['coa_code'])->first();
-
-    // foreach ($cutoff_account_csv as $account) {
-    //   $cut_off_account_detail = new CutOffAccountDetail;
-    //   $cut_off_account_detail->cut_off_account_id = $cut_off_account->id;
-    //   $cut_off_account_detail->coa_id = $coa->id;
-    //   $cut_off_account_detail->debit = $account->debit;
-    //   $cut_off_account_detail->credit = $account->credit;
-    //   $cut_off_account_detail->save();
-    // }
-
-    \DB::commit();
   }
 }
