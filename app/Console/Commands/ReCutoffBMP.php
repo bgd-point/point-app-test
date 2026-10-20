@@ -162,6 +162,66 @@ class ReCutoffBMP extends Command
           $ci->save();
       }
 
+      // Cutoff - Assets
+
+      $filePath = 'cutoff_assets.json';
+      
+      if (!Storage::disk('local')->exists($filePath)) {
+        throw new RuntimeException(
+          "JSON file not found: {$filePath}"
+        );
+      }
+
+      $json = Storage::disk('local')->get($filePath);
+
+      $accounts = json_decode($json, true);
+
+      if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new RuntimeException(
+          'Invalid JSON: ' . json_last_error_msg()
+        );
+      }
+   
+      if (!is_array($accounts) || empty($accounts)) {
+        throw new RuntimeException(
+            'The JSON file must contain a non-empty array of accounts.'
+        );
+      }
+
+      foreach ($accounts as $account) {
+          $item = Item::where('code', $account['subledger_code'])->first();
+          if (!$item) {
+              throw new RuntimeException(
+                  "Item not found: {$account['code']}"
+              );
+          }
+          $warehouse = Warehouse::where('name', $account['warehouse_name'])->first();
+          if (!$warehouse) {
+              throw new RuntimeException(
+                  "Warehouse not found: {$account['warehouse_name']}"
+              );
+          }
+
+          $coa = Coa::where('coa_number', $account['coa_number'])->first();
+          if (!$coa) {
+              throw new RuntimeException(
+                  "Warehouse not found: {$account['coa_number']}"
+              );
+          }
+
+          $ci = new CutOffInventoryDetail;
+          $ci->cut_off_inventory_id = 44;
+          $ci->warehouse_id = $warehouse->id;
+          $ci->subledger_type = 'Point\Framework\Models\Master\Item';
+          $ci->subledger_id = $item->id;
+          $ci->coa_id = $coa->id;
+          $ci->stock_in_database = 0;
+          $ci->stock = $account['quantity'];
+          $ci->amount = $account['amount'];
+          $ci->notes = isset($account['notes']) ? $account['notes'] : '';
+          $ci->save();
+      }
+
 
       // Cutoff - Receivable
 
