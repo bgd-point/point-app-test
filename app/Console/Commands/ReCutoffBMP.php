@@ -210,7 +210,7 @@ class ReCutoffBMP extends Command
 
           $ci = new CutOffReceivableDetail;
           $ci->cut_off_receivable_id = 10;
-          $ci->coa_id = $item->account_asset_id;
+          $ci->coa_id = $coa->id;
           $ci->subledger_type = isset($account['subledger_code']) ? 'Point\Framework\Models\Master\Person' : NULL;
           $ci->subledger_id = isset($account['subledger_code']) ? $person->id : NULL;
           $ci->amount = $account['amount'];
@@ -265,7 +265,7 @@ class ReCutoffBMP extends Command
 
           $ci = new CutOffPayableDetail();
           $ci->cut_off_payable_id = 15;
-          $ci->coa_id = $item->account_asset_id;
+          $ci->coa_id = $coa->id;
           $ci->subledger_type = isset($account['subledger_code']) ? 'Point\Framework\Models\Master\Person' : NULL;
           $ci->subledger_id = isset($account['subledger_code']) ? $person->id : NULL;
           $ci->amount = $account['amount'];
