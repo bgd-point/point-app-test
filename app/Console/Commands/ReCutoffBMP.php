@@ -218,6 +218,61 @@ class ReCutoffBMP extends Command
           $ci->save();
       }
 
+      // Cutoff - Payable
+
+      $filePath = 'cutoff_payables.json';
+      
+      if (!Storage::disk('local')->exists($filePath)) {
+        throw new RuntimeException(
+          "JSON file not found: {$filePath}"
+        );
+      }
+
+      $json = Storage::disk('local')->get($filePath);
+
+      $accounts = json_decode($json, true);
+
+      if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new RuntimeException(
+          'Invalid JSON: ' . json_last_error_msg()
+        );
+      }
+   
+      if (!is_array($accounts) || empty($accounts)) {
+        throw new RuntimeException(
+            'The JSON file must contain a non-empty array of accounts.'
+        );
+      }
+
+      CutOffPayableDetail::where('cut_off_receivable_id', 15)->delete();
+      foreach ($accounts as $account) {
+
+          if ($account['subledger_code']) {
+            $person = Person::where('code', $account['subledger_code'])->first();
+            if (!$person) {
+                throw new RuntimeException(
+                    "Person not found: {$account['subledger_code']}"
+                );
+            }
+          }
+          
+          $coa = Coa::where('coa_number', $account['coa_number'])->first();
+          if (!$coa) {
+              throw new RuntimeException(
+                  "Warehouse not found: {$account['coa_number']}"
+              );
+          }
+
+          $ci = new CutOffPayableDetail();
+          $ci->cut_off_payable_id = 15;
+          $ci->coa_id = $item->account_asset_id;
+          $ci->subledger_type = isset($account['subledger_code']) ? 'Point\Framework\Models\Master\Person' : NULL;
+          $ci->subledger_id = isset($account['subledger_code']) ? $person->id : NULL;
+          $ci->amount = $account['amount'];
+          $ci->notes = isset($account['notes']) ? $account['notes'] : '';
+          $ci->save();
+      }
+
       DB::commit();
 
       $this->info('BBF recalculation completed successfully.');
