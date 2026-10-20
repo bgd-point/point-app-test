@@ -192,12 +192,15 @@ class ReCutoffBMP extends Command
       CutOffReceivableDetail::where('cut_off_receivable_id', 10)->delete();
       foreach ($accounts as $account) {
 
-          $person = Person::where('code', $account['subledger_code'])->first();
-          if (!$person) {
-              // throw new RuntimeException(
-              //     "Person not found: {$account['subledger_code']}"
-              // );
+          if ($account['subledger_code']) {
+            $person = Person::where('code', $account['subledger_code'])->first();
+            if (!$person) {
+                throw new RuntimeException(
+                    "Person not found: {$account['subledger_code']}"
+                );
+            }
           }
+          
           $coa = Coa::where('coa_number', $account['coa_number'])->first();
           if (!$coa) {
               throw new RuntimeException(
