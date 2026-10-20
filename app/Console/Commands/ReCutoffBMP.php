@@ -136,7 +136,17 @@ class ReCutoffBMP extends Command
       CutOffInventoryDetail::where('cut_off_inventory_id', 44)->delete();
       foreach ($accounts as $account) {
           $item = Item::where('code', $account['subledger_code'])->first();
+          if (!$coa) {
+              throw new RuntimeException(
+                  "Item not found: {$account['code']}"
+              );
+          }
           $warehouse = Warehouse::where('name', $account['warehouse_name'])->first();
+          if (!$coa) {
+              throw new RuntimeException(
+                  "Warehouse not found: {$account['warehouse_name']}"
+              );
+          }
 
           $ci = new CutOffInventoryDetail;
           $ci->cut_off_inventory_id = 44;
