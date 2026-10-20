@@ -191,11 +191,12 @@ class ReCutoffBMP extends Command
 
       CutOffReceivableDetail::where('cut_off_receivable_id', 10)->delete();
       foreach ($accounts as $account) {
+
           $person = Person::where('code', $account['subledger_code'])->first();
           if (!$person) {
-              throw new RuntimeException(
-                  "Person not found: {$account['subledger_code']}"
-              );
+              // throw new RuntimeException(
+              //     "Person not found: {$account['subledger_code']}"
+              // );
           }
           $coa = Coa::where('coa_number', $account['coa_number'])->first();
           if (!$coa) {
@@ -207,8 +208,8 @@ class ReCutoffBMP extends Command
           $ci = new CutOffReceivableDetail;
           $ci->cut_off_receivable_id = 10;
           $ci->coa_id = $item->account_asset_id;
-          $ci->subledger_type = 'Point\Framework\Models\Master\Person';
-          $ci->subledger_id = $person->id;
+          $ci->subledger_type = isset($account['subledger_code']) ? 'Point\Framework\Models\Master\Person' : NULL;
+          $ci->subledger_id = isset($account['subledger_code']) ? $person->id : NULL;
           $ci->amount = $account['amount'];
           $ci->notes = isset($account['notes']) ? $account['notes'] : '';
           $ci->save();
