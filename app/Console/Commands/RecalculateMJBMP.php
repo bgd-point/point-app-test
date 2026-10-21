@@ -85,7 +85,7 @@ class RecalculateMJBMP extends Command
             
             $total = 0;
             foreach ($journals as $correction) {
-                $this->comment($correction->subledger_id . ' = ' . $correction->balance);
+                $this->comment($coa->coa_number . ' | ' . $coa->coa_name . ' | ' . $correction->subledger_id . ' = ' . $correction->balance);
 
                 // COA SEDIAAN
                 $memo_journal_detail = new MemoJournalDetail;
