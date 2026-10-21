@@ -86,14 +86,14 @@ class RecalculateMJBMP extends Command
             $total = 0;
             foreach ($journals as $correction) {
                 // $this->comment('('.$coa->category->position->debit.')' . $coa->coa_number . ' | ' . $coa->name . ' | ' . $correction->subledger_id . ' = ' . $correction->balance);
-
+                $positionDebit = (int) $coa->category->position->debit;
                 // COA SEDIAAN
                 $memo_journal_detail = new MemoJournalDetail;
                 $memo_journal_detail->memo_journal_id = $memo_journal->id;
                 $memo_journal_detail->coa_id = $coa->id;
                 $memo_journal_detail->description = 'Koreksi Cut Off 2026-06-30';
-                $memo_journal_detail->debit = $coa->category->position->debit === 1 ? $correction->balance : 0;
-                $memo_journal_detail->credit = $coa->category->position->debit === 0 ? 0 : $correction->balance;
+                $memo_journal_detail->debit = $positionDebit === 1 ? $correction->balance : 0;
+                $memo_journal_detail->credit = $positionDebit === 0 ? $correction->balance : 0;
                 $memo_journal_detail->form_journal_id = $formulir->id;
                 $memo_journal_detail->form_reference_id = null;
                 $memo_journal_detail->subledger_id = $correction->subledger_id ?? NULL;
