@@ -85,7 +85,7 @@ class RecalculateMJBMP extends Command
             
             $total = 0;
             foreach ($journals as $correction) {
-                $this->comment('('.$coa->category->position->debit.')' . $coa->coa_number . ' | ' . $coa->name . ' | ' . $correction->subledger_id . ' = ' . $correction->balance);
+                // $this->comment('('.$coa->category->position->debit.')' . $coa->coa_number . ' | ' . $coa->name . ' | ' . $correction->subledger_id . ' = ' . $correction->balance);
 
                 // COA SEDIAAN
                 $memo_journal_detail = new MemoJournalDetail;
@@ -99,6 +99,8 @@ class RecalculateMJBMP extends Command
                 $memo_journal_detail->subledger_id = $correction->subledger_id ?? NULL;
                 $memo_journal_detail->subledger_type = $correction->subledger_id ? 'Point\Framework\Models\Master\Item' : NULL;
                 $memo_journal_detail->save();
+
+                $this->comment('('.$coa->category->position->debit.')' . $coa->coa_number . ' | ' . $coa->name . ' | ' . $memo_journal_detail->debit . ' = ' . $memo_journal_detail->credit);
                 $total += $correction->balance;
             }
 
