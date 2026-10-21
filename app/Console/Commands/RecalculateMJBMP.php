@@ -53,7 +53,6 @@ class RecalculateMJBMP extends Command
 
             $journals = Journal::where('coa_id', $coa->id)
                 ->selectRaw('subledger_id, SUM(debit - credit) as balance')
-                ->select('journal.*')
                 ->groupBy('subledger_id')
                 ->get();
 
