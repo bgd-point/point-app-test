@@ -57,7 +57,7 @@ class RecalculateMJBMP extends Command
                 ->get();
 
             foreach ($journals as $journal) {
-                $this->comment($journal->coa_id . ' ' . $journal->subledger_id . ' = ' . $journal->balance);
+                $this->comment($journal->coa_id . ' | ' . $journal->subledger_id . ' = ' . $journal->balance);
             }
 
             // $form_date = '2026-07-31 23:59:59';
