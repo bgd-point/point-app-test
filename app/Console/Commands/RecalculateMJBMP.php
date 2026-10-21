@@ -91,8 +91,8 @@ class RecalculateMJBMP extends Command
                 $memo_journal_detail->memo_journal_id = $memo_journal->id;
                 $memo_journal_detail->coa_id = $coa->id;
                 $memo_journal_detail->description = 'Koreksi Cut Off 2026-06-30';
-                $memo_journal_detail->debit = $coa->category->position->debit ? $balance : 0;
-                $memo_journal_detail->credit = $coa->category->position->debit === 0 ? 0:$balance;
+                $memo_journal_detail->debit = $coa->category->position->debit ? $correction->balance : 0;
+                $memo_journal_detail->credit = $coa->category->position->debit === 0 ? 0:$correction->balance;
                 $memo_journal_detail->form_journal_id = $formulir->id;
                 $memo_journal_detail->form_reference_id = null;
                 $memo_journal_detail->subledger_id = $correction->subledger_id ?? NULL;
