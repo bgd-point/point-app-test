@@ -51,10 +51,14 @@ class RecalculateMJBMP extends Command
 
         foreach ($coas as $coa) {
 
-            $journals = Journal::where('coa_id', $coa->id)->groupBy('subledger_id')->get();
+            $journals = Journal::where('coa_id', $coa->id)
+                ->selectRaw('subledger_id, SUM(debit - credit) as balance')
+                ->select('journal.*')
+                ->groupBy('subledger_id')
+                ->get();
 
             foreach ($journals as $journal) {
-                $this->comment($journal->coa_id . ' ' . $journal->subledger_id);
+                $this->comment($journal->coa_id . ' ' . $journal->subledger_id . ' = ' . $journal->balance);
             }
 
             // $form_date = '2026-07-31 23:59:59';
