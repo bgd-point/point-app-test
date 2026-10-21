@@ -47,7 +47,7 @@ class RecalculateMJBMP extends Command
 
         \DB::beginTransaction();
 
-        $coas = Coa::all();
+        $coas = Coa::orderBy('coa_number', 'asc')->get();
 
         $form_date = '2026-06-30 23:59:00';
         $form_number = FormulirHelper::number('point-accounting-memo-journal', $form_date);
