@@ -52,27 +52,27 @@ class RecalculateMJBMP extends Command
         $form_date = '2026-06-30 23:59:00';
         $form_number = FormulirHelper::number('point-accounting-memo-journal', $form_date);
 
-        $formulir = new Formulir;
-        $formulir->form_date = $form_date;
-        $formulir->created_at = $form_date;
-        $formulir->updated_at = $form_date;
-        $formulir->form_number = $form_number['form_number'];
-        $formulir->form_raw_number = $form_number['raw'];
-        $formulir->notes = 'Koreksi Journal Sediaan 2026-06-30';
-        $formulir->approval_to = 1;
-        $formulir->approval_status = 1;
-        $formulir->approval_message = '';
-        $formulir->created_by = 1;
-        $formulir->updated_by = 1;
-        if (!$formulir->save()) {
-            gritter_error('create has been failed', false);
-        }
+        // $formulir = new Formulir;
+        // $formulir->form_date = $form_date;
+        // $formulir->created_at = $form_date;
+        // $formulir->updated_at = $form_date;
+        // $formulir->form_number = $form_number['form_number'];
+        // $formulir->form_raw_number = $form_number['raw'];
+        // $formulir->notes = 'Koreksi Journal Sediaan 2026-06-30';
+        // $formulir->approval_to = 1;
+        // $formulir->approval_status = 1;
+        // $formulir->approval_message = '';
+        // $formulir->created_by = 1;
+        // $formulir->updated_by = 1;
+        // if (!$formulir->save()) {
+        //     gritter_error('create has been failed', false);
+        // }
 
-        $memo_journal = new MemoJournal;
-        $memo_journal->formulir_id = $formulir->id;
-        $memo_journal->debit = 0;
-        $memo_journal->credit = 0;
-        $memo_journal->save();
+        // $memo_journal = new MemoJournal;
+        // $memo_journal->formulir_id = $formulir->id;
+        // $memo_journal->debit = 0;
+        // $memo_journal->credit = 0;
+        // $memo_journal->save();
 
 
         foreach ($coas as $coa) {
@@ -87,25 +87,25 @@ class RecalculateMJBMP extends Command
                 $this->comment($coa->coa_number . ' | ' . $coa->name . ' | ' . $correction->subledger_id . ' = ' . $correction->balance);
 
                 // COA SEDIAAN
-                $memo_journal_detail = new MemoJournalDetail;
-                $memo_journal_detail->memo_journal_id = $memo_journal->id;
-                $memo_journal_detail->coa_id = $coa->id;
-                $memo_journal_detail->description = 'Koreksi Cut Off 2026-06-30';
-                $memo_journal_detail->debit = $coa->category->position->debit ? $correction->balance : 0;
-                $memo_journal_detail->credit = $coa->category->position->debit === 0 ? 0:$correction->balance;
-                $memo_journal_detail->form_journal_id = $formulir->id;
-                $memo_journal_detail->form_reference_id = null;
-                $memo_journal_detail->subledger_id = $correction->subledger_id ?? NULL;
-                $memo_journal_detail->subledger_type = $correction->subledger_id ? 'Point\Framework\Models\Master\Item' : NULL;
-                $memo_journal_detail->save();
-                $total += $correction->balance;
-            }
+            //     $memo_journal_detail = new MemoJournalDetail;
+            //     $memo_journal_detail->memo_journal_id = $memo_journal->id;
+            //     $memo_journal_detail->coa_id = $coa->id;
+            //     $memo_journal_detail->description = 'Koreksi Cut Off 2026-06-30';
+            //     $memo_journal_detail->debit = $coa->category->position->debit ? $correction->balance : 0;
+            //     $memo_journal_detail->credit = $coa->category->position->debit === 0 ? 0:$correction->balance;
+            //     $memo_journal_detail->form_journal_id = $formulir->id;
+            //     $memo_journal_detail->form_reference_id = null;
+            //     $memo_journal_detail->subledger_id = $correction->subledger_id ?? NULL;
+            //     $memo_journal_detail->subledger_type = $correction->subledger_id ? 'Point\Framework\Models\Master\Item' : NULL;
+            //     $memo_journal_detail->save();
+            //     $total += $correction->balance;
+            // }
 
-            $memo_journal->debit = $total;
-            $memo_journal->credit = $total;
-            $memo_journal->save();
+            // $memo_journal->debit = $total;
+            // $memo_journal->credit = $total;
+            // $memo_journal->save();
 
-            MemoJournalHelper::addToJournal($memo_journal);
+            // MemoJournalHelper::addToJournal($memo_journal);
         }
 
         \DB::commit();
