@@ -126,7 +126,7 @@ class RecalculateCutoffBMP extends Command
         $inventory->warehouse_id = $stock_correction->warehouse_id;
         $inventory->item_id = $stock_correction_item->item_id;
         $inventory->quantity = $stock_correction_item->quantity_correction;
-        $inventory->price = 0;
+        $inventory->price = $lastVal->cogs;
         if ($inventory->quantity < 0) {
           $inventory->quantity *= -1;
           $inventory_helper = new InventoryHelper($inventory);
