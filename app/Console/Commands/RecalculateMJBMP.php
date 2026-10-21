@@ -102,14 +102,14 @@ class RecalculateMJBMP extends Command
 
                 $journal = new Journal;
                 $journal->form_date = $memo_journal->formulir->form_date;
-                $journal->coa_id = $memo_journal_item->coa_id;
-                $journal->description = $memo_journal_item->description;
-                $journal->debit = $memo_journal_item->debit;
-                $journal->credit = $memo_journal_item->credit;
+                $journal->coa_id = $memo_journal_detail->coa_id;
+                $journal->description = $memo_journal_detail->description;
+                $journal->debit = $memo_journal_detail->debit;
+                $journal->credit = $memo_journal_detail->credit;
                 $journal->form_journal_id = $memo_journal->formulir_id;
-                $journal->form_reference_id = $memo_journal_item->form_reference_id ?: null;
-                $journal->subledger_id = $memo_journal_item->subledger_id ?: null;
-                $journal->subledger_type = $memo_journal_item->subledger_type ?: null;
+                $journal->form_reference_id = $memo_journal_detail->form_reference_id ?: null;
+                $journal->subledger_id = $memo_journal_detail->subledger_id ?: null;
+                $journal->subledger_type = $memo_journal_detail->subledger_type ?: null;
 
                 $journal->save();
 
