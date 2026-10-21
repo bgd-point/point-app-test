@@ -100,6 +100,19 @@ class RecalculateMJBMP extends Command
                 $memo_journal_detail->subledger_type = $correction->subledger_id ? 'Point\Framework\Models\Master\Item' : NULL;
                 $memo_journal_detail->save();
 
+                $journal = new Journal;
+                $journal->form_date = $memo_journal->formulir->form_date;
+                $journal->coa_id = $memo_journal_item->coa_id;
+                $journal->description = $memo_journal_item->description;
+                $journal->debit = $memo_journal_item->debit;
+                $journal->credit = $memo_journal_item->credit;
+                $journal->form_journal_id = $memo_journal->formulir_id;
+                $journal->form_reference_id = $memo_journal_item->form_reference_id ?: null;
+                $journal->subledger_id = $memo_journal_item->subledger_id ?: null;
+                $journal->subledger_type = $memo_journal_item->subledger_type ?: null;
+
+                $journal->save();
+
                 $this->comment('('.$coa->category->position->debit.')' . $coa->coa_number . ' | ' . $coa->name . ' | ' . $memo_journal_detail->debit . ' = ' . $memo_journal_detail->credit);
                 $total += $correction->balance;
             }
@@ -107,8 +120,6 @@ class RecalculateMJBMP extends Command
             $memo_journal->debit = $total;
             $memo_journal->credit = $total;
             $memo_journal->save();
-
-            MemoJournalHelper::addToJournal($memo_journal);
         }
 
         \DB::commit();
