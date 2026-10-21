@@ -34,7 +34,7 @@ class ReCutoffBMP extends Command
 {
   /**
    * The name and signature of the console command.
-   * php artisan dev:recalculate:cutoff-bmp && php artisan dev:recutoff:bmp
+   * php artisan dev:recalculate:cutoff-bmp && dev:recalculate:mj-bmp && php artisan dev:recutoff:bmp
    *
    * @var string
    */
