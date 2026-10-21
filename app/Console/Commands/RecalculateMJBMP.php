@@ -99,7 +99,7 @@ class RecalculateMJBMP extends Command
             //     $memo_journal_detail->subledger_type = $correction->subledger_id ? 'Point\Framework\Models\Master\Item' : NULL;
             //     $memo_journal_detail->save();
             //     $total += $correction->balance;
-            // }
+            }
 
             // $memo_journal->debit = $total;
             // $memo_journal->credit = $total;
