@@ -49,6 +49,32 @@ class RecalculateMJBMP extends Command
 
         $coas = Coa::all();
 
+        $form_date = '2026-06-30 23:59:00';
+        $form_number = FormulirHelper::number('point-accounting-memo-journal', $form_date);
+
+        $formulir = new Formulir;
+        $formulir->form_date = $form_date;
+        $formulir->created_at = $form_date;
+        $formulir->updated_at = $form_date;
+        $formulir->form_number = $form_number['form_number'];
+        $formulir->form_raw_number = $form_number['raw'];
+        $formulir->notes = 'Koreksi Journal Sediaan 2026-06-30';
+        $formulir->approval_to = 1;
+        $formulir->approval_status = 1;
+        $formulir->approval_message = '';
+        $formulir->created_by = 1;
+        $formulir->updated_by = 1;
+        if (!$formulir->save()) {
+            gritter_error('create has been failed', false);
+        }
+
+        $memo_journal = new MemoJournal;
+        $memo_journal->formulir_id = $formulir->id;
+        $memo_journal->debit = 0;
+        $memo_journal->credit = 0;
+        $memo_journal->save();
+
+
         foreach ($coas as $coa) {
 
             $journals = Journal::where('coa_id', $coa->id)
@@ -56,36 +82,7 @@ class RecalculateMJBMP extends Command
                 ->selectRaw('subledger_id, SUM(debit - credit) as balance')
                 ->groupBy('subledger_id')
                 ->get();
-
-            foreach ($journals as $journal) {
-                $this->comment($journal->coa_id . ' | ' . $journal->subledger_id . ' = ' . $journal->balance);
-            }
-
-            $form_date = '2026-06-30 23:59:00';
-            $form_number = FormulirHelper::number('point-accounting-memo-journal', $form_date);
-
-            $formulir = new Formulir;
-            $formulir->form_date = $form_date;
-            $formulir->created_at = $form_date;
-            $formulir->updated_at = $form_date;
-            $formulir->form_number = $form_number['form_number'];
-            $formulir->form_raw_number = $form_number['raw'];
-            $formulir->notes = 'Koreksi Journal Sediaan ' . $coa->name . ' 2026-06-30';
-            $formulir->approval_to = 1;
-            $formulir->approval_status = 1;
-            $formulir->approval_message = '';
-            $formulir->created_by = 1;
-            $formulir->updated_by = 1;
-            if (!$formulir->save()) {
-                gritter_error('create has been failed', false);
-            }
-
-            $memo_journal = new MemoJournal;
-            $memo_journal->formulir_id = $formulir->id;
-            $memo_journal->debit = 0;
-            $memo_journal->credit = 0;
-            $memo_journal->save();
-
+            
             $total = 0;
             foreach ($journals as $correction) {
                 $this->comment($correction->subledger_id . ' = ' . $correction->balance);
