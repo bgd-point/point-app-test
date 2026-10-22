@@ -75,7 +75,7 @@
                                 @if($detail->subledger_id && $detail->subledger_type::find($detail->subledger_id))
                                 <td class="text-left">{{ $detail->subledger_id ? $detail->subledger_type::find($detail->subledger_id)->name : '-'}}</td>
                                 @else
-                                <td>else {{ $detail->subledger_type }} {{ $detail->subledger_id }}</td>
+                                <td>-</td>
                                 @endif
                                 <td class="text-left">{{ $detail->form_reference_id ? $detail->reference->form_number : '-'}}</td>
                                 <td class="text-left">{{ $detail->description}}</td>
