@@ -72,7 +72,11 @@
                             <tr class="tr-detail">
                                 <td colspan="2"></td>
                                 <td class="text-left">{{ $detail->coa->name}}</td>
-                                <td class="text-left">{{ $detail->subledger_id }}</td>
+                                @if($detail->subledger_id && $detail->subledger_type::find($detail->subledger_id))
+                                <td class="text-left">{{ $detail->subledger_id ? $detail->subledger_type::find($detail->subledger_id)->name : '-'}}</td>
+                                @else
+                                <td>else {{ $detail->subledger_id }}</td>
+                                @endif
                                 <td class="text-left">{{ $detail->form_reference_id ? $detail->reference->form_number : '-'}}</td>
                                 <td class="text-left">{{ $detail->description}}</td>
                                 <td class="text-right">{{ number_format_accounting($detail->debit) }}</td>
