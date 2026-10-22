@@ -94,8 +94,8 @@ class RecalculateMJBMP extends Command
                 $memo_journal_detail->description = 'Koreksi Cut Off 2026-06-30';
 
                 // Reverse the net balance.
-                $memo_journal_detail->debit = $balance < 0 ? abs($balance) : 0;
-                $memo_journal_detail->credit = $balance > 0 ? $balance : 0;
+                $memo_journal_detail->debit = $correction->balance < 0 ? abs($correction->balance) : 0;
+                $memo_journal_detail->credit = $correction->balance > 0 ? $correction->balance : 0;
 
                 $memo_journal_detail->form_journal_id = $formulir->id;
                 $memo_journal_detail->form_reference_id = null;
