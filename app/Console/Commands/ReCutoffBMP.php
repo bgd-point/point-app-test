@@ -34,7 +34,7 @@ class ReCutoffBMP extends Command
 {
   /**
    * The name and signature of the console command.
-   * php artisan dev:recalculate:cutoff-bmp && dev:recalculate:mj-bmp && php artisan dev:recutoff:bmp
+   * php artisan dev:recalculate:cutoff-bmp && php artisan dev:recalculate:mj-bmp && php artisan dev:recutoff:bmp
    *
    * @var string
    */
@@ -135,7 +135,7 @@ class ReCutoffBMP extends Command
         );
       }
 
-      CutOffInventoryDetail::where('cut_off_inventory_id', 44)->delete();
+      CutOffInventoryDetail::where('cut_off_inventory_id', 43)->delete();
       foreach ($accounts as $account) {
           $item = Item::where('code', $account['subledger_code'])->first();
           if (!$item) {
@@ -151,7 +151,7 @@ class ReCutoffBMP extends Command
           }
 
           $ci = new CutOffInventoryDetail;
-          $ci->cut_off_inventory_id = 44;
+          $ci->cut_off_inventory_id = 43;
           $ci->warehouse_id = $warehouse->id;
           $ci->subledger_type = 'Point\Framework\Models\Master\Item';
           $ci->subledger_id = $item->id;
@@ -211,7 +211,7 @@ class ReCutoffBMP extends Command
           }
 
           $ci = new CutOffInventoryDetail;
-          $ci->cut_off_inventory_id = 44;
+          $ci->cut_off_inventory_id = 43;
           $ci->warehouse_id = $warehouse->id;
           $ci->subledger_type = 'Point\Framework\Models\Master\Item';
           $ci->subledger_id = $item->id;
