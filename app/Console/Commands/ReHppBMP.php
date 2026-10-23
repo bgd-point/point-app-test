@@ -78,9 +78,11 @@ class ReHppBMP extends Command
             $totalQty = 0;
             $totalQtyAll = 0;
             $totalValue = 0;
-            $totalValueAll = 0;
+            $totalValAll = 0;
             $cogs = 0;
             foreach($list_inventory as $index => $l_inventory) {
+                
+                $this->comment($l_inventory->formulir->form_number);
 
                 if ($index === 0) {
                     $totalQty = $prev ? $prev->total_quantity : 0;
@@ -95,12 +97,12 @@ class ReHppBMP extends Command
                 $totalQtyAll = $totalQtyAll + $l_inventory->quantity;
                 
                 $totalValue = round($totalValue + $value, 4);
-                $totalValueAll = round($totalValueAll + $value, 4);
+                $totalValAll = round($totalValAll + $value, 4);
 
-                $this->comment($l_inventory->formulir->form_number);
+                
 
                 if ($l_inventory->quantity > 0) {
-                    $l_inventory->cogs = $totalValueAll / $totalQtyAll;
+                    $l_inventory->cogs = $totalValAll / $totalQtyAll;
                     $cogs = $l_inventory->cogs;
                 } else {
                     $l_inventory->cogs = $cogs;
@@ -109,7 +111,7 @@ class ReHppBMP extends Command
                 $l_inventory->total_quantity = $totalQty;
                 $l_inventory->total_quantity_all = $totalQtyAll;
                 $l_inventory->total_value = $totalValue;
-                $l_inventory->total_value_all = $totalValueAll;
+                $l_inventory->total_value_all = $totalValAll;
                 $l_inventory->save();
             }
         }
