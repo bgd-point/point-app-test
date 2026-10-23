@@ -65,7 +65,7 @@ class ReHppBMP extends Command
                 ->orderBy('form_date', 'desc')
                 ->orderBy('formulir_id', 'desc')
                 ->orderBy('id', 'desc')
-                ->get();
+                ->first();
             
             $prevAll = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
@@ -73,7 +73,7 @@ class ReHppBMP extends Command
                 ->orderBy('form_date', 'desc')
                 ->orderBy('formulir_id', 'desc')
                 ->orderBy('id', 'desc')
-                ->get();
+                ->first();
 
             $totalQty = 0;
             $totalQtyAll = 0;
@@ -83,10 +83,10 @@ class ReHppBMP extends Command
             foreach($list_inventory as $index => $l_inventory) {
 
                 if ($index === 0) {
-                    $totalQty = $prev->total_quantity;
-                    $totalVal = $prev->total_value;
-                    $totalQtyAll = $prevAll->total_quantity_all;
-                    $totalValAll = $prevAll->total_value_all;
+                    $totalQty = $prev ? $prev->total_quantity : 0;
+                    $totalVal = $prev ? $prev->total_value : 0;
+                    $totalQtyAll = $prevAll ? $prevAll->total_quantity_all : 0;
+                    $totalValAll = $prevAll ? $prevAll->total_value_all : 0;
                 }
 
                 $value = $l_inventory->quantity * $l_inventory->price;
