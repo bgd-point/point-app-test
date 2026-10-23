@@ -54,14 +54,14 @@ class ReHppBMP extends Command
             $list_inventory = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
-                ->where('form_date', '>', '2026-06-30')
+                ->where('form_date', '>', '2026-06-30 23:59:59')
                 ->orderBy('form_date', 'asc')
                 ->get();
 
             $prev = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
                 ->where('warehouse_id', '=', $inventory->warehouse_id)
-                ->where('form_date', '<=', '2026-06-30')
+                ->where('form_date', '<=', '2026-06-30 23:59:59')
                 ->orderBy('form_date', 'desc')
                 ->orderBy('formulir_id', 'desc')
                 ->orderBy('id', 'desc')
@@ -69,7 +69,7 @@ class ReHppBMP extends Command
             
             $prevAll = Inventory::with('formulir')
                 ->where('item_id', '=', $inventory->item_id)
-                ->where('form_date', '<=', '2026-06-30')
+                ->where('form_date', '<=', '2026-06-30 23:59:59')
                 ->orderBy('form_date', 'desc')
                 ->orderBy('formulir_id', 'desc')
                 ->orderBy('id', 'desc')
