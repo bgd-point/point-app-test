@@ -99,7 +99,7 @@ class ReHppBMP extends Command
                 $totalValue = round($totalValue + $value, 4);
                 $totalValAll = round($totalValAll + $value, 4);
 
-                
+                $this->comment($value . ' = ' . $l_inventory->quantity .'*'. $l_inventory->price);
 
                 if ($l_inventory->quantity > 0) {
                     $l_inventory->cogs = $totalValAll / $totalQtyAll;
