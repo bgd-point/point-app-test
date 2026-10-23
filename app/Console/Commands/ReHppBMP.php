@@ -82,7 +82,7 @@ class ReHppBMP extends Command
             $cogs = 0;
             foreach($list_inventory as $index => $l_inventory) {
                 
-                $this->comment($l_inventory->formulir->form_number);
+                $this->comment($l_inventory->formulir->form_number . ' ' . $l_inventory->formulir->form_date);
 
                 if ($index === 0) {
                     $totalQty = $prev ? $prev->total_quantity : 0;
