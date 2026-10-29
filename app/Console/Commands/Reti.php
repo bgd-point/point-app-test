@@ -43,7 +43,7 @@ class Reti extends Command
                     ->orWhereNull('form_number')
                     ->orWhere('form_status', -1);
             })
-            ->where('form_date', '>=', '2026-07-01 00:00:00')
+            ->where('form_date', '>=', '2026-08-01 00:00:00')
             ->get();
 
         foreach ($formulirs as $formulir) {
@@ -56,7 +56,7 @@ class Reti extends Command
             ->whereNotNull('form_number')
             ->whereNull('canceled_at')
             ->where('approval_status', '=', 1)
-            ->where('form_date', '>=', '2026-07-01 00:00:00')
+            ->where('form_date', '>=', '2026-08-01 00:00:00')
             ->get();
 
         foreach ($formulirs as $formulir) {
