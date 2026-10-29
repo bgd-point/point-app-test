@@ -105,7 +105,7 @@ class Reti extends Command
             foreach ($transfer_item->items as $transfer_item_detail) {
 
                 $last = Inventory::where('item_id', '=', $transfer_item_detail->item_id)
-                    ->where('form_date', '<', $transfer_item->formulir->received_date)
+                    ->where('form_date', '<', $transfer_item->received_date)
                     ->orderBy('form_date', 'desc')
                     ->orderBy('formulir_id', 'desc')
                     ->orderBy('id', 'desc')
