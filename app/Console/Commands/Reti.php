@@ -76,6 +76,8 @@ class Reti extends Command
                     ->orderBy('id', 'desc')
                     ->first();
 
+                $this->comment($formulir->form_number . ' = ' . $transfer_item_detail->item->name . '= ' . $last->total_quantity . ' (' . $transfer_item->warehouse_sender_id .')');
+
                 $transfer_item_detail->cogs = $last->cogs;
                 $transfer_item_detail->save();
 
