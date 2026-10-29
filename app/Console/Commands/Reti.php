@@ -2,15 +2,12 @@
 
 namespace App\Console\Commands;
 
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Point\Framework\Helpers\JournalHelper;
 use Point\Framework\Helpers\InventoryHelper;
 use Point\Framework\Models\Formulir;
 use Point\Framework\Models\Inventory;
 use Point\Framework\Models\Journal;
-use Point\Framework\Models\Master\Allocation;
-use Point\PointInventory\Models\StockOpname\StockOpname;
 use Point\PointInventory\Models\TransferItem\TransferItem;
 
 class Reti extends Command
@@ -46,7 +43,7 @@ class Reti extends Command
                     ->orWhereNull('form_number')
                     ->orWhere('form_status', -1);
             })
-            ->where('form_date', '>=', '2026-06-01 00:00:00')
+            ->where('form_date', '>=', '2026-07-01 00:00:00')
             ->get();
 
         foreach ($formulirs as $formulir) {
@@ -59,12 +56,10 @@ class Reti extends Command
             ->whereNotNull('form_number')
             ->whereNull('canceled_at')
             ->where('approval_status', '=', 1)
-            ->where('form_date', '>=', '2026-06-01 00:00:00')
+            ->where('form_date', '>=', '2026-07-01 00:00:00')
             ->get();
 
         foreach ($formulirs as $formulir) {
-            $qty = 0;
-
             $this->line('FORM NUMBER : ' . $formulir->form_number . ' ADDED');
 
             $transfer_item = TransferItem::where('formulir_id', $formulir->id)->first();
