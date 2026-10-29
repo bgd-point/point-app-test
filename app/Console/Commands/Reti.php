@@ -72,8 +72,6 @@ class Reti extends Command
                 $last = Inventory::where('item_id', '=', $transfer_item_detail->item_id)
                     ->where('form_date', '<', $transfer_item->formulir->form_date)
                     ->orderBy('form_date', 'desc')
-                    ->orderBy('formulir_id', 'desc')
-                    ->orderBy('id', 'desc')
                     ->first();
 
                 $this->comment($formulir->form_number . ' = ' . $transfer_item_detail->item->name . '= ' . $last->total_quantity . ' (' . $transfer_item->warehouse_sender_id .')');
@@ -113,8 +111,6 @@ class Reti extends Command
                 $last = Inventory::where('item_id', '=', $transfer_item_detail->item_id)
                     ->where('form_date', '<', $transfer_item->formulir->updated_at)
                     ->orderBy('form_date', 'desc')
-                    ->orderBy('formulir_id', 'desc')
-                    ->orderBy('id', 'desc')
                     ->first();
 
                 $inventory = new Inventory;
