@@ -109,7 +109,7 @@ class Reti extends Command
             }
 
                 $last = Inventory::where('item_id', '=', $transfer_item_detail->item_id)
-                    ->where('form_date', '<', $transfer_item->formulir->updated_at)))
+                    ->where('form_date', '<', $transfer_item->formulir->updated_at)
                     ->orderBy('form_date', 'desc')
                     ->orderBy('formulir_id', 'desc')
                     ->orderBy('id', 'desc')
