@@ -497,7 +497,7 @@ class InventoryHelper
         }
 
         if (!$last || (float) $last->total_quantity < abs($this->inventory->quantity)) {
-            // throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE');
+            throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE');
         }
 
         if (!$lastAll || (float) $lastAll->total_quantity_all == 0.0) {
@@ -554,7 +554,7 @@ class InventoryHelper
         }
 
         if (!$last || (float) $last->total_quantity < abs($this->inventory->quantity)) {
-            // throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE (' . $last .'<' . $this->inventory->quantity . ')');
+            throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE (' . $last .'<' . $this->inventory->quantity . ')');
         }
 
         $this->inventory->cogs = 0;
