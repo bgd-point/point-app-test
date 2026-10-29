@@ -101,6 +101,7 @@ class Reti extends Command
                 $inventory->price = $last->cogs;
                 $inventory->quantity = $transfer_item_detail->qty_received;
                 if ($transfer_item_detail->qty_received > 0) {
+                    $this->line('FORM NUMBER : ' . $formulir->form_number . ' IN');
                     $inventory_helper = new InventoryHelper($inventory);
                     $inventory_helper->in();
                 }
