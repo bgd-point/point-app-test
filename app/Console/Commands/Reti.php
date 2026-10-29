@@ -88,12 +88,17 @@ class Reti extends Command
                 $inventory_helper = new InventoryHelper($inventory);
                 $inventory_helper->out();
 
+                $last = Inventory::where('item_id', '=', $transfer_item_detail->item_id)
+                    ->where('form_date', '<', $transfer_item->formulir->form_date)
+                    ->orderBy('form_date', 'desc')
+                    ->first();
+
                 $inventory = new Inventory;
                 $inventory->form_date = $transfer_item->formulir->form_date;
                 $inventory->formulir_id = $transfer_item->formulir_id;
                 $inventory->warehouse_id = $transfer_item->warehouse_receiver_id;
                 $inventory->item_id = $transfer_item_detail->item_id;
-                $inventory->price = $transfer_item_detail->cogs;
+                $inventory->price = $last->cogs;
                 $inventory->quantity = $transfer_item_detail->qty_received;
                 if ($transfer_item_detail->qty_received > 0) {
                     $inventory_helper = new InventoryHelper($inventory);
@@ -102,7 +107,7 @@ class Reti extends Command
             }
 
             self::updateJournalTI($transfer_item);
-            self::updateJournalRI($transfer_item);
+            self::updateJournalRI($transfer_item, $last->cogs);
         }
 
         \DB::commit();
@@ -159,7 +164,7 @@ class Reti extends Command
         }
     }
 
-    public static function updateJournalRI($transfer_item)
+    public static function updateJournalRI($transfer_item, $cogs)
     {
         foreach ($transfer_item->items as $transfer_item_detail) {
             if ($transfer_item_detail->qty_received != 0) {
@@ -183,7 +188,7 @@ class Reti extends Command
                 $journal->coa_id = $in_transit_account;
                 $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
                 $journal->debit = 0;
-                $journal->credit = $transfer_item_detail->cogs * $transfer_item_detail->qty_received;
+                $journal->credit = $cogs * $transfer_item_detail->qty_received;
                 $journal->form_journal_id = $transfer_item->formulir_id;
                 $journal->form_reference_id;
                 $journal->subledger_id = $transfer_item_detail->item_id;
