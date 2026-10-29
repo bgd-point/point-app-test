@@ -500,7 +500,11 @@ class InventoryHelper
             // throw new PointException('STOCK ' . $this->inventory->item->name . ' NOT AVAILABLE');
         }
 
-        $this->inventory->cogs = $lastAll->total_value_all / $lastAll->total_quantity_all;
+        if (!$lastAll || (float) $lastAll->total_quantity_all == 0.0) {
+            $this->inventory->cogs = 0;
+        } else {
+            $this->inventory->cogs = $lastAll->total_value_all / $lastAll->total_quantity_all;
+        }
     }
     
     private function updateCogsOut0()
