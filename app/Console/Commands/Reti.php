@@ -109,14 +109,14 @@ class Reti extends Command
             }
 
                 $last = Inventory::where('item_id', '=', $transfer_item_detail->item_id)
-                    ->where('form_date', '<', $transfer_item->received_date)
+                    ->where('form_date', '<', $transfer_item->formulir->updated_at)))
                     ->orderBy('form_date', 'desc')
                     ->orderBy('formulir_id', 'desc')
                     ->orderBy('id', 'desc')
                     ->first();
 
                 $inventory = new Inventory;
-                $inventory->form_date = $transfer_item->formulir->form_date;
+                $inventory->form_date = $transfer_item->formulir->updated_at;
                 $inventory->formulir_id = $transfer_item->formulir_id;
                 $inventory->warehouse_id = 117;
                 $inventory->item_id = $transfer_item_detail->item_id;
@@ -127,7 +127,7 @@ class Reti extends Command
                 $inventory_helper->out();
 
                 $inventory = new Inventory;
-                $inventory->form_date = $transfer_item->formulir->form_date;
+                $inventory->form_date = $transfer_item->formulir->updated_at;
                 $inventory->formulir_id = $transfer_item->formulir_id;
                 $inventory->warehouse_id = $transfer_item->warehouse_receiver_id;
                 $inventory->item_id = $transfer_item_detail->item_id;
@@ -203,7 +203,7 @@ class Reti extends Command
             if ($transfer_item_detail->qty_received != 0) {
                 // JOURNAL #1 of #2 - Invetory Received
                 $journal = new Journal();
-                $journal->form_date = $transfer_item->received_date;
+                $journal->form_date = $transfer_item->formulir->updated_at;
                 $journal->coa_id = $transfer_item_detail->item->account_asset_id;
                 $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
                 $journal->debit = $cogs * $transfer_item_detail->qty_received;
@@ -217,7 +217,7 @@ class Reti extends Command
                 // JOURNAL #2 of #2 - Inventory In Transit
                 $in_transit_account = JournalHelper::getAccount('point inventory transfer item', 'inventory in transit');
                 $journal = new Journal();
-                $journal->form_date = $transfer_item->received_date;
+                $journal->form_date = $transfer_item->formulir->updated_at;
                 $journal->coa_id = $in_transit_account;
                 $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
                 $journal->debit = 0;
