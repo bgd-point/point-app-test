@@ -72,6 +72,8 @@ class Reti extends Command
                 $last = Inventory::where('item_id', '=', $transfer_item_detail->item_id)
                     ->where('form_date', '<', $transfer_item->formulir->form_date)
                     ->orderBy('form_date', 'desc')
+                    ->orderBy('formulir_id', 'desc')
+                    ->orderBy('id', 'desc')
                     ->first();
 
                 $transfer_item_detail->cogs = $last->cogs;
@@ -88,10 +90,37 @@ class Reti extends Command
                 $inventory_helper = new InventoryHelper($inventory);
                 $inventory_helper->out();
 
+                $inventory = new Inventory;
+                $inventory->form_date = $transfer_item->formulir->form_date;
+                $inventory->formulir_id = $transfer_item->formulir_id;
+                $inventory->warehouse_id = 117;
+                $inventory->item_id = $transfer_item_detail->item_id;
+                $inventory->price = $transfer_item_detail->cogs;
+                $inventory->quantity = $transfer_item_detail->qty_send;
+                $inventory_helper = new InventoryHelper($inventory);
+                $inventory_helper->in();
+            }
+            
+            // RECEIVING
+            foreach ($transfer_item->items as $transfer_item_detail) {
+
                 $last = Inventory::where('item_id', '=', $transfer_item_detail->item_id)
-                    ->where('form_date', '<', $transfer_item->formulir->form_date)
+                    ->where('form_date', '<', $transfer_item->formulir->received_date)
                     ->orderBy('form_date', 'desc')
+                    ->orderBy('formulir_id', 'desc')
+                    ->orderBy('id', 'desc')
                     ->first();
+
+                $inventory = new Inventory;
+                $inventory->form_date = $transfer_item->formulir->form_date;
+                $inventory->formulir_id = $transfer_item->formulir_id;
+                $inventory->warehouse_id = 117;
+                $inventory->item_id = $transfer_item_detail->item_id;
+                $inventory->quantity = $transfer_item_detail->qty_received;
+                $inventory->price = $last->cogs;
+
+                $inventory_helper = new InventoryHelper($inventory);
+                $inventory_helper->out();
 
                 $inventory = new Inventory;
                 $inventory->form_date = $transfer_item->formulir->form_date;
@@ -101,20 +130,8 @@ class Reti extends Command
                 $inventory->price = $last->cogs;
                 $inventory->quantity = $transfer_item_detail->qty_received;
                 if ($transfer_item_detail->qty_received > 0) {
-                        $this->line(
-        'FORM NUMBER : ' . $formulir->form_number
-        . ' IN, QTY: ' . $transfer_item_detail->qty_received
-    );
-
                     $inventory_helper = new InventoryHelper($inventory);
                     $inventory_helper->in();
-
-                    $this->line(
-        'INVENTORY SAVED: ID=' . $inventory->id
-        . ', ITEM=' . $inventory->item_id
-        . ', WAREHOUSE=' . $inventory->warehouse_id
-        . ', QTY=' . $inventory->quantity
-    );
                 }
             }
 
@@ -185,7 +202,7 @@ class Reti extends Command
                 $journal->form_date = $transfer_item->received_date;
                 $journal->coa_id = $transfer_item_detail->item->account_asset_id;
                 $journal->description = 'receive item ' . $transfer_item->formulir->form_number;
-                $journal->debit = $transfer_item_detail->cogs * $transfer_item_detail->qty_received;
+                $journal->debit = $cogs * $transfer_item_detail->qty_received;
                 $journal->credit = 0;
                 $journal->form_journal_id = $transfer_item->formulir_id;
                 $journal->form_reference_id;
