@@ -30,7 +30,7 @@
                     </div>
                     <div class="col-md-3">
                         <div class="input-group bootstrap-timepicker">
-                            <input type="text" id="time" name="time" class="form-control timepicker" value="{{date('H:i', strtotime($transfer_item->formulir->form_date))}}">
+                            <input readonly type="text" id="time" name="time" class="form-control timepicker" value="{{date('H:i', strtotime($transfer_item->formulir->form_date))}}">
                             <span class="input-group-btn">
                                 <a href="javascript:void(0)" class="btn btn-effect-ripple btn-primary"><i class="fa fa-clock-o"></i></a>
                             </span>
