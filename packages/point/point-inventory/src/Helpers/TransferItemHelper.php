@@ -75,13 +75,15 @@ class TransferItemHelper
     private static function updateInventory($transfer_item)
     {
         foreach ($transfer_item->items as $transfer_item_detail) {
+            $cogs = InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $transfer_item_detail->item_id, 1);
+            
             $inventory = new Inventory;
             $inventory->form_date = date('Y-m-d H:i:s');
             $inventory->formulir_id = $transfer_item->formulir_id;
             $inventory->warehouse_id = $transfer_item->warehouse_sender_id;
             $inventory->item_id = $transfer_item_detail->item_id;
             $inventory->quantity = $transfer_item_detail->qty_send;
-            $inventory->price = $transfer_item_detail->cogs;
+            $inventory->price = $cogs;
             
             $inventory_helper = new InventoryHelper($inventory);
             $inventory_helper->out();
@@ -94,7 +96,7 @@ class TransferItemHelper
                 $inventory->warehouse_id = $warehouseInTransit->id;
                 $inventory->item_id = $transfer_item_detail->item_id;
                 $inventory->quantity = $transfer_item_detail->qty_send;
-                $inventory->price = $transfer_item_detail->cogs;
+                $inventory->price = $cogs;
                 
                 $inventory_helper = new InventoryHelper($inventory);
                 $inventory_helper->in();
@@ -110,13 +112,15 @@ class TransferItemHelper
 
         foreach ($transfer_item->items as $transfer_item_detail) {
 
+            $cogs = InventoryHelper::getCostOfSales(date('Y-m-d H:i:s'), $transfer_item_detail->item_id, 1);
+
             // JOURNAL #1 of #2 - SEND ITEM
             $position = JournalHelper::position($transfer_item_detail->item->account_asset_id);
             $journal = new Journal();
             $journal->form_date = date('Y-m-d H:i:s');
             $journal->coa_id = $transfer_item_detail->item->account_asset_id;
             $journal->description = $transfer_item->formulir->form_number;
-            $journal->$position = $transfer_item_detail->cogs * $transfer_item_detail->qty_send * -1;
+            $journal->$position = $cogs * $transfer_item_detail->qty_send * -1;
             $journal->form_journal_id = $transfer_item->formulir_id;
             $journal->form_reference_id;
             $journal->subledger_id = $transfer_item_detail->item_id;
@@ -136,7 +140,7 @@ class TransferItemHelper
             $journal->form_date = date('Y-m-d H:i:s');
             $journal->coa_id = $inventory_in_transit;
             $journal->description = $transfer_item->formulir->form_number;
-            $journal->$position = $transfer_item_detail->cogs * $transfer_item_detail->qty_send;
+            $journal->$position = $cogs * $transfer_item_detail->qty_send;
             $journal->form_journal_id = $transfer_item->formulir_id;
             $journal->form_reference_id;
             $journal->subledger_id = $transfer_item_detail->item_id;
