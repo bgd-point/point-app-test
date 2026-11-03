@@ -26,11 +26,11 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Received Date *</label>
                     <div class="col-md-3">
-                        <input type="text" readonly id="form_date" name="form_date" class="form-control date input-datepicker" data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}" value="{{ date(date_format_get(), strtotime($transfer_item->formulir->form_date)) }}">
+                        <input type="text" readonly id="form_date" name="form_date" class="form-control date" data-date-format="{{date_format_masking()}}" placeholder="{{date_format_masking()}}" value="{{ date(date_format_get(), strtotime($transfer_item->formulir->form_date)) }}">
                     </div>
                     <div class="col-md-3">
                         <div class="input-group bootstrap-timepicker">
-                            <input readonly type="text" id="time" name="time" class="form-control timepicker" value="{{date('H:i', strtotime($transfer_item->formulir->form_date))}}">
+                            <input readonly type="text" id="time" name="time" class="form-control" value="{{date('H:i', strtotime($transfer_item->formulir->form_date))}}">
                             <span class="input-group-btn">
                                 <a href="javascript:void(0)" class="btn btn-effect-ripple btn-primary"><i class="fa fa-clock-o"></i></a>
                             </span>
